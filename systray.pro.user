@@ -1,0 +1,287 @@
+<!DOCTYPE QtCreatorProject>
+<qtcreator>
+ <data>
+  <variable>RunConfiguration0-CommandLineArguments</variable>
+  <valuelist type="QVariantList" />
+ </data>
+ <data>
+  <variable>RunConfiguration0-ProFile</variable>
+  <value type="QString" >systray.pro</value>
+ </data>
+ <data>
+  <variable>RunConfiguration0-RunConfiguration.name</variable>
+  <value type="QString" >systray</value>
+ </data>
+ <data>
+  <variable>RunConfiguration0-UseDyldImageSuffix</variable>
+  <value type="bool" >false</value>
+ </data>
+ <data>
+  <variable>RunConfiguration0-UseTerminal</variable>
+  <value type="bool" >false</value>
+ </data>
+ <data>
+  <variable>RunConfiguration0-UserEnvironmentChanges</variable>
+  <valuelist type="QVariantList" />
+ </data>
+ <data>
+  <variable>RunConfiguration0-UserSetName</variable>
+  <value type="bool" >false</value>
+ </data>
+ <data>
+  <variable>RunConfiguration0-type</variable>
+  <value type="QString" >Qt4ProjectManager.Qt4RunConfiguration</value>
+ </data>
+ <data>
+  <variable>activeRunConfiguration</variable>
+  <value type="int" >0</value>
+ </data>
+ <data>
+  <variable>activebuildconfiguration</variable>
+  <value type="QString" >Debug</value>
+ </data>
+ <data>
+  <variable>buildConfiguration-Debug</variable>
+  <valuemap type="QVariantMap" >
+   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" >Debug</value>
+   <value key="QtVersionId" type="int" >0</value>
+   <value key="addQDumper" type="" ></value>
+   <value key="buildDirectory" type="QString" >C:\Qt\2009.04\qt\examples\desktop\systray</value>
+  </valuemap>
+ </data>
+ <data>
+  <variable>buildConfiguration-Release</variable>
+  <valuemap type="QVariantMap" >
+   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" >Release</value>
+   <value key="QtVersionId" type="int" >0</value>
+   <value key="addQDumper" type="" ></value>
+  </valuemap>
+ </data>
+ <data>
+  <variable>buildconfiguration-Debug-buildstep0</variable>
+  <valuemap type="QVariantMap" >
+   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" >Debug</value>
+   <valuelist key="abstractProcess.Environment" type="QVariantList" >
+    <value type="QString" >ALLUSERSPROFILE=C:\Dokumente und Einstellungen\All Users</value>
+    <value type="QString" >APPDATA=C:\Dokumente und Einstellungen\admin\Anwendungsdaten</value>
+    <value type="QString" >CLIENTNAME=Console</value>
+    <value type="QString" >COMMONPROGRAMFILES=C:\Programme\Gemeinsame Dateien</value>
+    <value type="QString" >COMPUTERNAME=NAME-059B8BACD2</value>
+    <value type="QString" >COMSPEC=C:\WINDOWS\system32\cmd.exe</value>
+    <value type="QString" >DISPLAY=:9999</value>
+    <value type="QString" >FP_NO_HOST_CHECK=NO</value>
+    <value type="QString" >FTP_PASSIVE=1</value>
+    <value type="QString" >GIT_SSH=C:\Qt\2009.04\bin\TortoisePlink.exe</value>
+    <value type="QString" >HOME=C:\Dokumente und Einstellungen\admin</value>
+    <value type="QString" >HOMEDRIVE=C:</value>
+    <value type="QString" >HOMEPATH=\Dokumente und Einstellungen\admin</value>
+    <value type="QString" >LOGONSERVER=\\NAME-059B8BACD2</value>
+    <value type="QString" >NUMBER_OF_PROCESSORS=2</value>
+    <value type="QString" >OPENSSL_PATH=C:\build\openssl-0.9.8k</value>
+    <value type="QString" >OS=Windows_NT</value>
+    <value type="QString" >PATH=C:\Qt\2009.04\mingw\bin;C:\Qt\2009.04\qt\bin;C:\Perl\site\bin;C:\Perl\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\Qt\2009.01\mingw\bin;C:\Programme\TortoiseSVN\bin;C:\Python26;C:\Python26\Scripts;C:\Programme\Microsoft SDKs\Windows\v6.0A\Include;C:\Programme\Microsoft Visual Studio 9.0\VC\include; C:\Programme\Microsoft SDKs\Windows\v6.0A\Lib;C:\Programme\Microsoft Visual Studio 9.0\VC\lib;C:\Programme\Microsoft Visual Studio 9.0\VC\bin;C:\Qt\2009.01\qt\qmake;C:\strawberry\c\bin;C:\strawberry\perl\bin;C:\Programme\Microsoft Visual Studio 9.0\Common7\IDE;C:\Programme\TortoiseGit\bin;C:\build\bin;C:\Qt\2009.01\mingw\bin</value>
+    <value type="QString" >PATHEXT=.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH</value>
+    <value type="QString" >PROCESSOR_ARCHITECTURE=x86</value>
+    <value type="QString" >PROCESSOR_IDENTIFIER=x86 Family 6 Model 15 Stepping 13, GenuineIntel</value>
+    <value type="QString" >PROCESSOR_LEVEL=6</value>
+    <value type="QString" >PROCESSOR_REVISION=0f0d</value>
+    <value type="QString" >PROGRAMFILES=C:\Programme</value>
+    <value type="QString" >QMAKESPEC=win32-msvc2008</value>
+    <value type="QString" >QTDIR=C:/Qt/2009.04/qt</value>
+    <value type="QString" >SESSIONNAME=Console</value>
+    <value type="QString" >SSH_ASKPASS=C:\Qt\2009.04\bin\SshAskPass.exe</value>
+    <value type="QString" >SYSTEMDRIVE=C:</value>
+    <value type="QString" >SYSTEMROOT=C:\WINDOWS</value>
+    <value type="QString" >TEMP=C:\DOKUME~1\admin\LOKALE~1\Temp</value>
+    <value type="QString" >TERM=dumb</value>
+    <value type="QString" >TMP=C:\DOKUME~1\admin\LOKALE~1\Temp</value>
+    <value type="QString" >USERDOMAIN=NAME-059B8BACD2</value>
+    <value type="QString" >USERNAME=admin</value>
+    <value type="QString" >USERPROFILE=C:\Dokumente und Einstellungen\admin</value>
+    <value type="QString" >VS90COMNTOOLS=C:\Programme\Microsoft Visual Studio 9.0\Common7\Tools\</value>
+    <value type="QString" >WINDIR=C:\WINDOWS</value>
+   </valuelist>
+   <valuelist key="abstractProcess.arguments" type="QVariantList" >
+    <value type="QString" >C:/Qt/2009.04/qt/examples/desktop/systray/systray.pro</value>
+    <value type="QString" >-spec</value>
+    <value type="QString" >win32-g++</value>
+    <value type="QString" >-r</value>
+   </valuelist>
+   <value key="abstractProcess.command" type="QString" >C:/Qt/2009.04/qt/bin/qmake.exe</value>
+   <value key="abstractProcess.enabled" type="bool" >false</value>
+   <value key="abstractProcess.workingDirectory" type="QString" >C:/Qt/2009.04/qt/examples/desktop/systray</value>
+   <value key="buildConfiguration" type="int" >2</value>
+  </valuemap>
+ </data>
+ <data>
+  <variable>buildconfiguration-Debug-buildstep1</variable>
+  <valuemap type="QVariantMap" >
+   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" >Debug</value>
+   <valuelist key="abstractProcess.Environment" type="QVariantList" >
+    <value type="QString" >ALLUSERSPROFILE=C:\Dokumente und Einstellungen\All Users</value>
+    <value type="QString" >APPDATA=C:\Dokumente und Einstellungen\admin\Anwendungsdaten</value>
+    <value type="QString" >CLIENTNAME=Console</value>
+    <value type="QString" >COMMONPROGRAMFILES=C:\Programme\Gemeinsame Dateien</value>
+    <value type="QString" >COMPUTERNAME=NAME-059B8BACD2</value>
+    <value type="QString" >COMSPEC=C:\WINDOWS\system32\cmd.exe</value>
+    <value type="QString" >DISPLAY=:9999</value>
+    <value type="QString" >FP_NO_HOST_CHECK=NO</value>
+    <value type="QString" >FTP_PASSIVE=1</value>
+    <value type="QString" >GIT_SSH=C:\Qt\2009.04\bin\TortoisePlink.exe</value>
+    <value type="QString" >HOME=C:\Dokumente und Einstellungen\admin</value>
+    <value type="QString" >HOMEDRIVE=C:</value>
+    <value type="QString" >HOMEPATH=\Dokumente und Einstellungen\admin</value>
+    <value type="QString" >LOGONSERVER=\\NAME-059B8BACD2</value>
+    <value type="QString" >NUMBER_OF_PROCESSORS=2</value>
+    <value type="QString" >OPENSSL_PATH=C:\build\openssl-0.9.8k</value>
+    <value type="QString" >OS=Windows_NT</value>
+    <value type="QString" >PATH=C:\Qt\2009.04\mingw\bin;C:\Qt\2009.04\qt\bin;C:\Perl\site\bin;C:\Perl\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\Qt\2009.01\mingw\bin;C:\Programme\TortoiseSVN\bin;C:\Python26;C:\Python26\Scripts;C:\Programme\Microsoft SDKs\Windows\v6.0A\Include;C:\Programme\Microsoft Visual Studio 9.0\VC\include; C:\Programme\Microsoft SDKs\Windows\v6.0A\Lib;C:\Programme\Microsoft Visual Studio 9.0\VC\lib;C:\Programme\Microsoft Visual Studio 9.0\VC\bin;C:\Qt\2009.01\qt\qmake;C:\strawberry\c\bin;C:\strawberry\perl\bin;C:\Programme\Microsoft Visual Studio 9.0\Common7\IDE;C:\Programme\TortoiseGit\bin;C:\build\bin;C:\Qt\2009.01\mingw\bin</value>
+    <value type="QString" >PATHEXT=.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH</value>
+    <value type="QString" >PROCESSOR_ARCHITECTURE=x86</value>
+    <value type="QString" >PROCESSOR_IDENTIFIER=x86 Family 6 Model 15 Stepping 13, GenuineIntel</value>
+    <value type="QString" >PROCESSOR_LEVEL=6</value>
+    <value type="QString" >PROCESSOR_REVISION=0f0d</value>
+    <value type="QString" >PROGRAMFILES=C:\Programme</value>
+    <value type="QString" >QMAKESPEC=win32-msvc2008</value>
+    <value type="QString" >QTDIR=C:/Qt/2009.04/qt</value>
+    <value type="QString" >SESSIONNAME=Console</value>
+    <value type="QString" >SSH_ASKPASS=C:\Qt\2009.04\bin\SshAskPass.exe</value>
+    <value type="QString" >SYSTEMDRIVE=C:</value>
+    <value type="QString" >SYSTEMROOT=C:\WINDOWS</value>
+    <value type="QString" >TEMP=C:\DOKUME~1\admin\LOKALE~1\Temp</value>
+    <value type="QString" >TERM=dumb</value>
+    <value type="QString" >TMP=C:\DOKUME~1\admin\LOKALE~1\Temp</value>
+    <value type="QString" >USERDOMAIN=NAME-059B8BACD2</value>
+    <value type="QString" >USERNAME=admin</value>
+    <value type="QString" >USERPROFILE=C:\Dokumente und Einstellungen\admin</value>
+    <value type="QString" >VS90COMNTOOLS=C:\Programme\Microsoft Visual Studio 9.0\Common7\Tools\</value>
+    <value type="QString" >WINDIR=C:\WINDOWS</value>
+   </valuelist>
+   <valuelist key="abstractProcess.arguments" type="QVariantList" >
+    <value type="QString" >-w</value>
+   </valuelist>
+   <value key="abstractProcess.command" type="QString" >C:/Qt/2009.04/mingw/bin/mingw32-make.exe</value>
+   <value key="abstractProcess.enabled" type="bool" >true</value>
+   <value key="abstractProcess.workingDirectory" type="QString" >C:/Qt/2009.04/qt/examples/desktop/systray</value>
+  </valuemap>
+ </data>
+ <data>
+  <variable>buildconfiguration-Debug-cleanstep0</variable>
+  <valuemap type="QVariantMap" >
+   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" >Debug</value>
+   <valuelist key="abstractProcess.Environment" type="QVariantList" >
+    <value type="QString" >ALLUSERSPROFILE=C:\Dokumente und Einstellungen\All Users</value>
+    <value type="QString" >APPDATA=C:\Dokumente und Einstellungen\admin\Anwendungsdaten</value>
+    <value type="QString" >COMMONPROGRAMFILES=C:\Programme\Gemeinsame Dateien</value>
+    <value type="QString" >COMPUTERNAME=NAME-059B8BACD2</value>
+    <value type="QString" >COMSPEC=C:\WINDOWS\system32\cmd.exe</value>
+    <value type="QString" >DISPLAY=:9999</value>
+    <value type="QString" >FP_NO_HOST_CHECK=NO</value>
+    <value type="QString" >FTP_PASSIVE=1</value>
+    <value type="QString" >GIT_SSH=C:\Qt\2009.04\bin\TortoisePlink.exe</value>
+    <value type="QString" >HOME=C:\Dokumente und Einstellungen\admin</value>
+    <value type="QString" >HOMEDRIVE=C:</value>
+    <value type="QString" >HOMEPATH=\Dokumente und Einstellungen\admin</value>
+    <value type="QString" >LOGONSERVER=\\NAME-059B8BACD2</value>
+    <value type="QString" >NUMBER_OF_PROCESSORS=2</value>
+    <value type="QString" >OPENSSL_PATH=C:\build\openssl-0.9.8k</value>
+    <value type="QString" >OS=Windows_NT</value>
+    <value type="QString" >PATH=C:\Qt\2009.04\mingw\bin;C:\Qt\2009.04\qt\bin;C:\Perl\site\bin;C:\Perl\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\Qt\2009.01\mingw\bin;C:\Programme\TortoiseSVN\bin;C:\Python26;C:\Python26\Scripts;C:\Programme\Microsoft SDKs\Windows\v6.0A\Include;C:\Programme\Microsoft Visual Studio 9.0\VC\include; C:\Programme\Microsoft SDKs\Windows\v6.0A\Lib;C:\Programme\Microsoft Visual Studio 9.0\VC\lib;C:\Programme\Microsoft Visual Studio 9.0\VC\bin;C:\Qt\2009.01\qt\qmake;C:\strawberry\c\bin;C:\strawberry\perl\bin;C:\Programme\Microsoft Visual Studio 9.0\Common7\IDE;C:\Programme\TortoiseGit\bin;C:\build\bin;C:\Qt\2009.01\mingw\bin</value>
+    <value type="QString" >PATHEXT=.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH</value>
+    <value type="QString" >PROCESSOR_ARCHITECTURE=x86</value>
+    <value type="QString" >PROCESSOR_IDENTIFIER=x86 Family 6 Model 15 Stepping 13, GenuineIntel</value>
+    <value type="QString" >PROCESSOR_LEVEL=6</value>
+    <value type="QString" >PROCESSOR_REVISION=0f0d</value>
+    <value type="QString" >PROGRAMFILES=C:\Programme</value>
+    <value type="QString" >QMAKESPEC=win32-msvc2008</value>
+    <value type="QString" >QTDIR=C:/Qt/2009.04/qt</value>
+    <value type="QString" >SESSIONNAME=Console</value>
+    <value type="QString" >SSH_ASKPASS=C:\Qt\2009.04\bin\SshAskPass.exe</value>
+    <value type="QString" >SYSTEMDRIVE=C:</value>
+    <value type="QString" >SYSTEMROOT=C:\WINDOWS</value>
+    <value type="QString" >TEMP=C:\DOKUME~1\admin\LOKALE~1\Temp</value>
+    <value type="QString" >TERM=dumb</value>
+    <value type="QString" >TMP=C:\DOKUME~1\admin\LOKALE~1\Temp</value>
+    <value type="QString" >USERDOMAIN=NAME-059B8BACD2</value>
+    <value type="QString" >USERNAME=admin</value>
+    <value type="QString" >USERPROFILE=C:\Dokumente und Einstellungen\admin</value>
+    <value type="QString" >VS90COMNTOOLS=C:\Programme\Microsoft Visual Studio 9.0\Common7\Tools\</value>
+    <value type="QString" >WINDIR=C:\WINDOWS</value>
+   </valuelist>
+   <valuelist key="abstractProcess.arguments" type="QVariantList" >
+    <value type="QString" >clean</value>
+    <value type="QString" >-w</value>
+   </valuelist>
+   <value key="abstractProcess.command" type="QString" >C:/Qt/2009.04/mingw/bin/mingw32-make.exe</value>
+   <value key="abstractProcess.enabled" type="bool" >true</value>
+   <value key="abstractProcess.workingDirectory" type="QString" >C:/Qt/2009.04/qt/examples/desktop/systray</value>
+  </valuemap>
+ </data>
+ <data>
+  <variable>buildconfiguration-Release-buildstep0</variable>
+  <valuemap type="QVariantMap" >
+   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" >Release</value>
+   <value key="buildConfiguration" type="int" >0</value>
+  </valuemap>
+ </data>
+ <data>
+  <variable>buildconfiguration-Release-buildstep1</variable>
+  <valuemap type="QVariantMap" >
+   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" >Release</value>
+  </valuemap>
+ </data>
+ <data>
+  <variable>buildconfiguration-Release-cleanstep0</variable>
+  <valuemap type="QVariantMap" >
+   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" >Release</value>
+  </valuemap>
+ </data>
+ <data>
+  <variable>buildconfigurations</variable>
+  <valuelist type="QVariantList" >
+   <value type="QString" >Debug</value>
+   <value type="QString" >Release</value>
+  </valuelist>
+ </data>
+ <data>
+  <variable>buildstep0</variable>
+  <valuemap type="QVariantMap" >
+   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" ></value>
+   <value key="mkspec" type="QString" ></value>
+  </valuemap>
+ </data>
+ <data>
+  <variable>buildstep1</variable>
+  <valuemap type="QVariantMap" >
+   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" ></value>
+  </valuemap>
+ </data>
+ <data>
+  <variable>buildsteps</variable>
+  <valuelist type="QVariantList" >
+   <value type="QString" >trolltech.qt4projectmanager.qmake</value>
+   <value type="QString" >trolltech.qt4projectmanager.make</value>
+  </valuelist>
+ </data>
+ <data>
+  <variable>cleanstep0</variable>
+  <valuemap type="QVariantMap" >
+   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" ></value>
+   <value key="clean" type="bool" >true</value>
+  </valuemap>
+ </data>
+ <data>
+  <variable>cleansteps</variable>
+  <valuelist type="QVariantList" >
+   <value type="QString" >trolltech.qt4projectmanager.make</value>
+  </valuelist>
+ </data>
+ <data>
+  <variable>defaultFileEncoding</variable>
+  <value type="QByteArray" >System</value>
+ </data>
+ <data>
+  <variable>project</variable>
+  <valuemap type="QVariantMap" />
+ </data>
+</qtcreator>

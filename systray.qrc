@@ -1,0 +1,16 @@
+<RCC>
+    <qresource prefix="/" >
+        <file>images/inaktiv.svg</file>
+        <file>images/connected.svg</file>
+        <file>images/disconnected.svg</file>
+        <file>images/connecting.svg</file>
+        <file>images/startscreen.jpg</file>
+        <file>images/delete.svg</file>
+        <file>images/edit.svg</file>
+        <file>images/securepoint.png</file>
+        <file>images/info.svg</file>
+        <file>images/securepoint_h.png</file>
+        <file>images/banner.png</file>
+        <file>images/securepoint_wiz.png</file>
+    </qresource>
+</RCC>
