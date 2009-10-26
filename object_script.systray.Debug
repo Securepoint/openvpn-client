@@ -3,7 +3,6 @@ INPUT(
 ./debug\window.o
 ./debug\Configs.o
 ./debug\StatusMessage.o
-./debug\userauth.o
 ./debug\openvpn.o
 ./debug\vpnLog.o
 ./debug\preferences.o
@@ -16,9 +15,9 @@ INPUT(
 ./debug\wiz_vpnwizard.o
 ./debug\wiz_certpage.o
 ./debug\wiz_advpage.o
+./debug\stduserauth.o
 ./debug\moc_window.o
 ./debug\moc_StatusMessage.o
-./debug\moc_userauth.o
 ./debug\moc_openvpn.o
 ./debug\moc_vpnLog.o
 ./debug\moc_preferences.o
@@ -29,5 +28,6 @@ INPUT(
 ./debug\moc_wiz_vpnwizard.o
 ./debug\moc_wiz_certpage.o
 ./debug\moc_wiz_advpage.o
+./debug\moc_stduserauth.o
 ./debug\qrc_systray.o
 );

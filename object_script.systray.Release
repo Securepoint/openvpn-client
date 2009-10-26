@@ -3,7 +3,6 @@ INPUT(
 ./release\window.o
 ./release\Configs.o
 ./release\StatusMessage.o
-./release\userauth.o
 ./release\openvpn.o
 ./release\vpnLog.o
 ./release\preferences.o
@@ -16,9 +15,9 @@ INPUT(
 ./release\wiz_vpnwizard.o
 ./release\wiz_certpage.o
 ./release\wiz_advpage.o
+./release\stduserauth.o
 ./release\moc_window.o
 ./release\moc_StatusMessage.o
-./release\moc_userauth.o
 ./release\moc_openvpn.o
 ./release\moc_vpnLog.o
 ./release\moc_preferences.o
@@ -29,5 +28,6 @@ INPUT(
 ./release\moc_wiz_vpnwizard.o
 ./release\moc_wiz_certpage.o
 ./release\moc_wiz_advpage.o
+./release\moc_stduserauth.o
 ./release\qrc_systray.o
 );

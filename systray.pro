@@ -1,7 +1,6 @@
 HEADERS = window.h \
     Configs.h \
     StatusMessage.h \
-    userauth.h \
     openvpn.h \
     vpnLog.h \
     preferences.h \
@@ -13,12 +12,12 @@ HEADERS = window.h \
     wiz_endpage.h \
     wiz_vpnwizard.h \
     wiz_certpage.h \
-    wiz_advpage.h
+    wiz_advpage.h \
+    stduserauth.h
 SOURCES = main.cpp \
     window.cpp \
     Configs.cpp \
     StatusMessage.cpp \
-    userauth.cpp \
     openvpn.cpp \
     vpnLog.cpp \
     preferences.cpp \
@@ -30,7 +29,8 @@ SOURCES = main.cpp \
     wiz_endpage.cpp \
     wiz_vpnwizard.cpp \
     wiz_certpage.cpp \
-    wiz_advpage.cpp
+    wiz_advpage.cpp \
+    stduserauth.cpp
 RESOURCES = systray.qrc
 QT += xml \
     svg
@@ -59,4 +59,5 @@ FORMS += preferences.ui \
     wiz_remotepage.ui \
     wiz_endpage.ui \
     wiz_certpage.ui \
-    wiz_advpage.ui
+    wiz_advpage.ui \
+    stduserauth.ui

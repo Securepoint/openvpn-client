@@ -172,6 +172,7 @@
    <valuelist key="abstractProcess.Environment" type="QVariantList" >
     <value type="QString" >ALLUSERSPROFILE=C:\Dokumente und Einstellungen\All Users</value>
     <value type="QString" >APPDATA=C:\Dokumente und Einstellungen\admin\Anwendungsdaten</value>
+    <value type="QString" >CLIENTNAME=Console</value>
     <value type="QString" >COMMONPROGRAMFILES=C:\Programme\Gemeinsame Dateien</value>
     <value type="QString" >COMPUTERNAME=NAME-059B8BACD2</value>
     <value type="QString" >COMSPEC=C:\WINDOWS\system32\cmd.exe</value>

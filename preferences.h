@@ -33,6 +33,17 @@ private:
     VpnWizard vpnwiz;
 
 private slots:
+    void on_cmdInfoScriptsDelyAC_clicked();
+    void on_cmdErrorConnect_clicked();
+    void on_cmdAfterDisconnect_clicked();
+    void on_cmdBeforeDisconnect_clicked();
+    void on_cmdAfterConnect_clicked();
+    void on_cmdBeforeConnect_clicked();
+    void on_cmdInfoScriptsErrorConnect_clicked();
+    void on_cmdInfoScriptsAfterDisconnect_clicked();
+    void on_cmdInfoScriptsBeforeDisconnect_clicked();
+    void on_cmdInfoScriptsBeforeConnect_clicked();
+    void on_cmdInfoScriptsAfterConnect_clicked();
     void on_cmdInfoAuthUserPass_clicked();
     void on_cmdInfoDevName_clicked();
     void on_cmdInfoServerCertificate_clicked();

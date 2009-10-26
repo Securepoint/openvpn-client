@@ -12,5 +12,7 @@
         <file>images/securepoint_h.png</file>
         <file>images/banner.png</file>
         <file>images/securepoint_wiz.png</file>
+        <file>images/appicon.png</file>
+        <file>images/status_connect.gif</file>
     </qresource>
 </RCC>

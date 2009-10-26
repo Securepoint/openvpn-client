@@ -95,6 +95,20 @@ void Preferences::enableFields(bool flag) {
     m_ui->cmdGetCertPath->setEnabled(flag);
     m_ui->cmdGetKeyPath->setEnabled(flag);
 
+    // Scripts
+    m_ui->txtAfterConnect->setEnabled(flag);
+    m_ui->txtAfterDisconnect->setEnabled(flag);
+    m_ui->txtBeforeConnect->setEnabled(flag);
+    m_ui->txtErrorConnect->setEnabled(flag);
+    m_ui->txtBeforeDisconnect->setEnabled(flag);
+
+    m_ui->cmdAfterConnect->setEnabled(flag);
+    m_ui->cmdAfterDisconnect->setEnabled(flag);
+    m_ui->cmdBeforeConnect->setEnabled(flag);
+    m_ui->cmdBeforeDisconnect->setEnabled(flag);
+    m_ui->cmdErrorConnect->setEnabled(flag);
+
+    m_ui->txtScriptACDelay->setEnabled(flag);
 }
 
 void Preferences::resetFields() {
@@ -146,10 +160,18 @@ void Preferences::resetFields() {
 
     m_ui->cmbChiper->setCurrentIndex(0);
 
+    m_ui->txtAfterConnect->setText("");
+    m_ui->txtAfterDisconnect->setText("");
+    m_ui->txtBeforeConnect->setText("");
+    m_ui->txtBeforeDisconnect->setText("");
+    m_ui->txtErrorConnect->setText("");
+
+    m_ui->txtScriptACDelay->setText("5000");
+
 }
 
 void Preferences::openConfigFromListView (QListWidgetItem * item ){
-    m_ui->tbSettings->setCurrentIndex(0);
+    //m_ui->tbSettings->setCurrentIndex(0);
     enableFields(false);
     OpenVpnQListItem *t_Item = dynamic_cast<OpenVpnQListItem*>(item);
 
@@ -508,6 +530,13 @@ void Preferences::openConfigFromListView (QListWidgetItem * item ){
 
     }
     cf.close();
+   // Scripts einlesen
+   m_ui->txtAfterConnect->setText(actObject->getScript ("AC"));
+   m_ui->txtAfterDisconnect->setText(actObject->getScript ("AD"));
+   m_ui->txtBeforeConnect->setText(actObject->getScript ("BC"));
+   m_ui->txtBeforeDisconnect->setText(actObject->getScript ("BD"));
+   m_ui->txtErrorConnect->setText(actObject->getScript ("EC"));
+   m_ui->txtScriptACDelay->setText((actObject->getScript ("TO") == "" ? "5000" : actObject->getScript ("TO")));
 }
 
 void Preferences::fillCipherCombo() {
@@ -727,7 +756,7 @@ void Preferences::openDialog(QList<OpenVpn*> configList) {
     m_ui->lsvConfigs->clear();
     foreach (OpenVpn *configObj, configList) {
         OpenVpnQListItem *newItem = new OpenVpnQListItem (configObj);
-        newItem->setText(configObj->configName);
+        newItem->setText(configObj->configName + (configObj->isConnectionStable() ? "  [connected]" : ""));
         m_ui->lsvConfigs->insertItem(1, newItem);
     }
     m_ui->memHelp->setText("Please click the info symbol of the item you want to see the help.\nFor further informations please visit: http://www.openvpn.net");
@@ -736,26 +765,11 @@ void Preferences::openDialog(QList<OpenVpn*> configList) {
 
 void Preferences::on_cmdAddConfig_clicked()
 {
-    QString keyFile = QApplication::applicationDirPath() + QString("/TestCert.key");
-    QFile file(keyFile);
-    //vpnwiz.show();
+    vpnwiz.show();
 }
 
 void Preferences::on_cmdSave_clicked()
 {
-    bool copyAppDataToHomeDir = false;
-    #ifdef Q_OS_WIN32
-       // Portabel oder nicht?
-       QSettings appSettings;
-       if (appSettings.value("HKEY_LOCAL_MASCHINE\\SOFTWARE\\Securepoint\\OpenVPN").toString() != "") {
-           // Installation
-           copyAppDataToHomeDir = true;
-       }
-    #elif Q_OS_Unix
-         // Unix Code
-    #elif Q_OS_Mac
-       // Mac code
-    #endif
     // GUI auslesen und config speichern
     QFile cf (m_ui->txtPathFromConfig->text());
 
@@ -860,9 +874,64 @@ void Preferences::on_cmdSave_clicked()
     if (m_ui->cmbChiper->currentIndex() != 0)
         out << "cipher " << m_ui->cmbChiper->itemText(m_ui->cmbRouteMethod->currentIndex()) << "\n";
 
-
     // Datei schließen
     cf.close();
+    // Scripts ablegen
+    bool scriptDataWrite = false;
+    QFileDialog certFileDialog;
+    QString filename = m_ui->txtPathFromConfig->text();
+    if (filename != "") {
+        int lastSlash = filename.lastIndexOf("/");
+        QString filepath = filename.left(lastSlash) + QString("/scripts.conf");
+        QFile sf (filepath);
+
+        if (!sf.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
+            QMessageBox msgBox;
+                        msgBox.setText("Cannot open file to write.");
+                        msgBox.exec();
+             return;
+        }
+
+        QTextStream sout(&sf);
+        if (m_ui->txtAfterConnect->text() != "") {
+            sout << "AC:" << m_ui->txtAfterConnect->text() << "\n";
+            if (m_ui->txtScriptACDelay->text() != "")
+                sout << "TO:" << m_ui->txtScriptACDelay->text() << "\n";
+
+            scriptDataWrite = true;
+        }
+
+        if (m_ui->txtAfterDisconnect->text() != "") {
+            sout << "AD:" << m_ui->txtAfterDisconnect->text() << "\n";
+            scriptDataWrite = true;
+        }
+
+        if (m_ui->txtBeforeConnect->text() != "") {
+            sout << "BC:" << m_ui->txtBeforeConnect->text() << "\n";
+            scriptDataWrite = true;
+        }
+
+        if (m_ui->txtBeforeDisconnect->text() != "") {
+            sout << "BD:" << m_ui->txtBeforeDisconnect->text() << "\n";
+            scriptDataWrite = true;
+        }
+
+        if (m_ui->txtErrorConnect->text() != "") {
+            sout << "EC:" << m_ui->txtErrorConnect->text() << "\n";
+            scriptDataWrite = true;
+        }
+
+        // Daten geschrieben?
+        if (!scriptDataWrite) {
+            if (!sf.remove()) {
+                QMessageBox::critical(0,"Securepoint OpenVPN Client", "Can't delete scriptfile!");
+                return;
+            }
+        }
+
+
+        sf.close();
+   }
 }
 
 void Preferences::on_cmdGetCAPath_clicked()
@@ -968,4 +1037,79 @@ void Preferences::on_cmdInfoDevName_clicked()
 void Preferences::on_cmdInfoAuthUserPass_clicked()
 {
     m_ui->memHelp->setText("Specify that the user/pass authentication method is used.\nIt is required to type a username and a password for the connection.");
+}
+
+void Preferences::on_cmdInfoScriptsAfterConnect_clicked()
+{
+    m_ui->memHelp->setText("Specifiy the script which will be execute after a successfull connection to the OpenVPN network.");
+}
+
+void Preferences::on_cmdInfoScriptsBeforeConnect_clicked()
+{
+    m_ui->memHelp->setText("Specifiy the script which will be execute before the OpenVPN network will be connected.");
+}
+
+void Preferences::on_cmdInfoScriptsBeforeDisconnect_clicked()
+{
+    m_ui->memHelp->setText("Specifiy the script which will be execute before the OpenVPN network will be disconnected.");
+}
+
+void Preferences::on_cmdInfoScriptsAfterDisconnect_clicked()
+{
+    m_ui->memHelp->setText("Specifiy the script which will be execute after a successfull disconnect from the OpenVPN network.");
+}
+
+void Preferences::on_cmdInfoScriptsErrorConnect_clicked()
+{
+    m_ui->memHelp->setText("Specifiy the script which will be execute on an error while connecting to the OpenVPN network.");
+}
+
+void Preferences::on_cmdBeforeConnect_clicked()
+{
+    QFileDialog keyFileDialog;
+    QString filename = keyFileDialog.getOpenFileName(this, tr("Find executeable files"), this->actObject->configPath, "All files (*.*)");
+    if (filename != "") {
+            m_ui->txtBeforeConnect->setText(filename);
+    }
+}
+
+void Preferences::on_cmdAfterConnect_clicked()
+{
+    QFileDialog keyFileDialog;
+    QString filename = keyFileDialog.getOpenFileName(this, tr("Find executeable files"), this->actObject->configPath, "All files (*.*)");
+    if (filename != "") {
+            m_ui->txtAfterConnect->setText(filename);
+    }
+}
+
+void Preferences::on_cmdBeforeDisconnect_clicked()
+{
+    QFileDialog keyFileDialog;
+    QString filename = keyFileDialog.getOpenFileName(this, tr("Find executeable files"), this->actObject->configPath, "All files (*.*)");
+    if (filename != "") {
+            m_ui->txtBeforeDisconnect->setText(filename);
+    }
+}
+
+void Preferences::on_cmdAfterDisconnect_clicked()
+{
+    QFileDialog keyFileDialog;
+    QString filename = keyFileDialog.getOpenFileName(this, tr("Find executeable files"), this->actObject->configPath, "All files (*.*)");
+    if (filename != "") {
+            m_ui->txtAfterDisconnect->setText(filename);
+    }
+}
+
+void Preferences::on_cmdErrorConnect_clicked()
+{
+    QFileDialog keyFileDialog;
+    QString filename = keyFileDialog.getOpenFileName(this, tr("Find executeable files"), this->actObject->configPath, "All files (*.*)");
+    if (filename != "") {
+            m_ui->txtErrorConnect->setText(filename);
+    }
+}
+
+void Preferences::on_cmdInfoScriptsDelyAC_clicked()
+{
+    m_ui->memHelp->setText("Specifiy the delay to executing the after connection script after the OpenVPN connection established.\nThis is useful to prevent network errors.\nDefault is 5000ms");
 }

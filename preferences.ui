@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="systray.qrc">
-    <normaloff>:/images/inaktiv.svg</normaloff>:/images/inaktiv.svg</iconset>
+    <normaloff>:/images/appicon.png</normaloff>:/images/appicon.png</iconset>
   </property>
   <property name="styleSheet">
    <string notr="true"/>
@@ -837,12 +837,12 @@
       <rect>
        <x>0</x>
        <y>0</y>
-       <width>100</width>
-       <height>30</height>
+       <width>421</width>
+       <height>419</height>
       </rect>
      </property>
      <attribute name="label">
-      <string>Linux</string>
+      <string>Linux / Windows</string>
      </attribute>
      <widget class="QGroupBox" name="groupBox_10">
       <property name="geometry">
@@ -854,7 +854,7 @@
        </rect>
       </property>
       <property name="title">
-       <string>Downgrade Privileges:</string>
+       <string>Downgrade privileges of Linux process:</string>
       </property>
       <widget class="QLabel" name="label_26">
        <property name="geometry">
@@ -929,24 +929,11 @@
        </property>
       </widget>
      </widget>
-    </widget>
-    <widget class="QWidget" name="page_2">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>0</y>
-       <width>421</width>
-       <height>419</height>
-      </rect>
-     </property>
-     <attribute name="label">
-      <string>Windows</string>
-     </attribute>
      <widget class="QGroupBox" name="groupBox_6">
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>1</y>
+        <y>90</y>
         <width>421</width>
         <height>131</height>
        </rect>
@@ -1103,13 +1090,429 @@
       </widget>
      </widget>
     </widget>
+    <widget class="QWidget" name="page_2">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>421</width>
+       <height>419</height>
+      </rect>
+     </property>
+     <attribute name="label">
+      <string>Scripts</string>
+     </attribute>
+     <widget class="QGroupBox" name="groupBox_15">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>421</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="title">
+       <string>Connect:</string>
+      </property>
+      <widget class="QLabel" name="label_34">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>30</y>
+         <width>81</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Before connect:</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_35">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>55</y>
+         <width>81</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>After connect:</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="txtBeforeConnect">
+       <property name="geometry">
+        <rect>
+         <x>103</x>
+         <y>29</y>
+         <width>271</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="readOnly">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="txtAfterConnect">
+       <property name="geometry">
+        <rect>
+         <x>103</x>
+         <y>53</y>
+         <width>271</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="readOnly">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="cmdBeforeConnect">
+       <property name="geometry">
+        <rect>
+         <x>377</x>
+         <y>29</y>
+         <width>21</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="cmdAfterConnect">
+       <property name="geometry">
+        <rect>
+         <x>377</x>
+         <y>53</y>
+         <width>21</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="cmdInfoScriptsAfterConnect">
+       <property name="geometry">
+        <rect>
+         <x>396</x>
+         <y>55</y>
+         <width>20</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="systray.qrc">
+         <normaloff>:/images/info.svg</normaloff>:/images/info.svg</iconset>
+       </property>
+       <property name="flat">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="cmdInfoScriptsBeforeConnect">
+       <property name="geometry">
+        <rect>
+         <x>396</x>
+         <y>31</y>
+         <width>20</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="systray.qrc">
+         <normaloff>:/images/info.svg</normaloff>:/images/info.svg</iconset>
+       </property>
+       <property name="flat">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QGroupBox" name="groupBox_16">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>100</y>
+        <width>421</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="title">
+       <string>Disconnect:</string>
+      </property>
+      <widget class="QLabel" name="label_38">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>30</y>
+         <width>91</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Before disconnect:</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_39">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>55</y>
+         <width>81</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>After disconnect:</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="txtBeforeDisconnect">
+       <property name="geometry">
+        <rect>
+         <x>103</x>
+         <y>29</y>
+         <width>271</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="readOnly">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="txtAfterDisconnect">
+       <property name="geometry">
+        <rect>
+         <x>103</x>
+         <y>53</y>
+         <width>271</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="readOnly">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="cmdBeforeDisconnect">
+       <property name="geometry">
+        <rect>
+         <x>377</x>
+         <y>29</y>
+         <width>21</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="cmdAfterDisconnect">
+       <property name="geometry">
+        <rect>
+         <x>378</x>
+         <y>53</y>
+         <width>20</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="cmdInfoScriptsAfterDisconnect">
+       <property name="geometry">
+        <rect>
+         <x>400</x>
+         <y>55</y>
+         <width>16</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="systray.qrc">
+         <normaloff>:/images/info.svg</normaloff>:/images/info.svg</iconset>
+       </property>
+       <property name="flat">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="cmdInfoScriptsBeforeDisconnect">
+       <property name="geometry">
+        <rect>
+         <x>400</x>
+         <y>31</y>
+         <width>16</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="systray.qrc">
+         <normaloff>:/images/info.svg</normaloff>:/images/info.svg</iconset>
+       </property>
+       <property name="flat">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QGroupBox" name="groupBox_14">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>200</y>
+        <width>421</width>
+        <height>61</height>
+       </rect>
+      </property>
+      <property name="title">
+       <string>Error while connecting:</string>
+      </property>
+      <widget class="QPushButton" name="cmdInfoScriptsErrorConnect">
+       <property name="geometry">
+        <rect>
+         <x>400</x>
+         <y>28</y>
+         <width>16</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="systray.qrc">
+         <normaloff>:/images/info.svg</normaloff>:/images/info.svg</iconset>
+       </property>
+       <property name="flat">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_40">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>27</y>
+         <width>91</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Before disconnect:</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="cmdErrorConnect">
+       <property name="geometry">
+        <rect>
+         <x>377</x>
+         <y>28</y>
+         <width>21</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="txtErrorConnect">
+       <property name="geometry">
+        <rect>
+         <x>103</x>
+         <y>26</y>
+         <width>271</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="readOnly">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QGroupBox" name="groupBox_17">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>260</y>
+        <width>421</width>
+        <height>61</height>
+       </rect>
+      </property>
+      <property name="title">
+       <string>Delay:</string>
+      </property>
+      <widget class="QLabel" name="label_36">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>30</y>
+         <width>121</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>After connection delay: </string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="txtScriptACDelay">
+       <property name="geometry">
+        <rect>
+         <x>130</x>
+         <y>30</y>
+         <width>71</width>
+         <height>20</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="cmdInfoScriptsDelyAC">
+       <property name="geometry">
+        <rect>
+         <x>226</x>
+         <y>32</y>
+         <width>16</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="systray.qrc">
+         <normaloff>:/images/info.svg</normaloff>:/images/info.svg</iconset>
+       </property>
+       <property name="flat">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_37">
+       <property name="geometry">
+        <rect>
+         <x>206</x>
+         <y>32</y>
+         <width>21</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>ms</string>
+       </property>
+      </widget>
+     </widget>
+    </widget>
     <widget class="QWidget" name="page_4">
      <property name="geometry">
       <rect>
        <x>0</x>
        <y>0</y>
-       <width>100</width>
-       <height>30</height>
+       <width>421</width>
+       <height>419</height>
       </rect>
      </property>
      <attribute name="label">

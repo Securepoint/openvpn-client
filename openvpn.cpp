@@ -3,7 +3,7 @@
 OpenVpn::OpenVpn () {
     this->connectionStable = false;
     this->onDisconnect = false;
-    userauth = new UserAuth();
+    userauth = new StdUserAuth();
     this->proc = new QProcess(this);
     connect(this, SIGNAL(configSignalIsChanged()), this, SLOT(configIsChanged()));
 }
@@ -14,6 +14,8 @@ void OpenVpn::openConnect() {
     userauth->parentVpn = this;
     // Felder leeren
     userauth->clearFields();
+    // Kennwort setzen
+    userauth->fillFromConfig();
     // Dialog zeigen
     userauth->show();
 }
@@ -21,6 +23,45 @@ void OpenVpn::openConnect() {
 void OpenVpn::configIsChanged() {
     QMessageBox::information(0, QString("OpenVPN Client"),
                                 QString("Config have been changed! Restart Connection?"));
+}
+
+QString OpenVpn::getScript(QString type) {
+    QString scriptFilePath = this->configPath + QString("/scripts.conf");
+    QFile scrtiptFile (scriptFilePath);
+    if (scrtiptFile.exists()) {
+        // Öffnen und auslesen
+        if (!scrtiptFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            QMessageBox::information(0, QString("OpenVPN Client"),
+                                QString("Can't read scriptconfig file!"));
+             return QString("");
+        }
+        // Datei offen
+        QTextStream sin (&scrtiptFile);
+
+        while (!sin.atEnd()){
+            QString line = sin.readLine();
+            if (line.left(3) == type.toUpper() + ":") {
+                scrtiptFile.close();
+                return line.right(line.size()-3);
+            }
+        }
+        scrtiptFile.close();
+        // Keine Daten gefunden
+        return QString("");
+    } else {
+        // Keine Datei da, leeren String zurückgeben
+        return QString("");
+    }
+
+}
+
+void OpenVpn::runScript(QString type){
+    if (this->getScript(type) != "") {
+        this->openVpnLogData.append(QString ("Starting : ") + type);
+        procScripts = new QProcess(this);
+        procScripts->start(this->getScript(type));
+        qApp->processEvents() ;
+    }
 }
 
 void OpenVpn::setTray (QSystemTrayIcon *appIcon){
@@ -31,10 +72,11 @@ void OpenVpn::connectToVpn(){
     this->onDisconnect = false;
     // Connect
     if (!this->isConnectionStable()) {
+        this->openVpnLogData.clear();
+        this->runScript("BC");
         // Icon auf connecting setzen
         this->setConnected();
         this->setIcon(Connecting);
-        this->openVpnLogData.clear();
         // connect to VPN
         QString cFile;
         QStringList arguments;
@@ -167,6 +209,7 @@ void OpenVpn::showProcessError(QProcess::ProcessError error) {
     }
     if (!this->onDisconnect) {
         // Log schreiben
+        this->runScript("EC");
         this->openVpnLogData.append(errMessage);
         // Daten ausgeben
         QMessageBox::critical(0, QString("OpenVPN Client"),
@@ -183,12 +226,18 @@ void OpenVpn::processFinished (int stat, QProcess::ExitStatus status) {
 }
 
 void OpenVpn::disconnectVpn() {
+    this->runScript("BD");
     this->onDisconnect = true;
     this->proc->kill();
     this->connectionStable = false;
     this->setIcon(Inaktiv);
     this->setDisconnected();
     this->showTrayMessage(QString("Disconnected from VPN.\nName: ") + this->configName);
+    this->runScript("AD");
+}
+
+void OpenVpn::startAfterConnectDelayed() {
+    this->runScript("AC");
 }
 
 void OpenVpn::readProcessData() {
@@ -253,6 +302,12 @@ void OpenVpn::readProcessData() {
             // Status speichern und Tray Icon setzen
             this->connectionStable = true;
             this->setIcon(Connected);
+            QString timeOut = this->getScript("TO");
+            int scriptDelay = 0;
+            if (timeOut != "") {
+                scriptDelay = timeOut.trimmed().toInt();
+            }
+            QTimer::singleShot(scriptDelay, this, SLOT(startAfterConnectDelayed()));
         }
         // Fehler abfangen
         bool errorOcurred = false;
@@ -284,6 +339,9 @@ void OpenVpn::readProcessData() {
             errorOcurred = true;
         } else if (lineOut.contains("Cannot load certificate file", Qt::CaseInsensitive)) {
             errorMessage = QString ("Cannot load certificate file");
+            errorOcurred = true;
+        } else if (lineOut.contains("Exiting", Qt::CaseInsensitive)) {
+            errorMessage = QString ("Application Exiting!");
             errorOcurred = true;
         }
 

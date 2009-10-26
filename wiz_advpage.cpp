@@ -7,7 +7,7 @@ AdvPage::AdvPage(QWidget *parent) :
 {
     m_ui->setupUi(this);
     m_ui->cmbRouteMethod->insertItem(0, "Not defined");
-    m_ui->cmbRouteMethod->insertItem(1, "Exe");
+    m_ui->cmbRouteMethod->insertItem(1, "EXE");
     m_ui->cmbRouteMethod->insertItem(2, "IPAPI");
     // register Fields
     registerField("txtMssFix", m_ui->cbMsfix);

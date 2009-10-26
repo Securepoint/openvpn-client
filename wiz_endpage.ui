@@ -53,6 +53,9 @@
       <height>16</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(0, 0, 255);</string>
+    </property>
     <property name="text">
      <string>TextLabel</string>
     </property>
@@ -79,6 +82,9 @@
       <height>14</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(0, 0, 255);</string>
+    </property>
     <property name="text">
      <string>TextLabel</string>
     </property>
@@ -104,6 +110,9 @@
       <width>46</width>
       <height>14</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(0, 0, 255);</string>
     </property>
     <property name="text">
      <string>TextLabel</string>
@@ -137,6 +146,9 @@
     <property name="contextMenuPolicy">
      <enum>Qt::NoContextMenu</enum>
     </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(0, 0, 255);</string>
+    </property>
     <property name="readOnly">
      <bool>true</bool>
     </property>
@@ -168,6 +180,9 @@
     </property>
     <property name="contextMenuPolicy">
      <enum>Qt::NoContextMenu</enum>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(0, 0, 255);</string>
     </property>
     <property name="readOnly">
      <bool>true</bool>
@@ -201,6 +216,9 @@
     <property name="contextMenuPolicy">
      <enum>Qt::NoContextMenu</enum>
     </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(0, 0, 255);</string>
+    </property>
     <property name="readOnly">
      <bool>true</bool>
     </property>
@@ -226,6 +244,9 @@
       <width>101</width>
       <height>16</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(0, 0, 255);</string>
     </property>
     <property name="text">
      <string>Text</string>
@@ -259,11 +280,14 @@
     <widget class="QLabel" name="lblMssfix">
      <property name="geometry">
       <rect>
-       <x>58</x>
-       <y>18</y>
+       <x>80</x>
+       <y>20</y>
        <width>31</width>
        <height>16</height>
       </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: rgb(0, 0, 255);</string>
      </property>
      <property name="text">
       <string>TextLabel</string>
@@ -290,6 +314,9 @@
        <width>101</width>
        <height>16</height>
       </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: rgb(0, 0, 255);</string>
      </property>
      <property name="text">
       <string>TextLabel</string>
@@ -343,6 +370,9 @@
        <height>20</height>
       </rect>
      </property>
+     <property name="styleSheet">
+      <string notr="true">color: rgb(0, 0, 255);</string>
+     </property>
      <property name="text">
       <string>TextLabel</string>
      </property>
@@ -356,6 +386,9 @@
        <height>14</height>
       </rect>
      </property>
+     <property name="styleSheet">
+      <string notr="true">color: rgb(0, 0, 255);</string>
+     </property>
      <property name="text">
       <string>TextLabel</string>
      </property>
@@ -366,8 +399,11 @@
        <x>80</x>
        <y>41</y>
        <width>46</width>
-       <height>14</height>
+       <height>16</height>
       </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: rgb(0, 0, 255);</string>
      </property>
      <property name="text">
       <string>TextLabel</string>
@@ -434,6 +470,9 @@
        <height>16</height>
       </rect>
      </property>
+     <property name="styleSheet">
+      <string notr="true">color: rgb(0, 0, 255);</string>
+     </property>
      <property name="text">
       <string>TextLabel</string>
      </property>
@@ -446,6 +485,9 @@
        <width>31</width>
        <height>16</height>
       </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: rgb(0, 0, 255);</string>
      </property>
      <property name="text">
       <string>TextLabel</string>
@@ -460,6 +502,9 @@
        <height>16</height>
       </rect>
      </property>
+     <property name="styleSheet">
+      <string notr="true">color: rgb(0, 0, 255);</string>
+     </property>
      <property name="text">
       <string>TextLabel</string>
      </property>
@@ -473,6 +518,9 @@
        <height>16</height>
       </rect>
      </property>
+     <property name="styleSheet">
+      <string notr="true">color: rgb(0, 0, 255);</string>
+     </property>
      <property name="text">
       <string>TextLabel</string>
      </property>
@@ -481,14 +529,14 @@
    <widget class="QLabel" name="lblInfo">
     <property name="geometry">
      <rect>
-      <x>12</x>
+      <x>9</x>
       <y>265</y>
-      <width>361</width>
+      <width>370</width>
       <height>20</height>
      </rect>
     </property>
     <property name="text">
-     <string>MTU [1500], persit key and persist tun will be added automatically.</string>
+     <string>MTU [1500], dev tun, persist key and persist tun will be added automatically.</string>
     </property>
    </widget>
   </widget>
