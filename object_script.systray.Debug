@@ -16,6 +16,10 @@ INPUT(
 ./debug\wiz_certpage.o
 ./debug\wiz_advpage.o
 ./debug\stduserauth.o
+./debug\pkcs_auth.o
+./debug\appinfo.o
+./debug\configexport.o
+./debug\importconfig.o
 ./debug\moc_window.o
 ./debug\moc_StatusMessage.o
 ./debug\moc_openvpn.o
@@ -29,5 +33,9 @@ INPUT(
 ./debug\moc_wiz_certpage.o
 ./debug\moc_wiz_advpage.o
 ./debug\moc_stduserauth.o
+./debug\moc_pkcs_auth.o
+./debug\moc_appinfo.o
+./debug\moc_configexport.o
+./debug\moc_importconfig.o
 ./debug\qrc_systray.o
 );

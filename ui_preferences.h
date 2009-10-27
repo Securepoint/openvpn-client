@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading ui file 'preferences.ui'
 **
-** Created: Mon 26. Oct 14:34:00 2009
+** Created: Tue 27. Oct 16:12:46 2009
 **      by: Qt User Interface Compiler version 4.5.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!
@@ -17,7 +17,6 @@
 #include <QtGui/QCheckBox>
 #include <QtGui/QComboBox>
 #include <QtGui/QDialog>
-#include <QtGui/QFrame>
 #include <QtGui/QGroupBox>
 #include <QtGui/QHeaderView>
 #include <QtGui/QLabel>
@@ -33,7 +32,6 @@ QT_BEGIN_NAMESPACE
 class Ui_Preferences
 {
 public:
-    QFrame *frame;
     QGroupBox *groupBox;
     QGroupBox *groupBox_2;
     QPushButton *cmdAddConfig;
@@ -166,6 +164,15 @@ public:
     QPushButton *cmdClose;
     QPushButton *cmdSave;
     QLineEdit *txtPathFromConfig;
+    QLabel *label_41;
+    QLabel *lblTunnelName;
+    QLabel *lblTunnelPixmap;
+    QLabel *lblTunnelStatus;
+    QPushButton *cmdConnect;
+    QLabel *label_43;
+    QLabel *label_42;
+    QLabel *label_44;
+    QPushButton *cmdImport;
     QButtonGroup *buttonGroup;
 
     void setupUi(QDialog *Preferences)
@@ -177,11 +184,6 @@ public:
         icon.addFile(QString::fromUtf8(":/images/appicon.png"), QSize(), QIcon::Normal, QIcon::Off);
         Preferences->setWindowIcon(icon);
         Preferences->setStyleSheet(QString::fromUtf8(""));
-        frame = new QFrame(Preferences);
-        frame->setObjectName(QString::fromUtf8("frame"));
-        frame->setGeometry(QRect(0, 0, 691, 71));
-        frame->setFrameShape(QFrame::NoFrame);
-        frame->setFrameShadow(QFrame::Plain);
         groupBox = new QGroupBox(Preferences);
         groupBox->setObjectName(QString::fromUtf8("groupBox"));
         groupBox->setGeometry(QRect(10, 75, 671, 631));
@@ -196,7 +198,7 @@ public:
         cmdAddConfig->setGeometry(QRect(10, 500, 191, 28));
         cmdAddConfig->setLayoutDirection(Qt::LeftToRight);
         QIcon icon1;
-        icon1.addFile(QString::fromUtf8(":/images/inaktiv.svg"), QSize(), QIcon::Normal, QIcon::Off);
+        icon1.addFile(QString::fromUtf8(":/images/add.svg"), QSize(), QIcon::Normal, QIcon::Off);
         cmdAddConfig->setIcon(icon1);
         cmdAddConfig->setFlat(true);
         lsvConfigs = new QListWidget(groupBox_2);
@@ -671,19 +673,61 @@ public:
         memHelp->setFrameShadow(QFrame::Plain);
         cmdClose = new QPushButton(Preferences);
         cmdClose->setObjectName(QString::fromUtf8("cmdClose"));
-        cmdClose->setGeometry(QRect(610, 710, 71, 24));
+        cmdClose->setGeometry(QRect(590, 710, 91, 24));
         QIcon icon3;
-        icon3.addFile(QString::fromUtf8(":/images/connecting.svg"), QSize(), QIcon::Normal, QIcon::Off);
+        icon3.addFile(QString::fromUtf8(":/images/close.svg"), QSize(), QIcon::Normal, QIcon::Off);
         cmdClose->setIcon(icon3);
+        cmdClose->setFlat(true);
         cmdSave = new QPushButton(Preferences);
         cmdSave->setObjectName(QString::fromUtf8("cmdSave"));
-        cmdSave->setGeometry(QRect(520, 710, 75, 24));
+        cmdSave->setGeometry(QRect(480, 710, 91, 24));
         QIcon icon4;
-        icon4.addFile(QString::fromUtf8(":/images/connected.svg"), QSize(), QIcon::Normal, QIcon::Off);
+        icon4.addFile(QString::fromUtf8(":/images/save.svg"), QSize(), QIcon::Normal, QIcon::Off);
         cmdSave->setIcon(icon4);
+        cmdSave->setAutoDefault(true);
+        cmdSave->setFlat(true);
         txtPathFromConfig = new QLineEdit(Preferences);
         txtPathFromConfig->setObjectName(QString::fromUtf8("txtPathFromConfig"));
         txtPathFromConfig->setGeometry(QRect(10, 650, 0, 0));
+        label_41 = new QLabel(Preferences);
+        label_41->setObjectName(QString::fromUtf8("label_41"));
+        label_41->setGeometry(QRect(13, 714, 41, 16));
+        lblTunnelName = new QLabel(Preferences);
+        lblTunnelName->setObjectName(QString::fromUtf8("lblTunnelName"));
+        lblTunnelName->setGeometry(QRect(57, 717, 111, 10));
+        lblTunnelPixmap = new QLabel(Preferences);
+        lblTunnelPixmap->setObjectName(QString::fromUtf8("lblTunnelPixmap"));
+        lblTunnelPixmap->setGeometry(QRect(180, 713, 16, 16));
+        lblTunnelPixmap->setPixmap(QPixmap(QString::fromUtf8(":/images/light_grey.svg")));
+        lblTunnelPixmap->setScaledContents(true);
+        lblTunnelStatus = new QLabel(Preferences);
+        lblTunnelStatus->setObjectName(QString::fromUtf8("lblTunnelStatus"));
+        lblTunnelStatus->setGeometry(QRect(202, 714, 91, 16));
+        cmdConnect = new QPushButton(Preferences);
+        cmdConnect->setObjectName(QString::fromUtf8("cmdConnect"));
+        cmdConnect->setGeometry(QRect(290, 710, 101, 24));
+        QIcon icon5;
+        icon5.addFile(QString::fromUtf8(":/images/connecting.svg"), QSize(), QIcon::Normal, QIcon::Off);
+        cmdConnect->setIcon(icon5);
+        cmdConnect->setFlat(true);
+        label_43 = new QLabel(Preferences);
+        label_43->setObjectName(QString::fromUtf8("label_43"));
+        label_43->setGeometry(QRect(0, 0, 691, 71));
+        label_42 = new QLabel(Preferences);
+        label_42->setObjectName(QString::fromUtf8("label_42"));
+        label_42->setGeometry(QRect(310, 0, 381, 71));
+        label_42->setPixmap(QPixmap(QString::fromUtf8(":/images/banner.png")));
+        label_42->setScaledContents(true);
+        label_44 = new QLabel(Preferences);
+        label_44->setObjectName(QString::fromUtf8("label_44"));
+        label_44->setGeometry(QRect(0, -10, 311, 81));
+        label_44->setPixmap(QPixmap(QString::fromUtf8(":/images/securepoint_h.png")));
+        cmdImport = new QPushButton(Preferences);
+        cmdImport->setObjectName(QString::fromUtf8("cmdImport"));
+        cmdImport->setGeometry(QRect(410, 710, 41, 24));
+        QIcon icon6;
+        icon6.addFile(QString::fromUtf8(":/images/import.svg"), QSize(), QIcon::Normal, QIcon::Off);
+        cmdImport->setIcon(icon6);
 
         retranslateUi(Preferences);
 
@@ -696,7 +740,6 @@ public:
     void retranslateUi(QDialog *Preferences)
     {
         Preferences->setWindowTitle(QApplication::translate("Preferences", "OpenVPN Manage Connections", 0, QApplication::UnicodeUTF8));
-        frame->setStyleSheet(QApplication::translate("Preferences", "background-image: url(:/images/securepoint.png);", 0, QApplication::UnicodeUTF8));
         groupBox->setTitle(QString());
         groupBox_2->setTitle(QApplication::translate("Preferences", "Available configs:", 0, QApplication::UnicodeUTF8));
         cmdAddConfig->setText(QApplication::translate("Preferences", "Add config", 0, QApplication::UnicodeUTF8));
@@ -800,6 +843,16 @@ public:
         tbSettings->setItemText(tbSettings->indexOf(page_4), QApplication::translate("Preferences", "Advanced", 0, QApplication::UnicodeUTF8));
         cmdClose->setText(QApplication::translate("Preferences", "&Close", 0, QApplication::UnicodeUTF8));
         cmdSave->setText(QApplication::translate("Preferences", "&Save", 0, QApplication::UnicodeUTF8));
+        label_41->setText(QApplication::translate("Preferences", "Tunnel:", 0, QApplication::UnicodeUTF8));
+        lblTunnelName->setText(QApplication::translate("Preferences", "TextLabel", 0, QApplication::UnicodeUTF8));
+        lblTunnelPixmap->setText(QString());
+        lblTunnelStatus->setText(QApplication::translate("Preferences", "TextLabel", 0, QApplication::UnicodeUTF8));
+        cmdConnect->setText(QApplication::translate("Preferences", "Discon&nect", 0, QApplication::UnicodeUTF8));
+        label_43->setStyleSheet(QApplication::translate("Preferences", "background-color: rgb(255, 255, 255);", 0, QApplication::UnicodeUTF8));
+        label_43->setText(QString());
+        label_42->setText(QString());
+        label_44->setText(QString());
+        cmdImport->setText(QString());
         Q_UNUSED(Preferences);
     } // retranslateUi
 

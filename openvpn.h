@@ -12,6 +12,7 @@
 class StdUserAuth;
 #include "stduserauth.h"
 
+#include "pkcs_auth.h"
 
 
 class OpenVpn : public QObject
@@ -76,6 +77,7 @@ private:
     StatusMessage mCon;
     VpnLog mLog;
     StdUserAuth *userauth;
+    pkcs_auth pkcsAuth;
 
 signals:
     void configSignalIsChanged ();

@@ -29,9 +29,9 @@ Preferences::Preferences(QWidget *parent) :
     // Set window title
     AppFunc app;
     if (app.isAppPortable())
-        setWindowTitle("Securepoint OpenVPN Client Portable");
+        setWindowTitle("OpenVPN Manage Connections [Portable]");
     else
-        setWindowTitle("Securepoint OpenVPN Client");
+        setWindowTitle("OpenVPN Manage Connections");
 }
 
 Preferences::~Preferences()
@@ -168,17 +168,39 @@ void Preferences::resetFields() {
 
     m_ui->txtScriptACDelay->setText("5000");
 
+    // Connect status
+    m_ui->lblTunnelStatus->setText("Disconnected");
+    QPixmap pixmap (":/images/light_grey.svg");
+    m_ui->lblTunnelPixmap->setPixmap(pixmap);
+
+    m_ui->txtPathFromConfig->setText("");
+
 }
 
 void Preferences::openConfigFromListView (QListWidgetItem * item ){
     //m_ui->tbSettings->setCurrentIndex(0);
     enableFields(false);
+
     OpenVpnQListItem *t_Item = dynamic_cast<OpenVpnQListItem*>(item);
 
     // Load Config Data
     QString fileContent = QString("");
     QString cFile;
     this->actObject = t_Item->itemObject;
+    m_ui->cmdConnect->setEnabled(true);
+    m_ui->lblTunnelName->setText(this->actObject->configName);
+    if (this->actObject->isConnectionStable()) {
+        m_ui->lblTunnelStatus->setText("Connected");
+        QPixmap pixmap (":/images/light_green.svg");
+        m_ui->lblTunnelPixmap->setPixmap(pixmap);
+        m_ui->cmdConnect->setText("&Disconnect");
+        m_ui->cmdConnect->setEnabled(true);
+    } else {
+        m_ui->lblTunnelStatus->setText("Disconnected");
+        QPixmap pixmap (":/images/light_grey.svg");
+        m_ui->lblTunnelPixmap->setPixmap(pixmap);
+        m_ui->cmdConnect->setEnabled(false);
+    }
     cFile = t_Item->itemObject->configPath + QString("/") + t_Item->itemObject->configName + QString(".ovpn");
     m_ui->txtPathFromConfig->setText(cFile);
     QFile cf (cFile);
@@ -664,12 +686,26 @@ int Preferences::getIndexFromCipher(QString cipher) {
 }
 
 void Preferences::openContextMenuListView(const QPoint &pos) {
-    if (this->actObject->configName != "") {
+    if (m_ui->txtPathFromConfig->text() != "") {
         QMenu *configPopUp = new QMenu (this);
         configPopUp->addAction(QPixmap(":/images/edit.svg"), "&Edit", this, SLOT(editConfig()));
-        //configPopUp->addSeparator();
-        //configPopUp->addAction(QPixmap(":/images/delete.svg"), "&Delete", this, SLOT(deleteConfig()));
+        configPopUp->addSeparator();
+        configPopUp->addAction(QPixmap(":/images/connected.svg"), "Con&nect", this, SLOT(connectConfig()));
+        configPopUp->addSeparator();
+        configPopUp->addAction(QPixmap(":/images/export.svg"), "&Export", this, SLOT(exportConfig()));
         configPopUp->exec(m_ui->lsvConfigs->mapToGlobal(pos));
+    }
+}
+
+void Preferences::exportConfig() {
+    exportDialog.configPath = m_ui->txtPathFromConfig->text();
+    exportDialog.show();
+}
+
+void Preferences::connectConfig() {
+    if (!this->actObject->isConnectionStable()) {
+        this->actObject->openConnect();
+        this->close();
     }
 }
 
@@ -760,6 +796,7 @@ void Preferences::openDialog(QList<OpenVpn*> configList) {
         m_ui->lsvConfigs->insertItem(1, newItem);
     }
     m_ui->memHelp->setText("Please click the info symbol of the item you want to see the help.\nFor further informations please visit: http://www.openvpn.net");
+    m_ui->cmdConnect->setEnabled(false);
     this->show();
 }
 
@@ -1112,4 +1149,18 @@ void Preferences::on_cmdErrorConnect_clicked()
 void Preferences::on_cmdInfoScriptsDelyAC_clicked()
 {
     m_ui->memHelp->setText("Specifiy the delay to executing the after connection script after the OpenVPN connection established.\nThis is useful to prevent network errors.\nDefault is 5000ms");
+}
+
+void Preferences::on_cmdConnect_clicked()
+{
+    if (this->actObject->isConnectionStable()) {
+        this->actObject->disconnectVpn();
+        this->close();
+    }
+ }
+
+void Preferences::on_cmdImport_clicked()
+{
+    importDialog.resetFields();
+    importDialog.show();
 }

@@ -39,10 +39,17 @@ void Window::closeEvent(QCloseEvent *event)
     }
 }
 
+void Window::openInfo() {
+    infoDialog.show();
+}
+
 void Window::createActions()
 {
     preferencesAction = new QAction(tr("&Manage Connections"), this);
     connect(preferencesAction, SIGNAL(triggered()), this, SLOT(manageConnections()));
+
+    infoAction = new QAction(tr("&Info"), this);
+    connect(infoAction, SIGNAL(triggered()), this, SLOT(openInfo()));
 
     quitAction = new QAction(tr("&Quit"), this);
     connect(quitAction, SIGNAL(triggered()), qApp, SLOT(quit()));
@@ -126,6 +133,7 @@ void Window::createTrayIcon()
 
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(preferencesAction);
+    trayIconMenu->addAction(infoAction);
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(quitAction);
     trayIcon = new QSystemTrayIcon(this);

@@ -14,31 +14,12 @@
    <string>OpenVPN Manage Connections</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="systray.qrc">
+   <iconset>
     <normaloff>:/images/appicon.png</normaloff>:/images/appicon.png</iconset>
   </property>
   <property name="styleSheet">
    <string notr="true"/>
   </property>
-  <widget class="QFrame" name="frame">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>691</width>
-     <height>71</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string>background-image: url(:/images/securepoint.png);</string>
-   </property>
-   <property name="frameShape">
-    <enum>QFrame::NoFrame</enum>
-   </property>
-   <property name="frameShadow">
-    <enum>QFrame::Plain</enum>
-   </property>
-  </widget>
   <widget class="QGroupBox" name="groupBox">
    <property name="geometry">
     <rect>
@@ -79,8 +60,8 @@
       <string extracomment="vbnvbn">Add config</string>
      </property>
      <property name="icon">
-      <iconset resource="systray.qrc">
-       <normaloff>:/images/inaktiv.svg</normaloff>:/images/inaktiv.svg</iconset>
+      <iconset>
+       <normaloff>:/images/add.svg</normaloff>:/images/add.svg</iconset>
      </property>
      <property name="flat">
       <bool>true</bool>
@@ -390,7 +371,7 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="systray.qrc">
+        <iconset>
          <normaloff>:/images/info.svg</normaloff>:/images/info.svg</iconset>
        </property>
        <property name="flat">
@@ -410,7 +391,7 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="systray.qrc">
+        <iconset>
          <normaloff>:/images/info.svg</normaloff>:/images/info.svg</iconset>
        </property>
        <property name="flat">
@@ -495,7 +476,7 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="systray.qrc">
+        <iconset>
          <normaloff>:/images/info.svg</normaloff>:/images/info.svg</iconset>
        </property>
        <property name="flat">
@@ -606,7 +587,7 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="systray.qrc">
+        <iconset>
          <normaloff>:/images/info.svg</normaloff>:/images/info.svg</iconset>
        </property>
        <property name="flat">
@@ -626,7 +607,7 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="systray.qrc">
+        <iconset>
          <normaloff>:/images/info.svg</normaloff>:/images/info.svg</iconset>
        </property>
        <property name="flat">
@@ -823,7 +804,7 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="systray.qrc">
+        <iconset>
          <normaloff>:/images/info.svg</normaloff>:/images/info.svg</iconset>
        </property>
        <property name="flat">
@@ -921,7 +902,7 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="systray.qrc">
+        <iconset>
          <normaloff>:/images/info.svg</normaloff>:/images/info.svg</iconset>
        </property>
        <property name="flat">
@@ -1061,7 +1042,7 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="systray.qrc">
+        <iconset>
          <normaloff>:/images/info.svg</normaloff>:/images/info.svg</iconset>
        </property>
        <property name="flat">
@@ -1081,7 +1062,7 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="systray.qrc">
+        <iconset>
          <normaloff>:/images/info.svg</normaloff>:/images/info.svg</iconset>
        </property>
        <property name="flat">
@@ -1205,7 +1186,7 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="systray.qrc">
+        <iconset>
          <normaloff>:/images/info.svg</normaloff>:/images/info.svg</iconset>
        </property>
        <property name="flat">
@@ -1225,7 +1206,7 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="systray.qrc">
+        <iconset>
          <normaloff>:/images/info.svg</normaloff>:/images/info.svg</iconset>
        </property>
        <property name="flat">
@@ -1336,7 +1317,7 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="systray.qrc">
+        <iconset>
          <normaloff>:/images/info.svg</normaloff>:/images/info.svg</iconset>
        </property>
        <property name="flat">
@@ -1356,7 +1337,7 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="systray.qrc">
+        <iconset>
          <normaloff>:/images/info.svg</normaloff>:/images/info.svg</iconset>
        </property>
        <property name="flat">
@@ -1389,7 +1370,7 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="systray.qrc">
+        <iconset>
          <normaloff>:/images/info.svg</normaloff>:/images/info.svg</iconset>
        </property>
        <property name="flat">
@@ -1484,7 +1465,7 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="systray.qrc">
+        <iconset>
          <normaloff>:/images/info.svg</normaloff>:/images/info.svg</iconset>
        </property>
        <property name="flat">
@@ -1692,7 +1673,7 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="systray.qrc">
+        <iconset>
          <normaloff>:/images/info.svg</normaloff>:/images/info.svg</iconset>
        </property>
        <property name="flat">
@@ -1891,7 +1872,7 @@
        <string/>
       </property>
       <property name="icon">
-       <iconset resource="systray.qrc">
+       <iconset>
         <normaloff>:/images/info.svg</normaloff>:/images/info.svg</iconset>
       </property>
       <property name="flat">
@@ -1926,9 +1907,9 @@
   <widget class="QPushButton" name="cmdClose">
    <property name="geometry">
     <rect>
-     <x>610</x>
+     <x>590</x>
      <y>710</y>
-     <width>71</width>
+     <width>91</width>
      <height>24</height>
     </rect>
    </property>
@@ -1936,16 +1917,19 @@
     <string>&amp;Close</string>
    </property>
    <property name="icon">
-    <iconset resource="systray.qrc">
-     <normaloff>:/images/connecting.svg</normaloff>:/images/connecting.svg</iconset>
+    <iconset>
+     <normaloff>:/images/close.svg</normaloff>:/images/close.svg</iconset>
+   </property>
+   <property name="flat">
+    <bool>true</bool>
    </property>
   </widget>
   <widget class="QPushButton" name="cmdSave">
    <property name="geometry">
     <rect>
-     <x>520</x>
+     <x>480</x>
      <y>710</y>
-     <width>75</width>
+     <width>91</width>
      <height>24</height>
     </rect>
    </property>
@@ -1953,8 +1937,14 @@
     <string>&amp;Save</string>
    </property>
    <property name="icon">
-    <iconset resource="systray.qrc">
-     <normaloff>:/images/connected.svg</normaloff>:/images/connected.svg</iconset>
+    <iconset>
+     <normaloff>:/images/save.svg</normaloff>:/images/save.svg</iconset>
+   </property>
+   <property name="autoDefault">
+    <bool>true</bool>
+   </property>
+   <property name="flat">
+    <bool>true</bool>
    </property>
   </widget>
   <widget class="QLineEdit" name="txtPathFromConfig">
@@ -1967,10 +1957,154 @@
     </rect>
    </property>
   </widget>
+  <widget class="QLabel" name="label_41">
+   <property name="geometry">
+    <rect>
+     <x>13</x>
+     <y>714</y>
+     <width>41</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Tunnel:</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="lblTunnelName">
+   <property name="geometry">
+    <rect>
+     <x>57</x>
+     <y>717</y>
+     <width>111</width>
+     <height>10</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>TextLabel</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="lblTunnelPixmap">
+   <property name="geometry">
+    <rect>
+     <x>180</x>
+     <y>713</y>
+     <width>16</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="pixmap">
+    <pixmap>:/images/light_grey.svg</pixmap>
+   </property>
+   <property name="scaledContents">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="lblTunnelStatus">
+   <property name="geometry">
+    <rect>
+     <x>202</x>
+     <y>714</y>
+     <width>91</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>TextLabel</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="cmdConnect">
+   <property name="geometry">
+    <rect>
+     <x>290</x>
+     <y>710</y>
+     <width>101</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Discon&amp;nect</string>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>:/images/connecting.svg</normaloff>:/images/connecting.svg</iconset>
+   </property>
+   <property name="flat">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_43">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>691</width>
+     <height>71</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string>background-color: rgb(255, 255, 255);</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_42">
+   <property name="geometry">
+    <rect>
+     <x>310</x>
+     <y>0</y>
+     <width>381</width>
+     <height>71</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="pixmap">
+    <pixmap>:/images/banner.png</pixmap>
+   </property>
+   <property name="scaledContents">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_44">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>-10</y>
+     <width>311</width>
+     <height>81</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="pixmap">
+    <pixmap>:/images/securepoint_h.png</pixmap>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="cmdImport">
+   <property name="geometry">
+    <rect>
+     <x>410</x>
+     <y>710</y>
+     <width>41</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>:/images/import.svg</normaloff>:/images/import.svg</iconset>
+   </property>
+  </widget>
  </widget>
- <resources>
-  <include location="systray.qrc"/>
- </resources>
+ <resources/>
  <connections/>
  <buttongroups>
   <buttongroup name="buttonGroup"/>

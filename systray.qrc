@@ -14,5 +14,12 @@
         <file>images/securepoint_wiz.png</file>
         <file>images/appicon.png</file>
         <file>images/status_connect.gif</file>
+        <file>images/light_grey.svg</file>
+        <file>images/light_green.svg</file>
+        <file>images/save.svg</file>
+        <file>images/close.svg</file>
+        <file>images/add.svg</file>
+        <file>images/export.svg</file>
+        <file>images/import.svg</file>
     </qresource>
 </RCC>

@@ -251,7 +251,10 @@ void OpenVpn::readProcessData() {
         //Enter Private Key Password:
         if (line == "Enter Private Key Password:") {
             if (this->proc->isWritable()) {
-                this->showTrayMessage(QString("PEM PASSWORD NEEDED.\nName: ") + this->configName);
+                showLine = false;
+                pkcsAuth.parentProc = this->proc;
+                pkcsAuth.clearFields();
+                pkcsAuth.show ();
             }
 
         }

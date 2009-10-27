@@ -35,6 +35,9 @@
    <property name="text">
     <string>C&amp;onnect</string>
    </property>
+   <property name="flat">
+    <bool>true</bool>
+   </property>
   </widget>
   <widget class="QPushButton" name="cmdClose">
    <property name="geometry">
@@ -47,6 +50,9 @@
    </property>
    <property name="text">
     <string>&amp;Cancel</string>
+   </property>
+   <property name="flat">
+    <bool>true</bool>
    </property>
   </widget>
   <widget class="QGroupBox" name="groupBox">
@@ -117,7 +123,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Remember Username</string>
+     <string>Remember username</string>
     </property>
    </widget>
   </widget>

@@ -13,7 +13,11 @@ HEADERS = window.h \
     wiz_vpnwizard.h \
     wiz_certpage.h \
     wiz_advpage.h \
-    stduserauth.h
+    stduserauth.h \
+    pkcs_auth.h \
+    appinfo.h \
+    configexport.h \
+    importconfig.h
 SOURCES = main.cpp \
     window.cpp \
     Configs.cpp \
@@ -30,7 +34,11 @@ SOURCES = main.cpp \
     wiz_vpnwizard.cpp \
     wiz_certpage.cpp \
     wiz_advpage.cpp \
-    stduserauth.cpp
+    stduserauth.cpp \
+    pkcs_auth.cpp \
+    appinfo.cpp \
+    configexport.cpp \
+    importconfig.cpp
 RESOURCES = systray.qrc
 QT += xml \
     svg
@@ -60,4 +68,8 @@ FORMS += preferences.ui \
     wiz_endpage.ui \
     wiz_certpage.ui \
     wiz_advpage.ui \
-    stduserauth.ui
+    stduserauth.ui \
+    pkcs_auth.ui \
+    appinfo.ui \
+    configexport.ui \
+    importconfig.ui

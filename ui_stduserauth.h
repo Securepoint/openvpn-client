@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading ui file 'stduserauth.ui'
 **
-** Created: Mon 26. Oct 15:36:35 2009
+** Created: Tue 27. Oct 11:52:30 2009
 **      by: Qt User Interface Compiler version 4.5.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!
@@ -49,9 +49,11 @@ public:
         cmdOK = new QPushButton(StdUserAuth);
         cmdOK->setObjectName(QString::fromUtf8("cmdOK"));
         cmdOK->setGeometry(QRect(60, 120, 75, 24));
+        cmdOK->setFlat(true);
         cmdClose = new QPushButton(StdUserAuth);
         cmdClose->setObjectName(QString::fromUtf8("cmdClose"));
         cmdClose->setGeometry(QRect(138, 120, 75, 24));
+        cmdClose->setFlat(true);
         groupBox = new QGroupBox(StdUserAuth);
         groupBox->setObjectName(QString::fromUtf8("groupBox"));
         groupBox->setGeometry(QRect(10, 10, 201, 101));
@@ -84,7 +86,7 @@ public:
         groupBox->setTitle(QApplication::translate("StdUserAuth", "User data:", 0, QApplication::UnicodeUTF8));
         label->setText(QApplication::translate("StdUserAuth", "Username:", 0, QApplication::UnicodeUTF8));
         label_2->setText(QApplication::translate("StdUserAuth", "Password:", 0, QApplication::UnicodeUTF8));
-        cbSavePassword->setText(QApplication::translate("StdUserAuth", "Remember Username", 0, QApplication::UnicodeUTF8));
+        cbSavePassword->setText(QApplication::translate("StdUserAuth", "Remember username", 0, QApplication::UnicodeUTF8));
         Q_UNUSED(StdUserAuth);
     } // retranslateUi
 

@@ -16,6 +16,10 @@ INPUT(
 ./release\wiz_certpage.o
 ./release\wiz_advpage.o
 ./release\stduserauth.o
+./release\pkcs_auth.o
+./release\appinfo.o
+./release\configexport.o
+./release\importconfig.o
 ./release\moc_window.o
 ./release\moc_StatusMessage.o
 ./release\moc_openvpn.o
@@ -29,5 +33,9 @@ INPUT(
 ./release\moc_wiz_certpage.o
 ./release\moc_wiz_advpage.o
 ./release\moc_stduserauth.o
+./release\moc_pkcs_auth.o
+./release\moc_appinfo.o
+./release\moc_configexport.o
+./release\moc_importconfig.o
 ./release\qrc_systray.o
 );

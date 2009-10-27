@@ -7,6 +7,7 @@
 #include "openvpn.h"
 #include "preferences.h"
 #include "appfunc.h"
+#include "appinfo.h"
 
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -36,6 +37,7 @@ protected:
 
 private slots:
     void manageConnections ();
+    void openInfo ();
 
 private:
     // Methoden um feste Events erzeugen
@@ -46,8 +48,10 @@ private:
     // Actions für Menu
     QAction *connectVpnAction;
     QAction *preferencesAction;
+    QAction *infoAction;
     QAction *quitAction;
     Preferences mydia;
+    appInfo infoDialog;
 
     QAction *mySubAction;
 
@@ -61,6 +65,7 @@ private:
     // Menuliste
     QList<QAction*> menuList;
     QList<QAction*> menuChildList;
+
 };
 //! [0]
 

@@ -4,6 +4,8 @@
 #include "openvpnqlistitem.h"
 #include "wiz_vpnwizard.h"
 #include "appfunc.h"
+#include "configexport.h"
+#include "importconfig.h"
 
 #include <QtGui/QDialog>
 #include <QFileDialog>
@@ -31,8 +33,12 @@ private:
     void resetFields ();
     OpenVpn *actObject;
     VpnWizard vpnwiz;
+    ConfigExport exportDialog;
+    ImportConfig importDialog;
 
 private slots:
+    void on_cmdImport_clicked();
+    void on_cmdConnect_clicked();
     void on_cmdInfoScriptsDelyAC_clicked();
     void on_cmdErrorConnect_clicked();
     void on_cmdAfterDisconnect_clicked();
@@ -65,6 +71,8 @@ private slots:
     void openContextMenuListView (const QPoint &pos);
     void deleteConfig ();
     void editConfig ();
+    void connectConfig ();
+    void exportConfig ();
     void openConfigFromListView (QListWidgetItem * item );
 };
 
