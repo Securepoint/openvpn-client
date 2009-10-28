@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading ui file 'appinfo.ui'
 **
-** Created: Tue 27. Oct 11:52:30 2009
+** Created: Wed 28. Oct 16:06:09 2009
 **      by: Qt User Interface Compiler version 4.5.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!
@@ -36,6 +36,7 @@ public:
     QLabel *label_10;
     QLabel *label_11;
     QPushButton *cmdClose;
+    QLabel *label_12;
 
     void setupUi(QDialog *appInfo)
     {
@@ -47,10 +48,10 @@ public:
         appInfo->setWindowIcon(icon);
         label = new QLabel(appInfo);
         label->setObjectName(QString::fromUtf8("label"));
-        label->setGeometry(QRect(0, 0, 401, 81));
+        label->setGeometry(QRect(0, 0, 401, 301));
         label_2 = new QLabel(appInfo);
         label_2->setObjectName(QString::fromUtf8("label_2"));
-        label_2->setGeometry(QRect(50, 0, 311, 81));
+        label_2->setGeometry(QRect(50, 6, 311, 81));
         label_2->setPixmap(QPixmap(QString::fromUtf8(":/images/securepoint_h.png")));
         label_2->setScaledContents(false);
         label_3 = new QLabel(appInfo);
@@ -69,38 +70,43 @@ public:
         label_4->setGeometry(QRect(-10, 112, 411, 16));
         label_5 = new QLabel(appInfo);
         label_5->setObjectName(QString::fromUtf8("label_5"));
-        label_5->setGeometry(QRect(0, 150, 401, 20));
+        label_5->setGeometry(QRect(250, 150, 151, 20));
         label_5->setAlignment(Qt::AlignCenter);
         label_6 = new QLabel(appInfo);
         label_6->setObjectName(QString::fromUtf8("label_6"));
-        label_6->setGeometry(QRect(4, 175, 391, 20));
+        label_6->setGeometry(QRect(286, 172, 111, 20));
         label_6->setAlignment(Qt::AlignCenter);
         label_7 = new QLabel(appInfo);
         label_7->setObjectName(QString::fromUtf8("label_7"));
-        label_7->setGeometry(QRect(60, 151, 271, 20));
+        label_7->setGeometry(QRect(230, 152, 171, 20));
         label_8 = new QLabel(appInfo);
         label_8->setObjectName(QString::fromUtf8("label_8"));
-        label_8->setGeometry(QRect(5, 193, 391, 20));
+        label_8->setGeometry(QRect(315, 193, 81, 20));
         label_8->setAlignment(Qt::AlignCenter);
         label_9 = new QLabel(appInfo);
         label_9->setObjectName(QString::fromUtf8("label_9"));
-        label_9->setGeometry(QRect(-4, 211, 401, 20));
+        label_9->setGeometry(QRect(298, 213, 101, 20));
         label_9->setAlignment(Qt::AlignCenter);
         label_10 = new QLabel(appInfo);
         label_10->setObjectName(QString::fromUtf8("label_10"));
-        label_10->setGeometry(QRect(0, 230, 401, 20));
+        label_10->setGeometry(QRect(333, 234, 61, 20));
         label_10->setAlignment(Qt::AlignCenter);
         label_11 = new QLabel(appInfo);
         label_11->setObjectName(QString::fromUtf8("label_11"));
-        label_11->setGeometry(QRect(5, 245, 391, 20));
+        label_11->setGeometry(QRect(50, 270, 121, 20));
         label_11->setAlignment(Qt::AlignCenter);
         cmdClose = new QPushButton(appInfo);
         cmdClose->setObjectName(QString::fromUtf8("cmdClose"));
-        cmdClose->setGeometry(QRect(161, 271, 71, 21));
+        cmdClose->setGeometry(QRect(240, 270, 151, 20));
         QIcon icon1;
         icon1.addFile(QString::fromUtf8(":/images/close.svg"), QSize(), QIcon::Normal, QIcon::Off);
         cmdClose->setIcon(icon1);
         cmdClose->setFlat(true);
+        label_12 = new QLabel(appInfo);
+        label_12->setObjectName(QString::fromUtf8("label_12"));
+        label_12->setGeometry(QRect(5, 143, 201, 131));
+        label_12->setPixmap(QPixmap(QString::fromUtf8(":/images/SecurepointUTM.png")));
+        label_12->setScaledContents(true);
 
         retranslateUi(appInfo);
 
@@ -123,6 +129,7 @@ public:
         label_10->setText(QApplication::translate("appInfo", "Germany", 0, QApplication::UnicodeUTF8));
         label_11->setText(QApplication::translate("appInfo", "www.securepoint.de", 0, QApplication::UnicodeUTF8));
         cmdClose->setText(QApplication::translate("appInfo", "&OK", 0, QApplication::UnicodeUTF8));
+        label_12->setText(QString());
         Q_UNUSED(appInfo);
     } // retranslateUi
 

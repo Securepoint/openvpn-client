@@ -10,12 +10,31 @@
     <height>355</height>
    </rect>
   </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>370</width>
+    <height>355</height>
+   </size>
+  </property>
   <property name="windowTitle">
    <string>Import config file</string>
   </property>
   <property name="windowIcon">
    <iconset resource="systray.qrc">
     <normaloff>:/images/appicon.png</normaloff>:/images/appicon.png</iconset>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">
+</string>
+  </property>
+  <property name="modal">
+   <bool>true</bool>
   </property>
   <widget class="QGroupBox" name="groupBox">
    <property name="geometry">
@@ -122,6 +141,9 @@ p, li { white-space: pre-wrap; }
       <width>151</width>
       <height>20</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
     </property>
    </widget>
   </widget>

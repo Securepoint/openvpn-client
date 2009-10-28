@@ -1,5 +1,4 @@
-HEADERS = window.h \
-    Configs.h \
+HEADERS = Configs.h \
     StatusMessage.h \
     openvpn.h \
     vpnLog.h \
@@ -17,9 +16,9 @@ HEADERS = window.h \
     pkcs_auth.h \
     appinfo.h \
     configexport.h \
-    importconfig.h
+    importconfig.h \
+    deleteconfig.h
 SOURCES = main.cpp \
-    window.cpp \
     Configs.cpp \
     StatusMessage.cpp \
     openvpn.cpp \
@@ -38,7 +37,8 @@ SOURCES = main.cpp \
     pkcs_auth.cpp \
     appinfo.cpp \
     configexport.cpp \
-    importconfig.cpp
+    importconfig.cpp \
+    deleteconfig.cpp
 RESOURCES = systray.qrc
 QT += xml \
     svg
@@ -72,4 +72,5 @@ FORMS += preferences.ui \
     pkcs_auth.ui \
     appinfo.ui \
     configexport.ui \
-    importconfig.ui
+    importconfig.ui \
+    deleteconfig.ui

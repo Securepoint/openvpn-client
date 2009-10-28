@@ -23,7 +23,7 @@
      <x>0</x>
      <y>0</y>
      <width>401</width>
-     <height>81</height>
+     <height>301</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -37,7 +37,7 @@
    <property name="geometry">
     <rect>
      <x>50</x>
-     <y>0</y>
+     <y>6</y>
      <width>311</width>
      <height>81</height>
     </rect>
@@ -95,9 +95,9 @@
   <widget class="QLabel" name="label_5">
    <property name="geometry">
     <rect>
-     <x>0</x>
+     <x>250</x>
      <y>150</y>
-     <width>401</width>
+     <width>151</width>
      <height>20</height>
     </rect>
    </property>
@@ -111,9 +111,9 @@
   <widget class="QLabel" name="label_6">
    <property name="geometry">
     <rect>
-     <x>4</x>
-     <y>175</y>
-     <width>391</width>
+     <x>286</x>
+     <y>172</y>
+     <width>111</width>
      <height>20</height>
     </rect>
    </property>
@@ -127,9 +127,9 @@
   <widget class="QLabel" name="label_7">
    <property name="geometry">
     <rect>
-     <x>60</x>
-     <y>151</y>
-     <width>271</width>
+     <x>230</x>
+     <y>152</y>
+     <width>171</width>
      <height>20</height>
     </rect>
    </property>
@@ -140,9 +140,9 @@
   <widget class="QLabel" name="label_8">
    <property name="geometry">
     <rect>
-     <x>5</x>
+     <x>315</x>
      <y>193</y>
-     <width>391</width>
+     <width>81</width>
      <height>20</height>
     </rect>
    </property>
@@ -156,9 +156,9 @@
   <widget class="QLabel" name="label_9">
    <property name="geometry">
     <rect>
-     <x>-4</x>
-     <y>211</y>
-     <width>401</width>
+     <x>298</x>
+     <y>213</y>
+     <width>101</width>
      <height>20</height>
     </rect>
    </property>
@@ -172,9 +172,9 @@
   <widget class="QLabel" name="label_10">
    <property name="geometry">
     <rect>
-     <x>0</x>
-     <y>230</y>
-     <width>401</width>
+     <x>333</x>
+     <y>234</y>
+     <width>61</width>
      <height>20</height>
     </rect>
    </property>
@@ -188,9 +188,9 @@
   <widget class="QLabel" name="label_11">
    <property name="geometry">
     <rect>
-     <x>5</x>
-     <y>245</y>
-     <width>391</width>
+     <x>50</x>
+     <y>270</y>
+     <width>121</width>
      <height>20</height>
     </rect>
    </property>
@@ -204,10 +204,10 @@
   <widget class="QPushButton" name="cmdClose">
    <property name="geometry">
     <rect>
-     <x>161</x>
-     <y>271</y>
-     <width>71</width>
-     <height>21</height>
+     <x>240</x>
+     <y>270</y>
+     <width>151</width>
+     <height>20</height>
     </rect>
    </property>
    <property name="text">
@@ -218,6 +218,25 @@
      <normaloff>:/images/close.svg</normaloff>:/images/close.svg</iconset>
    </property>
    <property name="flat">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_12">
+   <property name="geometry">
+    <rect>
+     <x>5</x>
+     <y>143</y>
+     <width>201</width>
+     <height>131</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="pixmap">
+    <pixmap resource="systray.qrc">:/images/SecurepointUTM.png</pixmap>
+   </property>
+   <property name="scaledContents">
     <bool>true</bool>
    </property>
   </widget>

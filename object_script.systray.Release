@@ -1,6 +1,5 @@
 INPUT(
 ./release\main.o
-./release\window.o
 ./release\Configs.o
 ./release\StatusMessage.o
 ./release\openvpn.o
@@ -20,7 +19,7 @@ INPUT(
 ./release\appinfo.o
 ./release\configexport.o
 ./release\importconfig.o
-./release\moc_window.o
+./release\deleteconfig.o
 ./release\moc_StatusMessage.o
 ./release\moc_openvpn.o
 ./release\moc_vpnLog.o
@@ -37,5 +36,6 @@ INPUT(
 ./release\moc_appinfo.o
 ./release\moc_configexport.o
 ./release\moc_importconfig.o
+./release\moc_deleteconfig.o
 ./release\qrc_systray.o
 );

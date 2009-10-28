@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading ui file 'preferences.ui'
 **
-** Created: Tue 27. Oct 16:12:46 2009
+** Created: Wed 28. Oct 14:52:23 2009
 **      by: Qt User Interface Compiler version 4.5.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!
@@ -172,7 +172,6 @@ public:
     QLabel *label_43;
     QLabel *label_42;
     QLabel *label_44;
-    QPushButton *cmdImport;
     QButtonGroup *buttonGroup;
 
     void setupUi(QDialog *Preferences)
@@ -184,6 +183,7 @@ public:
         icon.addFile(QString::fromUtf8(":/images/appicon.png"), QSize(), QIcon::Normal, QIcon::Off);
         Preferences->setWindowIcon(icon);
         Preferences->setStyleSheet(QString::fromUtf8(""));
+        Preferences->setModal(true);
         groupBox = new QGroupBox(Preferences);
         groupBox->setObjectName(QString::fromUtf8("groupBox"));
         groupBox->setGeometry(QRect(10, 75, 671, 631));
@@ -212,7 +212,7 @@ public:
         tbSettings->setGeometry(QRect(240, 20, 421, 531));
         page = new QWidget();
         page->setObjectName(QString::fromUtf8("page"));
-        page->setGeometry(QRect(0, 0, 421, 419));
+        page->setGeometry(QRect(0, 0, 96, 26));
         groupBox_3 = new QGroupBox(page);
         groupBox_3->setObjectName(QString::fromUtf8("groupBox_3"));
         groupBox_3->setGeometry(QRect(0, 3, 421, 81));
@@ -394,7 +394,7 @@ public:
         tbSettings->addItem(page, QString::fromUtf8("General"));
         page_3 = new QWidget();
         page_3->setObjectName(QString::fromUtf8("page_3"));
-        page_3->setGeometry(QRect(0, 0, 421, 419));
+        page_3->setGeometry(QRect(0, 0, 96, 26));
         groupBox_10 = new QGroupBox(page_3);
         groupBox_10->setObjectName(QString::fromUtf8("groupBox_10"));
         groupBox_10->setGeometry(QRect(0, 2, 421, 81));
@@ -566,7 +566,7 @@ public:
         tbSettings->addItem(page_2, QString::fromUtf8("Scripts"));
         page_4 = new QWidget();
         page_4->setObjectName(QString::fromUtf8("page_4"));
-        page_4->setGeometry(QRect(0, 0, 421, 419));
+        page_4->setGeometry(QRect(0, 0, 96, 26));
         groupBox_8 = new QGroupBox(page_4);
         groupBox_8->setObjectName(QString::fromUtf8("groupBox_8"));
         groupBox_8->setGeometry(QRect(0, 1, 421, 101));
@@ -722,12 +722,6 @@ public:
         label_44->setObjectName(QString::fromUtf8("label_44"));
         label_44->setGeometry(QRect(0, -10, 311, 81));
         label_44->setPixmap(QPixmap(QString::fromUtf8(":/images/securepoint_h.png")));
-        cmdImport = new QPushButton(Preferences);
-        cmdImport->setObjectName(QString::fromUtf8("cmdImport"));
-        cmdImport->setGeometry(QRect(410, 710, 41, 24));
-        QIcon icon6;
-        icon6.addFile(QString::fromUtf8(":/images/import.svg"), QSize(), QIcon::Normal, QIcon::Off);
-        cmdImport->setIcon(icon6);
 
         retranslateUi(Preferences);
 
@@ -852,7 +846,6 @@ public:
         label_43->setText(QString());
         label_42->setText(QString());
         label_44->setText(QString());
-        cmdImport->setText(QString());
         Q_UNUSED(Preferences);
     } // retranslateUi
 

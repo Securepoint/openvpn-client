@@ -5,6 +5,7 @@
 #include <QFileDialog>
 #include <QProcess>
 #include "appfunc.h"
+#include "preferences.h"
 
 namespace Ui {
     class ImportConfig;
@@ -28,6 +29,7 @@ private slots:
     void on_rbSaveAsName_toggled(bool checked);
     void on_cmdCancel_clicked();
     void on_cmdOpenCryptFile_clicked();
+    void showProcessError (QProcess::ProcessError err);
 };
 
 #endif // IMPORTCONFIG_H

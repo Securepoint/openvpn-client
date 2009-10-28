@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading ui file 'pkcs_auth.ui'
 **
-** Created: Tue 27. Oct 11:52:30 2009
+** Created: Wed 28. Oct 10:16:04 2009
 **      by: Qt User Interface Compiler version 4.5.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!
@@ -39,6 +39,7 @@ public:
         QIcon icon;
         icon.addFile(QString::fromUtf8(":/images/appicon.png"), QSize(), QIcon::Normal, QIcon::Off);
         pkcs_auth->setWindowIcon(icon);
+        pkcs_auth->setModal(true);
         groupBox = new QGroupBox(pkcs_auth);
         groupBox->setObjectName(QString::fromUtf8("groupBox"));
         groupBox->setGeometry(QRect(10, 1, 241, 61));

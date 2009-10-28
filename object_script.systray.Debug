@@ -1,6 +1,5 @@
 INPUT(
 ./debug\main.o
-./debug\window.o
 ./debug\Configs.o
 ./debug\StatusMessage.o
 ./debug\openvpn.o
@@ -20,7 +19,7 @@ INPUT(
 ./debug\appinfo.o
 ./debug\configexport.o
 ./debug\importconfig.o
-./debug\moc_window.o
+./debug\deleteconfig.o
 ./debug\moc_StatusMessage.o
 ./debug\moc_openvpn.o
 ./debug\moc_vpnLog.o
@@ -37,5 +36,6 @@ INPUT(
 ./debug\moc_appinfo.o
 ./debug\moc_configexport.o
 ./debug\moc_importconfig.o
+./debug\moc_deleteconfig.o
 ./debug\qrc_systray.o
 );

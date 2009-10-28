@@ -15,6 +15,7 @@ VpnWizard::VpnWizard(QWidget *parent)
     setPixmap(QWizard::BannerPixmap, QPixmap(":/images/banner.png"));
     setWindowIcon(QIcon(":/images/appicon.png"));
     setWindowTitle(tr("Create a new OpenVPN config"));
+    setModal(true);
 }
 
 void VpnWizard::accept()
@@ -164,6 +165,8 @@ void VpnWizard::accept()
     caFile.close();
     certFile.close();
     keyFile.close();
+    Preferences *prefDialog = dynamic_cast<Preferences*> (this->parent());
+    prefDialog->refreshConfigList();
 
     QMessageBox::information(0,"Securepoint OpenVPN Client", "Config is successfully created!");
     this->close();

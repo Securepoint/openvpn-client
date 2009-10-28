@@ -1,15 +1,35 @@
 #ifndef PREFERENCES_H
 #define PREFERENCES_H
 #include "openvpn.h"
+#include "Configs.h"
 #include "openvpnqlistitem.h"
+class VpnWizard;
 #include "wiz_vpnwizard.h"
 #include "appfunc.h"
 #include "configexport.h"
+class ImportConfig;
 #include "importconfig.h"
+#include "appfunc.h"
+#include "appinfo.h"
+class DeleteConfig;
+#include "deleteconfig.h"
 
 #include <QtGui/QDialog>
+#include <QSystemTrayIcon>
 #include <QFileDialog>
 
+QT_BEGIN_NAMESPACE
+class QAction;
+class QCheckBox;
+class QComboBox;
+class QGroupBox;
+class QLabel;
+class QLineEdit;
+class QMenu;
+class QPushButton;
+class QSpinBox;
+class QTextEdit;
+QT_END_NAMESPACE
 
 namespace Ui {
     class Preferences;
@@ -20,10 +40,14 @@ class Preferences : public QDialog {
 public:
     Preferences(QWidget *parent = 0);
     ~Preferences();
-    void openDialog (QList<OpenVpn*> configList);
-
+    void openDialog ();
+    void setVisible(bool visible);
+    void refreshConfigList ();
+    void deleteConfigFromList (bool fconFile, bool fconCaFile, bool fconCertFile,
+                               bool fconKeyFile, bool fconUserFile, bool fconScriptFile,
+                               bool fconDir);
 protected:
-    void changeEvent(QEvent *e);
+    void closeEvent(QCloseEvent *event);
 
 private:
     Ui::Preferences *m_ui;
@@ -32,12 +56,42 @@ private:
     void enableFields (bool flag);
     void resetFields ();
     OpenVpn *actObject;
-    VpnWizard vpnwiz;
+    VpnWizard *vpnwiz;
     ConfigExport exportDialog;
-    ImportConfig importDialog;
+    ImportConfig *importDialog;
+    // Methoden um feste Events erzeugen
+    void createActions();
+    // Methode um das Tray zu setzen
+    void createTrayIcon();
+    void refreshDialog ();
+
+    // Actions für Menu
+    QAction *connectVpnAction;
+    QAction *preferencesAction;
+    QAction *infoAction;
+    QAction *quitAction;
+    QAction *importAction;
+    //Preferences mydia;
+    appInfo infoDialog;
+    DeleteConfig *deleteDialog;
+
+    QAction *mySubAction;
+
+    QSystemTrayIcon *trayIcon;
+    QMenu *trayIconMenu;
+    QMenu *trayTest;
+
+    // Configlisten
+    Configs myConfigs;
+    QList<OpenVpn*> subMenuList;
+    // Menuliste
+    QList<QAction*> menuList;
+    QList<QAction*> menuChildList;
 
 private slots:
-    void on_cmdImport_clicked();
+    void manageConnections ();
+    void openInfo ();
+    void importConfig ();
     void on_cmdConnect_clicked();
     void on_cmdInfoScriptsDelyAC_clicked();
     void on_cmdErrorConnect_clicked();

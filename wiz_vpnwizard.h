@@ -9,6 +9,7 @@
 #include "wiz_certpage.h"
 #include "wiz_advpage.h"
 #include "appfunc.h"
+#include "preferences.h"
 
 QT_BEGIN_NAMESPACE
 class QCheckBox;

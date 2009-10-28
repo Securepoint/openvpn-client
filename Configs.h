@@ -10,16 +10,18 @@ class Configs
 {
   public:
     Configs(){
-
+        this->refreshConnectionPath = QString("");
     }
     ~Configs(){}
 
   void searchConfigs (QString sDir);
+  void clearConfigs ();
   QList<OpenVpn*> getConfigsObjects ();
 
 
   private:
      QList<OpenVpn*> myList;
+     QString refreshConnectionPath;
 };
 
 

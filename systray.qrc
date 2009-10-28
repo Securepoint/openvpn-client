@@ -8,7 +8,6 @@
         <file>images/delete.svg</file>
         <file>images/edit.svg</file>
         <file>images/securepoint.png</file>
-        <file>images/info.svg</file>
         <file>images/securepoint_h.png</file>
         <file>images/banner.png</file>
         <file>images/securepoint_wiz.png</file>
@@ -21,5 +20,7 @@
         <file>images/add.svg</file>
         <file>images/export.svg</file>
         <file>images/import.svg</file>
+        <file>images/SecurepointUTM.png</file>
+        <file>images/info.svg</file>
     </qresource>
 </RCC>

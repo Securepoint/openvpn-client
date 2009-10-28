@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading ui file 'importconfig.ui'
 **
-** Created: Tue 27. Oct 16:47:15 2009
+** Created: Wed 28. Oct 16:11:43 2009
 **      by: Qt User Interface Compiler version 4.5.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!
@@ -48,9 +48,17 @@ public:
         if (ImportConfig->objectName().isEmpty())
             ImportConfig->setObjectName(QString::fromUtf8("ImportConfig"));
         ImportConfig->resize(370, 355);
+        QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(ImportConfig->sizePolicy().hasHeightForWidth());
+        ImportConfig->setSizePolicy(sizePolicy);
+        ImportConfig->setMaximumSize(QSize(370, 355));
         QIcon icon;
         icon.addFile(QString::fromUtf8(":/images/appicon.png"), QSize(), QIcon::Normal, QIcon::Off);
         ImportConfig->setWindowIcon(icon);
+        ImportConfig->setStyleSheet(QString::fromUtf8(""));
+        ImportConfig->setModal(true);
         groupBox = new QGroupBox(ImportConfig);
         groupBox->setObjectName(QString::fromUtf8("groupBox"));
         groupBox->setGeometry(QRect(10, 4, 351, 81));
@@ -77,6 +85,7 @@ public:
         txtNewName->setObjectName(QString::fromUtf8("txtNewName"));
         txtNewName->setEnabled(false);
         txtNewName->setGeometry(QRect(50, 47, 151, 20));
+        txtNewName->setStyleSheet(QString::fromUtf8(""));
         plainTextEdit_2 = new QPlainTextEdit(ImportConfig);
         plainTextEdit_2->setObjectName(QString::fromUtf8("plainTextEdit_2"));
         plainTextEdit_2->setEnabled(true);

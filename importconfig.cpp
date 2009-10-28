@@ -128,6 +128,7 @@ void ImportConfig::on_cmdImport_clicked()
         argCrypt << QString("-k");
         argCrypt << m_ui->txtPassword->text().trimmed();
         packCrypt.start(programCrypt, argCrypt);
+        connect( &packCrypt, SIGNAL(error ( QProcess::ProcessError) ), this, SLOT(showProcessError (QProcess::ProcessError)));
 
 
         if (!packCrypt.waitForFinished()) {
@@ -145,6 +146,7 @@ void ImportConfig::on_cmdImport_clicked()
         arguments << QString("-mhe");
         arguments << QString("-o") + dirPath;
         packProc.start(program, arguments);
+        connect( &packProc, SIGNAL(error ( QProcess::ProcessError) ), this, SLOT(showProcessError (QProcess::ProcessError)));
 
         if (!packProc.waitForFinished()) {
             QMessageBox::critical(0,QString("OpenVPN CLient"), QString("7z process still running!"));
@@ -161,12 +163,13 @@ void ImportConfig::on_cmdImport_clicked()
             QString ovpnFilePath = m_ui->txtImportPath->text().right(m_ui->txtImportPath->text().size() - m_ui->txtImportPath->text().lastIndexOf("/") -1);
                     ovpnFilePath = dirPath + QString("/") + ovpnFilePath.left(ovpnFilePath.size()-6) + QString(".ovpn");
             QFile ovpnFile (ovpnFilePath);
-            qDebug() << ovpnFilePath;
             if (ovpnFile.exists()) {
                 // umbenennen
                 ovpnFile.rename(dirPath + QString("/") + configName + QString(".ovpn"));
             }
         }
+        Preferences *prefDialog = dynamic_cast<Preferences*> (this->parent());
+        prefDialog->refreshConfigList();
         QMessageBox::information(0, QString("OpenVPN Client"), QString("Import successfully ended!"));
         this->close();
 
@@ -176,3 +179,34 @@ void ImportConfig::on_cmdImport_clicked()
         return;
     }
 }
+
+void ImportConfig::showProcessError (QProcess::ProcessError err) {
+    QString errMessage;
+    switch (err) {
+        case QProcess::FailedToStart:
+            errMessage = QString ("The process failed to start. Either the invoked program is missing, or you may have insufficient permissions to invoke the program.");
+            break;
+        case QProcess::Crashed:
+            errMessage = QString ("The process crashed some time after starting successfully.");
+            break;
+        case QProcess::Timedout:
+            errMessage = QString ("The last waitFor...() function timed out. The state of QProcess is unchanged, and you can try calling waitFor...() again.");
+            break;
+        case QProcess::WriteError:
+            errMessage = QString ("An error occurred when attempting to write to the process. For example, the process may not be running, or it may have closed its input channel.");
+            break;
+        case QProcess::ReadError:
+            errMessage = QString ("An error occurred when attempting to read from the process. For example, the process may not be running.");
+            break;
+        case QProcess::UnknownError:
+            errMessage = QString ("An unknown error occurred. This is the default return value of error().");
+            break;
+        default:
+            errMessage = QString ("No valid error code!");
+            break;
+    }
+
+    // Daten ausgeben
+    QMessageBox::critical(0, QString("OpenVPN Client"), errMessage);
+}
+

@@ -45,7 +45,11 @@ void StdUserAuth::fillFromConfig() {
             }
         }
         conDataFileRead.close();
+        m_ui->txtPwd->setFocus();
+    } else {
+        m_ui->txtUser->setFocus();
     }
+
 }
 
 void StdUserAuth::clearFields() {

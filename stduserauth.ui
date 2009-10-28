@@ -23,6 +23,9 @@
    <iconset resource="systray.qrc">
     <normaloff>:/images/appicon.png</normaloff>:/images/appicon.png</iconset>
   </property>
+  <property name="modal">
+   <bool>true</bool>
+  </property>
   <widget class="QPushButton" name="cmdOK">
    <property name="geometry">
     <rect>

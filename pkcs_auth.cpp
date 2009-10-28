@@ -27,6 +27,7 @@ void pkcs_auth::changeEvent(QEvent *e)
 
 void pkcs_auth::clearFields() {
     m_ui->txtPKCSPwd->setText("");
+    m_ui->txtPKCSPwd->setFocus();
 }
 
 void pkcs_auth::on_cmdOK_clicked()

@@ -22,22 +22,26 @@ class OpenVpn : public QObject
 public:
     OpenVpn();
     virtual ~OpenVpn() {}
+
     //Methoden
     void connectToVpn ();
     void setTray (QSystemTrayIcon *appIcon);
     void setMenuList (QList<QAction*> List);
     void setMenuChildList (QList<QAction*> List);
+    QString getScript (QString type);
+    void runScript (QString type);
+    void setObjectToConnected ();
+    bool isConnectionStable ();
     // Public Member
     QString configName;
     QString configPath;
     QString configPwd;
     QString configUser;
-    bool isConnectionStable ();
-    QString getScript (QString type);
-    void runScript (QString type);
+    bool connectionStable;
 
 private slots:
     void showProcessError (QProcess::ProcessError error);
+    void showProcessScriptError (QProcess::ProcessError error);
     void processFinished (int stat, QProcess::ExitStatus status);
     void processIsStarted ();
     void readProcessData ();
@@ -61,10 +65,10 @@ private:
     // Methoden
     void setConnected ();
     void setDisconnected ();
-    bool connectionStable;
     bool onDisconnect;
     void showTrayMessage (QString message);
     void setIcon(int index);
+
     // Member
     QProcess *proc;
     QProcess *procScripts;

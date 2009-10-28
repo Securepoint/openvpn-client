@@ -3,7 +3,7 @@
 #include <QTimer>
 #include <QSplashScreen>
 
-#include "window.h"
+#include "preferences.h"
 
 int main(int argc, char *argv[])
 {
@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
     // Splash nach 3 Sekunden schlieﬂen
     QTimer::singleShot(3000, &splash, SLOT(close()));
     // Main Window
-    Window window;
+    Preferences window;
 
     // Anwendung ohne Dialog starten
     return app.exec();

@@ -60,8 +60,39 @@ void OpenVpn::runScript(QString type){
         this->openVpnLogData.append(QString ("Starting : ") + type);
         procScripts = new QProcess(this);
         procScripts->start(this->getScript(type));
+        connect( procScripts, SIGNAL(error ( QProcess::ProcessError) ), this, SLOT(showProcessError (QProcess::ProcessError)));
         qApp->processEvents() ;
     }
+}
+
+void OpenVpn::showProcessScriptError(QProcess::ProcessError error) {
+    QString errMessage;
+    switch (error) {
+        case QProcess::FailedToStart:
+            errMessage = QString ("Run Script:\nThe process failed to start. Either the invoked program is missing, or you may have insufficient permissions to invoke the program.");
+            break;
+        case QProcess::Crashed:
+            errMessage = QString ("Run Script:\nThe process crashed some time after starting successfully.");
+            break;
+        case QProcess::Timedout:
+            errMessage = QString ("Run Script:\nThe last waitFor...() function timed out. The state of QProcess is unchanged, and you can try calling waitFor...() again.");
+            break;
+        case QProcess::WriteError:
+            errMessage = QString ("Run Script:\nAn error occurred when attempting to write to the process. For example, the process may not be running, or it may have closed its input channel.");
+            break;
+        case QProcess::ReadError:
+            errMessage = QString ("Run Script:\nAn error occurred when attempting to read from the process. For example, the process may not be running.");
+            break;
+        case QProcess::UnknownError:
+            errMessage = QString ("Run Script:\nAn unknown error occurred. This is the default return value of error().");
+            break;
+        default:
+            errMessage = QString ("Run Script:\nNo valid error code!");
+            break;
+    }
+
+    // Daten ausgeben
+    QMessageBox::critical(0, QString("OpenVPN Client"), errMessage);
 }
 
 void OpenVpn::setTray (QSystemTrayIcon *appIcon){
@@ -180,6 +211,11 @@ void OpenVpn::setIcon(int index)
 
 bool OpenVpn::isConnectionStable () {
     return this->connectionStable;
+}
+
+void OpenVpn::setObjectToConnected() {
+    this->setConnected();
+    this->setIcon(Connected);
 }
 
 void OpenVpn::showProcessError(QProcess::ProcessError error) {
@@ -392,7 +428,7 @@ void OpenVpn::editVpnConfig() {
         mCon.fPath->setText(cFile);
         mCon.show();
     }
-    emit configSignalIsChanged();
+    //emit configSignalIsChanged();
 }
 
 void OpenVpn::openVpnLog() {

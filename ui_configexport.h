@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading ui file 'configexport.ui'
 **
-** Created: Tue 27. Oct 14:12:50 2009
+** Created: Wed 28. Oct 10:16:04 2009
 **      by: Qt User Interface Compiler version 4.5.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!
@@ -42,6 +42,7 @@ public:
         QIcon icon;
         icon.addFile(QString::fromUtf8(":/images/appicon.png"), QSize(), QIcon::Normal, QIcon::Off);
         ConfigExport->setWindowIcon(icon);
+        ConfigExport->setModal(true);
         groupBox = new QGroupBox(ConfigExport);
         groupBox->setObjectName(QString::fromUtf8("groupBox"));
         groupBox->setGeometry(QRect(10, 10, 251, 51));
