@@ -151,7 +151,7 @@
    </property>
    <property name="icon">
     <iconset resource="systray.qrc">
-     <normaloff>:/images/delete.svg</normaloff>:/images/delete.svg</iconset>
+     <normaloff>:/images/delete.png</normaloff>:/images/delete.png</iconset>
    </property>
    <property name="flat">
     <bool>true</bool>

@@ -24,6 +24,7 @@ private:
 
 
 private slots:
+    void on_cmdOpenDir_clicked();
     void on_cmdExport_clicked();
     void on_cmdCancel_clicked();
 };

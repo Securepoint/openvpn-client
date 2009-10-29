@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading ui file 'preferences.ui'
 **
-** Created: Wed 28. Oct 14:52:23 2009
+** Created: Thu 29. Oct 12:26:10 2009
 **      by: Qt User Interface Compiler version 4.5.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!
@@ -198,7 +198,7 @@ public:
         cmdAddConfig->setGeometry(QRect(10, 500, 191, 28));
         cmdAddConfig->setLayoutDirection(Qt::LeftToRight);
         QIcon icon1;
-        icon1.addFile(QString::fromUtf8(":/images/add.svg"), QSize(), QIcon::Normal, QIcon::Off);
+        icon1.addFile(QString::fromUtf8(":/images/add.png"), QSize(), QIcon::Normal, QIcon::Off);
         cmdAddConfig->setIcon(icon1);
         cmdAddConfig->setFlat(true);
         lsvConfigs = new QListWidget(groupBox_2);
@@ -212,7 +212,7 @@ public:
         tbSettings->setGeometry(QRect(240, 20, 421, 531));
         page = new QWidget();
         page->setObjectName(QString::fromUtf8("page"));
-        page->setGeometry(QRect(0, 0, 96, 26));
+        page->setGeometry(QRect(0, 0, 421, 419));
         groupBox_3 = new QGroupBox(page);
         groupBox_3->setObjectName(QString::fromUtf8("groupBox_3"));
         groupBox_3->setGeometry(QRect(0, 3, 421, 81));
@@ -394,7 +394,7 @@ public:
         tbSettings->addItem(page, QString::fromUtf8("General"));
         page_3 = new QWidget();
         page_3->setObjectName(QString::fromUtf8("page_3"));
-        page_3->setGeometry(QRect(0, 0, 96, 26));
+        page_3->setGeometry(QRect(0, 0, 421, 419));
         groupBox_10 = new QGroupBox(page_3);
         groupBox_10->setObjectName(QString::fromUtf8("groupBox_10"));
         groupBox_10->setGeometry(QRect(0, 2, 421, 81));
@@ -566,7 +566,7 @@ public:
         tbSettings->addItem(page_2, QString::fromUtf8("Scripts"));
         page_4 = new QWidget();
         page_4->setObjectName(QString::fromUtf8("page_4"));
-        page_4->setGeometry(QRect(0, 0, 96, 26));
+        page_4->setGeometry(QRect(0, 0, 421, 419));
         groupBox_8 = new QGroupBox(page_4);
         groupBox_8->setObjectName(QString::fromUtf8("groupBox_8"));
         groupBox_8->setGeometry(QRect(0, 1, 421, 101));
@@ -707,7 +707,7 @@ public:
         cmdConnect->setObjectName(QString::fromUtf8("cmdConnect"));
         cmdConnect->setGeometry(QRect(290, 710, 101, 24));
         QIcon icon5;
-        icon5.addFile(QString::fromUtf8(":/images/connecting.svg"), QSize(), QIcon::Normal, QIcon::Off);
+        icon5.addFile(QString::fromUtf8(":/images/disconnected.png"), QSize(), QIcon::Normal, QIcon::Off);
         cmdConnect->setIcon(icon5);
         cmdConnect->setFlat(true);
         label_43 = new QLabel(Preferences);
@@ -725,7 +725,7 @@ public:
 
         retranslateUi(Preferences);
 
-        tbSettings->setCurrentIndex(2);
+        tbSettings->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(Preferences);
@@ -838,9 +838,9 @@ public:
         cmdClose->setText(QApplication::translate("Preferences", "&Close", 0, QApplication::UnicodeUTF8));
         cmdSave->setText(QApplication::translate("Preferences", "&Save", 0, QApplication::UnicodeUTF8));
         label_41->setText(QApplication::translate("Preferences", "Tunnel:", 0, QApplication::UnicodeUTF8));
-        lblTunnelName->setText(QApplication::translate("Preferences", "TextLabel", 0, QApplication::UnicodeUTF8));
+        lblTunnelName->setText(QApplication::translate("Preferences", "None selected", 0, QApplication::UnicodeUTF8));
         lblTunnelPixmap->setText(QString());
-        lblTunnelStatus->setText(QApplication::translate("Preferences", "TextLabel", 0, QApplication::UnicodeUTF8));
+        lblTunnelStatus->setText(QApplication::translate("Preferences", "Disconnected", 0, QApplication::UnicodeUTF8));
         cmdConnect->setText(QApplication::translate("Preferences", "Discon&nect", 0, QApplication::UnicodeUTF8));
         label_43->setStyleSheet(QApplication::translate("Preferences", "background-color: rgb(255, 255, 255);", 0, QApplication::UnicodeUTF8));
         label_43->setText(QString());

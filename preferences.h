@@ -14,6 +14,8 @@ class ImportConfig;
 class DeleteConfig;
 #include "deleteconfig.h"
 
+#include "tapdriver.h"
+
 #include <QtGui/QDialog>
 #include <QSystemTrayIcon>
 #include <QFileDialog>
@@ -128,6 +130,7 @@ private slots:
     void connectConfig ();
     void exportConfig ();
     void openConfigFromListView (QListWidgetItem * item );
+    void closeApp ();
 };
 
 #endif // PREFERENCES_H

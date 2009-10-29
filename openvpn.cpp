@@ -191,19 +191,19 @@ void OpenVpn::setIcon(int index)
     QIcon icon;
     switch (index) {
         case Inaktiv:
-            icon = QIcon(":/images/inaktiv.svg");
+            icon = QIcon(":/images/inaktiv.png");
             break;
         case Connected:
-            icon = QIcon(":/images/connected.svg");
+            icon = QIcon(":/images/connected.png");
             break;
         case Error:
-            icon = QIcon(":/images/disconnected.svg");
+            icon = QIcon(":/images/disconnected.png");
             break;
         case Connecting:
-            icon = QIcon(":/images/connecting.svg");
+            icon = QIcon(":/images/connecting.png");
             break;
         default:
-            icon = QIcon(":/images/inaktiv.svg");
+            icon = QIcon(":/images/inaktiv.png");
             break;
     }
     this->appIcon->setIcon(icon);

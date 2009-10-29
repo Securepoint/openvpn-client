@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading ui file 'deleteconfig.ui'
 **
-** Created: Wed 28. Oct 13:25:22 2009
+** Created: Thu 29. Oct 12:18:17 2009
 **      by: Qt User Interface Compiler version 4.5.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!
@@ -78,7 +78,7 @@ public:
         cmdDelete->setObjectName(QString::fromUtf8("cmdDelete"));
         cmdDelete->setGeometry(QRect(38, 210, 75, 24));
         QIcon icon1;
-        icon1.addFile(QString::fromUtf8(":/images/delete.svg"), QSize(), QIcon::Normal, QIcon::Off);
+        icon1.addFile(QString::fromUtf8(":/images/delete.png"), QSize(), QIcon::Normal, QIcon::Off);
         cmdDelete->setIcon(icon1);
         cmdDelete->setFlat(true);
         cmdCancel = new QPushButton(DeleteConfig);

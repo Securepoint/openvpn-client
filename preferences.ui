@@ -64,7 +64,7 @@
      </property>
      <property name="icon">
       <iconset resource="systray.qrc">
-       <normaloff>:/images/add.svg</normaloff>:/images/add.svg</iconset>
+       <normaloff>:/images/add.png</normaloff>:/images/add.png</iconset>
      </property>
      <property name="flat">
       <bool>true</bool>
@@ -103,15 +103,15 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="page">
      <property name="geometry">
       <rect>
        <x>0</x>
        <y>0</y>
-       <width>96</width>
-       <height>26</height>
+       <width>421</width>
+       <height>419</height>
       </rect>
      </property>
      <attribute name="label">
@@ -821,8 +821,8 @@
       <rect>
        <x>0</x>
        <y>0</y>
-       <width>96</width>
-       <height>26</height>
+       <width>421</width>
+       <height>419</height>
       </rect>
      </property>
      <attribute name="label">
@@ -1495,8 +1495,8 @@
       <rect>
        <x>0</x>
        <y>0</y>
-       <width>96</width>
-       <height>26</height>
+       <width>421</width>
+       <height>419</height>
       </rect>
      </property>
      <attribute name="label">
@@ -1983,7 +1983,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>TextLabel</string>
+    <string>None selected</string>
    </property>
   </widget>
   <widget class="QLabel" name="lblTunnelPixmap">
@@ -2015,7 +2015,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>TextLabel</string>
+    <string>Disconnected</string>
    </property>
   </widget>
   <widget class="QPushButton" name="cmdConnect">
@@ -2032,7 +2032,7 @@
    </property>
    <property name="icon">
     <iconset resource="systray.qrc">
-     <normaloff>:/images/connecting.svg</normaloff>:/images/connecting.svg</iconset>
+     <normaloff>:/images/disconnected.png</normaloff>:/images/disconnected.png</iconset>
    </property>
    <property name="flat">
     <bool>true</bool>

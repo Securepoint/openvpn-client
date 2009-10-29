@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading ui file 'stduserauth.ui'
 **
-** Created: Wed 28. Oct 10:16:03 2009
+** Created: Thu 29. Oct 11:16:09 2009
 **      by: Qt User Interface Compiler version 4.5.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!

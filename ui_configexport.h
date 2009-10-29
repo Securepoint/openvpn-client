@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading ui file 'configexport.ui'
 **
-** Created: Wed 28. Oct 10:16:04 2009
+** Created: Thu 29. Oct 13:20:28 2009
 **      by: Qt User Interface Compiler version 4.5.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!
@@ -30,6 +30,9 @@ public:
     QGroupBox *groupBox;
     QLabel *label;
     QLineEdit *txtExportPwd;
+    QLabel *label_2;
+    QLineEdit *txtSaveTo;
+    QPushButton *cmdOpenDir;
     QPlainTextEdit *plainTextEdit;
     QPushButton *cmdExport;
     QPushButton *cmdCancel;
@@ -38,23 +41,32 @@ public:
     {
         if (ConfigExport->objectName().isEmpty())
             ConfigExport->setObjectName(QString::fromUtf8("ConfigExport"));
-        ConfigExport->resize(272, 182);
+        ConfigExport->resize(272, 211);
         QIcon icon;
         icon.addFile(QString::fromUtf8(":/images/appicon.png"), QSize(), QIcon::Normal, QIcon::Off);
         ConfigExport->setWindowIcon(icon);
         ConfigExport->setModal(true);
         groupBox = new QGroupBox(ConfigExport);
         groupBox->setObjectName(QString::fromUtf8("groupBox"));
-        groupBox->setGeometry(QRect(10, 10, 251, 51));
+        groupBox->setGeometry(QRect(14, 10, 251, 81));
         label = new QLabel(groupBox);
         label->setObjectName(QString::fromUtf8("label"));
-        label->setGeometry(QRect(10, 20, 61, 16));
+        label->setGeometry(QRect(12, 48, 61, 16));
         txtExportPwd = new QLineEdit(groupBox);
         txtExportPwd->setObjectName(QString::fromUtf8("txtExportPwd"));
-        txtExportPwd->setGeometry(QRect(64, 18, 171, 20));
+        txtExportPwd->setGeometry(QRect(66, 46, 171, 20));
+        label_2 = new QLabel(groupBox);
+        label_2->setObjectName(QString::fromUtf8("label_2"));
+        label_2->setGeometry(QRect(12, 24, 46, 14));
+        txtSaveTo = new QLineEdit(groupBox);
+        txtSaveTo->setObjectName(QString::fromUtf8("txtSaveTo"));
+        txtSaveTo->setGeometry(QRect(67, 19, 151, 20));
+        cmdOpenDir = new QPushButton(groupBox);
+        cmdOpenDir->setObjectName(QString::fromUtf8("cmdOpenDir"));
+        cmdOpenDir->setGeometry(QRect(225, 18, 20, 21));
         plainTextEdit = new QPlainTextEdit(ConfigExport);
         plainTextEdit->setObjectName(QString::fromUtf8("plainTextEdit"));
-        plainTextEdit->setGeometry(QRect(10, 70, 251, 71));
+        plainTextEdit->setGeometry(QRect(14, 99, 251, 71));
         plainTextEdit->setContextMenuPolicy(Qt::NoContextMenu);
         plainTextEdit->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 170, 0);"));
         plainTextEdit->setFrameShape(QFrame::Box);
@@ -62,14 +74,14 @@ public:
         plainTextEdit->setReadOnly(true);
         cmdExport = new QPushButton(ConfigExport);
         cmdExport->setObjectName(QString::fromUtf8("cmdExport"));
-        cmdExport->setGeometry(QRect(90, 150, 75, 24));
+        cmdExport->setGeometry(QRect(94, 179, 75, 24));
         QIcon icon1;
         icon1.addFile(QString::fromUtf8(":/images/export.svg"), QSize(), QIcon::Normal, QIcon::Off);
         cmdExport->setIcon(icon1);
         cmdExport->setFlat(true);
         cmdCancel = new QPushButton(ConfigExport);
         cmdCancel->setObjectName(QString::fromUtf8("cmdCancel"));
-        cmdCancel->setGeometry(QRect(186, 150, 75, 24));
+        cmdCancel->setGeometry(QRect(190, 179, 75, 24));
         QIcon icon2;
         icon2.addFile(QString::fromUtf8(":/images/close.svg"), QSize(), QIcon::Normal, QIcon::Off);
         cmdCancel->setIcon(icon2);
@@ -85,7 +97,9 @@ public:
         ConfigExport->setWindowTitle(QApplication::translate("ConfigExport", "Export configuration", 0, QApplication::UnicodeUTF8));
         groupBox->setTitle(QApplication::translate("ConfigExport", "Export:", 0, QApplication::UnicodeUTF8));
         label->setText(QApplication::translate("ConfigExport", "Password:", 0, QApplication::UnicodeUTF8));
-        plainTextEdit->setPlainText(QApplication::translate("ConfigExport", "The exported config will be created into the [config directory]/export/[configname].export.\n"
+        label_2->setText(QApplication::translate("ConfigExport", "Save to:", 0, QApplication::UnicodeUTF8));
+        cmdOpenDir->setText(QApplication::translate("ConfigExport", "...", 0, QApplication::UnicodeUTF8));
+        plainTextEdit->setPlainText(QApplication::translate("ConfigExport", "The exported config will be created into the [save to directory]/[configname].crypt.\n"
 "", 0, QApplication::UnicodeUTF8));
         cmdExport->setText(QApplication::translate("ConfigExport", "E&xport", 0, QApplication::UnicodeUTF8));
         cmdCancel->setText(QApplication::translate("ConfigExport", "&Cancel", 0, QApplication::UnicodeUTF8));

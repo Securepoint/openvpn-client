@@ -8,6 +8,39 @@ Preferences::Preferences(QWidget *parent) :
 {
     m_ui->setupUi(this);
 
+    // Treiber installiert?
+    #ifdef Q_OS_WIN32
+       // Windows
+       TapDriver drvTap;
+       if (!drvTap.isTapDriverInstalled()) {
+           QMessageBox msgBox;
+                       msgBox.setWindowTitle("OpenVPN Client");
+                       msgBox.setWindowIcon(QIcon(":/images/appicon.png"));
+                       msgBox.setText("No Tap-Win32 driver was found on this system.");
+                       msgBox.setInformativeText("Install the driver?\nFor this action you need administrator permissions!");
+                       msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
+                       msgBox.setDefaultButton(QMessageBox::Yes);
+           int ret = msgBox.exec();
+           switch (ret) {
+               case QMessageBox::Yes:
+                   if (!drvTap.installTapDriver()) {
+                        QMessageBox::critical(0, QString("OpenVPN Client"), QString("Unable to install Tap-Win32 driver!\nMaybe you have no permissions.\nPlease contact your system administrator."));
+                        QCoreApplication::exit(1);
+                   }
+                   break;
+               case QMessageBox::Cancel:
+               default:
+                   QCoreApplication::exit(1);
+                   break;
+           }
+       }
+    #elif Q_OS_Unix
+         // Linux
+    #elif Q_OS_Mac
+       // mac
+    #endif
+
+
     AppFunc app;
     if (!app.isAppPortable())
         myConfigs.searchConfigs(QDir::homePath() + QString("/Securepoint/OpenVPN"));
@@ -19,7 +52,7 @@ Preferences::Preferences(QWidget *parent) :
     createTrayIcon();
 
     // Icon setzen und anzeigen
-    QIcon icon = QIcon(":/images/inaktiv.svg");
+    QIcon icon = QIcon(":/images/inaktiv.png");
     trayIcon->setIcon(icon);
     trayIcon->show();
 
@@ -66,7 +99,7 @@ void Preferences::refreshConfigList() {
     trayIcon->hide();
     createActions();
     createTrayIcon();
-    QIcon icon = QIcon(":/images/inaktiv.svg");
+    QIcon icon = QIcon(":/images/inaktiv.png");
     trayIcon->setIcon(icon);
     trayIcon->show();
     // Das noch verbundene Element setzen
@@ -845,11 +878,11 @@ int Preferences::getIndexFromCipher(QString cipher) {
 void Preferences::openContextMenuListView(const QPoint &pos) {
     if (m_ui->txtPathFromConfig->text() != "") {
         QMenu *configPopUp = new QMenu (this);
-        configPopUp->addAction(QPixmap(":/images/edit.svg"), "&Edit", this, SLOT(editConfig()));
+        configPopUp->addAction(QPixmap(":/images/edit.png"), "&Edit", this, SLOT(editConfig()));
         configPopUp->addSeparator();
-        configPopUp->addAction(QPixmap(":/images/delete.svg"), "&Delete", this, SLOT(deleteConfig()));
+        configPopUp->addAction(QPixmap(":/images/delete.png"), "&Delete", this, SLOT(deleteConfig()));
         configPopUp->addSeparator();
-        configPopUp->addAction(QPixmap(":/images/connected.svg"), "Con&nect", this, SLOT(connectConfig()));
+        configPopUp->addAction(QPixmap(":/images/connected.png"), "Con&nect", this, SLOT(connectConfig()));
         configPopUp->addSeparator();
         configPopUp->addAction(QPixmap(":/images/export.svg"), "E&xport", this, SLOT(exportConfig()));
         configPopUp->addAction(QPixmap(":/images/import.svg"), "&Import", this, SLOT(importConfig()));
@@ -1374,5 +1407,37 @@ void Preferences::createActions()
     connect(infoAction, SIGNAL(triggered()), this, SLOT(openInfo()));
 
     quitAction = new QAction(tr("&Quit"), this);
-    connect(quitAction, SIGNAL(triggered()), qApp, SLOT(quit()));
+    connect(quitAction, SIGNAL(triggered()), this, SLOT(closeApp()));
+}
+
+void Preferences::closeApp() {
+    #ifdef Q_OS_WIN32
+        AppFunc myapp;
+        if (myapp.isAppPortable()) {
+            TapDriver drvTap;
+            if (drvTap.isTapDriverInstalled()) {
+                QMessageBox msgBox;
+                msgBox.setWindowTitle("OpenVPN Client");
+                msgBox.setText("Remove Tap-Win32 driver");
+                msgBox.setWindowIcon(QIcon(":/images/appicon.png"));
+                msgBox.setInformativeText("Uninstall the driver?\nFor this action you need administrator permissions!");
+                msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+                msgBox.setDefaultButton(QMessageBox::Yes);
+                int ret = msgBox.exec();
+                switch (ret) {
+                    case QMessageBox::Yes:
+                        if (!drvTap.removeTapDriver()) {
+                                QMessageBox::critical(0, QString("OpenVPN Client"), QString("Unable to uninstall Tap-Win32 driver!\nMaybe you have no permissions.\nPlease contact your system administrator."));
+                                QCoreApplication::exit(1);
+                         }
+                         break;
+                     case QMessageBox::No:
+                     default:
+                         QCoreApplication::exit(1);
+                         break;
+                   }
+             }
+        }
+    #endif
+    QCoreApplication::exit(0);
 }

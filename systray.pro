@@ -17,7 +17,9 @@ HEADERS = Configs.h \
     appinfo.h \
     configexport.h \
     importconfig.h \
-    deleteconfig.h
+    deleteconfig.h \
+    tapdriver.h \
+    single_application.h
 SOURCES = main.cpp \
     Configs.cpp \
     StatusMessage.cpp \
@@ -38,7 +40,9 @@ SOURCES = main.cpp \
     appinfo.cpp \
     configexport.cpp \
     importconfig.cpp \
-    deleteconfig.cpp
+    deleteconfig.cpp \
+    tapdriver.cpp \
+    single_application.cpp
 RESOURCES = systray.qrc
 QT += xml \
     svg

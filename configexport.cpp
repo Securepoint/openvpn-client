@@ -32,6 +32,10 @@ void ConfigExport::on_cmdCancel_clicked()
 
 void ConfigExport::on_cmdExport_clicked()
 {
+    if (m_ui->txtSaveTo->text() == "") {
+        QMessageBox::critical(0,QString("OpenVPN CLient"), QString("Invalid path specify[empty]!"));
+        return;
+    }
     if (m_ui->txtExportPwd->text() == "") {
         QMessageBox::critical(0,QString("OpenVPN CLient"), QString("Invalid password specify[empty]!"));
         return;
@@ -105,11 +109,11 @@ void ConfigExport::on_cmdExport_clicked()
         scriptFile.close();
 
         // Besteht das Verzeichnis schon?
-        QString dirPath = this->configPath.left(this->configPath.lastIndexOf("/"))  + "/export/";
-        QString zipFile = this->configPath.left(this->configPath.lastIndexOf("/")) + QString("/export/export.7z");
+        QString dirPath = m_ui->txtSaveTo->text();
+        QString zipFile = dirPath + QString("/export.7z");
         QString configName = this->configPath.right(this->configPath.size() - this->configPath.lastIndexOf("/") -1);
         configName = configName.left(configName.size()-5);
-        QString cryptFile = this->configPath.left(this->configPath.lastIndexOf("/")) + QString("/export/") + configName + QString(".crypt");
+        QString cryptFile = dirPath + QString("/") + configName + QString(".crypt");
         QDir dirobj (dirPath);
         if (!dirobj.exists(dirPath)){
             //Verzeichnis existiert nicht
@@ -187,4 +191,16 @@ void ConfigExport::on_cmdExport_clicked()
         QMessageBox::critical(0,QString("OpenVPN Client"), QString("No config!"));
     }
 
+}
+
+void ConfigExport::on_cmdOpenDir_clicked()
+{
+    QFileDialog exportDirDialog;
+    QString dirname = exportDirDialog.getExistingDirectory(this, tr("Open Directory"),
+                                                 QApplication::applicationDirPath(),
+                                                 QFileDialog::ShowDirsOnly
+                                                 | QFileDialog::DontResolveSymlinks);
+    if (dirname != "") {
+       m_ui->txtSaveTo->setText(dirname);
+    }
 }

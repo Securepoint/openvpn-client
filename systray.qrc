@@ -1,12 +1,5 @@
 <RCC>
     <qresource prefix="/" >
-        <file>images/inaktiv.svg</file>
-        <file>images/connected.svg</file>
-        <file>images/disconnected.svg</file>
-        <file>images/connecting.svg</file>
-        <file>images/startscreen.jpg</file>
-        <file>images/delete.svg</file>
-        <file>images/edit.svg</file>
         <file>images/securepoint.png</file>
         <file>images/securepoint_h.png</file>
         <file>images/banner.png</file>
@@ -15,12 +8,19 @@
         <file>images/status_connect.gif</file>
         <file>images/light_grey.svg</file>
         <file>images/light_green.svg</file>
-        <file>images/save.svg</file>
         <file>images/close.svg</file>
-        <file>images/add.svg</file>
         <file>images/export.svg</file>
         <file>images/import.svg</file>
         <file>images/SecurepointUTM.png</file>
         <file>images/info.svg</file>
+        <file>images/add.png</file>
+        <file>images/delete.png</file>
+        <file>images/startscreen.jpg</file>
+        <file>images/edit.png</file>
+        <file>images/inaktiv.png</file>
+        <file>images/connected.png</file>
+        <file>images/connecting.png</file>
+        <file>images/disconnected.png</file>
+        <file>images/save.svg</file>
     </qresource>
 </RCC>

@@ -20,6 +20,8 @@ INPUT(
 ./debug\configexport.o
 ./debug\importconfig.o
 ./debug\deleteconfig.o
+./debug\tapdriver.o
+./debug\single_application.o
 ./debug\moc_StatusMessage.o
 ./debug\moc_openvpn.o
 ./debug\moc_vpnLog.o
@@ -37,5 +39,7 @@ INPUT(
 ./debug\moc_configexport.o
 ./debug\moc_importconfig.o
 ./debug\moc_deleteconfig.o
+./debug\moc_tapdriver.o
+./debug\moc_single_application.o
 ./debug\qrc_systray.o
 );
