@@ -13,6 +13,18 @@
     <height>153</height>
    </rect>
   </property>
+  <property name="minimumSize">
+   <size>
+    <width>220</width>
+    <height>153</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>220</width>
+    <height>153</height>
+   </size>
+  </property>
   <property name="contextMenuPolicy">
    <enum>Qt::NoContextMenu</enum>
   </property>
@@ -38,6 +50,10 @@
    <property name="text">
     <string>C&amp;onnect</string>
    </property>
+   <property name="icon">
+    <iconset resource="systray.qrc">
+     <normaloff>:/images/connected.png</normaloff>:/images/connected.png</iconset>
+   </property>
    <property name="flat">
     <bool>true</bool>
    </property>
@@ -52,7 +68,17 @@
     </rect>
    </property>
    <property name="text">
-    <string>&amp;Cancel</string>
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset resource="systray.qrc">
+     <normaloff>:/images/exit.png</normaloff>:/images/exit.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>30</width>
+     <height>16</height>
+    </size>
    </property>
    <property name="flat">
     <bool>true</bool>

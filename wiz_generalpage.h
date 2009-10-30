@@ -19,9 +19,6 @@ protected:
 
 private:
     Ui::GeneralPage *m_ui;
-
-private slots:
-    void on_cmdInfoName_clicked();
 };
 
 #endif // WIZ_GENERALPAGE_H

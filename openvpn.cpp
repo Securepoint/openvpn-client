@@ -21,7 +21,7 @@ void OpenVpn::openConnect() {
 }
 
 void OpenVpn::configIsChanged() {
-    QMessageBox::information(0, QString("OpenVPN Client"),
+    QMessageBox::information(0, QString("Securepoint VPN Client"),
                                 QString("Config have been changed! Restart Connection?"));
 }
 
@@ -31,7 +31,7 @@ QString OpenVpn::getScript(QString type) {
     if (scrtiptFile.exists()) {
         // Öffnen und auslesen
         if (!scrtiptFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
-            QMessageBox::information(0, QString("OpenVPN Client"),
+            QMessageBox::information(0, QString("Securepoint VPN Client"),
                                 QString("Can't read scriptconfig file!"));
              return QString("");
         }
@@ -92,7 +92,7 @@ void OpenVpn::showProcessScriptError(QProcess::ProcessError error) {
     }
 
     // Daten ausgeben
-    QMessageBox::critical(0, QString("OpenVPN Client"), errMessage);
+    QMessageBox::critical(0, QString("Securepoint VPN Client"), errMessage);
 }
 
 void OpenVpn::setTray (QSystemTrayIcon *appIcon){
@@ -128,7 +128,7 @@ void OpenVpn::connectToVpn(){
         this->proc->start(program, arguments);
     } else {
         // Connection already stable
-        QMessageBox::information(0, QString("OpenVPN Client"),
+        QMessageBox::information(0, QString("Securepoint VPN Client"),
                                 QString("Already connected to this network"));
     }
 }
@@ -248,7 +248,7 @@ void OpenVpn::showProcessError(QProcess::ProcessError error) {
         this->runScript("EC");
         this->openVpnLogData.append(errMessage);
         // Daten ausgeben
-        QMessageBox::critical(0, QString("OpenVPN Client"),
+        QMessageBox::critical(0, QString("Securepoint VPN Client"),
                                     errMessage);
     }
 }
@@ -412,6 +412,7 @@ void OpenVpn::editVpnConfig() {
 
     if (!cf.open(QIODevice::ReadOnly | QIODevice::Text)) {
         QMessageBox msgBox;
+                    msgBox.setWindowTitle("Securepoint VPN Client");
                     msgBox.setText("Cannot read file.");
                     msgBox.exec();
          return;

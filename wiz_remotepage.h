@@ -20,10 +20,6 @@ private:
     Ui::RemotePage *m_ui;
     void initializePage ();
 
-private slots:
-    void on_cmdInfoProto_clicked();
-    void on_cmdInfoPort_clicked();
-    void on_cmdInfoIP_clicked();
 };
 
 #endif // WIZ_REMOTEPAGE_H

@@ -10,6 +10,18 @@
     <height>242</height>
    </rect>
   </property>
+  <property name="minimumSize">
+   <size>
+    <width>220</width>
+    <height>242</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>220</width>
+    <height>242</height>
+   </size>
+  </property>
   <property name="windowTitle">
    <string>Delete config</string>
   </property>
@@ -167,11 +179,17 @@
     </rect>
    </property>
    <property name="text">
-    <string>&amp;Cancel</string>
+    <string/>
    </property>
    <property name="icon">
     <iconset resource="systray.qrc">
-     <normaloff>:/images/close.svg</normaloff>:/images/close.svg</iconset>
+     <normaloff>:/images/exit.png</normaloff>:/images/exit.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>30</width>
+     <height>16</height>
+    </size>
    </property>
    <property name="flat">
     <bool>true</bool>

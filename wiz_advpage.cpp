@@ -45,14 +45,10 @@ void AdvPage::initializePage() {
         m_ui->txtRouteDelay->setText("2");
     if (m_ui->txtVerbose->text() == "")
         m_ui->txtVerbose->setText("3");
-}
-
-void AdvPage::on_cmdInfoAuthUserPass_clicked()
-{
-    m_ui->memHelp->setText("Specify that the user/pass authentication method is used.\nIt is required to type a username and a password for the connection.");
-}
-
-void AdvPage::on_cmdInfoWinRouteMethod_clicked()
-{
-    m_ui->memHelp->setText("Specify which method to use for adding routes on Windows?\nipapi - Use IP helper API.\nexe - Use the route.exe .");
+    m_ui->cbCompLzo->setChecked(true);
+    m_ui->cbFloat->setChecked(true);
+    m_ui->cbMsfix->setChecked(true);
+    m_ui->cbNobind->setChecked(true);
+    m_ui->cbUserPass->setChecked(true);
+    m_ui->cmbRouteMethod->setCurrentIndex(1);
 }

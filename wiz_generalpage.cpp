@@ -30,8 +30,3 @@ void GeneralPage::initializePage()
 {
     m_ui->txtConfigName->setFocus();
 }
-
-void GeneralPage::on_cmdInfoName_clicked()
-{
-    m_ui->memHelp->setText("Specify the name of the configuration.\nThis name will later shown on the OpenVPN client as connectionname.\nThis field is required.");
-}

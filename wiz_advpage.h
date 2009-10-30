@@ -20,9 +20,6 @@ private:
     Ui::AdvPage *m_ui;
     void initializePage ();
 
-private slots:
-    void on_cmdInfoWinRouteMethod_clicked();
-    void on_cmdInfoAuthUserPass_clicked();
 };
 
 #endif // WIZ_ADVPAGE_H

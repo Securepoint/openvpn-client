@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading ui file 'importconfig.ui'
 **
-** Created: Thu 29. Oct 11:16:09 2009
+** Created: Fri 30. Oct 16:48:22 2009
 **      by: Qt User Interface Compiler version 4.5.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!
@@ -53,6 +53,7 @@ public:
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(ImportConfig->sizePolicy().hasHeightForWidth());
         ImportConfig->setSizePolicy(sizePolicy);
+        ImportConfig->setMinimumSize(QSize(370, 355));
         ImportConfig->setMaximumSize(QSize(370, 355));
         QIcon icon;
         icon.addFile(QString::fromUtf8(":/images/appicon.png"), QSize(), QIcon::Normal, QIcon::Off);
@@ -99,14 +100,15 @@ public:
         cmdCancel->setObjectName(QString::fromUtf8("cmdCancel"));
         cmdCancel->setGeometry(QRect(280, 323, 75, 24));
         QIcon icon1;
-        icon1.addFile(QString::fromUtf8(":/images/close.svg"), QSize(), QIcon::Normal, QIcon::Off);
+        icon1.addFile(QString::fromUtf8(":/images/exit.png"), QSize(), QIcon::Normal, QIcon::Off);
         cmdCancel->setIcon(icon1);
+        cmdCancel->setIconSize(QSize(30, 16));
         cmdCancel->setFlat(true);
         cmdImport = new QPushButton(ImportConfig);
         cmdImport->setObjectName(QString::fromUtf8("cmdImport"));
         cmdImport->setGeometry(QRect(180, 322, 75, 24));
         QIcon icon2;
-        icon2.addFile(QString::fromUtf8(":/images/import.svg"), QSize(), QIcon::Normal, QIcon::Off);
+        icon2.addFile(QString::fromUtf8(":/images/import.png"), QSize(), QIcon::Normal, QIcon::Off);
         cmdImport->setIcon(icon2);
         cmdImport->setFlat(true);
         groupBox_3 = new QGroupBox(ImportConfig);
@@ -139,7 +141,7 @@ public:
         rbSaveAsName->setText(QApplication::translate("ImportConfig", "as:", 0, QApplication::UnicodeUTF8));
         plainTextEdit_2->setPlainText(QApplication::translate("ImportConfig", "Please notice. If you import a OpenVPN config in portable mode, the new config will be automatically imported in the application directory. In the installation mode the default is to import the new config in the home directory of the user. \n"
 "", 0, QApplication::UnicodeUTF8));
-        cmdCancel->setText(QApplication::translate("ImportConfig", "&Cancel", 0, QApplication::UnicodeUTF8));
+        cmdCancel->setText(QString());
         cmdImport->setText(QApplication::translate("ImportConfig", "&Import", 0, QApplication::UnicodeUTF8));
         groupBox_3->setTitle(QApplication::translate("ImportConfig", "Password:", 0, QApplication::UnicodeUTF8));
         label_2->setText(QApplication::translate("ImportConfig", "Password:", 0, QApplication::UnicodeUTF8));

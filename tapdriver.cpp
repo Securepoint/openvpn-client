@@ -20,7 +20,7 @@ void TapDriver::checkTapDriver() {
     connect (drvProc, SIGNAL(readyReadStandardError()), this, SLOT(readDriverData()));
 
     if(!drvProc->waitForFinished()) {
-        QMessageBox::critical(0, QString("OpenVPN Client"), QString("TAP driver check process failed!"));
+        QMessageBox::critical(0, QString("Securepoint VPN Client"), QString("TAP driver check process failed!"));
         QApplication::exit(1);
         return;
     }
@@ -40,7 +40,7 @@ bool TapDriver::installTapDriver() {
     connect (drvInstallProc, SIGNAL(readyReadStandardError()), this, SLOT(readDriverInstallData()));
 
     if(!drvInstallProc->waitForFinished()) {
-        QMessageBox::critical(0, QString("OpenVPN Client"), QString("TAP driver install process failed!"));
+        QMessageBox::critical(0, QString("Securepoint VPN Client"), QString("TAP driver install process failed!"));
         QApplication::exit(1);
         return false;
     }
@@ -60,7 +60,7 @@ bool TapDriver::removeTapDriver() {
     connect (drvRemoveProc, SIGNAL(readyReadStandardError()), this, SLOT(readDriverRemoveData()));
 
     if(!drvRemoveProc->waitForFinished()) {
-        QMessageBox::critical(0, QString("OpenVPN Client"), QString("TAP driver remove process failed!"));
+        QMessageBox::critical(0, QString("Securepoint VPN Client"), QString("TAP driver remove process failed!"));
         QApplication::exit(1);
         return false;
     }

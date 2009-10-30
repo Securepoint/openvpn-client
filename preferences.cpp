@@ -14,7 +14,7 @@ Preferences::Preferences(QWidget *parent) :
        TapDriver drvTap;
        if (!drvTap.isTapDriverInstalled()) {
            QMessageBox msgBox;
-                       msgBox.setWindowTitle("OpenVPN Client");
+                       msgBox.setWindowTitle("Securepoint VPN Client");
                        msgBox.setWindowIcon(QIcon(":/images/appicon.png"));
                        msgBox.setText("No Tap-Win32 driver was found on this system.");
                        msgBox.setInformativeText("Install the driver?\nFor this action you need administrator permissions!");
@@ -24,7 +24,7 @@ Preferences::Preferences(QWidget *parent) :
            switch (ret) {
                case QMessageBox::Yes:
                    if (!drvTap.installTapDriver()) {
-                        QMessageBox::critical(0, QString("OpenVPN Client"), QString("Unable to install Tap-Win32 driver!\nMaybe you have no permissions.\nPlease contact your system administrator."));
+                        QMessageBox::critical(0, QString("Securepoint VPN Client"), QString("Unable to install Tap-Win32 driver!\nMaybe you have no permissions.\nPlease contact your system administrator."));
                         QCoreApplication::exit(1);
                    }
                    break;
@@ -42,8 +42,9 @@ Preferences::Preferences(QWidget *parent) :
 
 
     AppFunc app;
-    if (!app.isAppPortable())
-        myConfigs.searchConfigs(QDir::homePath() + QString("/Securepoint/OpenVPN"));
+    if (!app.isAppPortable()){
+        myConfigs.searchConfigs(app.getAppSavePath());
+    }
 
     myConfigs.searchConfigs(QDir::currentPath());
     subMenuList = myConfigs.getConfigsObjects();
@@ -55,6 +56,11 @@ Preferences::Preferences(QWidget *parent) :
     QIcon icon = QIcon(":/images/inaktiv.png");
     trayIcon->setIcon(icon);
     trayIcon->show();
+
+    connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
+             this, SLOT(trayActivated(QSystemTrayIcon::ActivationReason)));
+
+
 
     m_ui->lsvConfigs->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(m_ui->lsvConfigs, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(openContextMenuListView(const QPoint &)));
@@ -74,12 +80,20 @@ Preferences::Preferences(QWidget *parent) :
     m_ui->cmbRouteMethod->insertItem(2, "IPAPI");
 
     fillCipherCombo();
+
+    this->lastDir = QString("");
     // Set window title
 
     if (app.isAppPortable())
-        setWindowTitle("OpenVPN Manage Connections [Portable]");
+        setWindowTitle("Securepoint VPN Client [Portable]");
     else
-        setWindowTitle("OpenVPN Manage Connections");
+        setWindowTitle("Securepoint VPN Client");
+}
+
+void Preferences::trayActivated(QSystemTrayIcon::ActivationReason reason){
+    if (reason == QSystemTrayIcon::DoubleClick)
+        if (!this->isMinimized())
+            this->openDialog();
 }
 
 void Preferences::refreshConfigList() {
@@ -91,7 +105,7 @@ void Preferences::refreshConfigList() {
     // Liste neu einlesen
     AppFunc app;
     if (!app.isAppPortable())
-        myConfigs.searchConfigs(QDir::homePath() + QString("/Securepoint/OpenVPN"));
+        myConfigs.searchConfigs(app.getAppSavePath());
 
     myConfigs.searchConfigs(QDir::currentPath());
     subMenuList = myConfigs.getConfigsObjects();
@@ -123,7 +137,6 @@ void Preferences::refreshDialog() {
         newItem->setText(configObj->configName + (configObj->isConnectionStable() ? "  [connected]" : ""));
         m_ui->lsvConfigs->insertItem(1, newItem);
     }
-    m_ui->memHelp->setText("Please click the info symbol of the item you want to see the help.\nFor further informations please visit: http://www.openvpn.net");
     m_ui->cmdConnect->setEnabled(false);
 }
 
@@ -154,7 +167,7 @@ void Preferences::deleteConfigFromList(bool fconFile, bool fconCaFile, bool fcon
             QFile caFile(caPath);
             if (caFile.exists())
                 if (!caFile.remove()) {
-                    QMessageBox::critical(0, QString("OpenVPN Client"), caFile.errorString());
+                    QMessageBox::critical(0, QString("Securepoint VPN Client"), caFile.errorString());
                 }
         }
     }
@@ -170,7 +183,7 @@ void Preferences::deleteConfigFromList(bool fconFile, bool fconCaFile, bool fcon
             QFile certFile(certPath);
             if (certFile.exists())
                 if (!certFile.remove()) {
-                    QMessageBox::critical(0, QString("OpenVPN Client"), certFile.errorString());
+                    QMessageBox::critical(0, QString("Securepoint VPN Client"), certFile.errorString());
                 }
         }
     }
@@ -186,7 +199,7 @@ void Preferences::deleteConfigFromList(bool fconFile, bool fconCaFile, bool fcon
             QFile keyFile(keyPath);
             if (keyFile.exists())
                 if (!keyFile.remove()) {
-                    QMessageBox::critical(0, QString("OpenVPN Client"), keyFile.errorString());
+                    QMessageBox::critical(0, QString("Securepoint VPN Client"), keyFile.errorString());
                 }
 
         }
@@ -196,7 +209,7 @@ void Preferences::deleteConfigFromList(bool fconFile, bool fconCaFile, bool fcon
         QFile configFile(this->actObject->configPath + "/" + this->actObject->configName + ".ovpn");
         if (configFile.exists())
             if (!configFile.remove()) {
-                QMessageBox::critical(0, QString("OpenVPN Client"), configFile.errorString());
+                QMessageBox::critical(0, QString("Securepoint VPN Client"), configFile.errorString());
             }
     }
 
@@ -204,7 +217,7 @@ void Preferences::deleteConfigFromList(bool fconFile, bool fconCaFile, bool fcon
         QFile userFile(this->actObject->configPath + "/data.conf");
         if (userFile.exists())
             if (!userFile.remove()) {
-                QMessageBox::critical(0, QString("OpenVPN Client"), userFile.errorString());
+                QMessageBox::critical(0, QString("Securepoint VPN Client"), userFile.errorString());
             }
     }
 
@@ -212,7 +225,7 @@ void Preferences::deleteConfigFromList(bool fconFile, bool fconCaFile, bool fcon
         QFile scriptFile(this->actObject->configPath + "/scripts.conf");
         if (scriptFile.exists())
             if (!scriptFile.remove()) {
-                QMessageBox::critical(0, QString("OpenVPN Client"), scriptFile.errorString());
+                QMessageBox::critical(0, QString("Securepoint VPN Client"), scriptFile.errorString());
             }
     }
 
@@ -221,7 +234,7 @@ void Preferences::deleteConfigFromList(bool fconFile, bool fconCaFile, bool fcon
         QDir delDir (this->actObject->configPath);
 
         if (!delDir.rmdir(this->actObject->configPath)){
-            QMessageBox::critical(0, QString("OpenVPN Client"), QString("Directory is not empty! Please delete it b hand!"));
+            QMessageBox::critical(0, QString("Securepoint VPN Client"), QString("Directory is not empty! Please delete it b hand!"));
         }
     }
 
@@ -360,7 +373,7 @@ void Preferences::resetFields() {
 
     // Connect status
     m_ui->lblTunnelStatus->setText("Disconnected");
-    QPixmap pixmap (":/images/light_grey.svg");
+    QPixmap pixmap (":/images/light_grey.png");
     m_ui->lblTunnelPixmap->setPixmap(pixmap);
 
     m_ui->txtPathFromConfig->setText("");
@@ -381,13 +394,13 @@ void Preferences::openConfigFromListView (QListWidgetItem * item ){
     m_ui->lblTunnelName->setText(this->actObject->configName);
     if (this->actObject->isConnectionStable()) {
         m_ui->lblTunnelStatus->setText("Connected");
-        QPixmap pixmap (":/images/light_green.svg");
+        QPixmap pixmap (":/images/light_green.png");
         m_ui->lblTunnelPixmap->setPixmap(pixmap);
         m_ui->cmdConnect->setText("&Disconnect");
         m_ui->cmdConnect->setEnabled(true);
     } else {
         m_ui->lblTunnelStatus->setText("Disconnected");
-        QPixmap pixmap (":/images/light_grey.svg");
+        QPixmap pixmap (":/images/light_grey.png");
         m_ui->lblTunnelPixmap->setPixmap(pixmap);
         m_ui->cmdConnect->setEnabled(false);
     }
@@ -396,10 +409,8 @@ void Preferences::openConfigFromListView (QListWidgetItem * item ){
     QFile cf (cFile);
 
     if (!cf.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        QMessageBox msgBox;
-                    msgBox.setText("Cannot read file.");
-                    msgBox.exec();
-         return;
+        QMessageBox::critical(0, QString("Securepoint VPN Client"), QString("Unable to read file!"));
+        return;
     }
 
     QTextStream in(&cf);
@@ -882,10 +893,10 @@ void Preferences::openContextMenuListView(const QPoint &pos) {
         configPopUp->addSeparator();
         configPopUp->addAction(QPixmap(":/images/delete.png"), "&Delete", this, SLOT(deleteConfig()));
         configPopUp->addSeparator();
-        configPopUp->addAction(QPixmap(":/images/connected.png"), "Con&nect", this, SLOT(connectConfig()));
+        conAct = configPopUp->addAction(QPixmap(":/images/connected.png"), "Con&nect", this, SLOT(connectConfig()));
         configPopUp->addSeparator();
-        configPopUp->addAction(QPixmap(":/images/export.svg"), "E&xport", this, SLOT(exportConfig()));
-        configPopUp->addAction(QPixmap(":/images/import.svg"), "&Import", this, SLOT(importConfig()));
+        configPopUp->addAction(QPixmap(":/images/export.png"), "E&xport", this, SLOT(exportConfig()));
+        configPopUp->addAction(QPixmap(":/images/import.png"), "&Import", this, SLOT(importConfig()));
         configPopUp->exec(m_ui->lsvConfigs->mapToGlobal(pos));
     }
 }
@@ -928,9 +939,7 @@ void Preferences::on_cmdSave_clicked()
     QFile cf (m_ui->txtPathFromConfig->text());
 
     if (!cf.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
-        QMessageBox msgBox;
-                    msgBox.setText("Cannot open file to write.");
-                    msgBox.exec();
+         QMessageBox::critical(0, QString("Securepoint VPN Client"), QString("Unable to open file!"));
          return;
     }
 
@@ -1040,9 +1049,7 @@ void Preferences::on_cmdSave_clicked()
         QFile sf (filepath);
 
         if (!sf.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
-            QMessageBox msgBox;
-                        msgBox.setText("Cannot open file to write.");
-                        msgBox.exec();
+             QMessageBox::critical(0, QString("Securepoint VPN Client"), QString("Unable to open file!"));
              return;
         }
 
@@ -1090,12 +1097,15 @@ void Preferences::on_cmdSave_clicked()
 
 void Preferences::on_cmdGetCAPath_clicked()
 {
+    if (this->lastDir == ""){
+        this->lastDir = this->actObject->configPath;
+    }
     QFileDialog caFileDialog;
-    QString filename = caFileDialog.getOpenFileName(this, tr("Find root ca"), this->actObject->configPath, "Certificates (*.cert)");
+    QString filename = caFileDialog.getOpenFileName(this, tr("Find root ca"), this->lastDir, "Certificates (*.cert *.pem)");
     if (filename != "") {
         int lastSlash = filename.lastIndexOf("/");
         QString filepath = filename.left(lastSlash);
-
+        this->lastDir = filepath;
         if (filepath == this->actObject->configPath)
             m_ui->txtCA->setText(filename.right(filename.size() - lastSlash -1));
         else
@@ -1105,12 +1115,15 @@ void Preferences::on_cmdGetCAPath_clicked()
 
 void Preferences::on_cmdGetCertPath_clicked()
 {
+    if (this->lastDir == ""){
+        this->lastDir = this->actObject->configPath;
+    }
     QFileDialog certFileDialog;
-    QString filename = certFileDialog.getOpenFileName(this, tr("Find certificates"), this->actObject->configPath, "Certificates (*.cert)");
+    QString filename = certFileDialog.getOpenFileName(this, tr("Find certificates"), this->lastDir, "Certificates (*.cert *.pem)");
     if (filename != "") {
         int lastSlash = filename.lastIndexOf("/");
         QString filepath = filename.left(lastSlash);
-
+        this->lastDir = filepath;
         if (filepath == this->actObject->configPath)
             m_ui->txtCert->setText(filename.right(filename.size() - lastSlash -1));
         else
@@ -1120,102 +1133,20 @@ void Preferences::on_cmdGetCertPath_clicked()
 
 void Preferences::on_cmdGetKeyPath_clicked()
 {
+    if (this->lastDir == ""){
+        this->lastDir = this->actObject->configPath;
+    }
     QFileDialog keyFileDialog;
-    QString filename = keyFileDialog.getOpenFileName(this, tr("Find key files"), this->actObject->configPath, "Key files (*.key)");
+    QString filename = keyFileDialog.getOpenFileName(this, tr("Find key files"), this->lastDir, "Key files (*.key *.pem)");
     if (filename != "") {
         int lastSlash = filename.lastIndexOf("/");
         QString filepath = filename.left(lastSlash);
-
+        this->lastDir = filepath;
         if (filepath == this->actObject->configPath)
             m_ui->txtKey->setText(filename.right(filename.size() - lastSlash -1));
         else
             m_ui->txtKey->setText(filename);
     }
-}
-
-void Preferences::on_label_linkHovered(QString link)
-{
-
-}
-
-void Preferences::on_cmdInfoClient_clicked()
-{
-   m_ui->memHelp->setText("Specify that this is a client. \nIt will be pulling certain config file directives from the server.");
-}
-
-void Preferences::on_cmdInfoRemote_clicked()
-{
-    m_ui->memHelp->setText("Specify the listen port from the OpenVPN server.");
-}
-
-void Preferences::on_cmdInfoRemoteIP_clicked()
-{
-    m_ui->memHelp->setText("Specify the IP from the OpenVPN server you want to connect.");
-}
-
-void Preferences::on_cmdInfoLinuxUser_clicked()
-{
-    m_ui->memHelp->setText("Specify the user name for the OpenVPN process which used after initialization.\nThe group field is similar to the user field.");
-}
-
-void Preferences::on_cmdInfoWinRouteMethod_clicked()
-{
-    m_ui->memHelp->setText("Specify which method to use for adding routes on Windows?\nipapi - Use IP helper API.\nexe - Use the route.exe .");
-}
-
-void Preferences::on_cmdInfoWinDevNode_clicked()
-{
-    m_ui->memHelp->setText("Specify the TAP-Win32 adapter name.\nIt is also possible to set the GUID of the adapter enclosed by braces.");
-}
-
-void Preferences::on_cmdInfoAdvRandomHost_clicked()
-{
-    m_ui->memHelp->setText("Specify that a random host is taken for the connection.\nThe host can be defined in the remote list.");
-}
-
-void Preferences::on_cmdInfoMuteWirelessWarnings_clicked()
-{
-    m_ui->memHelp->setText("Specify that the output of replay warnings will be silenced.\nReplay warnings are false alarms on Wireless networks.");
-}
-
-void Preferences::on_cmdInfoServerCertificate_clicked()
-{
-    m_ui->memHelp->setText("Specify that a certificate is used, which is created with the server attribute.");
-}
-
-void Preferences::on_cmdInfoDevName_clicked()
-{
-   m_ui->memHelp->setText("Specify the virtual interfaces for the connection.\nTap is normaly used on Microsoft Windows.\nTun is normaly used on Linux systems.");
-}
-
-void Preferences::on_cmdInfoAuthUserPass_clicked()
-{
-    m_ui->memHelp->setText("Specify that the user/pass authentication method is used.\nIt is required to type a username and a password for the connection.");
-}
-
-void Preferences::on_cmdInfoScriptsAfterConnect_clicked()
-{
-    m_ui->memHelp->setText("Specifiy the script which will be execute after a successfull connection to the OpenVPN network.");
-}
-
-void Preferences::on_cmdInfoScriptsBeforeConnect_clicked()
-{
-    m_ui->memHelp->setText("Specifiy the script which will be execute before the OpenVPN network will be connected.");
-}
-
-void Preferences::on_cmdInfoScriptsBeforeDisconnect_clicked()
-{
-    m_ui->memHelp->setText("Specifiy the script which will be execute before the OpenVPN network will be disconnected.");
-}
-
-void Preferences::on_cmdInfoScriptsAfterDisconnect_clicked()
-{
-    m_ui->memHelp->setText("Specifiy the script which will be execute after a successfull disconnect from the OpenVPN network.");
-}
-
-void Preferences::on_cmdInfoScriptsErrorConnect_clicked()
-{
-    m_ui->memHelp->setText("Specifiy the script which will be execute on an error while connecting to the OpenVPN network.");
 }
 
 void Preferences::on_cmdBeforeConnect_clicked()
@@ -1261,11 +1192,6 @@ void Preferences::on_cmdErrorConnect_clicked()
     if (filename != "") {
             m_ui->txtErrorConnect->setText(filename);
     }
-}
-
-void Preferences::on_cmdInfoScriptsDelyAC_clicked()
-{
-    m_ui->memHelp->setText("Specifiy the delay to executing the after connection script after the OpenVPN connection established.\nThis is useful to prevent network errors.\nDefault is 5000ms");
 }
 
 void Preferences::on_cmdConnect_clicked()
@@ -1417,7 +1343,7 @@ void Preferences::closeApp() {
             TapDriver drvTap;
             if (drvTap.isTapDriverInstalled()) {
                 QMessageBox msgBox;
-                msgBox.setWindowTitle("OpenVPN Client");
+                msgBox.setWindowTitle("Securepoint VPN Client");
                 msgBox.setText("Remove Tap-Win32 driver");
                 msgBox.setWindowIcon(QIcon(":/images/appicon.png"));
                 msgBox.setInformativeText("Uninstall the driver?\nFor this action you need administrator permissions!");
@@ -1427,7 +1353,7 @@ void Preferences::closeApp() {
                 switch (ret) {
                     case QMessageBox::Yes:
                         if (!drvTap.removeTapDriver()) {
-                                QMessageBox::critical(0, QString("OpenVPN Client"), QString("Unable to uninstall Tap-Win32 driver!\nMaybe you have no permissions.\nPlease contact your system administrator."));
+                                QMessageBox::critical(0, QString("Securepoint VPN Client"), QString("Unable to uninstall Tap-Win32 driver!\nMaybe you have no permissions.\nPlease contact your system administrator."));
                                 QCoreApplication::exit(1);
                          }
                          break;

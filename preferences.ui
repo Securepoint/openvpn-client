@@ -7,11 +7,23 @@
     <x>0</x>
     <y>0</y>
     <width>689</width>
-    <height>738</height>
+    <height>650</height>
    </rect>
   </property>
+  <property name="minimumSize">
+   <size>
+    <width>689</width>
+    <height>650</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>689</width>
+    <height>650</height>
+   </size>
+  </property>
   <property name="windowTitle">
-   <string>OpenVPN Manage Connections</string>
+   <string>Securepoint VPN Client</string>
   </property>
   <property name="windowIcon">
    <iconset resource="systray.qrc">
@@ -27,9 +39,9 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>75</y>
+     <y>55</y>
      <width>671</width>
-     <height>631</height>
+     <height>561</height>
     </rect>
    </property>
    <property name="title">
@@ -361,46 +373,6 @@
         <string/>
        </property>
       </widget>
-      <widget class="QPushButton" name="cmdInfoClient">
-       <property name="geometry">
-        <rect>
-         <x>101</x>
-         <y>27</y>
-         <width>16</width>
-         <height>16</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset resource="systray.qrc">
-         <normaloff>:/images/info.svg</normaloff>:/images/info.svg</iconset>
-       </property>
-       <property name="flat">
-        <bool>true</bool>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="cmdInfoAuthUserPass">
-       <property name="geometry">
-        <rect>
-         <x>337</x>
-         <y>42</y>
-         <width>16</width>
-         <height>16</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset resource="systray.qrc">
-         <normaloff>:/images/info.svg</normaloff>:/images/info.svg</iconset>
-       </property>
-       <property name="flat">
-        <bool>true</bool>
-       </property>
-      </widget>
      </widget>
      <widget class="QGroupBox" name="groupBox_7">
       <property name="geometry">
@@ -464,26 +436,6 @@
        </property>
        <property name="text">
         <string>Dev mtu:</string>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="cmdInfoDevName">
-       <property name="geometry">
-        <rect>
-         <x>209</x>
-         <y>23</y>
-         <width>16</width>
-         <height>16</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset resource="systray.qrc">
-         <normaloff>:/images/info.svg</normaloff>:/images/info.svg</iconset>
-       </property>
-       <property name="flat">
-        <bool>true</bool>
        </property>
       </widget>
      </widget>
@@ -575,46 +527,6 @@
        </property>
        <property name="text">
         <string>Protocol:</string>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="cmdInfoRemote">
-       <property name="geometry">
-        <rect>
-         <x>221</x>
-         <y>42</y>
-         <width>16</width>
-         <height>16</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset resource="systray.qrc">
-         <normaloff>:/images/info.svg</normaloff>:/images/info.svg</iconset>
-       </property>
-       <property name="flat">
-        <bool>true</bool>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="cmdInfoRemoteIP">
-       <property name="geometry">
-        <rect>
-         <x>390</x>
-         <y>18</y>
-         <width>16</width>
-         <height>16</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset resource="systray.qrc">
-         <normaloff>:/images/info.svg</normaloff>:/images/info.svg</iconset>
-       </property>
-       <property name="flat">
-        <bool>true</bool>
        </property>
       </widget>
      </widget>
@@ -794,26 +706,6 @@
         <string>...</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="cmdInfoServerCertificate">
-       <property name="geometry">
-        <rect>
-         <x>122</x>
-         <y>94</y>
-         <width>16</width>
-         <height>16</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset resource="systray.qrc">
-         <normaloff>:/images/info.svg</normaloff>:/images/info.svg</iconset>
-       </property>
-       <property name="flat">
-        <bool>true</bool>
-       </property>
-      </widget>
      </widget>
     </widget>
     <widget class="QWidget" name="page_3">
@@ -890,26 +782,6 @@
          <width>161</width>
          <height>20</height>
         </rect>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="cmdInfoLinuxUser">
-       <property name="geometry">
-        <rect>
-         <x>230</x>
-         <y>21</y>
-         <width>16</width>
-         <height>16</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset resource="systray.qrc">
-         <normaloff>:/images/info.svg</normaloff>:/images/info.svg</iconset>
-       </property>
-       <property name="flat">
-        <bool>true</bool>
        </property>
       </widget>
      </widget>
@@ -1032,46 +904,6 @@
         </rect>
        </property>
       </widget>
-      <widget class="QPushButton" name="cmdInfoWinRouteMethod">
-       <property name="geometry">
-        <rect>
-         <x>220</x>
-         <y>70</y>
-         <width>16</width>
-         <height>16</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset resource="systray.qrc">
-         <normaloff>:/images/info.svg</normaloff>:/images/info.svg</iconset>
-       </property>
-       <property name="flat">
-        <bool>true</bool>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="cmdInfoWinDevNode">
-       <property name="geometry">
-        <rect>
-         <x>220</x>
-         <y>90</y>
-         <width>16</width>
-         <height>16</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset resource="systray.qrc">
-         <normaloff>:/images/info.svg</normaloff>:/images/info.svg</iconset>
-       </property>
-       <property name="flat">
-        <bool>true</bool>
-       </property>
-      </widget>
      </widget>
     </widget>
     <widget class="QWidget" name="page_2">
@@ -1176,46 +1008,6 @@
         <string>...</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="cmdInfoScriptsAfterConnect">
-       <property name="geometry">
-        <rect>
-         <x>396</x>
-         <y>55</y>
-         <width>20</width>
-         <height>20</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset resource="systray.qrc">
-         <normaloff>:/images/info.svg</normaloff>:/images/info.svg</iconset>
-       </property>
-       <property name="flat">
-        <bool>true</bool>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="cmdInfoScriptsBeforeConnect">
-       <property name="geometry">
-        <rect>
-         <x>396</x>
-         <y>31</y>
-         <width>20</width>
-         <height>20</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset resource="systray.qrc">
-         <normaloff>:/images/info.svg</normaloff>:/images/info.svg</iconset>
-       </property>
-       <property name="flat">
-        <bool>true</bool>
-       </property>
-      </widget>
      </widget>
      <widget class="QGroupBox" name="groupBox_16">
       <property name="geometry">
@@ -1307,46 +1099,6 @@
         <string>...</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="cmdInfoScriptsAfterDisconnect">
-       <property name="geometry">
-        <rect>
-         <x>400</x>
-         <y>55</y>
-         <width>16</width>
-         <height>16</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset resource="systray.qrc">
-         <normaloff>:/images/info.svg</normaloff>:/images/info.svg</iconset>
-       </property>
-       <property name="flat">
-        <bool>true</bool>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="cmdInfoScriptsBeforeDisconnect">
-       <property name="geometry">
-        <rect>
-         <x>400</x>
-         <y>31</y>
-         <width>16</width>
-         <height>16</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset resource="systray.qrc">
-         <normaloff>:/images/info.svg</normaloff>:/images/info.svg</iconset>
-       </property>
-       <property name="flat">
-        <bool>true</bool>
-       </property>
-      </widget>
      </widget>
      <widget class="QGroupBox" name="groupBox_14">
       <property name="geometry">
@@ -1360,26 +1112,6 @@
       <property name="title">
        <string>Error while connecting:</string>
       </property>
-      <widget class="QPushButton" name="cmdInfoScriptsErrorConnect">
-       <property name="geometry">
-        <rect>
-         <x>400</x>
-         <y>28</y>
-         <width>16</width>
-         <height>16</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset resource="systray.qrc">
-         <normaloff>:/images/info.svg</normaloff>:/images/info.svg</iconset>
-       </property>
-       <property name="flat">
-        <bool>true</bool>
-       </property>
-      </widget>
       <widget class="QLabel" name="label_40">
        <property name="geometry">
         <rect>
@@ -1453,26 +1185,6 @@
          <width>71</width>
          <height>20</height>
         </rect>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="cmdInfoScriptsDelyAC">
-       <property name="geometry">
-        <rect>
-         <x>226</x>
-         <y>32</y>
-         <width>16</width>
-         <height>16</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset resource="systray.qrc">
-         <normaloff>:/images/info.svg</normaloff>:/images/info.svg</iconset>
-       </property>
-       <property name="flat">
-        <bool>true</bool>
        </property>
       </widget>
       <widget class="QLabel" name="label_37">
@@ -1663,26 +1375,6 @@
         <string/>
        </property>
       </widget>
-      <widget class="QPushButton" name="cmdInfoAdvRandomHost">
-       <property name="geometry">
-        <rect>
-         <x>140</x>
-         <y>20</y>
-         <width>16</width>
-         <height>16</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset resource="systray.qrc">
-         <normaloff>:/images/info.svg</normaloff>:/images/info.svg</iconset>
-       </property>
-       <property name="flat">
-        <bool>true</bool>
-       </property>
-      </widget>
      </widget>
      <widget class="QGroupBox" name="groupBox_11">
       <property name="geometry">
@@ -1862,66 +1554,30 @@
        </property>
       </widget>
      </widget>
-     <widget class="QPushButton" name="cmdInfoMuteWirelessWarnings">
-      <property name="geometry">
-       <rect>
-        <x>148</x>
-        <y>319</y>
-        <width>16</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-      <property name="icon">
-       <iconset resource="systray.qrc">
-        <normaloff>:/images/info.svg</normaloff>:/images/info.svg</iconset>
-      </property>
-      <property name="flat">
-       <bool>true</bool>
-      </property>
-     </widget>
     </widget>
-   </widget>
-   <widget class="QTextEdit" name="memHelp">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>560</y>
-      <width>651</width>
-      <height>64</height>
-     </rect>
-    </property>
-    <property name="contextMenuPolicy">
-     <enum>Qt::NoContextMenu</enum>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: rgb(241, 161, 80);</string>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::Box</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Plain</enum>
-    </property>
    </widget>
   </widget>
   <widget class="QPushButton" name="cmdClose">
    <property name="geometry">
     <rect>
      <x>590</x>
-     <y>710</y>
+     <y>621</y>
      <width>91</width>
      <height>24</height>
     </rect>
    </property>
    <property name="text">
-    <string>&amp;Close</string>
+    <string/>
    </property>
    <property name="icon">
     <iconset resource="systray.qrc">
-     <normaloff>:/images/close.svg</normaloff>:/images/close.svg</iconset>
+     <normaloff>:/images/exit.png</normaloff>:/images/exit.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>30</width>
+     <height>16</height>
+    </size>
    </property>
    <property name="flat">
     <bool>true</bool>
@@ -1931,17 +1587,23 @@
    <property name="geometry">
     <rect>
      <x>480</x>
-     <y>710</y>
+     <y>621</y>
      <width>91</width>
      <height>24</height>
     </rect>
    </property>
    <property name="text">
-    <string>&amp;Save</string>
+    <string/>
    </property>
    <property name="icon">
     <iconset resource="systray.qrc">
-     <normaloff>:/images/save.svg</normaloff>:/images/save.svg</iconset>
+     <normaloff>:/images/save.png</normaloff>:/images/save.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>30</width>
+     <height>16</height>
+    </size>
    </property>
    <property name="autoDefault">
     <bool>true</bool>
@@ -1964,7 +1626,7 @@
    <property name="geometry">
     <rect>
      <x>13</x>
-     <y>714</y>
+     <y>625</y>
      <width>41</width>
      <height>16</height>
     </rect>
@@ -1977,7 +1639,7 @@
    <property name="geometry">
     <rect>
      <x>57</x>
-     <y>717</y>
+     <y>628</y>
      <width>111</width>
      <height>10</height>
     </rect>
@@ -1990,7 +1652,7 @@
    <property name="geometry">
     <rect>
      <x>180</x>
-     <y>713</y>
+     <y>624</y>
      <width>16</width>
      <height>16</height>
     </rect>
@@ -1999,7 +1661,7 @@
     <string/>
    </property>
    <property name="pixmap">
-    <pixmap resource="systray.qrc">:/images/light_grey.svg</pixmap>
+    <pixmap resource="systray.qrc">:/images/light_grey.png</pixmap>
    </property>
    <property name="scaledContents">
     <bool>true</bool>
@@ -2009,7 +1671,7 @@
    <property name="geometry">
     <rect>
      <x>202</x>
-     <y>714</y>
+     <y>625</y>
      <width>91</width>
      <height>16</height>
     </rect>
@@ -2022,7 +1684,7 @@
    <property name="geometry">
     <rect>
      <x>290</x>
-     <y>710</y>
+     <y>621</y>
      <width>101</width>
      <height>24</height>
     </rect>
@@ -2038,29 +1700,13 @@
     <bool>true</bool>
    </property>
   </widget>
-  <widget class="QLabel" name="label_43">
+  <widget class="QLabel" name="label_42">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
      <width>691</width>
-     <height>71</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string>background-color: rgb(255, 255, 255);</string>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_42">
-   <property name="geometry">
-    <rect>
-     <x>310</x>
-     <y>0</y>
-     <width>381</width>
-     <height>71</height>
+     <height>51</height>
     </rect>
    </property>
    <property name="text">
@@ -2068,25 +1714,6 @@
    </property>
    <property name="pixmap">
     <pixmap resource="systray.qrc">:/images/banner.png</pixmap>
-   </property>
-   <property name="scaledContents">
-    <bool>true</bool>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_44">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>-10</y>
-     <width>311</width>
-     <height>81</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-   <property name="pixmap">
-    <pixmap resource="systray.qrc">:/images/securepoint_h.png</pixmap>
    </property>
   </widget>
  </widget>

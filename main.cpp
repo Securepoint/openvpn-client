@@ -14,14 +14,14 @@ int main(int argc, char *argv[])
     SingleApplication app(argc, argv, "1x4z37");
 
     if (app.isRunning()){
-        QMessageBox::critical(0, QObject::tr("OpenVPN Client"),
+        QMessageBox::critical(0, QObject::tr("Securepoint VPN Client"),
                               QObject::tr("Another instance of Securepoint OpenVPN client is already running!"));
         return 0;
     }
 
 
     if (!QSystemTrayIcon::isSystemTrayAvailable()) {
-        QMessageBox::critical(0, QObject::tr("OpenVPN Client"),
+        QMessageBox::critical(0, QObject::tr("Securepoint VPN Client"),
                               QObject::tr("No systray found on this system."));
         return 1;
     }
@@ -39,7 +39,29 @@ int main(int argc, char *argv[])
     
     // Main Window
     Preferences window;
-    //QObject::connect(&app, SIGNAL(messageAvailable(QString)), Preferences, SLOT(receiveMessage(QString)));
+    bool isFirstStart = true;
+    QFile setupFile (QApplication::applicationDirPath() + QString ("/setup.txt"));
+    if (setupFile.exists()){
+        setupFile.open(QIODevice::ReadOnly | QIODevice::Text);
+        QTextStream in (&setupFile);
+        while (!in.atEnd()) {
+            QString lineSting = in.readLine();
+            if (lineSting.contains("NoFirstStart")) {
+                isFirstStart = false;
+                break;
+            }
+        }
+        setupFile.close();
+        if (isFirstStart) {
+            // Nun öffnen zum Schreiben
+            QFile setupWriteFile (QApplication::applicationDirPath() + QString ("/setup.txt"));
+            setupWriteFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate);
+            QTextStream out (&setupWriteFile);
+            out << "NoFirstStart\n";
+            setupWriteFile.close();
+            window.show();
+        }
+    }
 
     // Anwendung ohne Dialog starten
     return app.exec();

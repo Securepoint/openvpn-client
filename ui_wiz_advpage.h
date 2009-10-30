@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading ui file 'wiz_advpage.ui'
 **
-** Created: Thu 29. Oct 11:16:09 2009
+** Created: Fri 30. Oct 16:48:22 2009
 **      by: Qt User Interface Compiler version 4.5.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!
@@ -20,8 +20,6 @@
 #include <QtGui/QHeaderView>
 #include <QtGui/QLabel>
 #include <QtGui/QLineEdit>
-#include <QtGui/QPushButton>
-#include <QtGui/QTextEdit>
 #include <QtGui/QWizardPage>
 
 QT_BEGIN_NAMESPACE
@@ -38,7 +36,6 @@ public:
     QGroupBox *groupBox;
     QLabel *label_6;
     QCheckBox *cbMsfix;
-    QPushButton *cmdInfoWinRouteMethod;
     QComboBox *cmbRouteMethod;
     QLabel *label_21;
     QCheckBox *cbFloat;
@@ -49,8 +46,6 @@ public:
     QLabel *label_20;
     QLabel *label_11;
     QCheckBox *cbCompLzo;
-    QPushButton *cmdInfoAuthUserPass;
-    QTextEdit *memHelp;
 
     void setupUi(QWizardPage *AdvPage)
     {
@@ -88,13 +83,6 @@ public:
         cbMsfix->setObjectName(QString::fromUtf8("cbMsfix"));
         cbMsfix->setEnabled(true);
         cbMsfix->setGeometry(QRect(56, 21, 20, 20));
-        cmdInfoWinRouteMethod = new QPushButton(groupBox);
-        cmdInfoWinRouteMethod->setObjectName(QString::fromUtf8("cmdInfoWinRouteMethod"));
-        cmdInfoWinRouteMethod->setGeometry(QRect(296, 20, 20, 20));
-        QIcon icon;
-        icon.addFile(QString::fromUtf8(":/images/info.svg"), QSize(), QIcon::Normal, QIcon::Off);
-        cmdInfoWinRouteMethod->setIcon(icon);
-        cmdInfoWinRouteMethod->setFlat(true);
         cmbRouteMethod = new QComboBox(groupBox);
         cmbRouteMethod->setObjectName(QString::fromUtf8("cmbRouteMethod"));
         cmbRouteMethod->setEnabled(true);
@@ -130,19 +118,6 @@ public:
         cbCompLzo->setObjectName(QString::fromUtf8("cbCompLzo"));
         cbCompLzo->setEnabled(true);
         cbCompLzo->setGeometry(QRect(290, 120, 20, 20));
-        cmdInfoAuthUserPass = new QPushButton(AdvPage);
-        cmdInfoAuthUserPass->setObjectName(QString::fromUtf8("cmdInfoAuthUserPass"));
-        cmdInfoAuthUserPass->setGeometry(QRect(310, 70, 16, 16));
-        cmdInfoAuthUserPass->setIcon(icon);
-        cmdInfoAuthUserPass->setFlat(true);
-        memHelp = new QTextEdit(AdvPage);
-        memHelp->setObjectName(QString::fromUtf8("memHelp"));
-        memHelp->setGeometry(QRect(15, 220, 371, 71));
-        memHelp->setContextMenuPolicy(Qt::NoContextMenu);
-        memHelp->setStyleSheet(QString::fromUtf8("background-color: rgb(241, 161, 80);"));
-        memHelp->setFrameShape(QFrame::Box);
-        memHelp->setFrameShadow(QFrame::Plain);
-        memHelp->setReadOnly(true);
 
         retranslateUi(AdvPage);
 
@@ -160,7 +135,6 @@ public:
         groupBox->setTitle(QApplication::translate("AdvPage", "Settings for Windows", 0, QApplication::UnicodeUTF8));
         label_6->setText(QApplication::translate("AdvPage", "MSSFIX:", 0, QApplication::UnicodeUTF8));
         cbMsfix->setText(QString());
-        cmdInfoWinRouteMethod->setText(QString());
         label_21->setText(QApplication::translate("AdvPage", "Route method:", 0, QApplication::UnicodeUTF8));
         cbFloat->setText(QString());
         label_16->setText(QApplication::translate("AdvPage", "Comp-LZO:", 0, QApplication::UnicodeUTF8));
@@ -170,13 +144,6 @@ public:
         label_20->setText(QApplication::translate("AdvPage", "Auth user/pass:", 0, QApplication::UnicodeUTF8));
         label_11->setText(QApplication::translate("AdvPage", "No bind:", 0, QApplication::UnicodeUTF8));
         cbCompLzo->setText(QString());
-        cmdInfoAuthUserPass->setText(QString());
-        memHelp->setHtml(QApplication::translate("AdvPage", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Please click the info symbol of the item you want to see the help. </span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">For further informations please visit: http://www.openvpn.net</span></p></body></html>", 0, QApplication::UnicodeUTF8));
         Q_UNUSED(AdvPage);
     } // retranslateUi
 

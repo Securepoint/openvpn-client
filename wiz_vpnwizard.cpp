@@ -12,9 +12,9 @@ VpnWizard::VpnWizard(QWidget *parent)
     addPage(new EndPage);
 
 
-    setPixmap(QWizard::BannerPixmap, QPixmap(":/images/banner.png"));
+    setPixmap(QWizard::BannerPixmap, QPixmap(":/images/banner_wiz.png"));
     setWindowIcon(QIcon(":/images/appicon.png"));
-    setWindowTitle(tr("Create a new OpenVPN config"));
+    setWindowTitle(tr("Create a new VPN connection"));
     setModal(true);
 }
 
@@ -24,34 +24,18 @@ void VpnWizard::accept()
     QString configFilePath;
     QString dirPath;
 
-    if (!app.isAppPortable()) {
-        // Installierte Version
-        // Dateien ins Homeverzeichnis/securepoint/OpenVPN kopieren
-        configFilePath = QDir::homePath()
-                        + QString("/securepoint/OpenVPN/")
-                        + field("txtConfigName").toString()
-                        + QString("/")
-                        + field("txtConfigName").toString()
-                        + QString(".ovpn");
 
-        dirPath = QDir::homePath()
-                   + QString("/securepoint/OpenVPN/")
-                   + field("txtConfigName").toString();
+    configFilePath = app.getAppSavePath()
+                     + QString ("/")
+                     + field("txtConfigName").toString()
+                     + QString("/")
+                     + field("txtConfigName").toString()
+                     + QString(".ovpn");
 
-    } else {
-        // Portable Version
-        // Dateien ins App Verzeichnis /data kopieren
-        configFilePath = QApplication::applicationDirPath()
-                        + QString("/data/")
-                        + field("txtConfigName").toString()
-                        + QString("/")
-                        + field("txtConfigName").toString()
-                        + QString(".ovpn");
+    dirPath = app.getAppSavePath()
+              + QString ("/")
+              + field("txtConfigName").toString();
 
-        dirPath = QApplication::applicationDirPath()
-                   + QString("/data/")
-                   + field("txtConfigName").toString();
-    }
     // Ist das Verzeichnis schon da und gib es schon eine Configfile?
     QDir dirobj (dirPath);
         if (!dirobj.exists(dirPath)){
@@ -59,7 +43,7 @@ void VpnWizard::accept()
             // Pfad erstellen
             if (!dirobj.mkpath(dirPath)) {
                 // Pfad konnte nicht erstellt werden
-                QMessageBox::critical(0,"Securepoint OpenVPN Client", "Unable to create directory!");
+                QMessageBox::critical(0,"Securepoint VPN Client", "Unable to create directory!");
                 return;
             }
         } else {
@@ -67,7 +51,7 @@ void VpnWizard::accept()
             QFile file(configFilePath);
             if (file.exists()) {
                 // Datei existiert bereits
-                QMessageBox::critical(0,"Securepoint OpenVPN Client", "Configfile already exists!");
+                QMessageBox::critical(0,"Securepoint VPN Client", "Configfile already exists!");
                 return;
             }
             file.close();
@@ -78,7 +62,7 @@ void VpnWizard::accept()
     QFile configFile (configFilePath);
     if (!configFile.open(QIODevice::WriteOnly | QIODevice::Text)){
         // Datei kann nicht erstellt werden
-        QMessageBox::critical(0,"Securepoint OpenVPN Client", "Can't create Configfile!");
+        QMessageBox::critical(0,"Securepoint VPN Client", "Can't create Configfile!");
         return;
     }
     //  Datei ist offen und wartet auf Daten
@@ -146,19 +130,19 @@ void VpnWizard::accept()
     // Nun die Dateien kopieren
     QFile caFile (field("txtCAPath").toString());
     if (!caFile.copy(dirPath + QString("/") + caPath.right(caPath.size() - caPath.lastIndexOf("/") -1))){
-        QMessageBox::critical(0,"Securepoint OpenVPN Client", "Unable to copy CA file!");
+        QMessageBox::critical(0,"Securepoint VPN Client", "Unable to copy CA file!");
         return;
     }
 
     QFile certFile (field("txtCertPath").toString());
     if (!certFile.copy(dirPath + QString("/") + certPath.right(certPath.size() - certPath.lastIndexOf("/") -1))){
-        QMessageBox::critical(0,"Securepoint OpenVPN Client", "Unable to copy certificate file!");
+        QMessageBox::critical(0,"Securepoint VPN Client", "Unable to copy certificate file!");
         return;
     }
 
     QFile keyFile (field("txtKeyPath").toString());
     if (!keyFile.copy(dirPath + QString("/") + keyPath.right(keyPath.size() - keyPath.lastIndexOf("/") -1))){
-        QMessageBox::critical(0,"Securepoint OpenVPN Client", "Unable to copy key file!");
+        QMessageBox::critical(0,"Securepoint VPN Client", "Unable to copy key file!");
         return;
     }
     // Alles erstellt und kopiert!
@@ -168,7 +152,7 @@ void VpnWizard::accept()
     Preferences *prefDialog = dynamic_cast<Preferences*> (this->parent());
     prefDialog->refreshConfigList();
 
-    QMessageBox::information(0,"Securepoint OpenVPN Client", "Config is successfully created!");
+    QMessageBox::information(0,"Securepoint VPN Client", "Config is successfully created!");
     this->close();
 
 

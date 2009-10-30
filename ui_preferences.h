@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading ui file 'preferences.ui'
 **
-** Created: Thu 29. Oct 12:26:10 2009
+** Created: Fri 30. Oct 16:48:22 2009
 **      by: Qt User Interface Compiler version 4.5.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!
@@ -23,7 +23,6 @@
 #include <QtGui/QLineEdit>
 #include <QtGui/QListWidget>
 #include <QtGui/QPushButton>
-#include <QtGui/QTextEdit>
 #include <QtGui/QToolBox>
 #include <QtGui/QWidget>
 
@@ -55,14 +54,11 @@ public:
     QCheckBox *cbNoCache;
     QLabel *label_20;
     QCheckBox *cbUserPass;
-    QPushButton *cmdInfoClient;
-    QPushButton *cmdInfoAuthUserPass;
     QGroupBox *groupBox_7;
     QComboBox *cmbDev;
     QLabel *label_3;
     QLineEdit *txtMtu;
     QLabel *label_4;
-    QPushButton *cmdInfoDevName;
     QGroupBox *groupBox_5;
     QLineEdit *txtRemotePort;
     QLabel *label_10;
@@ -70,8 +66,6 @@ public:
     QLabel *label_9;
     QComboBox *cmbProto;
     QLabel *label_7;
-    QPushButton *cmdInfoRemote;
-    QPushButton *cmdInfoRemoteIP;
     QGroupBox *groupBox_4;
     QLineEdit *txtCA;
     QLabel *label_2;
@@ -84,14 +78,12 @@ public:
     QPushButton *cmdGetCAPath;
     QPushButton *cmdGetCertPath;
     QPushButton *cmdGetKeyPath;
-    QPushButton *cmdInfoServerCertificate;
     QWidget *page_3;
     QGroupBox *groupBox_10;
     QLabel *label_26;
     QLabel *label_27;
     QLineEdit *txtLinuxUser;
     QLineEdit *txtLinuxGroup;
-    QPushButton *cmdInfoLinuxUser;
     QGroupBox *groupBox_6;
     QCheckBox *cbMsfix;
     QLabel *label_6;
@@ -101,8 +93,6 @@ public:
     QLabel *label_21;
     QLabel *label_23;
     QLineEdit *txtDevNode;
-    QPushButton *cmdInfoWinRouteMethod;
-    QPushButton *cmdInfoWinDevNode;
     QWidget *page_2;
     QGroupBox *groupBox_15;
     QLabel *label_34;
@@ -111,8 +101,6 @@ public:
     QLineEdit *txtAfterConnect;
     QPushButton *cmdBeforeConnect;
     QPushButton *cmdAfterConnect;
-    QPushButton *cmdInfoScriptsAfterConnect;
-    QPushButton *cmdInfoScriptsBeforeConnect;
     QGroupBox *groupBox_16;
     QLabel *label_38;
     QLabel *label_39;
@@ -120,17 +108,13 @@ public:
     QLineEdit *txtAfterDisconnect;
     QPushButton *cmdBeforeDisconnect;
     QPushButton *cmdAfterDisconnect;
-    QPushButton *cmdInfoScriptsAfterDisconnect;
-    QPushButton *cmdInfoScriptsBeforeDisconnect;
     QGroupBox *groupBox_14;
-    QPushButton *cmdInfoScriptsErrorConnect;
     QLabel *label_40;
     QPushButton *cmdErrorConnect;
     QLineEdit *txtErrorConnect;
     QGroupBox *groupBox_17;
     QLabel *label_36;
     QLineEdit *txtScriptACDelay;
-    QPushButton *cmdInfoScriptsDelyAC;
     QLabel *label_37;
     QWidget *page_4;
     QGroupBox *groupBox_8;
@@ -145,7 +129,6 @@ public:
     QLabel *label_24;
     QLabel *label_25;
     QCheckBox *cbResolveHostname;
-    QPushButton *cmdInfoAdvRandomHost;
     QGroupBox *groupBox_11;
     QLabel *label_28;
     QCheckBox *cbHTTPRetry;
@@ -159,8 +142,6 @@ public:
     QGroupBox *groupBox_13;
     QLabel *label_32;
     QComboBox *cmbChiper;
-    QPushButton *cmdInfoMuteWirelessWarnings;
-    QTextEdit *memHelp;
     QPushButton *cmdClose;
     QPushButton *cmdSave;
     QLineEdit *txtPathFromConfig;
@@ -169,16 +150,16 @@ public:
     QLabel *lblTunnelPixmap;
     QLabel *lblTunnelStatus;
     QPushButton *cmdConnect;
-    QLabel *label_43;
     QLabel *label_42;
-    QLabel *label_44;
     QButtonGroup *buttonGroup;
 
     void setupUi(QDialog *Preferences)
     {
         if (Preferences->objectName().isEmpty())
             Preferences->setObjectName(QString::fromUtf8("Preferences"));
-        Preferences->resize(689, 738);
+        Preferences->resize(689, 650);
+        Preferences->setMinimumSize(QSize(689, 650));
+        Preferences->setMaximumSize(QSize(689, 650));
         QIcon icon;
         icon.addFile(QString::fromUtf8(":/images/appicon.png"), QSize(), QIcon::Normal, QIcon::Off);
         Preferences->setWindowIcon(icon);
@@ -186,7 +167,7 @@ public:
         Preferences->setModal(true);
         groupBox = new QGroupBox(Preferences);
         groupBox->setObjectName(QString::fromUtf8("groupBox"));
-        groupBox->setGeometry(QRect(10, 75, 671, 631));
+        groupBox->setGeometry(QRect(10, 55, 671, 561));
         groupBox_2 = new QGroupBox(groupBox);
         groupBox_2->setObjectName(QString::fromUtf8("groupBox_2"));
         groupBox_2->setGeometry(QRect(10, 10, 221, 541));
@@ -272,18 +253,6 @@ public:
         cbUserPass->setObjectName(QString::fromUtf8("cbUserPass"));
         cbUserPass->setEnabled(false);
         cbUserPass->setGeometry(QRect(320, 40, 20, 20));
-        cmdInfoClient = new QPushButton(groupBox_3);
-        cmdInfoClient->setObjectName(QString::fromUtf8("cmdInfoClient"));
-        cmdInfoClient->setGeometry(QRect(101, 27, 16, 16));
-        QIcon icon2;
-        icon2.addFile(QString::fromUtf8(":/images/info.svg"), QSize(), QIcon::Normal, QIcon::Off);
-        cmdInfoClient->setIcon(icon2);
-        cmdInfoClient->setFlat(true);
-        cmdInfoAuthUserPass = new QPushButton(groupBox_3);
-        cmdInfoAuthUserPass->setObjectName(QString::fromUtf8("cmdInfoAuthUserPass"));
-        cmdInfoAuthUserPass->setGeometry(QRect(337, 42, 16, 16));
-        cmdInfoAuthUserPass->setIcon(icon2);
-        cmdInfoAuthUserPass->setFlat(true);
         groupBox_7 = new QGroupBox(page);
         groupBox_7->setObjectName(QString::fromUtf8("groupBox_7"));
         groupBox_7->setGeometry(QRect(0, 87, 421, 81));
@@ -301,11 +270,6 @@ public:
         label_4 = new QLabel(groupBox_7);
         label_4->setObjectName(QString::fromUtf8("label_4"));
         label_4->setGeometry(QRect(12, 46, 51, 16));
-        cmdInfoDevName = new QPushButton(groupBox_7);
-        cmdInfoDevName->setObjectName(QString::fromUtf8("cmdInfoDevName"));
-        cmdInfoDevName->setGeometry(QRect(209, 23, 16, 16));
-        cmdInfoDevName->setIcon(icon2);
-        cmdInfoDevName->setFlat(true);
         groupBox_5 = new QGroupBox(page);
         groupBox_5->setObjectName(QString::fromUtf8("groupBox_5"));
         groupBox_5->setGeometry(QRect(0, 172, 421, 101));
@@ -330,16 +294,6 @@ public:
         label_7 = new QLabel(groupBox_5);
         label_7->setObjectName(QString::fromUtf8("label_7"));
         label_7->setGeometry(QRect(10, 65, 71, 16));
-        cmdInfoRemote = new QPushButton(groupBox_5);
-        cmdInfoRemote->setObjectName(QString::fromUtf8("cmdInfoRemote"));
-        cmdInfoRemote->setGeometry(QRect(221, 42, 16, 16));
-        cmdInfoRemote->setIcon(icon2);
-        cmdInfoRemote->setFlat(true);
-        cmdInfoRemoteIP = new QPushButton(groupBox_5);
-        cmdInfoRemoteIP->setObjectName(QString::fromUtf8("cmdInfoRemoteIP"));
-        cmdInfoRemoteIP->setGeometry(QRect(390, 18, 16, 16));
-        cmdInfoRemoteIP->setIcon(icon2);
-        cmdInfoRemoteIP->setFlat(true);
         groupBox_4 = new QGroupBox(page);
         groupBox_4->setObjectName(QString::fromUtf8("groupBox_4"));
         groupBox_4->setGeometry(QRect(0, 277, 421, 121));
@@ -386,11 +340,6 @@ public:
         cmdGetKeyPath->setObjectName(QString::fromUtf8("cmdGetKeyPath"));
         cmdGetKeyPath->setEnabled(false);
         cmdGetKeyPath->setGeometry(QRect(381, 68, 30, 21));
-        cmdInfoServerCertificate = new QPushButton(groupBox_4);
-        cmdInfoServerCertificate->setObjectName(QString::fromUtf8("cmdInfoServerCertificate"));
-        cmdInfoServerCertificate->setGeometry(QRect(122, 94, 16, 16));
-        cmdInfoServerCertificate->setIcon(icon2);
-        cmdInfoServerCertificate->setFlat(true);
         tbSettings->addItem(page, QString::fromUtf8("General"));
         page_3 = new QWidget();
         page_3->setObjectName(QString::fromUtf8("page_3"));
@@ -412,11 +361,6 @@ public:
         txtLinuxGroup->setObjectName(QString::fromUtf8("txtLinuxGroup"));
         txtLinuxGroup->setEnabled(false);
         txtLinuxGroup->setGeometry(QRect(65, 42, 161, 20));
-        cmdInfoLinuxUser = new QPushButton(groupBox_10);
-        cmdInfoLinuxUser->setObjectName(QString::fromUtf8("cmdInfoLinuxUser"));
-        cmdInfoLinuxUser->setGeometry(QRect(230, 21, 16, 16));
-        cmdInfoLinuxUser->setIcon(icon2);
-        cmdInfoLinuxUser->setFlat(true);
         groupBox_6 = new QGroupBox(page_3);
         groupBox_6->setObjectName(QString::fromUtf8("groupBox_6"));
         groupBox_6->setGeometry(QRect(0, 90, 421, 131));
@@ -448,16 +392,6 @@ public:
         txtDevNode->setObjectName(QString::fromUtf8("txtDevNode"));
         txtDevNode->setEnabled(false);
         txtDevNode->setGeometry(QRect(105, 90, 110, 20));
-        cmdInfoWinRouteMethod = new QPushButton(groupBox_6);
-        cmdInfoWinRouteMethod->setObjectName(QString::fromUtf8("cmdInfoWinRouteMethod"));
-        cmdInfoWinRouteMethod->setGeometry(QRect(220, 70, 16, 16));
-        cmdInfoWinRouteMethod->setIcon(icon2);
-        cmdInfoWinRouteMethod->setFlat(true);
-        cmdInfoWinDevNode = new QPushButton(groupBox_6);
-        cmdInfoWinDevNode->setObjectName(QString::fromUtf8("cmdInfoWinDevNode"));
-        cmdInfoWinDevNode->setGeometry(QRect(220, 90, 16, 16));
-        cmdInfoWinDevNode->setIcon(icon2);
-        cmdInfoWinDevNode->setFlat(true);
         tbSettings->addItem(page_3, QString::fromUtf8("Linux / Windows"));
         page_2 = new QWidget();
         page_2->setObjectName(QString::fromUtf8("page_2"));
@@ -485,16 +419,6 @@ public:
         cmdAfterConnect = new QPushButton(groupBox_15);
         cmdAfterConnect->setObjectName(QString::fromUtf8("cmdAfterConnect"));
         cmdAfterConnect->setGeometry(QRect(377, 53, 21, 21));
-        cmdInfoScriptsAfterConnect = new QPushButton(groupBox_15);
-        cmdInfoScriptsAfterConnect->setObjectName(QString::fromUtf8("cmdInfoScriptsAfterConnect"));
-        cmdInfoScriptsAfterConnect->setGeometry(QRect(396, 55, 20, 20));
-        cmdInfoScriptsAfterConnect->setIcon(icon2);
-        cmdInfoScriptsAfterConnect->setFlat(true);
-        cmdInfoScriptsBeforeConnect = new QPushButton(groupBox_15);
-        cmdInfoScriptsBeforeConnect->setObjectName(QString::fromUtf8("cmdInfoScriptsBeforeConnect"));
-        cmdInfoScriptsBeforeConnect->setGeometry(QRect(396, 31, 20, 20));
-        cmdInfoScriptsBeforeConnect->setIcon(icon2);
-        cmdInfoScriptsBeforeConnect->setFlat(true);
         groupBox_16 = new QGroupBox(page_2);
         groupBox_16->setObjectName(QString::fromUtf8("groupBox_16"));
         groupBox_16->setGeometry(QRect(0, 100, 421, 91));
@@ -518,24 +442,9 @@ public:
         cmdAfterDisconnect = new QPushButton(groupBox_16);
         cmdAfterDisconnect->setObjectName(QString::fromUtf8("cmdAfterDisconnect"));
         cmdAfterDisconnect->setGeometry(QRect(378, 53, 20, 21));
-        cmdInfoScriptsAfterDisconnect = new QPushButton(groupBox_16);
-        cmdInfoScriptsAfterDisconnect->setObjectName(QString::fromUtf8("cmdInfoScriptsAfterDisconnect"));
-        cmdInfoScriptsAfterDisconnect->setGeometry(QRect(400, 55, 16, 16));
-        cmdInfoScriptsAfterDisconnect->setIcon(icon2);
-        cmdInfoScriptsAfterDisconnect->setFlat(true);
-        cmdInfoScriptsBeforeDisconnect = new QPushButton(groupBox_16);
-        cmdInfoScriptsBeforeDisconnect->setObjectName(QString::fromUtf8("cmdInfoScriptsBeforeDisconnect"));
-        cmdInfoScriptsBeforeDisconnect->setGeometry(QRect(400, 31, 16, 16));
-        cmdInfoScriptsBeforeDisconnect->setIcon(icon2);
-        cmdInfoScriptsBeforeDisconnect->setFlat(true);
         groupBox_14 = new QGroupBox(page_2);
         groupBox_14->setObjectName(QString::fromUtf8("groupBox_14"));
         groupBox_14->setGeometry(QRect(0, 200, 421, 61));
-        cmdInfoScriptsErrorConnect = new QPushButton(groupBox_14);
-        cmdInfoScriptsErrorConnect->setObjectName(QString::fromUtf8("cmdInfoScriptsErrorConnect"));
-        cmdInfoScriptsErrorConnect->setGeometry(QRect(400, 28, 16, 16));
-        cmdInfoScriptsErrorConnect->setIcon(icon2);
-        cmdInfoScriptsErrorConnect->setFlat(true);
         label_40 = new QLabel(groupBox_14);
         label_40->setObjectName(QString::fromUtf8("label_40"));
         label_40->setGeometry(QRect(10, 27, 91, 16));
@@ -555,11 +464,6 @@ public:
         txtScriptACDelay = new QLineEdit(groupBox_17);
         txtScriptACDelay->setObjectName(QString::fromUtf8("txtScriptACDelay"));
         txtScriptACDelay->setGeometry(QRect(130, 30, 71, 20));
-        cmdInfoScriptsDelyAC = new QPushButton(groupBox_17);
-        cmdInfoScriptsDelyAC->setObjectName(QString::fromUtf8("cmdInfoScriptsDelyAC"));
-        cmdInfoScriptsDelyAC->setGeometry(QRect(226, 32, 16, 16));
-        cmdInfoScriptsDelyAC->setIcon(icon2);
-        cmdInfoScriptsDelyAC->setFlat(true);
         label_37 = new QLabel(groupBox_17);
         label_37->setObjectName(QString::fromUtf8("label_37"));
         label_37->setGeometry(QRect(206, 32, 21, 16));
@@ -608,11 +512,6 @@ public:
         cbResolveHostname->setObjectName(QString::fromUtf8("cbResolveHostname"));
         cbResolveHostname->setEnabled(false);
         cbResolveHostname->setGeometry(QRect(120, 39, 21, 19));
-        cmdInfoAdvRandomHost = new QPushButton(groupBox_9);
-        cmdInfoAdvRandomHost->setObjectName(QString::fromUtf8("cmdInfoAdvRandomHost"));
-        cmdInfoAdvRandomHost->setGeometry(QRect(140, 20, 16, 16));
-        cmdInfoAdvRandomHost->setIcon(icon2);
-        cmdInfoAdvRandomHost->setFlat(true);
         groupBox_11 = new QGroupBox(page_4);
         groupBox_11->setObjectName(QString::fromUtf8("groupBox_11"));
         groupBox_11->setGeometry(QRect(0, 179, 421, 111));
@@ -658,32 +557,22 @@ public:
         cmbChiper->setObjectName(QString::fromUtf8("cmbChiper"));
         cmbChiper->setEnabled(false);
         cmbChiper->setGeometry(QRect(82, 20, 231, 22));
-        cmdInfoMuteWirelessWarnings = new QPushButton(page_4);
-        cmdInfoMuteWirelessWarnings->setObjectName(QString::fromUtf8("cmdInfoMuteWirelessWarnings"));
-        cmdInfoMuteWirelessWarnings->setGeometry(QRect(148, 319, 16, 16));
-        cmdInfoMuteWirelessWarnings->setIcon(icon2);
-        cmdInfoMuteWirelessWarnings->setFlat(true);
         tbSettings->addItem(page_4, QString::fromUtf8("Advanced"));
-        memHelp = new QTextEdit(groupBox);
-        memHelp->setObjectName(QString::fromUtf8("memHelp"));
-        memHelp->setGeometry(QRect(10, 560, 651, 64));
-        memHelp->setContextMenuPolicy(Qt::NoContextMenu);
-        memHelp->setStyleSheet(QString::fromUtf8("background-color: rgb(241, 161, 80);"));
-        memHelp->setFrameShape(QFrame::Box);
-        memHelp->setFrameShadow(QFrame::Plain);
         cmdClose = new QPushButton(Preferences);
         cmdClose->setObjectName(QString::fromUtf8("cmdClose"));
-        cmdClose->setGeometry(QRect(590, 710, 91, 24));
-        QIcon icon3;
-        icon3.addFile(QString::fromUtf8(":/images/close.svg"), QSize(), QIcon::Normal, QIcon::Off);
-        cmdClose->setIcon(icon3);
+        cmdClose->setGeometry(QRect(590, 621, 91, 24));
+        QIcon icon2;
+        icon2.addFile(QString::fromUtf8(":/images/exit.png"), QSize(), QIcon::Normal, QIcon::Off);
+        cmdClose->setIcon(icon2);
+        cmdClose->setIconSize(QSize(30, 16));
         cmdClose->setFlat(true);
         cmdSave = new QPushButton(Preferences);
         cmdSave->setObjectName(QString::fromUtf8("cmdSave"));
-        cmdSave->setGeometry(QRect(480, 710, 91, 24));
-        QIcon icon4;
-        icon4.addFile(QString::fromUtf8(":/images/save.svg"), QSize(), QIcon::Normal, QIcon::Off);
-        cmdSave->setIcon(icon4);
+        cmdSave->setGeometry(QRect(480, 621, 91, 24));
+        QIcon icon3;
+        icon3.addFile(QString::fromUtf8(":/images/save.png"), QSize(), QIcon::Normal, QIcon::Off);
+        cmdSave->setIcon(icon3);
+        cmdSave->setIconSize(QSize(30, 16));
         cmdSave->setAutoDefault(true);
         cmdSave->setFlat(true);
         txtPathFromConfig = new QLineEdit(Preferences);
@@ -691,37 +580,29 @@ public:
         txtPathFromConfig->setGeometry(QRect(10, 650, 0, 0));
         label_41 = new QLabel(Preferences);
         label_41->setObjectName(QString::fromUtf8("label_41"));
-        label_41->setGeometry(QRect(13, 714, 41, 16));
+        label_41->setGeometry(QRect(13, 625, 41, 16));
         lblTunnelName = new QLabel(Preferences);
         lblTunnelName->setObjectName(QString::fromUtf8("lblTunnelName"));
-        lblTunnelName->setGeometry(QRect(57, 717, 111, 10));
+        lblTunnelName->setGeometry(QRect(57, 628, 111, 10));
         lblTunnelPixmap = new QLabel(Preferences);
         lblTunnelPixmap->setObjectName(QString::fromUtf8("lblTunnelPixmap"));
-        lblTunnelPixmap->setGeometry(QRect(180, 713, 16, 16));
-        lblTunnelPixmap->setPixmap(QPixmap(QString::fromUtf8(":/images/light_grey.svg")));
+        lblTunnelPixmap->setGeometry(QRect(180, 624, 16, 16));
+        lblTunnelPixmap->setPixmap(QPixmap(QString::fromUtf8(":/images/light_grey.png")));
         lblTunnelPixmap->setScaledContents(true);
         lblTunnelStatus = new QLabel(Preferences);
         lblTunnelStatus->setObjectName(QString::fromUtf8("lblTunnelStatus"));
-        lblTunnelStatus->setGeometry(QRect(202, 714, 91, 16));
+        lblTunnelStatus->setGeometry(QRect(202, 625, 91, 16));
         cmdConnect = new QPushButton(Preferences);
         cmdConnect->setObjectName(QString::fromUtf8("cmdConnect"));
-        cmdConnect->setGeometry(QRect(290, 710, 101, 24));
-        QIcon icon5;
-        icon5.addFile(QString::fromUtf8(":/images/disconnected.png"), QSize(), QIcon::Normal, QIcon::Off);
-        cmdConnect->setIcon(icon5);
+        cmdConnect->setGeometry(QRect(290, 621, 101, 24));
+        QIcon icon4;
+        icon4.addFile(QString::fromUtf8(":/images/disconnected.png"), QSize(), QIcon::Normal, QIcon::Off);
+        cmdConnect->setIcon(icon4);
         cmdConnect->setFlat(true);
-        label_43 = new QLabel(Preferences);
-        label_43->setObjectName(QString::fromUtf8("label_43"));
-        label_43->setGeometry(QRect(0, 0, 691, 71));
         label_42 = new QLabel(Preferences);
         label_42->setObjectName(QString::fromUtf8("label_42"));
-        label_42->setGeometry(QRect(310, 0, 381, 71));
+        label_42->setGeometry(QRect(0, 0, 691, 51));
         label_42->setPixmap(QPixmap(QString::fromUtf8(":/images/banner.png")));
-        label_42->setScaledContents(true);
-        label_44 = new QLabel(Preferences);
-        label_44->setObjectName(QString::fromUtf8("label_44"));
-        label_44->setGeometry(QRect(0, -10, 311, 81));
-        label_44->setPixmap(QPixmap(QString::fromUtf8(":/images/securepoint_h.png")));
 
         retranslateUi(Preferences);
 
@@ -733,7 +614,7 @@ public:
 
     void retranslateUi(QDialog *Preferences)
     {
-        Preferences->setWindowTitle(QApplication::translate("Preferences", "OpenVPN Manage Connections", 0, QApplication::UnicodeUTF8));
+        Preferences->setWindowTitle(QApplication::translate("Preferences", "Securepoint VPN Client", 0, QApplication::UnicodeUTF8));
         groupBox->setTitle(QString());
         groupBox_2->setTitle(QApplication::translate("Preferences", "Available configs:", 0, QApplication::UnicodeUTF8));
         cmdAddConfig->setText(QApplication::translate("Preferences", "Add config", 0, QApplication::UnicodeUTF8));
@@ -754,18 +635,13 @@ public:
         cbNoCache->setText(QString());
         label_20->setText(QApplication::translate("Preferences", "Auth user/pass:", 0, QApplication::UnicodeUTF8));
         cbUserPass->setText(QString());
-        cmdInfoClient->setText(QString());
-        cmdInfoAuthUserPass->setText(QString());
         groupBox_7->setTitle(QApplication::translate("Preferences", "Advanced:", 0, QApplication::UnicodeUTF8));
         label_3->setText(QApplication::translate("Preferences", "Dev:", 0, QApplication::UnicodeUTF8));
         label_4->setText(QApplication::translate("Preferences", "Dev mtu:", 0, QApplication::UnicodeUTF8));
-        cmdInfoDevName->setText(QString());
         groupBox_5->setTitle(QApplication::translate("Preferences", "Connection:", 0, QApplication::UnicodeUTF8));
         label_10->setText(QApplication::translate("Preferences", "Remote port:", 0, QApplication::UnicodeUTF8));
         label_9->setText(QApplication::translate("Preferences", "Remote:", 0, QApplication::UnicodeUTF8));
         label_7->setText(QApplication::translate("Preferences", "Protocol:", 0, QApplication::UnicodeUTF8));
-        cmdInfoRemote->setText(QString());
-        cmdInfoRemoteIP->setText(QString());
         groupBox_4->setTitle(QApplication::translate("Preferences", "Certifikate - Key:", 0, QApplication::UnicodeUTF8));
         label_2->setText(QApplication::translate("Preferences", "CA path:", 0, QApplication::UnicodeUTF8));
         label_15->setText(QApplication::translate("Preferences", "Key path:", 0, QApplication::UnicodeUTF8));
@@ -775,42 +651,32 @@ public:
         cmdGetCAPath->setText(QApplication::translate("Preferences", "...", 0, QApplication::UnicodeUTF8));
         cmdGetCertPath->setText(QApplication::translate("Preferences", "...", 0, QApplication::UnicodeUTF8));
         cmdGetKeyPath->setText(QApplication::translate("Preferences", "...", 0, QApplication::UnicodeUTF8));
-        cmdInfoServerCertificate->setText(QString());
         tbSettings->setItemText(tbSettings->indexOf(page), QApplication::translate("Preferences", "General", 0, QApplication::UnicodeUTF8));
         groupBox_10->setTitle(QApplication::translate("Preferences", "Downgrade privileges of Linux process:", 0, QApplication::UnicodeUTF8));
         label_26->setText(QApplication::translate("Preferences", "User:", 0, QApplication::UnicodeUTF8));
         label_27->setText(QApplication::translate("Preferences", "Group:", 0, QApplication::UnicodeUTF8));
-        cmdInfoLinuxUser->setText(QString());
         groupBox_6->setTitle(QApplication::translate("Preferences", "Only Windows:", 0, QApplication::UnicodeUTF8));
         cbMsfix->setText(QString());
         label_6->setText(QApplication::translate("Preferences", "MSSFIX:", 0, QApplication::UnicodeUTF8));
         label_5->setText(QApplication::translate("Preferences", "Fragment:", 0, QApplication::UnicodeUTF8));
         label_21->setText(QApplication::translate("Preferences", "Route method:", 0, QApplication::UnicodeUTF8));
         label_23->setText(QApplication::translate("Preferences", "Dev Node:", 0, QApplication::UnicodeUTF8));
-        cmdInfoWinRouteMethod->setText(QString());
-        cmdInfoWinDevNode->setText(QString());
         tbSettings->setItemText(tbSettings->indexOf(page_3), QApplication::translate("Preferences", "Linux / Windows", 0, QApplication::UnicodeUTF8));
         groupBox_15->setTitle(QApplication::translate("Preferences", "Connect:", 0, QApplication::UnicodeUTF8));
         label_34->setText(QApplication::translate("Preferences", "Before connect:", 0, QApplication::UnicodeUTF8));
         label_35->setText(QApplication::translate("Preferences", "After connect:", 0, QApplication::UnicodeUTF8));
         cmdBeforeConnect->setText(QApplication::translate("Preferences", "...", 0, QApplication::UnicodeUTF8));
         cmdAfterConnect->setText(QApplication::translate("Preferences", "...", 0, QApplication::UnicodeUTF8));
-        cmdInfoScriptsAfterConnect->setText(QString());
-        cmdInfoScriptsBeforeConnect->setText(QString());
         groupBox_16->setTitle(QApplication::translate("Preferences", "Disconnect:", 0, QApplication::UnicodeUTF8));
         label_38->setText(QApplication::translate("Preferences", "Before disconnect:", 0, QApplication::UnicodeUTF8));
         label_39->setText(QApplication::translate("Preferences", "After disconnect:", 0, QApplication::UnicodeUTF8));
         cmdBeforeDisconnect->setText(QApplication::translate("Preferences", "...", 0, QApplication::UnicodeUTF8));
         cmdAfterDisconnect->setText(QApplication::translate("Preferences", "...", 0, QApplication::UnicodeUTF8));
-        cmdInfoScriptsAfterDisconnect->setText(QString());
-        cmdInfoScriptsBeforeDisconnect->setText(QString());
         groupBox_14->setTitle(QApplication::translate("Preferences", "Error while connecting:", 0, QApplication::UnicodeUTF8));
-        cmdInfoScriptsErrorConnect->setText(QString());
         label_40->setText(QApplication::translate("Preferences", "Before disconnect:", 0, QApplication::UnicodeUTF8));
         cmdErrorConnect->setText(QApplication::translate("Preferences", "...", 0, QApplication::UnicodeUTF8));
         groupBox_17->setTitle(QApplication::translate("Preferences", "Delay:", 0, QApplication::UnicodeUTF8));
         label_36->setText(QApplication::translate("Preferences", "After connection delay: ", 0, QApplication::UnicodeUTF8));
-        cmdInfoScriptsDelyAC->setText(QString());
         label_37->setText(QApplication::translate("Preferences", "ms", 0, QApplication::UnicodeUTF8));
         tbSettings->setItemText(tbSettings->indexOf(page_2), QApplication::translate("Preferences", "Scripts", 0, QApplication::UnicodeUTF8));
         groupBox_8->setTitle(QApplication::translate("Preferences", "Advanced:", 0, QApplication::UnicodeUTF8));
@@ -822,7 +688,6 @@ public:
         label_24->setText(QApplication::translate("Preferences", "Random host:", 0, QApplication::UnicodeUTF8));
         label_25->setText(QApplication::translate("Preferences", "Resolve host name:", 0, QApplication::UnicodeUTF8));
         cbResolveHostname->setText(QString());
-        cmdInfoAdvRandomHost->setText(QString());
         groupBox_11->setTitle(QApplication::translate("Preferences", "HTTP-Proxy:", 0, QApplication::UnicodeUTF8));
         label_28->setText(QApplication::translate("Preferences", "Retry:", 0, QApplication::UnicodeUTF8));
         cbHTTPRetry->setText(QString());
@@ -833,19 +698,15 @@ public:
         cbMuteWirelessWarning->setText(QString());
         groupBox_13->setTitle(QApplication::translate("Preferences", "Ciphers:", 0, QApplication::UnicodeUTF8));
         label_32->setText(QApplication::translate("Preferences", "Chipher:", 0, QApplication::UnicodeUTF8));
-        cmdInfoMuteWirelessWarnings->setText(QString());
         tbSettings->setItemText(tbSettings->indexOf(page_4), QApplication::translate("Preferences", "Advanced", 0, QApplication::UnicodeUTF8));
-        cmdClose->setText(QApplication::translate("Preferences", "&Close", 0, QApplication::UnicodeUTF8));
-        cmdSave->setText(QApplication::translate("Preferences", "&Save", 0, QApplication::UnicodeUTF8));
+        cmdClose->setText(QString());
+        cmdSave->setText(QString());
         label_41->setText(QApplication::translate("Preferences", "Tunnel:", 0, QApplication::UnicodeUTF8));
         lblTunnelName->setText(QApplication::translate("Preferences", "None selected", 0, QApplication::UnicodeUTF8));
         lblTunnelPixmap->setText(QString());
         lblTunnelStatus->setText(QApplication::translate("Preferences", "Disconnected", 0, QApplication::UnicodeUTF8));
         cmdConnect->setText(QApplication::translate("Preferences", "Discon&nect", 0, QApplication::UnicodeUTF8));
-        label_43->setStyleSheet(QApplication::translate("Preferences", "background-color: rgb(255, 255, 255);", 0, QApplication::UnicodeUTF8));
-        label_43->setText(QString());
         label_42->setText(QString());
-        label_44->setText(QString());
         Q_UNUSED(Preferences);
     } // retranslateUi
 

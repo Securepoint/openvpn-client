@@ -19,15 +19,13 @@ protected:
 
 private:
     Ui::CertPage *m_ui;
+    QString lastDir;
 
 private slots:
     void on_cmdOpenKey_clicked();
     void on_cmdOpenCert_clicked();
     void on_cmdOpenCA_clicked();
-    void on_cmdInfoKey_clicked();
-    void on_cmdInfoCert_clicked();
-    void on_cmdInfoCA_clicked();
-    void on_cmdInfoServerCert_clicked();
+
 };
 
 #endif // WIZ_CERTPAGE_H

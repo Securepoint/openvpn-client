@@ -76,7 +76,7 @@ void StdUserAuth::on_cmdOK_clicked()
             QFile conDataFile (conDataFilePath);
             if (!conDataFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
                 // Datei kann nicht erstellt werden
-                QMessageBox::critical(0,"Securepoint OpenVPN Client", "Can't create Configfile!");
+                QMessageBox::critical(0,"Securepoint VPN Client", "Can't create config file!");
                 return;
             }
             // Datei offen Usernamen schreiben
@@ -97,9 +97,7 @@ void StdUserAuth::on_cmdOK_clicked()
     if (conDataFileRead.exists()) {
         // Kennwortdatei da
         if (!conDataFileRead.open(QIODevice::ReadOnly | QIODevice::Text)) {
-            QMessageBox msgBox;
-                        msgBox.setText("Cannot read file.");
-                        msgBox.exec();
+            QMessageBox::critical(0,"Securepoint VPN Client", "Can't read config file!");
              return;
         }
         // Datei offen auslesen

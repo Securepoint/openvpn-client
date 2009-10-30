@@ -10,6 +10,7 @@ public:
     AppFunc();
     bool isAppPortable ();
     QString getOS ();
+    QString getAppSavePath ();
 };
 
 #endif // APPFUNC_H

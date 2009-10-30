@@ -89,35 +89,21 @@ private:
     // Menuliste
     QList<QAction*> menuList;
     QList<QAction*> menuChildList;
+    // Dir für Certs merken
+    QString lastDir;
+    QAction *conAct;
 
 private slots:
     void manageConnections ();
+    void trayActivated(QSystemTrayIcon::ActivationReason reason);
     void openInfo ();
     void importConfig ();
     void on_cmdConnect_clicked();
-    void on_cmdInfoScriptsDelyAC_clicked();
     void on_cmdErrorConnect_clicked();
     void on_cmdAfterDisconnect_clicked();
     void on_cmdBeforeDisconnect_clicked();
     void on_cmdAfterConnect_clicked();
     void on_cmdBeforeConnect_clicked();
-    void on_cmdInfoScriptsErrorConnect_clicked();
-    void on_cmdInfoScriptsAfterDisconnect_clicked();
-    void on_cmdInfoScriptsBeforeDisconnect_clicked();
-    void on_cmdInfoScriptsBeforeConnect_clicked();
-    void on_cmdInfoScriptsAfterConnect_clicked();
-    void on_cmdInfoAuthUserPass_clicked();
-    void on_cmdInfoDevName_clicked();
-    void on_cmdInfoServerCertificate_clicked();
-    void on_cmdInfoMuteWirelessWarnings_clicked();
-    void on_cmdInfoAdvRandomHost_clicked();
-    void on_cmdInfoWinDevNode_clicked();
-    void on_cmdInfoWinRouteMethod_clicked();
-    void on_cmdInfoLinuxUser_clicked();
-    void on_cmdInfoRemoteIP_clicked();
-    void on_cmdInfoRemote_clicked();
-    void on_cmdInfoClient_clicked();
-    void on_label_linkHovered(QString link);
     void on_cmdGetKeyPath_clicked();
     void on_cmdGetCertPath_clicked();
     void on_cmdGetCAPath_clicked();

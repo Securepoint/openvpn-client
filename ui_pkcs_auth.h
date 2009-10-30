@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading ui file 'pkcs_auth.ui'
 **
-** Created: Thu 29. Oct 11:16:09 2009
+** Created: Fri 30. Oct 16:48:22 2009
 **      by: Qt User Interface Compiler version 4.5.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!
@@ -36,6 +36,13 @@ public:
         if (pkcs_auth->objectName().isEmpty())
             pkcs_auth->setObjectName(QString::fromUtf8("pkcs_auth"));
         pkcs_auth->resize(265, 104);
+        QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(pkcs_auth->sizePolicy().hasHeightForWidth());
+        pkcs_auth->setSizePolicy(sizePolicy);
+        pkcs_auth->setMinimumSize(QSize(265, 104));
+        pkcs_auth->setMaximumSize(QSize(265, 104));
         QIcon icon;
         icon.addFile(QString::fromUtf8(":/images/appicon.png"), QSize(), QIcon::Normal, QIcon::Off);
         pkcs_auth->setWindowIcon(icon);
@@ -52,6 +59,9 @@ public:
         cmdOK = new QPushButton(pkcs_auth);
         cmdOK->setObjectName(QString::fromUtf8("cmdOK"));
         cmdOK->setGeometry(QRect(180, 70, 75, 24));
+        QIcon icon1;
+        icon1.addFile(QString::fromUtf8(":/images/connected.png"), QSize(), QIcon::Normal, QIcon::Off);
+        cmdOK->setIcon(icon1);
         cmdOK->setFlat(true);
 
         retranslateUi(pkcs_auth);

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>300</height>
+    <height>368</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -28,7 +28,7 @@
      <x>10</x>
      <y>10</y>
      <width>371</width>
-     <height>101</height>
+     <height>51</height>
     </rect>
    </property>
    <property name="autoFillBackground">
@@ -44,7 +44,7 @@
     <enum>QFrame::Plain</enum>
    </property>
    <property name="plainText">
-    <string>This wizard will guides you through your way to generate a new OpenVPN config. You simply need to specify the fields you want include into the new config and your server properties.</string>
+    <string>This wizard will guides you through your way to generate a new OpenVPN connection. You simply need to specify the fields you want include into the new config.</string>
    </property>
   </widget>
   <widget class="QPlainTextEdit" name="plainTextEdit_2">
@@ -53,10 +53,10 @@
    </property>
    <property name="geometry">
     <rect>
-     <x>11</x>
-     <y>149</y>
+     <x>10</x>
+     <y>290</y>
      <width>371</width>
-     <height>141</height>
+     <height>71</height>
     </rect>
    </property>
    <property name="contextMenuPolicy">
@@ -75,13 +75,31 @@
     <bool>true</bool>
    </property>
    <property name="plainText">
-    <string>Please notice. If you create a OpenVPN config in portable mode, the new config will be automatically created in the application directory. In the installation mode the default is to create the new config in the home directory of the user. 
-
-Attention:
-The Securepoint OpenVPN client will only searching for config files in the application directory in portable mode and furthermore in the home directory on installation mode.</string>
+    <string>Please notice. If you create a OpenVPN config in portable mode, the new config will be automatically created into the application directory. In the installation mode the default is to create the new config into the home directory of the user. </string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>90</y>
+     <width>391</width>
+     <height>161</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="pixmap">
+    <pixmap resource="systray.qrc">:/images/vpn.png</pixmap>
+   </property>
+   <property name="scaledContents">
+    <bool>false</bool>
    </property>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="systray.qrc"/>
+ </resources>
  <connections/>
 </ui>

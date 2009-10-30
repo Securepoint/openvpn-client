@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading ui file 'appinfo.ui'
 **
-** Created: Thu 29. Oct 11:16:09 2009
+** Created: Fri 30. Oct 16:48:22 2009
 **      by: Qt User Interface Compiler version 4.5.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!
@@ -43,6 +43,8 @@ public:
         if (appInfo->objectName().isEmpty())
             appInfo->setObjectName(QString::fromUtf8("appInfo"));
         appInfo->resize(400, 300);
+        appInfo->setMinimumSize(QSize(400, 300));
+        appInfo->setMaximumSize(QSize(400, 300));
         QIcon icon;
         icon.addFile(QString::fromUtf8(":/images/appicon.png"), QSize(), QIcon::Normal, QIcon::Off);
         appInfo->setWindowIcon(icon);
@@ -99,8 +101,9 @@ public:
         cmdClose->setObjectName(QString::fromUtf8("cmdClose"));
         cmdClose->setGeometry(QRect(240, 270, 151, 20));
         QIcon icon1;
-        icon1.addFile(QString::fromUtf8(":/images/close.svg"), QSize(), QIcon::Normal, QIcon::Off);
+        icon1.addFile(QString::fromUtf8(":/images/exit.png"), QSize(), QIcon::Normal, QIcon::Off);
         cmdClose->setIcon(icon1);
+        cmdClose->setIconSize(QSize(30, 16));
         cmdClose->setFlat(true);
         label_12 = new QLabel(appInfo);
         label_12->setObjectName(QString::fromUtf8("label_12"));
@@ -128,7 +131,7 @@ public:
         label_9->setText(QApplication::translate("appInfo", "21335 L\303\274neburg", 0, QApplication::UnicodeUTF8));
         label_10->setText(QApplication::translate("appInfo", "Germany", 0, QApplication::UnicodeUTF8));
         label_11->setText(QApplication::translate("appInfo", "www.securepoint.de", 0, QApplication::UnicodeUTF8));
-        cmdClose->setText(QApplication::translate("appInfo", "&OK", 0, QApplication::UnicodeUTF8));
+        cmdClose->setText(QString());
         label_12->setText(QString());
         Q_UNUSED(appInfo);
     } // retranslateUi

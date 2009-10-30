@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading ui file 'deleteconfig.ui'
 **
-** Created: Thu 29. Oct 12:18:17 2009
+** Created: Fri 30. Oct 16:48:22 2009
 **      by: Qt User Interface Compiler version 4.5.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!
@@ -43,6 +43,8 @@ public:
         if (DeleteConfig->objectName().isEmpty())
             DeleteConfig->setObjectName(QString::fromUtf8("DeleteConfig"));
         DeleteConfig->resize(220, 242);
+        DeleteConfig->setMinimumSize(QSize(220, 242));
+        DeleteConfig->setMaximumSize(QSize(220, 242));
         QIcon icon;
         icon.addFile(QString::fromUtf8(":/images/appicon.png"), QSize(), QIcon::Normal, QIcon::Off);
         DeleteConfig->setWindowIcon(icon);
@@ -85,8 +87,9 @@ public:
         cmdCancel->setObjectName(QString::fromUtf8("cmdCancel"));
         cmdCancel->setGeometry(QRect(130, 210, 75, 24));
         QIcon icon2;
-        icon2.addFile(QString::fromUtf8(":/images/close.svg"), QSize(), QIcon::Normal, QIcon::Off);
+        icon2.addFile(QString::fromUtf8(":/images/exit.png"), QSize(), QIcon::Normal, QIcon::Off);
         cmdCancel->setIcon(icon2);
+        cmdCancel->setIconSize(QSize(30, 16));
         cmdCancel->setFlat(true);
 
         retranslateUi(DeleteConfig);
@@ -107,7 +110,7 @@ public:
         cbScript->setText(QApplication::translate("DeleteConfig", "Scripts [scripts.conf]", 0, QApplication::UnicodeUTF8));
         cbDir->setText(QApplication::translate("DeleteConfig", "Directory if empty", 0, QApplication::UnicodeUTF8));
         cmdDelete->setText(QApplication::translate("DeleteConfig", "&Delete", 0, QApplication::UnicodeUTF8));
-        cmdCancel->setText(QApplication::translate("DeleteConfig", "&Cancel", 0, QApplication::UnicodeUTF8));
+        cmdCancel->setText(QString());
         Q_UNUSED(DeleteConfig);
     } // retranslateUi
 

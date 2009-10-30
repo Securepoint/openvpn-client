@@ -10,6 +10,24 @@
     <height>104</height>
    </rect>
   </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>265</width>
+    <height>104</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>265</width>
+    <height>104</height>
+   </size>
+  </property>
   <property name="windowTitle">
    <string>PKCS Authentication</string>
   </property>
@@ -67,6 +85,10 @@
    </property>
    <property name="text">
     <string>Co&amp;nnect</string>
+   </property>
+   <property name="icon">
+    <iconset resource="systray.qrc">
+     <normaloff>:/images/connected.png</normaloff>:/images/connected.png</iconset>
    </property>
    <property name="flat">
     <bool>true</bool>

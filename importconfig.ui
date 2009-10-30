@@ -16,6 +16,12 @@
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
+  <property name="minimumSize">
+   <size>
+    <width>370</width>
+    <height>355</height>
+   </size>
+  </property>
   <property name="maximumSize">
    <size>
     <width>370</width>
@@ -30,8 +36,7 @@
     <normaloff>:/images/appicon.png</normaloff>:/images/appicon.png</iconset>
   </property>
   <property name="styleSheet">
-   <string notr="true">
-</string>
+   <string notr="true"/>
   </property>
   <property name="modal">
    <bool>true</bool>
@@ -189,11 +194,17 @@ p, li { white-space: pre-wrap; }
     </rect>
    </property>
    <property name="text">
-    <string>&amp;Cancel</string>
+    <string/>
    </property>
    <property name="icon">
     <iconset resource="systray.qrc">
-     <normaloff>:/images/close.svg</normaloff>:/images/close.svg</iconset>
+     <normaloff>:/images/exit.png</normaloff>:/images/exit.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>30</width>
+     <height>16</height>
+    </size>
    </property>
    <property name="flat">
     <bool>true</bool>
@@ -213,7 +224,7 @@ p, li { white-space: pre-wrap; }
    </property>
    <property name="icon">
     <iconset resource="systray.qrc">
-     <normaloff>:/images/import.svg</normaloff>:/images/import.svg</iconset>
+     <normaloff>:/images/import.png</normaloff>:/images/import.png</iconset>
    </property>
    <property name="flat">
     <bool>true</bool>

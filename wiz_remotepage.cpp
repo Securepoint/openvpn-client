@@ -35,19 +35,5 @@ void RemotePage::changeEvent(QEvent *e)
 void RemotePage::initializePage() {
     if (m_ui->txtRemotePort->text() == "")
         m_ui->txtRemotePort->setText("1194");
-}
-
-void RemotePage::on_cmdInfoIP_clicked()
-{
-    m_ui->memHelp->setText("Specify the IP of the remote OpenVPN server.\nValid values is a IP address or a hostname.\nThis field is required.");
-}
-
-void RemotePage::on_cmdInfoPort_clicked()
-{
-    m_ui->memHelp->setText("Specify the listen port of the OpenVPN server.\nThis field is required.");
-}
-
-void RemotePage::on_cmdInfoProto_clicked()
-{
-    m_ui->memHelp->setText("Specify the protocol you want to use for the connection.");
+    m_ui->cmbRemoteProtocol->setCurrentIndex(1);
 }

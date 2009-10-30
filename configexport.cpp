@@ -33,11 +33,11 @@ void ConfigExport::on_cmdCancel_clicked()
 void ConfigExport::on_cmdExport_clicked()
 {
     if (m_ui->txtSaveTo->text() == "") {
-        QMessageBox::critical(0,QString("OpenVPN CLient"), QString("Invalid path specify[empty]!"));
+        QMessageBox::critical(0,QString("Securepoint VPN CLient"), QString("Invalid path specify[empty]!"));
         return;
     }
     if (m_ui->txtExportPwd->text() == "") {
-        QMessageBox::critical(0,QString("OpenVPN CLient"), QString("Invalid password specify[empty]!"));
+        QMessageBox::critical(0,QString("Securepoint VPN CLient"), QString("Invalid password specify[empty]!"));
         return;
     }
     // Viel zu tun
@@ -47,7 +47,7 @@ void ConfigExport::on_cmdExport_clicked()
         QFile configFile (this->configPath);
 
         if (!configFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
-            QMessageBox::critical(0,QString("OpenVPN Client"), QString("Can't open config!"));
+            QMessageBox::critical(0,QString("Securepoint VPN Client"), QString("Can't open config!"));
             return;
         }
         // Datei offen, einlesen
@@ -120,7 +120,7 @@ void ConfigExport::on_cmdExport_clicked()
             // Pfad erstellen
             if (!dirobj.mkpath(dirPath)) {
                 // Pfad konnte nicht erstellt werden
-                QMessageBox::critical(0,"Securepoint OpenVPN Client", "Unable to create directory!");
+                QMessageBox::critical(0,"Securepoint VPN Client", "Unable to create directory!");
                 return;
             }
         } else {
@@ -130,7 +130,7 @@ void ConfigExport::on_cmdExport_clicked()
                 // Datei existiert bereits
                 // löschen
                 if (!file.remove()) {
-                    QMessageBox::critical(0, QString("OpenVPN Client"), file.errorString());
+                    QMessageBox::critical(0, QString("Securepoint VPN Client"), file.errorString());
                 }
             }
         }
@@ -152,7 +152,7 @@ void ConfigExport::on_cmdExport_clicked()
         packProc.start(program, arguments);
 
         if (!packProc.waitForFinished()) {
-            QMessageBox::critical(0,QString("OpenVPN CLient"), QString("7z process still running!"));
+            QMessageBox::critical(0,QString("Securepoint VPN Client"), QString("7z process still running!"));
             return;
         }
 
@@ -174,21 +174,21 @@ void ConfigExport::on_cmdExport_clicked()
 
 
         if (!packCrypt.waitForFinished()) {
-                QMessageBox::critical(0,QString("OpenVPN Client"), QString("OpenSSL process still running!"));
+                QMessageBox::critical(0,QString("Securepoint VPN Client"), QString("OpenSSL process still running!"));
                 return;
         }
 
         // Datei löschen
         QFile configZip (zipFile);
         if (!configZip.remove()) {
-            QMessageBox::critical(0, QString("OpenVPN Client"), configZip.errorString());
+            QMessageBox::critical(0, QString("Securepoint VPN Client"), configZip.errorString());
         }
-        QMessageBox::information(0, QString("OpenVPN Client"), QString("Export successfully ended!"));
+        QMessageBox::information(0, QString("Securepoint VPN Client"), QString("Export successfully ended!"));
         this->close();
 
     } else {
         this->close();
-        QMessageBox::critical(0,QString("OpenVPN Client"), QString("No config!"));
+        QMessageBox::critical(0,QString("Securepoint VPN Client"), QString("No config!"));
     }
 
 }

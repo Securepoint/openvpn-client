@@ -10,6 +10,7 @@ CertPage::CertPage(QWidget *parent) :
     registerField("txtCertPath*", m_ui->txtCertPath);
     registerField("txtKeyPath*", m_ui->txtKeyPath);
     registerField("txtServerCert", m_ui->cbServerCert);
+    this->lastDir = QString ("");
 }
 
 CertPage::~CertPage()
@@ -29,49 +30,41 @@ void CertPage::changeEvent(QEvent *e)
     }
 }
 
-void CertPage::on_cmdInfoServerCert_clicked()
-{
-    m_ui->memHelp->setText("Specify that a certificate is used, which is created with the server attribute.");
-}
-
-void CertPage::on_cmdInfoCA_clicked()
-{
-    m_ui->memHelp->setText("Specify the path to the root CA.\nThis field is required.");
-}
-
-void CertPage::on_cmdInfoCert_clicked()
-{
-    m_ui->memHelp->setText("Specify the path to the certificate.\nThis field is required.");
-}
-
-void CertPage::on_cmdInfoKey_clicked()
-{
-    m_ui->memHelp->setText("Specify the path to the key file.\nThis field is required.");
-}
-
 void CertPage::on_cmdOpenCA_clicked()
 {
+    if (this->lastDir == "") {
+        this->lastDir = QApplication::applicationDirPath();
+    }
     QFileDialog caFileDialog;
-    QString filename = caFileDialog.getOpenFileName(this, tr("Find root ca"), QApplication::applicationDirPath(), "Certificates (*.cert)");
+    QString filename = caFileDialog.getOpenFileName(this, tr("Find root ca"), this->lastDir, "Certificates (*.cert *.pem)");
     if (filename != "") {
+        this->lastDir = filename.left(filename.lastIndexOf("/"));
         m_ui->txtCAPath->setText(filename);
     }
 }
 
 void CertPage::on_cmdOpenCert_clicked()
 {
+    if (this->lastDir == "") {
+        this->lastDir = QApplication::applicationDirPath();
+    }
     QFileDialog certFileDialog;
-    QString filename = certFileDialog.getOpenFileName(this, tr("Find certificates"), QApplication::applicationDirPath(), "Certificates (*.cert)");
+    QString filename = certFileDialog.getOpenFileName(this, tr("Find certificates"), this->lastDir, "Certificates (*.cert *.pem)");
     if (filename != "") {
+        this->lastDir = filename.left(filename.lastIndexOf("/"));
         m_ui->txtCertPath->setText(filename);
     }
 }
 
 void CertPage::on_cmdOpenKey_clicked()
 {
+    if (this->lastDir == "") {
+        this->lastDir = QApplication::applicationDirPath();
+    }
     QFileDialog keyFileDialog;
-    QString filename = keyFileDialog.getOpenFileName(this, tr("Find key files"), QApplication::applicationDirPath(), "Key files (*.key)");
+    QString filename = keyFileDialog.getOpenFileName(this, tr("Find key files"), this->lastDir, "Key files (*.key *.pem)");
     if (filename != "") {
+        this->lastDir = filename.left(filename.lastIndexOf("/"));
         m_ui->txtKeyPath->setText(filename);
     }
 }

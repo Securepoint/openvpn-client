@@ -78,3 +78,5 @@ FORMS += preferences.ui \
     configexport.ui \
     importconfig.ui \
     deleteconfig.ui
+
+RC_FILE = myapp.rc

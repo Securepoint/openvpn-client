@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading ui file 'stduserauth.ui'
 **
-** Created: Thu 29. Oct 11:16:09 2009
+** Created: Fri 30. Oct 16:48:22 2009
 **      by: Qt User Interface Compiler version 4.5.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!
@@ -42,6 +42,8 @@ public:
             StdUserAuth->setObjectName(QString::fromUtf8("StdUserAuth"));
         StdUserAuth->setWindowModality(Qt::WindowModal);
         StdUserAuth->resize(220, 153);
+        StdUserAuth->setMinimumSize(QSize(220, 153));
+        StdUserAuth->setMaximumSize(QSize(220, 153));
         StdUserAuth->setContextMenuPolicy(Qt::NoContextMenu);
         QIcon icon;
         icon.addFile(QString::fromUtf8(":/images/appicon.png"), QSize(), QIcon::Normal, QIcon::Off);
@@ -50,10 +52,17 @@ public:
         cmdOK = new QPushButton(StdUserAuth);
         cmdOK->setObjectName(QString::fromUtf8("cmdOK"));
         cmdOK->setGeometry(QRect(60, 120, 75, 24));
+        QIcon icon1;
+        icon1.addFile(QString::fromUtf8(":/images/connected.png"), QSize(), QIcon::Normal, QIcon::Off);
+        cmdOK->setIcon(icon1);
         cmdOK->setFlat(true);
         cmdClose = new QPushButton(StdUserAuth);
         cmdClose->setObjectName(QString::fromUtf8("cmdClose"));
         cmdClose->setGeometry(QRect(138, 120, 75, 24));
+        QIcon icon2;
+        icon2.addFile(QString::fromUtf8(":/images/exit.png"), QSize(), QIcon::Normal, QIcon::Off);
+        cmdClose->setIcon(icon2);
+        cmdClose->setIconSize(QSize(30, 16));
         cmdClose->setFlat(true);
         groupBox = new QGroupBox(StdUserAuth);
         groupBox->setObjectName(QString::fromUtf8("groupBox"));
@@ -83,7 +92,7 @@ public:
     {
         StdUserAuth->setWindowTitle(QApplication::translate("StdUserAuth", "User Authentication", 0, QApplication::UnicodeUTF8));
         cmdOK->setText(QApplication::translate("StdUserAuth", "C&onnect", 0, QApplication::UnicodeUTF8));
-        cmdClose->setText(QApplication::translate("StdUserAuth", "&Cancel", 0, QApplication::UnicodeUTF8));
+        cmdClose->setText(QString());
         groupBox->setTitle(QApplication::translate("StdUserAuth", "User data:", 0, QApplication::UnicodeUTF8));
         label->setText(QApplication::translate("StdUserAuth", "Username:", 0, QApplication::UnicodeUTF8));
         label_2->setText(QApplication::translate("StdUserAuth", "Password:", 0, QApplication::UnicodeUTF8));
