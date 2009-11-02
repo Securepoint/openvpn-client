@@ -6,6 +6,7 @@ StdUserAuth::StdUserAuth(QWidget *parent) :
     m_ui(new Ui::StdUserAuth)
 {
     m_ui->setupUi(this);
+    m_ui->txtPwd->setEchoMode(QLineEdit::Password);
 }
 
 StdUserAuth::~StdUserAuth()
@@ -118,6 +119,6 @@ void StdUserAuth::on_cmdOK_clicked()
         this->parentVpn->configPwd = m_ui->txtPwd->text();
     }
     // Zum VPN Server verbinden
-    this->parentVpn->connectToVpn();
+    this->parentVpn->connectToVpn(m_ui->cbShowLog->isChecked());
     this->close();
 }

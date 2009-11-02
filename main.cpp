@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
             QTextStream out (&setupWriteFile);
             out << "NoFirstStart\n";
             setupWriteFile.close();
-            window.show();
+            window.openDialog();
         }
     }
 

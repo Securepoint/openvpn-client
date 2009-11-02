@@ -15,10 +15,12 @@ class DeleteConfig;
 #include "deleteconfig.h"
 
 #include "tapdriver.h"
+#include "proxysettings.h"
 
 #include <QtGui/QDialog>
 #include <QSystemTrayIcon>
 #include <QFileDialog>
+
 
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -73,8 +75,10 @@ private:
     QAction *infoAction;
     QAction *quitAction;
     QAction *importAction;
+    QAction *proxyAction;
     //Preferences mydia;
     appInfo infoDialog;
+    ProxySettings proxy;
     DeleteConfig *deleteDialog;
 
     QAction *mySubAction;
@@ -94,6 +98,7 @@ private:
     QAction *conAct;
 
 private slots:
+    void on_cmdImportConfig_clicked();
     void manageConnections ();
     void trayActivated(QSystemTrayIcon::ActivationReason reason);
     void openInfo ();
@@ -117,6 +122,7 @@ private slots:
     void exportConfig ();
     void openConfigFromListView (QListWidgetItem * item );
     void closeApp ();
+    void proxySettings ();
 };
 
 #endif // PREFERENCES_H

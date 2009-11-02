@@ -6,6 +6,7 @@ pkcs_auth::pkcs_auth(QWidget *parent) :
     m_ui(new Ui::pkcs_auth)
 {
     m_ui->setupUi(this);
+    m_ui->txtPKCSPwd->setEchoMode(QLineEdit::Password);
 }
 
 pkcs_auth::~pkcs_auth()

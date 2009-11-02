@@ -25,6 +25,42 @@ void OpenVpn::configIsChanged() {
                                 QString("Config have been changed! Restart Connection?"));
 }
 
+QStringList OpenVpn::makeProxyString() {
+    QStringList retList;
+    QFile pINI (QApplication::applicationDirPath() + QString("/proxy.ini"));
+    if (pINI.exists()) {
+        QSettings proxIni (QApplication::applicationDirPath() + QString("/proxy.ini"), QSettings::IniFormat);
+        if (proxIni.value("proxy-use","").toString() == "CONFIG") {
+            // Nothing
+        } else if (proxIni.value("proxy-use","").toString() == "IE") {
+            // IE
+            #ifdef Q_OS_WIN32
+                QSettings regIE ("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings", QSettings::NativeFormat);
+                QString regVal = regIE.value("ProxyServer", "").toString();
+                QStringList regData = regVal.split(":");
+                if (regData.size() == 2) {
+                    retList << QString ("--http-proxy")
+                            << regData[0]
+                            << regData[1];
+                }
+            #endif
+        } else {
+            // MANUAL
+            if (proxIni.value("proxy-port","").toString() != "" && proxIni.value("proxy-ip","").toString() != "") {
+                if (proxIni.value("proxy-type","").toString() == "HTTP")
+                    retList << QString ("--http-proxy")
+                            << proxIni.value("proxy-ip","").toString()
+                            << proxIni.value("proxy-port","").toString();
+                else
+                    retList << QString ("--socks-proxy")
+                            << proxIni.value("proxy-ip","").toString()
+                            << proxIni.value("proxy-port","").toString();
+            }
+        }
+    }
+    return retList;
+}
+
 QString OpenVpn::getScript(QString type) {
     QString scriptFilePath = this->configPath + QString("/scripts.conf");
     QFile scrtiptFile (scriptFilePath);
@@ -99,11 +135,15 @@ void OpenVpn::setTray (QSystemTrayIcon *appIcon){
     this->appIcon = appIcon;
 }
 
-void OpenVpn::connectToVpn(){
+void OpenVpn::connectToVpn(bool openLog){
     this->onDisconnect = false;
     // Connect
     if (!this->isConnectionStable()) {
         this->openVpnLogData.clear();
+        if (openLog)
+        if (!mLog.isVisible()) {
+            this->openVpnLog();
+        }
         this->runScript("BC");
         // Icon auf connecting setzen
         this->setConnected();
@@ -116,7 +156,14 @@ void OpenVpn::connectToVpn(){
         // Pfad für die Config bauen
         cFile = this->configPath + QString("/") + this->configName + QString(".ovpn");
         // Als Argument adden
+        arguments << QString ("--config");
         arguments << cFile;
+        QStringList proxyStr = this->makeProxyString();
+        if (proxyStr.length() == 3) {
+            arguments << proxyStr[0];
+            arguments << proxyStr[1];
+            arguments << proxyStr[2];
+        }
         // Prozesssignale zur Überwachung an die Slots binden
         connect( this->proc, SIGNAL(error ( QProcess::ProcessError) ), this, SLOT(showProcessError (QProcess::ProcessError)));
         connect( this->proc, SIGNAL(finished (int, QProcess::ExitStatus )), this, SLOT(processFinished (int, QProcess::ExitStatus)));
@@ -382,8 +429,13 @@ void OpenVpn::readProcessData() {
         } else if (lineOut.contains("Exiting", Qt::CaseInsensitive)) {
             errorMessage = QString ("Application Exiting!");
             errorOcurred = true;
+        } else if (lineOut.contains("Use --help for more information.", Qt::CaseInsensitive)) {
+            errorMessage = QString ("OpenVPN parameter error!\nSee log for details");
+            errorOcurred = true;
+        } else if (lineOut.contains("will try again in 5 seconds", Qt::CaseInsensitive)) {
+            errorMessage = QString ("OpenVPN connection error!\nSee log for details");
+            //errorOcurred = true;
         }
-
 
 
         if (errorOcurred) {
@@ -425,19 +477,15 @@ void OpenVpn::editVpnConfig() {
     }
     cf.close();
     if (fileContent != "") {
-        mCon.fileContent->setText(fileContent);
-        mCon.fPath->setText(cFile);
+        mCon.setContent(fileContent);
+        mCon.setPath(cFile);
         mCon.show();
     }
     //emit configSignalIsChanged();
 }
 
 void OpenVpn::openVpnLog() {
-    QString logdata;
-    foreach (QString str, this->openVpnLogData) {
-        logdata += str + "\n";
-    }
-    mLog.logContent->setText(logdata);
-    mLog.show();
+    mLog.logList = &this->openVpnLogData;
+    mLog.showDialog();
 }
 

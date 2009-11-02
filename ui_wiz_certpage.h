@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading ui file 'wiz_certpage.ui'
 **
-** Created: Fri 30. Oct 16:48:22 2009
+** Created: Fri 30. Oct 17:36:13 2009
 **      by: Qt User Interface Compiler version 4.5.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!
@@ -89,7 +89,7 @@ public:
     {
         CertPage->setWindowTitle(QApplication::translate("CertPage", "WizardPage", 0, QApplication::UnicodeUTF8));
         CertPage->setTitle(QApplication::translate("CertPage", "Certificates", 0, QApplication::UnicodeUTF8));
-        CertPage->setSubTitle(QApplication::translate("CertPage", "Please specify the certifcates for the connection.", 0, QApplication::UnicodeUTF8));
+        CertPage->setSubTitle(QApplication::translate("CertPage", "Please specify the certificates for the connection.", 0, QApplication::UnicodeUTF8));
         label->setText(QApplication::translate("CertPage", "Root CA:", 0, QApplication::UnicodeUTF8));
         label_2->setText(QApplication::translate("CertPage", "Certificate:", 0, QApplication::UnicodeUTF8));
         label_3->setText(QApplication::translate("CertPage", "Key:", 0, QApplication::UnicodeUTF8));

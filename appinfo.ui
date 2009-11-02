@@ -29,6 +29,9 @@
    <iconset resource="systray.qrc">
     <normaloff>:/images/appicon.png</normaloff>:/images/appicon.png</iconset>
   </property>
+  <property name="modal">
+   <bool>true</bool>
+  </property>
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
@@ -227,7 +230,7 @@
    </property>
    <property name="icon">
     <iconset resource="systray.qrc">
-     <normaloff>:/images/exit.png</normaloff>:/images/exit.png</iconset>
+     <normaloff>:/images/close.png</normaloff>:/images/close.png</iconset>
    </property>
    <property name="iconSize">
     <size>

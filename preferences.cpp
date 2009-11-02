@@ -92,8 +92,11 @@ Preferences::Preferences(QWidget *parent) :
 
 void Preferences::trayActivated(QSystemTrayIcon::ActivationReason reason){
     if (reason == QSystemTrayIcon::DoubleClick)
-        if (!this->isMinimized())
-            this->openDialog();
+        if (!this->isMinimized()) {
+            this->refreshDialog();
+            this->showNormal();
+            this->setFocus();
+        }
 }
 
 void Preferences::refreshConfigList() {
@@ -116,6 +119,7 @@ void Preferences::refreshConfigList() {
     QIcon icon = QIcon(":/images/inaktiv.png");
     trayIcon->setIcon(icon);
     trayIcon->show();
+
     // Das noch verbundene Element setzen
     foreach (OpenVpn* obj, subMenuList) {
         if (obj->isConnectionStable()) {
@@ -132,6 +136,8 @@ void Preferences::refreshDialog() {
     m_ui->tbSettings->setCurrentIndex(0);
     // Zeiger auf Obj merken
     m_ui->lsvConfigs->clear();
+    connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
+             this, SLOT(trayActivated(QSystemTrayIcon::ActivationReason)));
     foreach (OpenVpn *configObj, subMenuList) {
         OpenVpnQListItem *newItem = new OpenVpnQListItem (configObj);
         newItem->setText(configObj->configName + (configObj->isConnectionStable() ? "  [connected]" : ""));
@@ -1306,6 +1312,7 @@ void Preferences::createTrayIcon()
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(preferencesAction);
     trayIconMenu->addAction(importAction);
+    trayIconMenu->addAction(proxyAction);
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(infoAction);
     trayIconMenu->addSeparator();
@@ -1321,6 +1328,10 @@ void Preferences::createTrayIcon()
 
 }
 
+void Preferences::proxySettings() {
+    proxy.show();
+}
+
 void Preferences::createActions()
 {
     preferencesAction = new QAction(tr("&Manage connections"), this);
@@ -1328,6 +1339,9 @@ void Preferences::createActions()
 
     importAction = new QAction(tr("&Import config"), this);
     connect(importAction, SIGNAL(triggered()), this, SLOT(importConfig()));
+
+    proxyAction = new QAction(tr("&Proxy settings"), this);
+    connect(proxyAction, SIGNAL(triggered()), this, SLOT(proxySettings()));
 
     infoAction = new QAction(tr("&Info"), this);
     connect(infoAction, SIGNAL(triggered()), this, SLOT(openInfo()));
@@ -1366,4 +1380,9 @@ void Preferences::closeApp() {
         }
     #endif
     QCoreApplication::exit(0);
+}
+
+void Preferences::on_cmdImportConfig_clicked()
+{
+    this->importConfig ();
 }

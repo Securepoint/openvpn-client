@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading ui file 'wiz_endpage.ui'
 **
-** Created: Fri 30. Oct 16:48:22 2009
+** Created: Fri 30. Oct 16:53:13 2009
 **      by: Qt User Interface Compiler version 4.5.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!

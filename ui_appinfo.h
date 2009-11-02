@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading ui file 'appinfo.ui'
 **
-** Created: Fri 30. Oct 16:48:22 2009
+** Created: Mon 2. Nov 14:42:19 2009
 **      by: Qt User Interface Compiler version 4.5.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!
@@ -48,6 +48,7 @@ public:
         QIcon icon;
         icon.addFile(QString::fromUtf8(":/images/appicon.png"), QSize(), QIcon::Normal, QIcon::Off);
         appInfo->setWindowIcon(icon);
+        appInfo->setModal(true);
         label = new QLabel(appInfo);
         label->setObjectName(QString::fromUtf8("label"));
         label->setGeometry(QRect(0, 0, 401, 301));
@@ -101,7 +102,7 @@ public:
         cmdClose->setObjectName(QString::fromUtf8("cmdClose"));
         cmdClose->setGeometry(QRect(240, 270, 151, 20));
         QIcon icon1;
-        icon1.addFile(QString::fromUtf8(":/images/exit.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon1.addFile(QString::fromUtf8(":/images/close.png"), QSize(), QIcon::Normal, QIcon::Off);
         cmdClose->setIcon(icon1);
         cmdClose->setIconSize(QSize(30, 16));
         cmdClose->setFlat(true);

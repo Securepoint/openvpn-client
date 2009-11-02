@@ -10,19 +10,19 @@
     <x>0</x>
     <y>0</y>
     <width>220</width>
-    <height>153</height>
+    <height>168</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>220</width>
-    <height>153</height>
+    <height>168</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>220</width>
-    <height>153</height>
+    <height>168</height>
    </size>
   </property>
   <property name="contextMenuPolicy">
@@ -42,7 +42,7 @@
    <property name="geometry">
     <rect>
      <x>60</x>
-     <y>120</y>
+     <y>139</y>
      <width>75</width>
      <height>24</height>
     </rect>
@@ -62,7 +62,7 @@
    <property name="geometry">
     <rect>
      <x>138</x>
-     <y>120</y>
+     <y>139</y>
      <width>75</width>
      <height>24</height>
     </rect>
@@ -72,7 +72,7 @@
    </property>
    <property name="icon">
     <iconset resource="systray.qrc">
-     <normaloff>:/images/exit.png</normaloff>:/images/exit.png</iconset>
+     <normaloff>:/images/close.png</normaloff>:/images/close.png</iconset>
    </property>
    <property name="iconSize">
     <size>
@@ -90,7 +90,7 @@
      <x>10</x>
      <y>10</y>
      <width>201</width>
-     <height>101</height>
+     <height>121</height>
     </rect>
    </property>
    <property name="title">
@@ -153,6 +153,19 @@
     </property>
     <property name="text">
      <string>Remember username</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="cbShowLog">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>90</y>
+      <width>141</width>
+      <height>19</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Show log</string>
     </property>
    </widget>
   </widget>

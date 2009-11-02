@@ -180,7 +180,7 @@ p, li { white-space: pre-wrap; }
     <bool>true</bool>
    </property>
    <property name="plainText">
-    <string>Please notice. If you import a OpenVPN config in portable mode, the new config will be automatically imported in the application directory. In the installation mode the default is to import the new config in the home directory of the user. 
+    <string>Please notice: If you import a VPN config in portable mode, the new config will be automatically imported into the application directory. In the installation mode the default is to import the new config into the home directory/appdata of the user. 
 </string>
    </property>
   </widget>
@@ -198,7 +198,7 @@ p, li { white-space: pre-wrap; }
    </property>
    <property name="icon">
     <iconset resource="systray.qrc">
-     <normaloff>:/images/exit.png</normaloff>:/images/exit.png</iconset>
+     <normaloff>:/images/close.png</normaloff>:/images/close.png</iconset>
    </property>
    <property name="iconSize">
     <size>

@@ -1,7 +1,5 @@
 HEADERS = Configs.h \
-    StatusMessage.h \
     openvpn.h \
-    vpnLog.h \
     preferences.h \
     openvpnqlistitem.h \
     appfunc.h \
@@ -19,12 +17,13 @@ HEADERS = Configs.h \
     importconfig.h \
     deleteconfig.h \
     tapdriver.h \
-    single_application.h
+    single_application.h \
+    proxysettings.h \
+    vpnlog.h \
+    editconfig.h
 SOURCES = main.cpp \
     Configs.cpp \
-    StatusMessage.cpp \
     openvpn.cpp \
-    vpnLog.cpp \
     preferences.cpp \
     openvpnqlistitem.cpp \
     appfunc.cpp \
@@ -42,7 +41,10 @@ SOURCES = main.cpp \
     importconfig.cpp \
     deleteconfig.cpp \
     tapdriver.cpp \
-    single_application.cpp
+    single_application.cpp \
+    proxysettings.cpp \
+    vpnlog.cpp \
+    editconfig.cpp
 RESOURCES = systray.qrc
 QT += xml \
     svg
@@ -77,6 +79,8 @@ FORMS += preferences.ui \
     appinfo.ui \
     configexport.ui \
     importconfig.ui \
-    deleteconfig.ui
-
+    deleteconfig.ui \
+    proxysettings.ui \
+    vpnlog.ui \
+    editconfig.ui
 RC_FILE = myapp.rc

@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading ui file 'configexport.ui'
 **
-** Created: Fri 30. Oct 16:48:22 2009
+** Created: Mon 2. Nov 14:42:19 2009
 **      by: Qt User Interface Compiler version 4.5.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!
@@ -85,7 +85,7 @@ public:
         cmdCancel->setObjectName(QString::fromUtf8("cmdCancel"));
         cmdCancel->setGeometry(QRect(190, 179, 75, 24));
         QIcon icon2;
-        icon2.addFile(QString::fromUtf8(":/images/exit.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon2.addFile(QString::fromUtf8(":/images/close.png"), QSize(), QIcon::Normal, QIcon::Off);
         cmdCancel->setIcon(icon2);
         cmdCancel->setIconSize(QSize(30, 16));
         cmdCancel->setFlat(true);

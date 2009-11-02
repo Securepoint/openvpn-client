@@ -6,8 +6,8 @@
 #include <QDialog>
 #include <QSystemTrayIcon>
 #include <QTimer>
-#include "StatusMessage.h"
-#include "vpnLog.h"
+#include "editconfig.h"
+#include "vpnlog.h"
 // Prevent Circle References
 class StdUserAuth;
 #include "stduserauth.h"
@@ -24,7 +24,7 @@ public:
     virtual ~OpenVpn() {}
 
     //Methoden
-    void connectToVpn ();
+    void connectToVpn (bool openLog=false);
     void setTray (QSystemTrayIcon *appIcon);
     void setMenuList (QList<QAction*> List);
     void setMenuChildList (QList<QAction*> List);
@@ -68,17 +68,18 @@ private:
     bool onDisconnect;
     void showTrayMessage (QString message);
     void setIcon(int index);
+    QStringList makeProxyString ();
 
     // Member
     QProcess *proc;
     QProcess *procScripts;
     QString connectionIP;
-    QStringList openVpnLogData;
+    QList<QString> openVpnLogData;
     QSystemTrayIcon *appIcon;
     QList<QAction*> menuList;
     QList<QAction*> menuChildList;
     // Forms
-    StatusMessage mCon;
+    EditConfig mCon;
     VpnLog mLog;
     StdUserAuth *userauth;
     pkcs_auth pkcsAuth;

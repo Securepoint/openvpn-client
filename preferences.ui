@@ -62,8 +62,8 @@
     <widget class="QPushButton" name="cmdAddConfig">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>500</y>
+       <x>20</x>
+       <y>470</y>
        <width>191</width>
        <height>28</height>
       </rect>
@@ -72,7 +72,7 @@
       <enum>Qt::LeftToRight</enum>
      </property>
      <property name="text">
-      <string extracomment="vbnvbn">Add config</string>
+      <string extracomment="vbnvbn">Add     </string>
      </property>
      <property name="icon">
       <iconset resource="systray.qrc">
@@ -91,7 +91,7 @@
        <x>10</x>
        <y>20</y>
        <width>201</width>
-       <height>471</height>
+       <height>441</height>
       </rect>
      </property>
      <property name="contextMenuPolicy">
@@ -102,6 +102,29 @@
      </property>
      <property name="frameShadow">
       <enum>QFrame::Plain</enum>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="cmdImportConfig">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>506</y>
+       <width>191</width>
+       <height>28</height>
+      </rect>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::LeftToRight</enum>
+     </property>
+     <property name="text">
+      <string extracomment="vbnvbn">Import </string>
+     </property>
+     <property name="icon">
+      <iconset resource="systray.qrc">
+       <normaloff>:/images/import.png</normaloff>:/images/import.png</iconset>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
      </property>
     </widget>
    </widget>
@@ -1571,7 +1594,7 @@
    </property>
    <property name="icon">
     <iconset resource="systray.qrc">
-     <normaloff>:/images/exit.png</normaloff>:/images/exit.png</iconset>
+     <normaloff>:/images/close.png</normaloff>:/images/close.png</iconset>
    </property>
    <property name="iconSize">
     <size>

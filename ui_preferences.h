@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading ui file 'preferences.ui'
 **
-** Created: Fri 30. Oct 16:48:22 2009
+** Created: Mon 2. Nov 14:42:19 2009
 **      by: Qt User Interface Compiler version 4.5.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!
@@ -35,6 +35,7 @@ public:
     QGroupBox *groupBox_2;
     QPushButton *cmdAddConfig;
     QListWidget *lsvConfigs;
+    QPushButton *cmdImportConfig;
     QToolBox *tbSettings;
     QWidget *page;
     QGroupBox *groupBox_3;
@@ -176,7 +177,7 @@ public:
         buttonGroup->setObjectName(QString::fromUtf8("buttonGroup"));
         buttonGroup->addButton(cmdAddConfig);
         cmdAddConfig->setObjectName(QString::fromUtf8("cmdAddConfig"));
-        cmdAddConfig->setGeometry(QRect(10, 500, 191, 28));
+        cmdAddConfig->setGeometry(QRect(20, 470, 191, 28));
         cmdAddConfig->setLayoutDirection(Qt::LeftToRight);
         QIcon icon1;
         icon1.addFile(QString::fromUtf8(":/images/add.png"), QSize(), QIcon::Normal, QIcon::Off);
@@ -184,10 +185,18 @@ public:
         cmdAddConfig->setFlat(true);
         lsvConfigs = new QListWidget(groupBox_2);
         lsvConfigs->setObjectName(QString::fromUtf8("lsvConfigs"));
-        lsvConfigs->setGeometry(QRect(10, 20, 201, 471));
+        lsvConfigs->setGeometry(QRect(10, 20, 201, 441));
         lsvConfigs->setContextMenuPolicy(Qt::NoContextMenu);
         lsvConfigs->setFrameShape(QFrame::Box);
         lsvConfigs->setFrameShadow(QFrame::Plain);
+        cmdImportConfig = new QPushButton(groupBox_2);
+        cmdImportConfig->setObjectName(QString::fromUtf8("cmdImportConfig"));
+        cmdImportConfig->setGeometry(QRect(20, 506, 191, 28));
+        cmdImportConfig->setLayoutDirection(Qt::LeftToRight);
+        QIcon icon2;
+        icon2.addFile(QString::fromUtf8(":/images/import.png"), QSize(), QIcon::Normal, QIcon::Off);
+        cmdImportConfig->setIcon(icon2);
+        cmdImportConfig->setFlat(true);
         tbSettings = new QToolBox(groupBox);
         tbSettings->setObjectName(QString::fromUtf8("tbSettings"));
         tbSettings->setGeometry(QRect(240, 20, 421, 531));
@@ -561,17 +570,17 @@ public:
         cmdClose = new QPushButton(Preferences);
         cmdClose->setObjectName(QString::fromUtf8("cmdClose"));
         cmdClose->setGeometry(QRect(590, 621, 91, 24));
-        QIcon icon2;
-        icon2.addFile(QString::fromUtf8(":/images/exit.png"), QSize(), QIcon::Normal, QIcon::Off);
-        cmdClose->setIcon(icon2);
+        QIcon icon3;
+        icon3.addFile(QString::fromUtf8(":/images/close.png"), QSize(), QIcon::Normal, QIcon::Off);
+        cmdClose->setIcon(icon3);
         cmdClose->setIconSize(QSize(30, 16));
         cmdClose->setFlat(true);
         cmdSave = new QPushButton(Preferences);
         cmdSave->setObjectName(QString::fromUtf8("cmdSave"));
         cmdSave->setGeometry(QRect(480, 621, 91, 24));
-        QIcon icon3;
-        icon3.addFile(QString::fromUtf8(":/images/save.png"), QSize(), QIcon::Normal, QIcon::Off);
-        cmdSave->setIcon(icon3);
+        QIcon icon4;
+        icon4.addFile(QString::fromUtf8(":/images/save.png"), QSize(), QIcon::Normal, QIcon::Off);
+        cmdSave->setIcon(icon4);
         cmdSave->setIconSize(QSize(30, 16));
         cmdSave->setAutoDefault(true);
         cmdSave->setFlat(true);
@@ -595,9 +604,9 @@ public:
         cmdConnect = new QPushButton(Preferences);
         cmdConnect->setObjectName(QString::fromUtf8("cmdConnect"));
         cmdConnect->setGeometry(QRect(290, 621, 101, 24));
-        QIcon icon4;
-        icon4.addFile(QString::fromUtf8(":/images/disconnected.png"), QSize(), QIcon::Normal, QIcon::Off);
-        cmdConnect->setIcon(icon4);
+        QIcon icon5;
+        icon5.addFile(QString::fromUtf8(":/images/disconnected.png"), QSize(), QIcon::Normal, QIcon::Off);
+        cmdConnect->setIcon(icon5);
         cmdConnect->setFlat(true);
         label_42 = new QLabel(Preferences);
         label_42->setObjectName(QString::fromUtf8("label_42"));
@@ -617,7 +626,8 @@ public:
         Preferences->setWindowTitle(QApplication::translate("Preferences", "Securepoint VPN Client", 0, QApplication::UnicodeUTF8));
         groupBox->setTitle(QString());
         groupBox_2->setTitle(QApplication::translate("Preferences", "Available configs:", 0, QApplication::UnicodeUTF8));
-        cmdAddConfig->setText(QApplication::translate("Preferences", "Add config", 0, QApplication::UnicodeUTF8));
+        cmdAddConfig->setText(QApplication::translate("Preferences", "Add     ", 0, QApplication::UnicodeUTF8));
+        cmdImportConfig->setText(QApplication::translate("Preferences", "Import ", 0, QApplication::UnicodeUTF8));
         groupBox_3->setTitle(QApplication::translate("Preferences", "General:", 0, QApplication::UnicodeUTF8));
         label->setText(QApplication::translate("Preferences", "Client:", 0, QApplication::UnicodeUTF8));
         cbClient->setText(QString());

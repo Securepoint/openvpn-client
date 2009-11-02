@@ -1,9 +1,7 @@
 INPUT(
 ./release\main.o
 ./release\Configs.o
-./release\StatusMessage.o
 ./release\openvpn.o
-./release\vpnLog.o
 ./release\preferences.o
 ./release\openvpnqlistitem.o
 ./release\appfunc.o
@@ -22,9 +20,10 @@ INPUT(
 ./release\deleteconfig.o
 ./release\tapdriver.o
 ./release\single_application.o
-./release\moc_StatusMessage.o
+./release\proxysettings.o
+./release\vpnlog.o
+./release\editconfig.o
 ./release\moc_openvpn.o
-./release\moc_vpnLog.o
 ./release\moc_preferences.o
 ./release\moc_wiz_startpage.o
 ./release\moc_wiz_generalpage.o
@@ -41,5 +40,8 @@ INPUT(
 ./release\moc_deleteconfig.o
 ./release\moc_tapdriver.o
 ./release\moc_single_application.o
+./release\moc_proxysettings.o
+./release\moc_vpnlog.o
+./release\moc_editconfig.o
 ./release\qrc_systray.o
 );

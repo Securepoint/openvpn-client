@@ -22,5 +22,6 @@
         <file>images/save.png</file>
         <file>images/light_grey.png</file>
         <file>images/light_green.png</file>
+        <file>images/close.png</file>
     </qresource>
 </RCC>

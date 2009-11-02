@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading ui file 'wiz_startpage.ui'
 **
-** Created: Fri 30. Oct 16:48:22 2009
+** Created: Fri 30. Oct 17:36:13 2009
 **      by: Qt User Interface Compiler version 4.5.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!
@@ -46,7 +46,7 @@ public:
         plainTextEdit_2->setEnabled(true);
         plainTextEdit_2->setGeometry(QRect(10, 290, 371, 71));
         plainTextEdit_2->setContextMenuPolicy(Qt::NoContextMenu);
-        plainTextEdit_2->setStyleSheet(QString::fromUtf8("background-color: rgb(197, 197, 197);"));
+        plainTextEdit_2->setStyleSheet(QString::fromUtf8(""));
         plainTextEdit_2->setFrameShape(QFrame::Box);
         plainTextEdit_2->setFrameShadow(QFrame::Plain);
         plainTextEdit_2->setReadOnly(true);
@@ -66,8 +66,9 @@ public:
         StartPage->setWindowTitle(QApplication::translate("StartPage", "WizardPage", 0, QApplication::UnicodeUTF8));
         StartPage->setTitle(QString());
         StartPage->setSubTitle(QString());
-        plainTextEdit->setPlainText(QApplication::translate("StartPage", "This wizard will guides you through your way to generate a new OpenVPN connection. You simply need to specify the fields you want include into the new config.", 0, QApplication::UnicodeUTF8));
-        plainTextEdit_2->setPlainText(QApplication::translate("StartPage", "Please notice. If you create a OpenVPN config in portable mode, the new config will be automatically created into the application directory. In the installation mode the default is to create the new config into the home directory of the user. ", 0, QApplication::UnicodeUTF8));
+        plainTextEdit->setPlainText(QApplication::translate("StartPage", "This wizard will guides you through your way to generate a new VPN connection. You simply need to specify the fields you want include into the new config.", 0, QApplication::UnicodeUTF8));
+        plainTextEdit_2->setPlainText(QApplication::translate("StartPage", "Please notice:\n"
+"If you create a VPN config in portable mode, the new config will be automatically created into the application directory. In the installation mode the default is to create the new config into the home directory of the user. ", 0, QApplication::UnicodeUTF8));
         label->setText(QString());
         Q_UNUSED(StartPage);
     } // retranslateUi

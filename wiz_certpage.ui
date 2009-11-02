@@ -17,7 +17,7 @@
    <string>Certificates</string>
   </property>
   <property name="subTitle">
-   <string>Please specify the certifcates for the connection.</string>
+   <string>Please specify the certificates for the connection.</string>
   </property>
   <widget class="QLabel" name="label">
    <property name="geometry">

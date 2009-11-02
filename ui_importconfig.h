@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading ui file 'importconfig.ui'
 **
-** Created: Fri 30. Oct 16:48:22 2009
+** Created: Mon 2. Nov 14:42:19 2009
 **      by: Qt User Interface Compiler version 4.5.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!
@@ -100,7 +100,7 @@ public:
         cmdCancel->setObjectName(QString::fromUtf8("cmdCancel"));
         cmdCancel->setGeometry(QRect(280, 323, 75, 24));
         QIcon icon1;
-        icon1.addFile(QString::fromUtf8(":/images/exit.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon1.addFile(QString::fromUtf8(":/images/close.png"), QSize(), QIcon::Normal, QIcon::Off);
         cmdCancel->setIcon(icon1);
         cmdCancel->setIconSize(QSize(30, 16));
         cmdCancel->setFlat(true);
@@ -139,7 +139,7 @@ public:
         groupBox_2->setTitle(QApplication::translate("ImportConfig", "Save as:", 0, QApplication::UnicodeUTF8));
         rbSaveAsFile->setText(QApplication::translate("ImportConfig", "as filename", 0, QApplication::UnicodeUTF8));
         rbSaveAsName->setText(QApplication::translate("ImportConfig", "as:", 0, QApplication::UnicodeUTF8));
-        plainTextEdit_2->setPlainText(QApplication::translate("ImportConfig", "Please notice. If you import a OpenVPN config in portable mode, the new config will be automatically imported in the application directory. In the installation mode the default is to import the new config in the home directory of the user. \n"
+        plainTextEdit_2->setPlainText(QApplication::translate("ImportConfig", "Please notice: If you import a VPN config in portable mode, the new config will be automatically imported into the application directory. In the installation mode the default is to import the new config into the home directory/appdata of the user. \n"
 "", 0, QApplication::UnicodeUTF8));
         cmdCancel->setText(QString());
         cmdImport->setText(QApplication::translate("ImportConfig", "&Import", 0, QApplication::UnicodeUTF8));

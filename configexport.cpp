@@ -6,6 +6,7 @@ ConfigExport::ConfigExport(QWidget *parent) :
     m_ui(new Ui::ConfigExport)
 {
     m_ui->setupUi(this);
+    m_ui->txtExportPwd->setEchoMode(QLineEdit::Password);
 }
 
 ConfigExport::~ConfigExport()

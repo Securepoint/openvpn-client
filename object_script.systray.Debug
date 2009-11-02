@@ -1,9 +1,7 @@
 INPUT(
 ./debug\main.o
 ./debug\Configs.o
-./debug\StatusMessage.o
 ./debug\openvpn.o
-./debug\vpnLog.o
 ./debug\preferences.o
 ./debug\openvpnqlistitem.o
 ./debug\appfunc.o
@@ -22,9 +20,10 @@ INPUT(
 ./debug\deleteconfig.o
 ./debug\tapdriver.o
 ./debug\single_application.o
-./debug\moc_StatusMessage.o
+./debug\proxysettings.o
+./debug\vpnlog.o
+./debug\editconfig.o
 ./debug\moc_openvpn.o
-./debug\moc_vpnLog.o
 ./debug\moc_preferences.o
 ./debug\moc_wiz_startpage.o
 ./debug\moc_wiz_generalpage.o
@@ -41,5 +40,8 @@ INPUT(
 ./debug\moc_deleteconfig.o
 ./debug\moc_tapdriver.o
 ./debug\moc_single_application.o
+./debug\moc_proxysettings.o
+./debug\moc_vpnlog.o
+./debug\moc_editconfig.o
 ./debug\qrc_systray.o
 );

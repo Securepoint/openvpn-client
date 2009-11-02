@@ -6,6 +6,7 @@ ImportConfig::ImportConfig(QWidget *parent) :
     m_ui(new Ui::ImportConfig)
 {
     m_ui->setupUi(this);
+    m_ui->txtPassword->setEchoMode(QLineEdit::Password);
 }
 
 ImportConfig::~ImportConfig()
