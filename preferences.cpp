@@ -418,6 +418,9 @@ void Preferences::openConfigFromListView (QListWidgetItem * item ){
         QMessageBox::critical(0, QString("Securepoint VPN Client"), QString("Unable to read file!"));
         return;
     }
+    m_ui->txtCA->setText("");
+    m_ui->txtCert->setText("");
+    m_ui->txtKey->setText("");
 
     QTextStream in(&cf);
     bool isClientChecked = false;
@@ -1091,7 +1094,7 @@ void Preferences::on_cmdSave_clicked()
         // Daten geschrieben?
         if (!scriptDataWrite) {
             if (!sf.remove()) {
-                QMessageBox::critical(0,"Securepoint OpenVPN Client", "Can't delete scriptfile!");
+                QMessageBox::critical(0,"Securepoint VPN Client", "Can't delete scriptfile!");
                 return;
             }
         }
@@ -1313,6 +1316,10 @@ void Preferences::createTrayIcon()
     trayIconMenu->addAction(preferencesAction);
     trayIconMenu->addAction(importAction);
     trayIconMenu->addAction(proxyAction);
+    #ifdef Q_OS_WIN32
+        trayIconMenu->addSeparator();
+        trayIconMenu->addAction(tapAction);
+    #endif
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(infoAction);
     trayIconMenu->addSeparator();
@@ -1346,11 +1353,35 @@ void Preferences::createActions()
     infoAction = new QAction(tr("&Info"), this);
     connect(infoAction, SIGNAL(triggered()), this, SLOT(openInfo()));
 
+    tapAction = new QAction(tr("&TAP info"), this);
+    connect(tapAction, SIGNAL(triggered()), this, SLOT(tapInfo()));
+
     quitAction = new QAction(tr("&Quit"), this);
     connect(quitAction, SIGNAL(triggered()), this, SLOT(closeApp()));
 }
 
 void Preferences::closeApp() {
+    // Prüfen, ob noch eine Verbindung aktiv ist
+    foreach (OpenVpn *configObj, subMenuList) {
+        if (configObj->isConnectionStable()) {
+            QMessageBox msgBox;
+            msgBox.setWindowTitle("Securepoint VPN Client");
+            msgBox.setText("A connection is still connected!");
+            msgBox.setWindowIcon(QIcon(":/images/appicon.png"));
+            msgBox.setInformativeText("Do you want to disconnect the connection?");
+            msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+            msgBox.setDefaultButton(QMessageBox::Yes);
+            int ret = msgBox.exec();
+            switch (ret) {
+                case QMessageBox::Yes:
+                     configObj->disconnectVpn();
+                     break;
+                 case QMessageBox::No:
+                 default:
+                     break;
+            }
+        }
+    }
     #ifdef Q_OS_WIN32
         AppFunc myapp;
         if (myapp.isAppPortable()) {
@@ -1385,4 +1416,8 @@ void Preferences::closeApp() {
 void Preferences::on_cmdImportConfig_clicked()
 {
     this->importConfig ();
+}
+
+void Preferences::tapInfo() {
+    tapDia.openDialog();
 }

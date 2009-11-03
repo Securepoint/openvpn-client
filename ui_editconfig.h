@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading ui file 'editconfig.ui'
 **
-** Created: Mon 2. Nov 14:42:19 2009
+** Created: Tue 3. Nov 16:14:16 2009
 **      by: Qt User Interface Compiler version 4.5.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!

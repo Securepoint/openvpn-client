@@ -3,6 +3,7 @@
 
 #include <QtGui/QWizardPage>
 #include <QFileDialog>
+#include "appfunc.h"
 
 namespace Ui {
     class CertPage;

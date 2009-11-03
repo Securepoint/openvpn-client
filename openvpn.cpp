@@ -181,7 +181,7 @@ void OpenVpn::connectToVpn(bool openLog){
 }
 
 void OpenVpn::showTrayMessage(QString message) {
-     this->appIcon->showMessage("OpenVPN Client", message, QSystemTrayIcon::Information, 6000);
+     this->appIcon->showMessage("Securepoint VPN Client", message, QSystemTrayIcon::Information, 6000);
 }
 
 void OpenVpn::setMenuChildList(QList<QAction*> List) {

@@ -13,6 +13,7 @@ class ImportConfig;
 #include "appinfo.h"
 class DeleteConfig;
 #include "deleteconfig.h"
+#include "tapinfo.h"
 
 #include "tapdriver.h"
 #include "proxysettings.h"
@@ -76,9 +77,11 @@ private:
     QAction *quitAction;
     QAction *importAction;
     QAction *proxyAction;
+    QAction *tapAction;
     //Preferences mydia;
     appInfo infoDialog;
     ProxySettings proxy;
+    TapInfo tapDia;
     DeleteConfig *deleteDialog;
 
     QAction *mySubAction;
@@ -123,6 +126,7 @@ private slots:
     void openConfigFromListView (QListWidgetItem * item );
     void closeApp ();
     void proxySettings ();
+    void tapInfo ();
 };
 
 #endif // PREFERENCES_H

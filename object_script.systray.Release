@@ -23,6 +23,7 @@ INPUT(
 ./release\proxysettings.o
 ./release\vpnlog.o
 ./release\editconfig.o
+./release\tapinfo.o
 ./release\moc_openvpn.o
 ./release\moc_preferences.o
 ./release\moc_wiz_startpage.o
@@ -43,5 +44,6 @@ INPUT(
 ./release\moc_proxysettings.o
 ./release\moc_vpnlog.o
 ./release\moc_editconfig.o
+./release\moc_tapinfo.o
 ./release\qrc_systray.o
 );

@@ -33,7 +33,8 @@ void CertPage::changeEvent(QEvent *e)
 void CertPage::on_cmdOpenCA_clicked()
 {
     if (this->lastDir == "") {
-        this->lastDir = QApplication::applicationDirPath();
+        AppFunc app;
+        this->lastDir = app.getAppSavePath();
     }
     QFileDialog caFileDialog;
     QString filename = caFileDialog.getOpenFileName(this, tr("Find root ca"), this->lastDir, "Certificates (*.cert *.pem)");
@@ -46,7 +47,8 @@ void CertPage::on_cmdOpenCA_clicked()
 void CertPage::on_cmdOpenCert_clicked()
 {
     if (this->lastDir == "") {
-        this->lastDir = QApplication::applicationDirPath();
+        AppFunc app;
+        this->lastDir = app.getAppSavePath();
     }
     QFileDialog certFileDialog;
     QString filename = certFileDialog.getOpenFileName(this, tr("Find certificates"), this->lastDir, "Certificates (*.cert *.pem)");
@@ -59,7 +61,8 @@ void CertPage::on_cmdOpenCert_clicked()
 void CertPage::on_cmdOpenKey_clicked()
 {
     if (this->lastDir == "") {
-        this->lastDir = QApplication::applicationDirPath();
+        AppFunc app;
+        this->lastDir = app.getAppSavePath();
     }
     QFileDialog keyFileDialog;
     QString filename = keyFileDialog.getOpenFileName(this, tr("Find key files"), this->lastDir, "Key files (*.key *.pem)");

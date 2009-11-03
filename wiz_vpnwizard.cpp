@@ -129,22 +129,27 @@ void VpnWizard::accept()
     configFile.close();
     // Nun die Dateien kopieren
     QFile caFile (field("txtCAPath").toString());
-    if (!caFile.copy(dirPath + QString("/") + caPath.right(caPath.size() - caPath.lastIndexOf("/") -1))){
+    QString caDestFile (dirPath + QString("/") + caPath.right(caPath.size() - caPath.lastIndexOf("/") -1));
+    if (!caFile.copy(caDestFile)){
         QMessageBox::critical(0,"Securepoint VPN Client", "Unable to copy CA file!");
         return;
     }
 
     QFile certFile (field("txtCertPath").toString());
-    if (!certFile.copy(dirPath + QString("/") + certPath.right(certPath.size() - certPath.lastIndexOf("/") -1))){
-        QMessageBox::critical(0,"Securepoint VPN Client", "Unable to copy certificate file!");
-        return;
-    }
+    QString certDestFile (dirPath + QString("/") + certPath.right(certPath.size() - certPath.lastIndexOf("/") -1));
+    if (certDestFile != caDestFile)
+        if (!certFile.copy(certDestFile)){
+            QMessageBox::critical(0,"Securepoint VPN Client", "Unable to copy certificate file!");
+            return;
+        }
 
     QFile keyFile (field("txtKeyPath").toString());
-    if (!keyFile.copy(dirPath + QString("/") + keyPath.right(keyPath.size() - keyPath.lastIndexOf("/") -1))){
-        QMessageBox::critical(0,"Securepoint VPN Client", "Unable to copy key file!");
-        return;
-    }
+    QString keyDestFile (dirPath + QString("/") + keyPath.right(keyPath.size() - keyPath.lastIndexOf("/") -1));
+    if (keyDestFile != caDestFile && keyDestFile != certDestFile)
+        if (!keyFile.copy(keyDestFile)){
+            QMessageBox::critical(0,"Securepoint VPN Client", "Unable to copy key file!");
+            return;
+        }
     // Alles erstellt und kopiert!
     caFile.close();
     certFile.close();
