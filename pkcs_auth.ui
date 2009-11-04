@@ -72,6 +72,10 @@
       <height>20</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true">:enabled {border: 1px solid black}
+:hover {border: 1px solid red; }</string>
+    </property>
    </widget>
   </widget>
   <widget class="QPushButton" name="cmdOK">
@@ -83,12 +87,17 @@
      <height>24</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">:enabled {border: 1px solid black}
+:disabled {border: 1px solid black}
+:hover {background-color: rgb(195, 195, 195);}</string>
+   </property>
    <property name="text">
     <string>Co&amp;nnect</string>
    </property>
    <property name="icon">
     <iconset resource="systray.qrc">
-     <normaloff>:/images/connected.png</normaloff>:/images/connected.png</iconset>
+     <normaloff>:/images/connectmen.png</normaloff>:/images/connectmen.png</iconset>
    </property>
    <property name="flat">
     <bool>true</bool>

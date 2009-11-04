@@ -80,6 +80,41 @@
      <height>19</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">QCheckBox { 
+spacing: 5px;
+}
+
+QCheckBox::indicator {
+width: 13px;
+height: 13px;
+}
+
+QCheckBox::indicator:unchecked:disabled {
+image: url(:/images/styles/checkbox_unchecked_dis.png);
+}
+
+QCheckBox::indicator:checked:disabled {
+image: url(:/images/styles/checkbox_checked_dis.png);
+}
+
+QCheckBox::indicator:unchecked:enabled {
+image: url(:/images/styles/checkbox_unchecked.png);
+}
+
+QCheckBox::indicator:checked:enabled {
+image: url(:/images/styles/checkbox_checked.png);
+}
+
+QCheckBox::indicator:unchecked:enabled:hover {
+image: url(:/images/styles/checkbox_unchecked_hover.png);
+}
+
+QCheckBox::indicator:checked:enabled:hover {
+image: url(:/images/styles/checkbox_checked_hover.png);
+}
+</string>
+   </property>
    <property name="text">
     <string/>
    </property>
@@ -92,6 +127,11 @@
      <width>340</width>
      <height>20</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">:enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}
+:disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}
+:hover {border: 1px solid red; }</string>
    </property>
    <property name="readOnly">
     <bool>true</bool>
@@ -106,6 +146,11 @@
      <height>20</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">:enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}
+:disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}
+:hover {border: 1px solid red; }</string>
+   </property>
    <property name="readOnly">
     <bool>true</bool>
    </property>
@@ -119,6 +164,11 @@
      <height>20</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">:enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}
+:disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}
+:hover {border: 1px solid red; }</string>
+   </property>
    <property name="readOnly">
     <bool>true</bool>
    </property>
@@ -127,10 +177,15 @@
    <property name="geometry">
     <rect>
      <x>375</x>
-     <y>35</y>
-     <width>21</width>
-     <height>21</height>
+     <y>36</y>
+     <width>20</width>
+     <height>20</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">:enabled {border: 1px solid black}
+:disabled {border: 1px solid black}
+:hover {background-color: rgb(195, 195, 195);}</string>
    </property>
    <property name="text">
     <string>...</string>
@@ -141,9 +196,14 @@
     <rect>
      <x>376</x>
      <y>90</y>
-     <width>21</width>
-     <height>21</height>
+     <width>20</width>
+     <height>20</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">:enabled {border: 1px solid black}
+:disabled {border: 1px solid black}
+:hover {background-color: rgb(195, 195, 195);}</string>
    </property>
    <property name="text">
     <string>...</string>
@@ -152,11 +212,16 @@
   <widget class="QPushButton" name="cmdOpenKey">
    <property name="geometry">
     <rect>
-     <x>377</x>
-     <y>133</y>
+     <x>376</x>
+     <y>134</y>
      <width>20</width>
-     <height>21</height>
+     <height>20</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">:enabled {border: 1px solid black}
+:disabled {border: 1px solid black}
+:hover {background-color: rgb(195, 195, 195);}</string>
    </property>
    <property name="text">
     <string>...</string>

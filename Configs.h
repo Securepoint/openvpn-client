@@ -17,6 +17,10 @@ class Configs
   void searchConfigs (QString sDir);
   void clearConfigs ();
   QList<OpenVpn*> getConfigsObjects ();
+  void searchLinkedConfigs ();
+  bool isConfigLinked (QString config);
+  void removeConfigFromList (QString config);
+  void changeConfigNameInLinkedList (QString oldName, QString newName);
 
 
   private:

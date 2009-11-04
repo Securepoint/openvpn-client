@@ -76,8 +76,13 @@
      <height>24</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">:enabled {border: 1px solid black}
+:disabled {border: 1px solid black}
+:hover {background-color: rgb(195, 195, 195);}</string>
+   </property>
    <property name="text">
-    <string/>
+    <string>&amp;Close</string>
    </property>
    <property name="icon">
     <iconset resource="systray.qrc">
@@ -85,7 +90,7 @@
    </property>
    <property name="iconSize">
     <size>
-     <width>30</width>
+     <width>16</width>
      <height>16</height>
     </size>
    </property>
@@ -97,13 +102,18 @@
    <property name="geometry">
     <rect>
      <x>590</x>
-     <y>371</y>
+     <y>369</y>
      <width>75</width>
      <height>24</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">:enabled {border: 1px solid black}
+:disabled {border: 1px solid black}
+:hover {background-color: rgb(195, 195, 195);}</string>
+   </property>
    <property name="text">
-    <string/>
+    <string>&amp;Save</string>
    </property>
    <property name="icon">
     <iconset resource="systray.qrc">

@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading ui file 'appinfo.ui'
 **
-** Created: Tue 3. Nov 16:14:15 2009
+** Created: Wed 4. Nov 17:16:48 2009
 **      by: Qt User Interface Compiler version 4.5.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!
@@ -101,10 +101,13 @@ public:
         cmdClose = new QPushButton(appInfo);
         cmdClose->setObjectName(QString::fromUtf8("cmdClose"));
         cmdClose->setGeometry(QRect(240, 270, 151, 20));
+        cmdClose->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black}\n"
+":disabled {border: 1px solid black}\n"
+":hover {background-color: rgb(195, 195, 195);}"));
         QIcon icon1;
         icon1.addFile(QString::fromUtf8(":/images/close.png"), QSize(), QIcon::Normal, QIcon::Off);
         cmdClose->setIcon(icon1);
-        cmdClose->setIconSize(QSize(30, 16));
+        cmdClose->setIconSize(QSize(16, 16));
         cmdClose->setFlat(true);
         label_12 = new QLabel(appInfo);
         label_12->setObjectName(QString::fromUtf8("label_12"));
@@ -132,7 +135,7 @@ public:
         label_9->setText(QApplication::translate("appInfo", "21335 L\303\274neburg", 0, QApplication::UnicodeUTF8));
         label_10->setText(QApplication::translate("appInfo", "Germany", 0, QApplication::UnicodeUTF8));
         label_11->setText(QApplication::translate("appInfo", "www.securepoint.de", 0, QApplication::UnicodeUTF8));
-        cmdClose->setText(QString());
+        cmdClose->setText(QApplication::translate("appInfo", "&Close", 0, QApplication::UnicodeUTF8));
         label_12->setText(QString());
         Q_UNUSED(appInfo);
     } // retranslateUi

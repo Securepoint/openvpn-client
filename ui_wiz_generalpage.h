@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading ui file 'wiz_generalpage.ui'
 **
-** Created: Tue 3. Nov 16:14:15 2009
+** Created: Wed 4. Nov 17:16:47 2009
 **      by: Qt User Interface Compiler version 4.5.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!
@@ -42,6 +42,9 @@ public:
         txtConfigName = new QLineEdit(GeneralPage);
         txtConfigName->setObjectName(QString::fromUtf8("txtConfigName"));
         txtConfigName->setGeometry(QRect(70, 48, 291, 20));
+        txtConfigName->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}\n"
+":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}\n"
+":hover {border: 1px solid red; }"));
 
         retranslateUi(GeneralPage);
 

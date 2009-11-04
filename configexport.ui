@@ -66,6 +66,11 @@
       <height>20</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true">:enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}
+:disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}
+:hover {border: 1px solid red; }</string>
+    </property>
    </widget>
    <widget class="QLabel" name="label_2">
     <property name="geometry">
@@ -89,15 +94,25 @@
       <height>20</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true">:enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}
+:disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}
+:hover {border: 1px solid red; }</string>
+    </property>
    </widget>
    <widget class="QPushButton" name="cmdOpenDir">
     <property name="geometry">
      <rect>
-      <x>225</x>
-      <y>18</y>
+      <x>222</x>
+      <y>19</y>
       <width>20</width>
-      <height>21</height>
+      <height>20</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">:enabled {border: 1px solid black}
+:disabled {border: 1px solid black}
+:hover {background-color: rgb(195, 195, 195);}</string>
     </property>
     <property name="text">
      <string>...</string>
@@ -142,6 +157,11 @@
      <height>24</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">:enabled {border: 1px solid black}
+:disabled {border: 1px solid black}
+:hover {background-color: rgb(195, 195, 195);}</string>
+   </property>
    <property name="text">
     <string>E&amp;xport</string>
    </property>
@@ -162,8 +182,13 @@
      <height>24</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">:enabled {border: 1px solid black}
+:disabled {border: 1px solid black}
+:hover {background-color: rgb(195, 195, 195);}</string>
+   </property>
    <property name="text">
-    <string/>
+    <string>&amp;Close</string>
    </property>
    <property name="icon">
     <iconset resource="systray.qrc">
@@ -171,7 +196,7 @@
    </property>
    <property name="iconSize">
     <size>
-     <width>30</width>
+     <width>16</width>
      <height>16</height>
     </size>
    </property>

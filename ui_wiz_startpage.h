@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading ui file 'wiz_startpage.ui'
 **
-** Created: Tue 3. Nov 16:14:15 2009
+** Created: Wed 4. Nov 17:16:47 2009
 **      by: Qt User Interface Compiler version 4.5.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!
@@ -44,7 +44,7 @@ public:
         plainTextEdit_2 = new QPlainTextEdit(StartPage);
         plainTextEdit_2->setObjectName(QString::fromUtf8("plainTextEdit_2"));
         plainTextEdit_2->setEnabled(true);
-        plainTextEdit_2->setGeometry(QRect(10, 290, 371, 71));
+        plainTextEdit_2->setGeometry(QRect(10, 280, 371, 81));
         plainTextEdit_2->setContextMenuPolicy(Qt::NoContextMenu);
         plainTextEdit_2->setStyleSheet(QString::fromUtf8(""));
         plainTextEdit_2->setFrameShape(QFrame::Box);

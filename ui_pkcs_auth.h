@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading ui file 'pkcs_auth.ui'
 **
-** Created: Tue 3. Nov 16:14:15 2009
+** Created: Wed 4. Nov 17:16:48 2009
 **      by: Qt User Interface Compiler version 4.5.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!
@@ -56,11 +56,16 @@ public:
         txtPKCSPwd = new QLineEdit(groupBox);
         txtPKCSPwd->setObjectName(QString::fromUtf8("txtPKCSPwd"));
         txtPKCSPwd->setGeometry(QRect(65, 22, 161, 20));
+        txtPKCSPwd->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black}\n"
+":hover {border: 1px solid red; }"));
         cmdOK = new QPushButton(pkcs_auth);
         cmdOK->setObjectName(QString::fromUtf8("cmdOK"));
         cmdOK->setGeometry(QRect(180, 70, 75, 24));
+        cmdOK->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black}\n"
+":disabled {border: 1px solid black}\n"
+":hover {background-color: rgb(195, 195, 195);}"));
         QIcon icon1;
-        icon1.addFile(QString::fromUtf8(":/images/connected.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon1.addFile(QString::fromUtf8(":/images/connectmen.png"), QSize(), QIcon::Normal, QIcon::Off);
         cmdOK->setIcon(icon1);
         cmdOK->setFlat(true);
 

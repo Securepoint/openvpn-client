@@ -47,6 +47,7 @@ Preferences::Preferences(QWidget *parent) :
     }
 
     myConfigs.searchConfigs(QDir::currentPath());
+    myConfigs.searchLinkedConfigs();
     subMenuList = myConfigs.getConfigsObjects();
 
     createActions();
@@ -111,6 +112,7 @@ void Preferences::refreshConfigList() {
         myConfigs.searchConfigs(app.getAppSavePath());
 
     myConfigs.searchConfigs(QDir::currentPath());
+    myConfigs.searchLinkedConfigs();
     subMenuList = myConfigs.getConfigsObjects();
     // TrayIcon neu aufbauen
     trayIcon->hide();
@@ -140,7 +142,8 @@ void Preferences::refreshDialog() {
              this, SLOT(trayActivated(QSystemTrayIcon::ActivationReason)));
     foreach (OpenVpn *configObj, subMenuList) {
         OpenVpnQListItem *newItem = new OpenVpnQListItem (configObj);
-        newItem->setText(configObj->configName + (configObj->isConnectionStable() ? "  [connected]" : ""));
+        newItem->setText((configObj->isLinked ? "- " : "") + configObj->configName
+                         + (configObj->isConnectionStable() ? "  [connected]" : ""));
         m_ui->lsvConfigs->insertItem(1, newItem);
     }
     m_ui->cmdConnect->setEnabled(false);
@@ -155,6 +158,19 @@ void Preferences::setVisible(bool visible)
 Preferences::~Preferences()
 {
     delete m_ui;
+}
+
+void Preferences::renameConfig() {
+    if (m_ui->lblTunnelStatus->text() == "Connected") {
+        QMessageBox::critical(0, QString("Securepoint VPN Client"), QString ("Rename of a connected configuartion is not allowed!"));
+        return;
+    }
+    renameDialog = new RenameConfig(this);
+    QString configName = m_ui->txtPathFromConfig->text().right(m_ui->txtPathFromConfig->text().size() - m_ui->txtPathFromConfig->text().lastIndexOf("/") -1);
+                configName = configName.left(configName.size()-5);
+    renameDialog->setOldName(configName);
+    renameDialog->setFullPath(m_ui->txtPathFromConfig->text());
+    renameDialog->show();
 }
 
 void Preferences::deleteConfigFromList(bool fconFile, bool fconCaFile, bool fconCertFile,
@@ -902,7 +918,9 @@ void Preferences::openContextMenuListView(const QPoint &pos) {
         configPopUp->addSeparator();
         configPopUp->addAction(QPixmap(":/images/delete.png"), "&Delete", this, SLOT(deleteConfig()));
         configPopUp->addSeparator();
-        conAct = configPopUp->addAction(QPixmap(":/images/connected.png"), "Con&nect", this, SLOT(connectConfig()));
+        conAct = configPopUp->addAction(QPixmap(":/images/connectmen.png"), "Con&nect", this, SLOT(connectConfig()));
+        configPopUp->addSeparator();
+        configPopUp->addAction(QPixmap(":/images/rename.png"), "&Rename", this, SLOT(renameConfig()));
         configPopUp->addSeparator();
         configPopUp->addAction(QPixmap(":/images/export.png"), "E&xport", this, SLOT(exportConfig()));
         configPopUp->addAction(QPixmap(":/images/import.png"), "&Import", this, SLOT(importConfig()));
@@ -927,8 +945,30 @@ void Preferences::editConfig() {
 }
 
 void Preferences::deleteConfig() {
-    deleteDialog = new DeleteConfig(this);
-    deleteDialog->openDialog();
+    if (myConfigs.isConfigLinked(m_ui->txtPathFromConfig->text())) {
+        // Remove link
+        QMessageBox msgBox;
+                    msgBox.setWindowTitle("Securepoint VPN Client");
+                    msgBox.setWindowIcon(QIcon(":/images/appicon.png"));
+                    msgBox.setText("Delete linked configuration");
+                    msgBox.setInformativeText("Remove the linked configuration from list?");
+                    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+                    msgBox.setDefaultButton(QMessageBox::Yes);
+           int ret = msgBox.exec();
+           switch (ret) {
+               case QMessageBox::Yes:
+                   myConfigs.removeConfigFromList(m_ui->txtPathFromConfig->text());
+                   this->refreshConfigList();
+                   break;
+               case QMessageBox::No:
+               default:
+                   break;
+           }
+    } else {
+        // Non link config
+        deleteDialog = new DeleteConfig(this);
+        deleteDialog->openDialog();
+    }
 }
 
 void Preferences::openDialog() {
@@ -1243,12 +1283,12 @@ void Preferences::createTrayIcon()
     trayIconMenu = new QMenu(this);
     if (subMenuList.size() == 1) {
         foreach (OpenVpn *configObj, subMenuList) {
-            menuChildList.append(mySubAction = new QAction(tr ("Connect"), this));
+            menuChildList.append(mySubAction = new QAction(QIcon(":/images/connectmen.png"),tr ("Connect"), this));
             mySubAction->setObjectName(configObj->configName);
             connect(mySubAction, SIGNAL(triggered()), configObj, SLOT(openConnect()));
             trayIconMenu->addAction (mySubAction);
 
-            menuChildList.append(mySubAction = new QAction(tr ("Disconnect"), this));
+            menuChildList.append(mySubAction = new QAction(QIcon(":/images/disconnetdmen.png"),tr ("Disconnect"), this));
             mySubAction->setObjectName(configObj->configName);
             mySubAction->setDisabled(true);
             connect(mySubAction, SIGNAL(triggered()), configObj, SLOT(disconnectVpn()));
@@ -1266,12 +1306,6 @@ void Preferences::createTrayIcon()
             connect(mySubAction, SIGNAL(triggered()), configObj, SLOT(editVpnConfig()));
             trayIconMenu->addAction (mySubAction);
 
-            /*
-            menuChildList.append(mySubAction = new QAction(tr ("Change password"), this));
-            mySubAction->setObjectName(configObj->configName);
-            connect(mySubAction, SIGNAL(triggered()), configObj, SLOT(openConnect()));
-            trayIconMenu->addAction (mySubAction);
-            */
         }
     } else {
         foreach (OpenVpn *configObj, subMenuList) {
@@ -1279,12 +1313,12 @@ void Preferences::createTrayIcon()
             trayTest = new QMenu(configObj->configName, this);
 
             // Set Child of Menu
-            menuChildList.append(mySubAction = new QAction(tr ("Connect"), this));
+            menuChildList.append(mySubAction = new QAction(QIcon(":/images/connectmen.png"), tr ("Connect"), this));
             mySubAction->setObjectName(configObj->configName);
             connect(mySubAction, SIGNAL(triggered()), configObj, SLOT(openConnect()));
             trayTest->addAction (mySubAction);
 
-            menuChildList.append(mySubAction = new QAction(tr ("Disconnect"), this));
+            menuChildList.append(mySubAction = new QAction(QIcon(":/images/disconnetdmen.png"), tr ("Disconnect"), this));
             mySubAction->setObjectName(configObj->configName);
             mySubAction->setDisabled(true);
             connect(mySubAction, SIGNAL(triggered()), configObj, SLOT(disconnectVpn()));
@@ -1292,19 +1326,14 @@ void Preferences::createTrayIcon()
 
             trayTest->addSeparator();
 
-            menuChildList.append(mySubAction = new QAction(tr ("Show log"), this));
+            menuChildList.append(mySubAction = new QAction(QIcon(":/images/info.png"), tr ("Show log"), this));
             mySubAction->setObjectName(configObj->configName);
             connect(mySubAction, SIGNAL(triggered()), configObj, SLOT(openVpnLog()));
             trayTest->addAction (mySubAction);
 
-            menuChildList.append(mySubAction = new QAction(tr ("Edit config"), this));
+            menuChildList.append(mySubAction = new QAction(QIcon(":/images/edit.png"), tr ("Edit config"), this));
             mySubAction->setObjectName(configObj->configName);
             connect(mySubAction, SIGNAL(triggered()), configObj, SLOT(editVpnConfig()));
-            trayTest->addAction (mySubAction);
-
-            menuChildList.append(mySubAction = new QAction(tr ("Change password"), this));
-            mySubAction->setObjectName(configObj->configName);
-            connect(mySubAction, SIGNAL(triggered()), configObj, SLOT(openConnect()));
             trayTest->addAction (mySubAction);
 
             // Append to Main Menu
@@ -1341,22 +1370,22 @@ void Preferences::proxySettings() {
 
 void Preferences::createActions()
 {
-    preferencesAction = new QAction(tr("&Manage connections"), this);
+    preferencesAction = new QAction(QIcon(":/images/edit.png"),tr("&Manage connections"), this);
     connect(preferencesAction, SIGNAL(triggered()), this, SLOT(manageConnections()));
 
-    importAction = new QAction(tr("&Import config"), this);
+    importAction = new QAction(QIcon(":/images/import.png"),tr("&Import config"), this);
     connect(importAction, SIGNAL(triggered()), this, SLOT(importConfig()));
 
-    proxyAction = new QAction(tr("&Proxy settings"), this);
+    proxyAction = new QAction(QIcon(":/images/export.png"),tr("&Proxy settings"), this);
     connect(proxyAction, SIGNAL(triggered()), this, SLOT(proxySettings()));
 
-    infoAction = new QAction(tr("&Info"), this);
+    infoAction = new QAction(QIcon(":/images/info.png"),tr("&Info"), this);
     connect(infoAction, SIGNAL(triggered()), this, SLOT(openInfo()));
 
-    tapAction = new QAction(tr("&TAP info"), this);
+    tapAction = new QAction(QIcon(":/images/tabinfo.png"),tr("&TAP info"), this);
     connect(tapAction, SIGNAL(triggered()), this, SLOT(tapInfo()));
 
-    quitAction = new QAction(tr("&Quit"), this);
+    quitAction = new QAction(QIcon(":/images/delete.png"),tr("&Quit"), this);
     connect(quitAction, SIGNAL(triggered()), this, SLOT(closeApp()));
 }
 

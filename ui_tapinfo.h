@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading ui file 'tapinfo.ui'
 **
-** Created: Tue 3. Nov 16:14:16 2009
+** Created: Wed 4. Nov 17:16:48 2009
 **      by: Qt User Interface Compiler version 4.5.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!
@@ -77,10 +77,13 @@ public:
         cmdClose = new QPushButton(TapInfo);
         cmdClose->setObjectName(QString::fromUtf8("cmdClose"));
         cmdClose->setGeometry(QRect(191, 159, 75, 24));
+        cmdClose->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black}\n"
+":disabled {border: 1px solid black}\n"
+":hover {background-color: rgb(195, 195, 195);}"));
         QIcon icon1;
         icon1.addFile(QString::fromUtf8(":/images/close.png"), QSize(), QIcon::Normal, QIcon::Off);
         cmdClose->setIcon(icon1);
-        cmdClose->setIconSize(QSize(30, 16));
+        cmdClose->setIconSize(QSize(16, 16));
         cmdClose->setFlat(true);
 
         retranslateUi(TapInfo);
@@ -90,7 +93,7 @@ public:
 
     void retranslateUi(QDialog *TapInfo)
     {
-        TapInfo->setWindowTitle(QApplication::translate("TapInfo", "Tap driver Info", 0, QApplication::UnicodeUTF8));
+        TapInfo->setWindowTitle(QApplication::translate("TapInfo", "Tap driver", 0, QApplication::UnicodeUTF8));
         groupBox->setTitle(QApplication::translate("TapInfo", "TAP-Win32 Adapter:", 0, QApplication::UnicodeUTF8));
         label->setText(QApplication::translate("TapInfo", "Incomming packets total:", 0, QApplication::UnicodeUTF8));
         label_2->setText(QApplication::translate("TapInfo", "Outgoing packets total:", 0, QApplication::UnicodeUTF8));
@@ -100,7 +103,7 @@ public:
         label_4->setText(QApplication::translate("TapInfo", "Outgoing packets per second:", 0, QApplication::UnicodeUTF8));
         lblIncommingPerSecond->setText(QApplication::translate("TapInfo", "0", 0, QApplication::UnicodeUTF8));
         lblOutgoingPerSecond->setText(QApplication::translate("TapInfo", "0", 0, QApplication::UnicodeUTF8));
-        cmdClose->setText(QString());
+        cmdClose->setText(QApplication::translate("TapInfo", "&Close", 0, QApplication::UnicodeUTF8));
         Q_UNUSED(TapInfo);
     } // retranslateUi
 

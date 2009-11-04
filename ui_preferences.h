@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading ui file 'preferences.ui'
 **
-** Created: Tue 3. Nov 16:14:15 2009
+** Created: Wed 4. Nov 17:16:47 2009
 **      by: Qt User Interface Compiler version 4.5.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!
@@ -177,8 +177,11 @@ public:
         buttonGroup->setObjectName(QString::fromUtf8("buttonGroup"));
         buttonGroup->addButton(cmdAddConfig);
         cmdAddConfig->setObjectName(QString::fromUtf8("cmdAddConfig"));
-        cmdAddConfig->setGeometry(QRect(20, 470, 191, 28));
+        cmdAddConfig->setGeometry(QRect(16, 470, 191, 28));
         cmdAddConfig->setLayoutDirection(Qt::LeftToRight);
+        cmdAddConfig->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black}\n"
+":disabled {border: 1px solid black}\n"
+":hover {background-color: rgb(195, 195, 195);}"));
         QIcon icon1;
         icon1.addFile(QString::fromUtf8(":/images/add.png"), QSize(), QIcon::Normal, QIcon::Off);
         cmdAddConfig->setIcon(icon1);
@@ -191,8 +194,11 @@ public:
         lsvConfigs->setFrameShadow(QFrame::Plain);
         cmdImportConfig = new QPushButton(groupBox_2);
         cmdImportConfig->setObjectName(QString::fromUtf8("cmdImportConfig"));
-        cmdImportConfig->setGeometry(QRect(20, 506, 191, 28));
+        cmdImportConfig->setGeometry(QRect(16, 506, 191, 28));
         cmdImportConfig->setLayoutDirection(Qt::LeftToRight);
+        cmdImportConfig->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black}\n"
+":disabled {border: 1px solid black}\n"
+":hover {background-color: rgb(195, 195, 195);}"));
         QIcon icon2;
         icon2.addFile(QString::fromUtf8(":/images/import.png"), QSize(), QIcon::Normal, QIcon::Off);
         cmdImportConfig->setIcon(icon2);
@@ -213,6 +219,39 @@ public:
         cbClient->setObjectName(QString::fromUtf8("cbClient"));
         cbClient->setEnabled(false);
         cbClient->setGeometry(QRect(84, 25, 20, 20));
+        cbClient->setStyleSheet(QString::fromUtf8("QCheckBox { \n"
+"spacing: 5px;\n"
+"}\n"
+"\n"
+"QCheckBox::indicator {\n"
+"width: 13px;\n"
+"height: 13px;\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked:disabled {\n"
+"image: url(:/images/styles/checkbox_unchecked_dis.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked:disabled {\n"
+"image: url(:/images/styles/checkbox_checked_dis.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked:enabled {\n"
+"image: url(:/images/styles/checkbox_unchecked.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked:enabled {\n"
+"image: url(:/images/styles/checkbox_checked.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked:enabled:hover {\n"
+"image: url(:/images/styles/checkbox_unchecked_hover.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked:enabled:hover {\n"
+"image: url(:/images/styles/checkbox_checked_hover.png);\n"
+"}\n"
+""));
         label_8 = new QLabel(groupBox_3);
         label_8->setObjectName(QString::fromUtf8("label_8"));
         label_8->setGeometry(QRect(11, 42, 61, 16));
@@ -220,6 +259,39 @@ public:
         cbFloat->setObjectName(QString::fromUtf8("cbFloat"));
         cbFloat->setEnabled(false);
         cbFloat->setGeometry(QRect(84, 41, 21, 19));
+        cbFloat->setStyleSheet(QString::fromUtf8("QCheckBox { \n"
+"spacing: 5px;\n"
+"}\n"
+"\n"
+"QCheckBox::indicator {\n"
+"width: 13px;\n"
+"height: 13px;\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked:disabled {\n"
+"image: url(:/images/styles/checkbox_unchecked_dis.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked:disabled {\n"
+"image: url(:/images/styles/checkbox_checked_dis.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked:enabled {\n"
+"image: url(:/images/styles/checkbox_unchecked.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked:enabled {\n"
+"image: url(:/images/styles/checkbox_checked.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked:enabled:hover {\n"
+"image: url(:/images/styles/checkbox_unchecked_hover.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked:enabled:hover {\n"
+"image: url(:/images/styles/checkbox_checked_hover.png);\n"
+"}\n"
+""));
         label_11 = new QLabel(groupBox_3);
         label_11->setObjectName(QString::fromUtf8("label_11"));
         label_11->setGeometry(QRect(130, 26, 61, 16));
@@ -227,6 +299,39 @@ public:
         cbNobind->setObjectName(QString::fromUtf8("cbNobind"));
         cbNobind->setEnabled(false);
         cbNobind->setGeometry(QRect(203, 25, 21, 19));
+        cbNobind->setStyleSheet(QString::fromUtf8("QCheckBox { \n"
+"spacing: 5px;\n"
+"}\n"
+"\n"
+"QCheckBox::indicator {\n"
+"width: 13px;\n"
+"height: 13px;\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked:disabled {\n"
+"image: url(:/images/styles/checkbox_unchecked_dis.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked:disabled {\n"
+"image: url(:/images/styles/checkbox_checked_dis.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked:enabled {\n"
+"image: url(:/images/styles/checkbox_unchecked.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked:enabled {\n"
+"image: url(:/images/styles/checkbox_checked.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked:enabled:hover {\n"
+"image: url(:/images/styles/checkbox_unchecked_hover.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked:enabled:hover {\n"
+"image: url(:/images/styles/checkbox_checked_hover.png);\n"
+"}\n"
+""));
         label_12 = new QLabel(groupBox_3);
         label_12->setObjectName(QString::fromUtf8("label_12"));
         label_12->setGeometry(QRect(130, 41, 61, 16));
@@ -236,11 +341,77 @@ public:
         cbPersistKey = new QCheckBox(groupBox_3);
         cbPersistKey->setObjectName(QString::fromUtf8("cbPersistKey"));
         cbPersistKey->setEnabled(false);
-        cbPersistKey->setGeometry(QRect(203, 40, 20, 20));
+        cbPersistKey->setGeometry(QRect(203, 38, 20, 20));
+        cbPersistKey->setStyleSheet(QString::fromUtf8("QCheckBox { \n"
+"spacing: 5px;\n"
+"}\n"
+"\n"
+"QCheckBox::indicator {\n"
+"width: 13px;\n"
+"height: 13px;\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked:disabled {\n"
+"image: url(:/images/styles/checkbox_unchecked_dis.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked:disabled {\n"
+"image: url(:/images/styles/checkbox_checked_dis.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked:enabled {\n"
+"image: url(:/images/styles/checkbox_unchecked.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked:enabled {\n"
+"image: url(:/images/styles/checkbox_checked.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked:enabled:hover {\n"
+"image: url(:/images/styles/checkbox_unchecked_hover.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked:enabled:hover {\n"
+"image: url(:/images/styles/checkbox_checked_hover.png);\n"
+"}\n"
+""));
         cbPersistTun = new QCheckBox(groupBox_3);
         cbPersistTun->setObjectName(QString::fromUtf8("cbPersistTun"));
         cbPersistTun->setEnabled(false);
         cbPersistTun->setGeometry(QRect(203, 54, 21, 19));
+        cbPersistTun->setStyleSheet(QString::fromUtf8("QCheckBox { \n"
+"spacing: 5px;\n"
+"}\n"
+"\n"
+"QCheckBox::indicator {\n"
+"width: 13px;\n"
+"height: 13px;\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked:disabled {\n"
+"image: url(:/images/styles/checkbox_unchecked_dis.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked:disabled {\n"
+"image: url(:/images/styles/checkbox_checked_dis.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked:enabled {\n"
+"image: url(:/images/styles/checkbox_unchecked.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked:enabled {\n"
+"image: url(:/images/styles/checkbox_checked.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked:enabled:hover {\n"
+"image: url(:/images/styles/checkbox_unchecked_hover.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked:enabled:hover {\n"
+"image: url(:/images/styles/checkbox_checked_hover.png);\n"
+"}\n"
+""));
         label_16 = new QLabel(groupBox_3);
         label_16->setObjectName(QString::fromUtf8("label_16"));
         label_16->setGeometry(QRect(11, 56, 61, 16));
@@ -248,6 +419,39 @@ public:
         cbCompLzo->setObjectName(QString::fromUtf8("cbCompLzo"));
         cbCompLzo->setEnabled(false);
         cbCompLzo->setGeometry(QRect(84, 55, 21, 19));
+        cbCompLzo->setStyleSheet(QString::fromUtf8("QCheckBox { \n"
+"spacing: 5px;\n"
+"}\n"
+"\n"
+"QCheckBox::indicator {\n"
+"width: 13px;\n"
+"height: 13px;\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked:disabled {\n"
+"image: url(:/images/styles/checkbox_unchecked_dis.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked:disabled {\n"
+"image: url(:/images/styles/checkbox_checked_dis.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked:enabled {\n"
+"image: url(:/images/styles/checkbox_unchecked.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked:enabled {\n"
+"image: url(:/images/styles/checkbox_checked.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked:enabled:hover {\n"
+"image: url(:/images/styles/checkbox_unchecked_hover.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked:enabled:hover {\n"
+"image: url(:/images/styles/checkbox_checked_hover.png);\n"
+"}\n"
+""));
         label_19 = new QLabel(groupBox_3);
         label_19->setObjectName(QString::fromUtf8("label_19"));
         label_19->setGeometry(QRect(229, 26, 81, 16));
@@ -255,6 +459,39 @@ public:
         cbNoCache->setObjectName(QString::fromUtf8("cbNoCache"));
         cbNoCache->setEnabled(false);
         cbNoCache->setGeometry(QRect(320, 26, 20, 20));
+        cbNoCache->setStyleSheet(QString::fromUtf8("QCheckBox { \n"
+"spacing: 5px;\n"
+"}\n"
+"\n"
+"QCheckBox::indicator {\n"
+"width: 13px;\n"
+"height: 13px;\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked:disabled {\n"
+"image: url(:/images/styles/checkbox_unchecked_dis.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked:disabled {\n"
+"image: url(:/images/styles/checkbox_checked_dis.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked:enabled {\n"
+"image: url(:/images/styles/checkbox_unchecked.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked:enabled {\n"
+"image: url(:/images/styles/checkbox_checked.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked:enabled:hover {\n"
+"image: url(:/images/styles/checkbox_unchecked_hover.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked:enabled:hover {\n"
+"image: url(:/images/styles/checkbox_checked_hover.png);\n"
+"}\n"
+""));
         label_20 = new QLabel(groupBox_3);
         label_20->setObjectName(QString::fromUtf8("label_20"));
         label_20->setGeometry(QRect(229, 40, 81, 20));
@@ -262,6 +499,39 @@ public:
         cbUserPass->setObjectName(QString::fromUtf8("cbUserPass"));
         cbUserPass->setEnabled(false);
         cbUserPass->setGeometry(QRect(320, 40, 20, 20));
+        cbUserPass->setStyleSheet(QString::fromUtf8("QCheckBox { \n"
+"spacing: 5px;\n"
+"}\n"
+"\n"
+"QCheckBox::indicator {\n"
+"width: 13px;\n"
+"height: 13px;\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked:disabled {\n"
+"image: url(:/images/styles/checkbox_unchecked_dis.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked:disabled {\n"
+"image: url(:/images/styles/checkbox_checked_dis.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked:enabled {\n"
+"image: url(:/images/styles/checkbox_unchecked.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked:enabled {\n"
+"image: url(:/images/styles/checkbox_checked.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked:enabled:hover {\n"
+"image: url(:/images/styles/checkbox_unchecked_hover.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked:enabled:hover {\n"
+"image: url(:/images/styles/checkbox_checked_hover.png);\n"
+"}\n"
+""));
         groupBox_7 = new QGroupBox(page);
         groupBox_7->setObjectName(QString::fromUtf8("groupBox_7"));
         groupBox_7->setGeometry(QRect(0, 87, 421, 81));
@@ -269,6 +539,9 @@ public:
         cmbDev->setObjectName(QString::fromUtf8("cmbDev"));
         cmbDev->setEnabled(false);
         cmbDev->setGeometry(QRect(104, 20, 101, 22));
+        cmbDev->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}\n"
+":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}\n"
+":hover {border: 1px solid red; }"));
         label_3 = new QLabel(groupBox_7);
         label_3->setObjectName(QString::fromUtf8("label_3"));
         label_3->setGeometry(QRect(12, 24, 51, 16));
@@ -276,6 +549,9 @@ public:
         txtMtu->setObjectName(QString::fromUtf8("txtMtu"));
         txtMtu->setEnabled(false);
         txtMtu->setGeometry(QRect(104, 46, 101, 20));
+        txtMtu->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}\n"
+":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}\n"
+":hover {border: 1px solid red; }"));
         label_4 = new QLabel(groupBox_7);
         label_4->setObjectName(QString::fromUtf8("label_4"));
         label_4->setGeometry(QRect(12, 46, 51, 16));
@@ -286,6 +562,9 @@ public:
         txtRemotePort->setObjectName(QString::fromUtf8("txtRemotePort"));
         txtRemotePort->setEnabled(false);
         txtRemotePort->setGeometry(QRect(105, 40, 113, 20));
+        txtRemotePort->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}\n"
+":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}\n"
+":hover {border: 1px solid red; }"));
         label_10 = new QLabel(groupBox_5);
         label_10->setObjectName(QString::fromUtf8("label_10"));
         label_10->setGeometry(QRect(10, 42, 71, 16));
@@ -293,6 +572,9 @@ public:
         txtRemote->setObjectName(QString::fromUtf8("txtRemote"));
         txtRemote->setEnabled(false);
         txtRemote->setGeometry(QRect(105, 16, 281, 20));
+        txtRemote->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}\n"
+":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}\n"
+":hover {border: 1px solid red; }"));
         label_9 = new QLabel(groupBox_5);
         label_9->setObjectName(QString::fromUtf8("label_9"));
         label_9->setGeometry(QRect(10, 20, 61, 16));
@@ -300,6 +582,9 @@ public:
         cmbProto->setObjectName(QString::fromUtf8("cmbProto"));
         cmbProto->setEnabled(false);
         cmbProto->setGeometry(QRect(105, 64, 101, 22));
+        cmbProto->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}\n"
+":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}\n"
+":hover {border: 1px solid red; }"));
         label_7 = new QLabel(groupBox_5);
         label_7->setObjectName(QString::fromUtf8("label_7"));
         label_7->setGeometry(QRect(10, 65, 71, 16));
@@ -310,6 +595,9 @@ public:
         txtCA->setObjectName(QString::fromUtf8("txtCA"));
         txtCA->setEnabled(false);
         txtCA->setGeometry(QRect(105, 20, 271, 20));
+        txtCA->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}\n"
+":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}\n"
+":hover {border: 1px solid red; }"));
         txtCA->setReadOnly(true);
         label_2 = new QLabel(groupBox_4);
         label_2->setObjectName(QString::fromUtf8("label_2"));
@@ -318,11 +606,17 @@ public:
         txtCert->setObjectName(QString::fromUtf8("txtCert"));
         txtCert->setEnabled(false);
         txtCert->setGeometry(QRect(105, 44, 271, 20));
+        txtCert->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}\n"
+":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}\n"
+":hover {border: 1px solid red; }"));
         txtCert->setReadOnly(true);
         txtKey = new QLineEdit(groupBox_4);
         txtKey->setObjectName(QString::fromUtf8("txtKey"));
         txtKey->setEnabled(false);
         txtKey->setGeometry(QRect(105, 69, 271, 20));
+        txtKey->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}\n"
+":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}\n"
+":hover {border: 1px solid red; }"));
         txtKey->setReadOnly(true);
         label_15 = new QLabel(groupBox_4);
         label_15->setObjectName(QString::fromUtf8("label_15"));
@@ -337,18 +631,62 @@ public:
         cbCertIsServer->setObjectName(QString::fromUtf8("cbCertIsServer"));
         cbCertIsServer->setEnabled(false);
         cbCertIsServer->setGeometry(QRect(106, 92, 21, 19));
+        cbCertIsServer->setStyleSheet(QString::fromUtf8("QCheckBox { \n"
+"spacing: 5px;\n"
+"}\n"
+"\n"
+"QCheckBox::indicator {\n"
+"width: 13px;\n"
+"height: 13px;\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked:disabled {\n"
+"image: url(:/images/styles/checkbox_unchecked_dis.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked:disabled {\n"
+"image: url(:/images/styles/checkbox_checked_dis.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked:enabled {\n"
+"image: url(:/images/styles/checkbox_unchecked.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked:enabled {\n"
+"image: url(:/images/styles/checkbox_checked.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked:enabled:hover {\n"
+"image: url(:/images/styles/checkbox_unchecked_hover.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked:enabled:hover {\n"
+"image: url(:/images/styles/checkbox_checked_hover.png);\n"
+"}\n"
+""));
         cmdGetCAPath = new QPushButton(groupBox_4);
         cmdGetCAPath->setObjectName(QString::fromUtf8("cmdGetCAPath"));
         cmdGetCAPath->setEnabled(false);
-        cmdGetCAPath->setGeometry(QRect(380, 20, 31, 21));
+        cmdGetCAPath->setGeometry(QRect(380, 20, 20, 20));
+        cmdGetCAPath->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black}\n"
+":disabled {border: 1px solid black}\n"
+":hover {background-color: rgb(195, 195, 195);}\n"
+""));
         cmdGetCertPath = new QPushButton(groupBox_4);
         cmdGetCertPath->setObjectName(QString::fromUtf8("cmdGetCertPath"));
         cmdGetCertPath->setEnabled(false);
-        cmdGetCertPath->setGeometry(QRect(380, 43, 31, 21));
+        cmdGetCertPath->setGeometry(QRect(380, 44, 20, 20));
+        cmdGetCertPath->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black}\n"
+":disabled {border: 1px solid black}\n"
+":hover {background-color: rgb(195, 195, 195);}\n"
+""));
         cmdGetKeyPath = new QPushButton(groupBox_4);
         cmdGetKeyPath->setObjectName(QString::fromUtf8("cmdGetKeyPath"));
         cmdGetKeyPath->setEnabled(false);
-        cmdGetKeyPath->setGeometry(QRect(381, 68, 30, 21));
+        cmdGetKeyPath->setGeometry(QRect(380, 69, 20, 20));
+        cmdGetKeyPath->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black}\n"
+":disabled {border: 1px solid black}\n"
+":hover {background-color: rgb(195, 195, 195);}"));
         tbSettings->addItem(page, QString::fromUtf8("General"));
         page_3 = new QWidget();
         page_3->setObjectName(QString::fromUtf8("page_3"));
@@ -366,10 +704,16 @@ public:
         txtLinuxUser->setObjectName(QString::fromUtf8("txtLinuxUser"));
         txtLinuxUser->setEnabled(false);
         txtLinuxUser->setGeometry(QRect(65, 19, 161, 20));
+        txtLinuxUser->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}\n"
+":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}\n"
+":hover {border: 1px solid red; }"));
         txtLinuxGroup = new QLineEdit(groupBox_10);
         txtLinuxGroup->setObjectName(QString::fromUtf8("txtLinuxGroup"));
         txtLinuxGroup->setEnabled(false);
         txtLinuxGroup->setGeometry(QRect(65, 42, 161, 20));
+        txtLinuxGroup->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}\n"
+":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}\n"
+":hover {border: 1px solid red; }"));
         groupBox_6 = new QGroupBox(page_3);
         groupBox_6->setObjectName(QString::fromUtf8("groupBox_6"));
         groupBox_6->setGeometry(QRect(0, 90, 421, 131));
@@ -377,6 +721,39 @@ public:
         cbMsfix->setObjectName(QString::fromUtf8("cbMsfix"));
         cbMsfix->setEnabled(false);
         cbMsfix->setGeometry(QRect(105, 20, 20, 20));
+        cbMsfix->setStyleSheet(QString::fromUtf8("QCheckBox { \n"
+"spacing: 5px;\n"
+"}\n"
+"\n"
+"QCheckBox::indicator {\n"
+"width: 13px;\n"
+"height: 13px;\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked:disabled {\n"
+"image: url(:/images/styles/checkbox_unchecked_dis.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked:disabled {\n"
+"image: url(:/images/styles/checkbox_checked_dis.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked:enabled {\n"
+"image: url(:/images/styles/checkbox_unchecked.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked:enabled {\n"
+"image: url(:/images/styles/checkbox_checked.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked:enabled:hover {\n"
+"image: url(:/images/styles/checkbox_unchecked_hover.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked:enabled:hover {\n"
+"image: url(:/images/styles/checkbox_checked_hover.png);\n"
+"}\n"
+""));
         label_6 = new QLabel(groupBox_6);
         label_6->setObjectName(QString::fromUtf8("label_6"));
         label_6->setGeometry(QRect(11, 21, 41, 20));
@@ -384,6 +761,9 @@ public:
         txtFragment->setObjectName(QString::fromUtf8("txtFragment"));
         txtFragment->setEnabled(false);
         txtFragment->setGeometry(QRect(105, 40, 111, 20));
+        txtFragment->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}\n"
+":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}\n"
+":hover {border: 1px solid red; }"));
         label_5 = new QLabel(groupBox_6);
         label_5->setObjectName(QString::fromUtf8("label_5"));
         label_5->setGeometry(QRect(11, 45, 61, 16));
@@ -391,6 +771,9 @@ public:
         cmbRouteMethod->setObjectName(QString::fromUtf8("cmbRouteMethod"));
         cmbRouteMethod->setEnabled(false);
         cmbRouteMethod->setGeometry(QRect(105, 64, 111, 22));
+        cmbRouteMethod->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}\n"
+":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}\n"
+":hover {border: 1px solid red; }"));
         label_21 = new QLabel(groupBox_6);
         label_21->setObjectName(QString::fromUtf8("label_21"));
         label_21->setGeometry(QRect(11, 67, 81, 16));
@@ -401,6 +784,9 @@ public:
         txtDevNode->setObjectName(QString::fromUtf8("txtDevNode"));
         txtDevNode->setEnabled(false);
         txtDevNode->setGeometry(QRect(105, 90, 110, 20));
+        txtDevNode->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}\n"
+":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}\n"
+":hover {border: 1px solid red; }"));
         tbSettings->addItem(page_3, QString::fromUtf8("Linux / Windows"));
         page_2 = new QWidget();
         page_2->setObjectName(QString::fromUtf8("page_2"));
@@ -417,17 +803,29 @@ public:
         txtBeforeConnect = new QLineEdit(groupBox_15);
         txtBeforeConnect->setObjectName(QString::fromUtf8("txtBeforeConnect"));
         txtBeforeConnect->setGeometry(QRect(103, 29, 271, 20));
+        txtBeforeConnect->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}\n"
+":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}\n"
+":hover {border: 1px solid red; }"));
         txtBeforeConnect->setReadOnly(false);
         txtAfterConnect = new QLineEdit(groupBox_15);
         txtAfterConnect->setObjectName(QString::fromUtf8("txtAfterConnect"));
         txtAfterConnect->setGeometry(QRect(103, 53, 271, 20));
+        txtAfterConnect->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}\n"
+":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}\n"
+":hover {border: 1px solid red; }"));
         txtAfterConnect->setReadOnly(false);
         cmdBeforeConnect = new QPushButton(groupBox_15);
         cmdBeforeConnect->setObjectName(QString::fromUtf8("cmdBeforeConnect"));
-        cmdBeforeConnect->setGeometry(QRect(377, 29, 21, 20));
+        cmdBeforeConnect->setGeometry(QRect(377, 29, 20, 20));
+        cmdBeforeConnect->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black;}\n"
+"::disabled {border: 1px solid black;}\n"
+":hover {background-color: rgb(195, 195, 195);}"));
         cmdAfterConnect = new QPushButton(groupBox_15);
         cmdAfterConnect->setObjectName(QString::fromUtf8("cmdAfterConnect"));
-        cmdAfterConnect->setGeometry(QRect(377, 53, 21, 21));
+        cmdAfterConnect->setGeometry(QRect(377, 53, 20, 20));
+        cmdAfterConnect->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black}\n"
+"::disabled {border: 1px solid black}\n"
+":hover {background-color: rgb(195, 195, 195);}"));
         groupBox_16 = new QGroupBox(page_2);
         groupBox_16->setObjectName(QString::fromUtf8("groupBox_16"));
         groupBox_16->setGeometry(QRect(0, 100, 421, 91));
@@ -440,17 +838,29 @@ public:
         txtBeforeDisconnect = new QLineEdit(groupBox_16);
         txtBeforeDisconnect->setObjectName(QString::fromUtf8("txtBeforeDisconnect"));
         txtBeforeDisconnect->setGeometry(QRect(103, 29, 271, 20));
+        txtBeforeDisconnect->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}\n"
+"::disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}\n"
+":hover {border: 1px solid red; }"));
         txtBeforeDisconnect->setReadOnly(false);
         txtAfterDisconnect = new QLineEdit(groupBox_16);
         txtAfterDisconnect->setObjectName(QString::fromUtf8("txtAfterDisconnect"));
         txtAfterDisconnect->setGeometry(QRect(103, 53, 271, 20));
+        txtAfterDisconnect->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}\n"
+":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}\n"
+":hover {border: 1px solid red; }"));
         txtAfterDisconnect->setReadOnly(false);
         cmdBeforeDisconnect = new QPushButton(groupBox_16);
         cmdBeforeDisconnect->setObjectName(QString::fromUtf8("cmdBeforeDisconnect"));
-        cmdBeforeDisconnect->setGeometry(QRect(377, 29, 21, 20));
+        cmdBeforeDisconnect->setGeometry(QRect(377, 29, 20, 20));
+        cmdBeforeDisconnect->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black}\n"
+":disabled {border: 1px solid black}\n"
+":hover {background-color: rgb(195, 195, 195);}"));
         cmdAfterDisconnect = new QPushButton(groupBox_16);
         cmdAfterDisconnect->setObjectName(QString::fromUtf8("cmdAfterDisconnect"));
-        cmdAfterDisconnect->setGeometry(QRect(378, 53, 20, 21));
+        cmdAfterDisconnect->setGeometry(QRect(377, 53, 20, 20));
+        cmdAfterDisconnect->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black}\n"
+":disabled {border: 1px solid black}\n"
+":hover {background-color: rgb(195, 195, 195);}"));
         groupBox_14 = new QGroupBox(page_2);
         groupBox_14->setObjectName(QString::fromUtf8("groupBox_14"));
         groupBox_14->setGeometry(QRect(0, 200, 421, 61));
@@ -459,10 +869,16 @@ public:
         label_40->setGeometry(QRect(10, 27, 91, 16));
         cmdErrorConnect = new QPushButton(groupBox_14);
         cmdErrorConnect->setObjectName(QString::fromUtf8("cmdErrorConnect"));
-        cmdErrorConnect->setGeometry(QRect(377, 28, 21, 20));
+        cmdErrorConnect->setGeometry(QRect(377, 26, 20, 20));
+        cmdErrorConnect->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black}\n"
+":disabled {border: 1px solid black}\n"
+":hover {background-color: rgb(195, 195, 195);}"));
         txtErrorConnect = new QLineEdit(groupBox_14);
         txtErrorConnect->setObjectName(QString::fromUtf8("txtErrorConnect"));
         txtErrorConnect->setGeometry(QRect(103, 26, 271, 20));
+        txtErrorConnect->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}\n"
+":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}\n"
+":hover {border: 1px solid red; }"));
         txtErrorConnect->setReadOnly(false);
         groupBox_17 = new QGroupBox(page_2);
         groupBox_17->setObjectName(QString::fromUtf8("groupBox_17"));
@@ -473,6 +889,9 @@ public:
         txtScriptACDelay = new QLineEdit(groupBox_17);
         txtScriptACDelay->setObjectName(QString::fromUtf8("txtScriptACDelay"));
         txtScriptACDelay->setGeometry(QRect(130, 30, 71, 20));
+        txtScriptACDelay->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}\n"
+":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}\n"
+":hover {border: 1px solid red; }"));
         label_37 = new QLabel(groupBox_17);
         label_37->setObjectName(QString::fromUtf8("label_37"));
         label_37->setGeometry(QRect(206, 32, 21, 16));
@@ -487,10 +906,16 @@ public:
         txtVerbose->setObjectName(QString::fromUtf8("txtVerbose"));
         txtVerbose->setEnabled(false);
         txtVerbose->setGeometry(QRect(104, 19, 51, 21));
+        txtVerbose->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}\n"
+":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}\n"
+":hover {border: 1px solid red; }"));
         txtRouteDelay = new QLineEdit(groupBox_8);
         txtRouteDelay->setObjectName(QString::fromUtf8("txtRouteDelay"));
         txtRouteDelay->setEnabled(false);
         txtRouteDelay->setGeometry(QRect(104, 45, 51, 21));
+        txtRouteDelay->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}\n"
+":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}\n"
+":hover {border: 1px solid red; }"));
         label_18 = new QLabel(groupBox_8);
         label_18->setObjectName(QString::fromUtf8("label_18"));
         label_18->setGeometry(QRect(11, 70, 61, 20));
@@ -504,6 +929,9 @@ public:
         txtMute->setObjectName(QString::fromUtf8("txtMute"));
         txtMute->setEnabled(false);
         txtMute->setGeometry(QRect(104, 70, 51, 20));
+        txtMute->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}\n"
+":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}\n"
+":hover {border: 1px solid red; }"));
         groupBox_9 = new QGroupBox(page_4);
         groupBox_9->setObjectName(QString::fromUtf8("groupBox_9"));
         groupBox_9->setGeometry(QRect(0, 105, 421, 71));
@@ -511,6 +939,39 @@ public:
         cbRandomHost->setObjectName(QString::fromUtf8("cbRandomHost"));
         cbRandomHost->setEnabled(false);
         cbRandomHost->setGeometry(QRect(120, 20, 21, 19));
+        cbRandomHost->setStyleSheet(QString::fromUtf8("QCheckBox { \n"
+"spacing: 5px;\n"
+"}\n"
+"\n"
+"QCheckBox::indicator {\n"
+"width: 13px;\n"
+"height: 13px;\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked:disabled {\n"
+"image: url(:/images/styles/checkbox_unchecked_dis.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked:disabled {\n"
+"image: url(:/images/styles/checkbox_checked_dis.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked:enabled {\n"
+"image: url(:/images/styles/checkbox_unchecked.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked:enabled {\n"
+"image: url(:/images/styles/checkbox_checked.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked:enabled:hover {\n"
+"image: url(:/images/styles/checkbox_unchecked_hover.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked:enabled:hover {\n"
+"image: url(:/images/styles/checkbox_checked_hover.png);\n"
+"}\n"
+""));
         label_24 = new QLabel(groupBox_9);
         label_24->setObjectName(QString::fromUtf8("label_24"));
         label_24->setGeometry(QRect(10, 20, 71, 16));
@@ -521,6 +982,39 @@ public:
         cbResolveHostname->setObjectName(QString::fromUtf8("cbResolveHostname"));
         cbResolveHostname->setEnabled(false);
         cbResolveHostname->setGeometry(QRect(120, 39, 21, 19));
+        cbResolveHostname->setStyleSheet(QString::fromUtf8("QCheckBox { \n"
+"spacing: 5px;\n"
+"}\n"
+"\n"
+"QCheckBox::indicator {\n"
+"width: 13px;\n"
+"height: 13px;\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked:disabled {\n"
+"image: url(:/images/styles/checkbox_unchecked_dis.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked:disabled {\n"
+"image: url(:/images/styles/checkbox_checked_dis.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked:enabled {\n"
+"image: url(:/images/styles/checkbox_unchecked.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked:enabled {\n"
+"image: url(:/images/styles/checkbox_checked.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked:enabled:hover {\n"
+"image: url(:/images/styles/checkbox_unchecked_hover.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked:enabled:hover {\n"
+"image: url(:/images/styles/checkbox_checked_hover.png);\n"
+"}\n"
+""));
         groupBox_11 = new QGroupBox(page_4);
         groupBox_11->setObjectName(QString::fromUtf8("groupBox_11"));
         groupBox_11->setGeometry(QRect(0, 179, 421, 111));
@@ -531,6 +1025,39 @@ public:
         cbHTTPRetry->setObjectName(QString::fromUtf8("cbHTTPRetry"));
         cbHTTPRetry->setEnabled(false);
         cbHTTPRetry->setGeometry(QRect(81, 20, 21, 19));
+        cbHTTPRetry->setStyleSheet(QString::fromUtf8("QCheckBox { \n"
+"spacing: 5px;\n"
+"}\n"
+"\n"
+"QCheckBox::indicator {\n"
+"width: 13px;\n"
+"height: 13px;\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked:disabled {\n"
+"image: url(:/images/styles/checkbox_unchecked_dis.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked:disabled {\n"
+"image: url(:/images/styles/checkbox_checked_dis.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked:enabled {\n"
+"image: url(:/images/styles/checkbox_unchecked.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked:enabled {\n"
+"image: url(:/images/styles/checkbox_checked.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked:enabled:hover {\n"
+"image: url(:/images/styles/checkbox_unchecked_hover.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked:enabled:hover {\n"
+"image: url(:/images/styles/checkbox_checked_hover.png);\n"
+"}\n"
+""));
         label_29 = new QLabel(groupBox_11);
         label_29->setObjectName(QString::fromUtf8("label_29"));
         label_29->setGeometry(QRect(11, 43, 46, 14));
@@ -538,6 +1065,9 @@ public:
         txtHTTPIP->setObjectName(QString::fromUtf8("txtHTTPIP"));
         txtHTTPIP->setEnabled(false);
         txtHTTPIP->setGeometry(QRect(81, 40, 231, 20));
+        txtHTTPIP->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}\n"
+":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}\n"
+":hover {border: 1px solid red; }"));
         label_30 = new QLabel(groupBox_11);
         label_30->setObjectName(QString::fromUtf8("label_30"));
         label_30->setGeometry(QRect(10, 67, 61, 16));
@@ -545,6 +1075,9 @@ public:
         txtHTTPPort->setObjectName(QString::fromUtf8("txtHTTPPort"));
         txtHTTPPort->setEnabled(false);
         txtHTTPPort->setGeometry(QRect(81, 66, 81, 20));
+        txtHTTPPort->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}\n"
+":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}\n"
+":hover {border: 1px solid red; }"));
         groupBox_12 = new QGroupBox(page_4);
         groupBox_12->setObjectName(QString::fromUtf8("groupBox_12"));
         groupBox_12->setGeometry(QRect(0, 293, 421, 51));
@@ -555,6 +1088,39 @@ public:
         cbMuteWirelessWarning->setObjectName(QString::fromUtf8("cbMuteWirelessWarning"));
         cbMuteWirelessWarning->setEnabled(false);
         cbMuteWirelessWarning->setGeometry(QRect(131, 23, 21, 19));
+        cbMuteWirelessWarning->setStyleSheet(QString::fromUtf8("QCheckBox { \n"
+"spacing: 5px;\n"
+"}\n"
+"\n"
+"QCheckBox::indicator {\n"
+"width: 13px;\n"
+"height: 13px;\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked:disabled {\n"
+"image: url(:/images/styles/checkbox_unchecked_dis.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked:disabled {\n"
+"image: url(:/images/styles/checkbox_checked_dis.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked:enabled {\n"
+"image: url(:/images/styles/checkbox_unchecked.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked:enabled {\n"
+"image: url(:/images/styles/checkbox_checked.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked:enabled:hover {\n"
+"image: url(:/images/styles/checkbox_unchecked_hover.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked:enabled:hover {\n"
+"image: url(:/images/styles/checkbox_checked_hover.png);\n"
+"}\n"
+""));
         groupBox_13 = new QGroupBox(page_4);
         groupBox_13->setObjectName(QString::fromUtf8("groupBox_13"));
         groupBox_13->setEnabled(true);
@@ -566,18 +1132,27 @@ public:
         cmbChiper->setObjectName(QString::fromUtf8("cmbChiper"));
         cmbChiper->setEnabled(false);
         cmbChiper->setGeometry(QRect(82, 20, 231, 22));
+        cmbChiper->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}\n"
+":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}\n"
+":hover {border: 1px solid red; }"));
         tbSettings->addItem(page_4, QString::fromUtf8("Advanced"));
         cmdClose = new QPushButton(Preferences);
         cmdClose->setObjectName(QString::fromUtf8("cmdClose"));
         cmdClose->setGeometry(QRect(590, 621, 91, 24));
+        cmdClose->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black}\n"
+":disabled {border: 1px solid black}\n"
+":hover {background-color: rgb(195, 195, 195);}"));
         QIcon icon3;
         icon3.addFile(QString::fromUtf8(":/images/close.png"), QSize(), QIcon::Normal, QIcon::Off);
         cmdClose->setIcon(icon3);
-        cmdClose->setIconSize(QSize(30, 16));
+        cmdClose->setIconSize(QSize(16, 16));
         cmdClose->setFlat(true);
         cmdSave = new QPushButton(Preferences);
         cmdSave->setObjectName(QString::fromUtf8("cmdSave"));
         cmdSave->setGeometry(QRect(480, 621, 91, 24));
+        cmdSave->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black}\n"
+":disabled {border: 1px solid black}\n"
+":hover {background-color: rgb(195, 195, 195);}"));
         QIcon icon4;
         icon4.addFile(QString::fromUtf8(":/images/save.png"), QSize(), QIcon::Normal, QIcon::Off);
         cmdSave->setIcon(icon4);
@@ -604,8 +1179,11 @@ public:
         cmdConnect = new QPushButton(Preferences);
         cmdConnect->setObjectName(QString::fromUtf8("cmdConnect"));
         cmdConnect->setGeometry(QRect(290, 621, 101, 24));
+        cmdConnect->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black}\n"
+":disabled {border: 1px solid black}\n"
+":hover {background-color: rgb(195, 195, 195);}"));
         QIcon icon5;
-        icon5.addFile(QString::fromUtf8(":/images/disconnected.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon5.addFile(QString::fromUtf8(":/images/disconnetdmen.png"), QSize(), QIcon::Normal, QIcon::Off);
         cmdConnect->setIcon(icon5);
         cmdConnect->setFlat(true);
         label_42 = new QLabel(Preferences);
@@ -615,7 +1193,7 @@ public:
 
         retranslateUi(Preferences);
 
-        tbSettings->setCurrentIndex(0);
+        tbSettings->setCurrentIndex(3);
 
 
         QMetaObject::connectSlotsByName(Preferences);
@@ -626,8 +1204,8 @@ public:
         Preferences->setWindowTitle(QApplication::translate("Preferences", "Securepoint VPN Client", 0, QApplication::UnicodeUTF8));
         groupBox->setTitle(QString());
         groupBox_2->setTitle(QApplication::translate("Preferences", "Available configs:", 0, QApplication::UnicodeUTF8));
-        cmdAddConfig->setText(QApplication::translate("Preferences", "Add     ", 0, QApplication::UnicodeUTF8));
-        cmdImportConfig->setText(QApplication::translate("Preferences", "Import ", 0, QApplication::UnicodeUTF8));
+        cmdAddConfig->setText(QApplication::translate("Preferences", "&Add     ", 0, QApplication::UnicodeUTF8));
+        cmdImportConfig->setText(QApplication::translate("Preferences", "&Import ", 0, QApplication::UnicodeUTF8));
         groupBox_3->setTitle(QApplication::translate("Preferences", "General:", 0, QApplication::UnicodeUTF8));
         label->setText(QApplication::translate("Preferences", "Client:", 0, QApplication::UnicodeUTF8));
         cbClient->setText(QString());
@@ -709,8 +1287,8 @@ public:
         groupBox_13->setTitle(QApplication::translate("Preferences", "Ciphers:", 0, QApplication::UnicodeUTF8));
         label_32->setText(QApplication::translate("Preferences", "Chipher:", 0, QApplication::UnicodeUTF8));
         tbSettings->setItemText(tbSettings->indexOf(page_4), QApplication::translate("Preferences", "Advanced", 0, QApplication::UnicodeUTF8));
-        cmdClose->setText(QString());
-        cmdSave->setText(QString());
+        cmdClose->setText(QApplication::translate("Preferences", "&Close", 0, QApplication::UnicodeUTF8));
+        cmdSave->setText(QApplication::translate("Preferences", "&Save", 0, QApplication::UnicodeUTF8));
         label_41->setText(QApplication::translate("Preferences", "Tunnel:", 0, QApplication::UnicodeUTF8));
         lblTunnelName->setText(QApplication::translate("Preferences", "None selected", 0, QApplication::UnicodeUTF8));
         lblTunnelPixmap->setText(QString());

@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading ui file 'wiz_endpage.ui'
 **
-** Created: Tue 3. Nov 16:14:15 2009
+** Created: Wed 4. Nov 17:16:47 2009
 **      by: Qt User Interface Compiler version 4.5.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!
@@ -98,7 +98,8 @@ public:
         txtPathToCA->setEnabled(false);
         txtPathToCA->setGeometry(QRect(70, 68, 301, 20));
         txtPathToCA->setContextMenuPolicy(Qt::NoContextMenu);
-        txtPathToCA->setStyleSheet(QString::fromUtf8("color: rgb(0, 0, 255);"));
+        txtPathToCA->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black;background-color: rgb(195, 195, 195);color: rgb(0, 0, 255);}\n"
+":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);color: rgb(0, 0, 255);}"));
         txtPathToCA->setReadOnly(true);
         label_5 = new QLabel(gbEndPage);
         label_5->setObjectName(QString::fromUtf8("label_5"));
@@ -108,7 +109,8 @@ public:
         txtPathToCert->setEnabled(false);
         txtPathToCert->setGeometry(QRect(70, 90, 301, 20));
         txtPathToCert->setContextMenuPolicy(Qt::NoContextMenu);
-        txtPathToCert->setStyleSheet(QString::fromUtf8("color: rgb(0, 0, 255);"));
+        txtPathToCert->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black;background-color: rgb(195, 195, 195);color: rgb(0, 0, 255);}\n"
+":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);color: rgb(0, 0, 255);}"));
         txtPathToCert->setReadOnly(true);
         label_6 = new QLabel(gbEndPage);
         label_6->setObjectName(QString::fromUtf8("label_6"));
@@ -118,7 +120,9 @@ public:
         txtPathToKey->setEnabled(false);
         txtPathToKey->setGeometry(QRect(70, 112, 301, 20));
         txtPathToKey->setContextMenuPolicy(Qt::NoContextMenu);
-        txtPathToKey->setStyleSheet(QString::fromUtf8("color: rgb(0, 0, 255);"));
+        txtPathToKey->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black;background-color: rgb(195, 195, 195);color: rgb(0, 0, 255);}\n"
+":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);color: rgb(0, 0, 255);}\n"
+""));
         txtPathToKey->setReadOnly(true);
         label_7 = new QLabel(gbEndPage);
         label_7->setObjectName(QString::fromUtf8("label_7"));

@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading ui file 'stduserauth.ui'
 **
-** Created: Tue 3. Nov 16:14:15 2009
+** Created: Wed 4. Nov 17:16:48 2009
 **      by: Qt User Interface Compiler version 4.5.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!
@@ -52,18 +52,24 @@ public:
         StdUserAuth->setModal(true);
         cmdOK = new QPushButton(StdUserAuth);
         cmdOK->setObjectName(QString::fromUtf8("cmdOK"));
-        cmdOK->setGeometry(QRect(60, 139, 75, 24));
+        cmdOK->setGeometry(QRect(54, 139, 75, 24));
+        cmdOK->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black}\n"
+":disabled {border: 1px solid black}\n"
+":hover {background-color: rgb(195, 195, 195);}"));
         QIcon icon1;
-        icon1.addFile(QString::fromUtf8(":/images/connected.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon1.addFile(QString::fromUtf8(":/images/connectmen.png"), QSize(), QIcon::Normal, QIcon::Off);
         cmdOK->setIcon(icon1);
         cmdOK->setFlat(true);
         cmdClose = new QPushButton(StdUserAuth);
         cmdClose->setObjectName(QString::fromUtf8("cmdClose"));
-        cmdClose->setGeometry(QRect(138, 139, 75, 24));
+        cmdClose->setGeometry(QRect(135, 139, 75, 24));
+        cmdClose->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black}\n"
+":disabled {border: 1px solid black}\n"
+":hover {background-color: rgb(195, 195, 195);}"));
         QIcon icon2;
         icon2.addFile(QString::fromUtf8(":/images/close.png"), QSize(), QIcon::Normal, QIcon::Off);
         cmdClose->setIcon(icon2);
-        cmdClose->setIconSize(QSize(30, 16));
+        cmdClose->setIconSize(QSize(16, 16));
         cmdClose->setFlat(true);
         groupBox = new QGroupBox(StdUserAuth);
         groupBox->setObjectName(QString::fromUtf8("groupBox"));
@@ -76,16 +82,86 @@ public:
         label_2->setGeometry(QRect(10, 43, 61, 16));
         txtUser = new QLineEdit(groupBox);
         txtUser->setObjectName(QString::fromUtf8("txtUser"));
-        txtUser->setGeometry(QRect(70, 20, 121, 20));
+        txtUser->setGeometry(QRect(70, 19, 121, 20));
+        txtUser->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black}\n"
+":hover {border: 1px solid red; }"));
         txtPwd = new QLineEdit(groupBox);
         txtPwd->setObjectName(QString::fromUtf8("txtPwd"));
-        txtPwd->setGeometry(QRect(70, 40, 121, 20));
+        txtPwd->setGeometry(QRect(70, 41, 121, 20));
+        txtPwd->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black}\n"
+":hover {border: 1px solid red; }"));
         cbSavePassword = new QCheckBox(groupBox);
         cbSavePassword->setObjectName(QString::fromUtf8("cbSavePassword"));
         cbSavePassword->setGeometry(QRect(10, 69, 161, 19));
+        cbSavePassword->setStyleSheet(QString::fromUtf8("QCheckBox { \n"
+"spacing: 5px;\n"
+"}\n"
+"\n"
+"QCheckBox::indicator {\n"
+"width: 13px;\n"
+"height: 13px;\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked:disabled {\n"
+"image: url(:/images/styles/checkbox_unchecked_dis.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked:disabled {\n"
+"image: url(:/images/styles/checkbox_checked_dis.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked:enabled {\n"
+"image: url(:/images/styles/checkbox_unchecked.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked:enabled {\n"
+"image: url(:/images/styles/checkbox_checked.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked:enabled:hover {\n"
+"image: url(:/images/styles/checkbox_unchecked_hover.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked:enabled:hover {\n"
+"image: url(:/images/styles/checkbox_checked_hover.png);\n"
+"}\n"
+""));
         cbShowLog = new QCheckBox(groupBox);
         cbShowLog->setObjectName(QString::fromUtf8("cbShowLog"));
         cbShowLog->setGeometry(QRect(10, 90, 141, 19));
+        cbShowLog->setStyleSheet(QString::fromUtf8("QCheckBox { \n"
+"spacing: 5px;\n"
+"}\n"
+"\n"
+"QCheckBox::indicator {\n"
+"width: 13px;\n"
+"height: 13px;\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked:disabled {\n"
+"image: url(:/images/styles/checkbox_unchecked_dis.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked:disabled {\n"
+"image: url(:/images/styles/checkbox_checked_dis.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked:enabled {\n"
+"image: url(:/images/styles/checkbox_unchecked.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked:enabled {\n"
+"image: url(:/images/styles/checkbox_checked.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked:enabled:hover {\n"
+"image: url(:/images/styles/checkbox_unchecked_hover.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked:enabled:hover {\n"
+"image: url(:/images/styles/checkbox_checked_hover.png);\n"
+"}\n"
+""));
 
         retranslateUi(StdUserAuth);
 
@@ -96,7 +172,7 @@ public:
     {
         StdUserAuth->setWindowTitle(QApplication::translate("StdUserAuth", "User Authentication", 0, QApplication::UnicodeUTF8));
         cmdOK->setText(QApplication::translate("StdUserAuth", "C&onnect", 0, QApplication::UnicodeUTF8));
-        cmdClose->setText(QString());
+        cmdClose->setText(QApplication::translate("StdUserAuth", "&Close", 0, QApplication::UnicodeUTF8));
         groupBox->setTitle(QApplication::translate("StdUserAuth", "User data:", 0, QApplication::UnicodeUTF8));
         label->setText(QApplication::translate("StdUserAuth", "Username:", 0, QApplication::UnicodeUTF8));
         label_2->setText(QApplication::translate("StdUserAuth", "Password:", 0, QApplication::UnicodeUTF8));

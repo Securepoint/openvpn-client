@@ -59,112 +59,132 @@ void ImportConfig::resetFields() {
 
 void ImportConfig::on_cmdImport_clicked()
 {
-    if (m_ui->txtPassword->text() == "") {
-        QMessageBox::critical(0, QString("Securepoint VPN Client"), QString ("No password specifyed!"));
-        return;
-    }
-    if (m_ui->txtImportPath->text() != "") {
-        if (m_ui->rbSaveAsName->isChecked() && m_ui->txtNewName->text() == "") {
-            QMessageBox::critical(0, QString("Securepoint VPN Client"), QString ("No import name specifyed!"));
+    if (m_ui->txtExistingOvpn->text() != "") {
+        // Import existing file
+        QFile linkOvpn (QApplication::applicationDirPath() + QString ("/configs.txt"));
+        if (!linkOvpn.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append)) {
+            QMessageBox::critical(0,"Securepoint VPN Client", "Unable to open configs.txt!");
             return;
         }
-
-        // Portale oder install
-        AppFunc app;
-        QString dirPath;
-        QString configName;
-
-        if (!m_ui->rbSaveAsName->isChecked()) {
-            configName = m_ui->txtImportPath->text().right(m_ui->txtImportPath->text().size() - m_ui->txtImportPath->text().lastIndexOf("/") -1);
-            configName = configName.left(configName.size()-6);
-        } else {
-            configName = m_ui->txtNewName->text().trimmed();
-        }
-
-        dirPath = app.getAppSavePath() + QString ("/") + configName;
-
-        // Verzeichnis da?
-        QDir dirobj (dirPath);
-        if (!dirobj.exists(dirPath)){
-            //Verzeichnis existiert nicht
-            // Pfad erstellen
-            if (!dirobj.mkpath(dirPath)) {
-                // Pfad konnte nicht erstellt werden
-                QMessageBox::critical(0,"Securepoint VPN Client", "Unable to create directory!");
-                return;
-            }
-        } else {
-            // Verzeichnis existiert
-            QMessageBox::critical(0, QString("Securepoint VPN Client"), QString ("A diretory with this name already exists!"));
-            return;
-        }
-        // Datei ins neue Verzeichnis kopieren
-        //QFile importFileCrypt (m_ui->txtImportPath->text());
-        QString packFile = dirPath + QString("/") + configName + QString(".7z");
-
-        QProcess packCrypt;
-        QStringList argCrypt;
-        QString programCrypt = "./app/bin/openssl.exe";
-
-        argCrypt << QString("des3");
-        argCrypt << QString("-in");
-        argCrypt << m_ui->txtImportPath->text();
-        argCrypt << QString("-out");
-        argCrypt << packFile;
-        argCrypt << QString("-d");
-        argCrypt << QString("-salt");
-        argCrypt << QString("-k");
-        argCrypt << m_ui->txtPassword->text().trimmed();
-        packCrypt.start(programCrypt, argCrypt);
-        connect( &packCrypt, SIGNAL(error ( QProcess::ProcessError) ), this, SLOT(showProcessError (QProcess::ProcessError)));
-
-
-        if (!packCrypt.waitForFinished()) {
-                QMessageBox::critical(0,QString("Securepoint VPN Client"), QString("OpenSSL process still running!"));
-                return;
-        }
-
-        QProcess packProc;
-        QStringList arguments;
-        QString program = "./app/bin/7za.exe";
-
-        arguments << QString("e");
-        arguments << packFile;
-        arguments << QString("-p") + m_ui->txtPassword->text().trimmed();
-        arguments << QString("-mhe");
-        arguments << QString("-o") + dirPath;
-        packProc.start(program, arguments);
-        connect( &packProc, SIGNAL(error ( QProcess::ProcessError) ), this, SLOT(showProcessError (QProcess::ProcessError)));
-
-        if (!packProc.waitForFinished()) {
-            QMessageBox::critical(0,QString("Securepoint VPN Client"), QString("7z process still running!"));
-            return;
-        }
-
-        // Datei löschen
-        QFile configZip (packFile);
-        if (!configZip.remove()) {
-            QMessageBox::critical(0, QString("Securepoint VPN Client"), configZip.errorString());
-        }
-        if (m_ui->rbSaveAsName->isChecked()) {
-            // ovpn umbennen
-            QString ovpnFilePath = m_ui->txtImportPath->text().right(m_ui->txtImportPath->text().size() - m_ui->txtImportPath->text().lastIndexOf("/") -1);
-                    ovpnFilePath = dirPath + QString("/") + ovpnFilePath.left(ovpnFilePath.size()-6) + QString(".ovpn");
-            QFile ovpnFile (ovpnFilePath);
-            if (ovpnFile.exists()) {
-                // umbenennen
-                ovpnFile.rename(dirPath + QString("/") + configName + QString(".ovpn"));
-            }
-        }
+        // Datei offen, Config schreiben
+        QTextStream out (&linkOvpn);
+        out << m_ui->txtExistingOvpn->text() + QString ("\n");
+        // Liste aktualisieren
+        linkOvpn.close();
         Preferences *prefDialog = dynamic_cast<Preferences*> (this->parent());
         prefDialog->refreshConfigList();
+        // Fertig
         QMessageBox::information(0, QString("Securepoint VPN Client"), QString("Import successfully ended!"));
         this->close();
-
-
     } else {
-        QMessageBox::critical(0, QString("Securepoint VPN Client"), QString ("No import file selected!"));
-        return;
+        // Import crypt file
+        if (m_ui->txtPassword->text() == "") {
+            QMessageBox::critical(0, QString("Securepoint VPN Client"), QString ("No password specifyed!"));
+            return;
+        }
+        if (m_ui->txtImportPath->text() != "") {
+            if (m_ui->rbSaveAsName->isChecked() && m_ui->txtNewName->text() == "") {
+                QMessageBox::critical(0, QString("Securepoint VPN Client"), QString ("No import name specifyed!"));
+                return;
+            }
+
+            // Portale oder install
+            AppFunc app;
+            QString dirPath;
+            QString configName;
+
+            if (!m_ui->rbSaveAsName->isChecked()) {
+                configName = m_ui->txtImportPath->text().right(m_ui->txtImportPath->text().size() - m_ui->txtImportPath->text().lastIndexOf("/") -1);
+                configName = configName.left(configName.size()-6);
+            } else {
+                configName = m_ui->txtNewName->text().trimmed();
+            }
+
+            dirPath = app.getAppSavePath() + QString ("/") + configName;
+
+            // Verzeichnis da?
+            QDir dirobj (dirPath);
+            if (!dirobj.exists(dirPath)){
+                //Verzeichnis existiert nicht
+                // Pfad erstellen
+                if (!dirobj.mkpath(dirPath)) {
+                    // Pfad konnte nicht erstellt werden
+                    QMessageBox::critical(0,"Securepoint VPN Client", "Unable to create directory!");
+                    return;
+                }
+            } else {
+                // Verzeichnis existiert
+                QMessageBox::critical(0, QString("Securepoint VPN Client"), QString ("A diretory with this name already exists!"));
+                return;
+            }
+            // Datei ins neue Verzeichnis kopieren
+            //QFile importFileCrypt (m_ui->txtImportPath->text());
+            QString packFile = dirPath + QString("/") + configName + QString(".7z");
+
+            QProcess packCrypt;
+            QStringList argCrypt;
+            QString programCrypt = "./app/bin/openssl.exe";
+
+            argCrypt << QString("des3");
+            argCrypt << QString("-in");
+            argCrypt << m_ui->txtImportPath->text();
+            argCrypt << QString("-out");
+            argCrypt << packFile;
+            argCrypt << QString("-d");
+            argCrypt << QString("-salt");
+            argCrypt << QString("-k");
+            argCrypt << m_ui->txtPassword->text().trimmed();
+            packCrypt.start(programCrypt, argCrypt);
+            connect( &packCrypt, SIGNAL(error ( QProcess::ProcessError) ), this, SLOT(showProcessError (QProcess::ProcessError)));
+
+
+            if (!packCrypt.waitForFinished()) {
+                    QMessageBox::critical(0,QString("Securepoint VPN Client"), QString("OpenSSL process still running!"));
+                    return;
+            }
+
+            QProcess packProc;
+            QStringList arguments;
+            QString program = "./app/bin/7za.exe";
+
+            arguments << QString("e");
+            arguments << packFile;
+            arguments << QString("-p") + m_ui->txtPassword->text().trimmed();
+            arguments << QString("-mhe");
+            arguments << QString("-o") + dirPath;
+            packProc.start(program, arguments);
+            connect( &packProc, SIGNAL(error ( QProcess::ProcessError) ), this, SLOT(showProcessError (QProcess::ProcessError)));
+
+            if (!packProc.waitForFinished()) {
+                QMessageBox::critical(0,QString("Securepoint VPN Client"), QString("7z process still running!"));
+                return;
+            }
+
+            // Datei löschen
+            QFile configZip (packFile);
+            if (!configZip.remove()) {
+                QMessageBox::critical(0, QString("Securepoint VPN Client"), configZip.errorString());
+            }
+            if (m_ui->rbSaveAsName->isChecked()) {
+                // ovpn umbennen
+                QString ovpnFilePath = m_ui->txtImportPath->text().right(m_ui->txtImportPath->text().size() - m_ui->txtImportPath->text().lastIndexOf("/") -1);
+                        ovpnFilePath = dirPath + QString("/") + ovpnFilePath.left(ovpnFilePath.size()-6) + QString(".ovpn");
+                QFile ovpnFile (ovpnFilePath);
+                if (ovpnFile.exists()) {
+                    // umbenennen
+                    ovpnFile.rename(dirPath + QString("/") + configName + QString(".ovpn"));
+                }
+            }
+            Preferences *prefDialog = dynamic_cast<Preferences*> (this->parent());
+            prefDialog->refreshConfigList();
+            QMessageBox::information(0, QString("Securepoint VPN Client"), QString("Import successfully ended!"));
+            this->close();
+
+
+        } else {
+            QMessageBox::critical(0, QString("Securepoint VPN Client"), QString ("No import file selected!"));
+            return;
+        }
     }
 }
 
@@ -198,3 +218,13 @@ void ImportConfig::showProcessError (QProcess::ProcessError err) {
     QMessageBox::critical(0, QString("Securepoint VPN Client"), errMessage);
 }
 
+
+void ImportConfig::on_cmdOpenOvpnFile_clicked()
+{
+    AppFunc app;
+    QFileDialog certFileDialog;
+    QString filename = certFileDialog.getOpenFileName(this, tr("Find ovpn file"), app.getAppSavePath(), "OpenVPN configs (*.ovpn)");
+    if (filename != "") {
+        m_ui->txtExistingOvpn->setText(filename);
+    }
+}

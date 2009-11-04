@@ -38,6 +38,7 @@ public:
     QString configPwd;
     QString configUser;
     bool connectionStable;
+    bool isLinked;
 
 private slots:
     void showProcessError (QProcess::ProcessError error);
@@ -78,6 +79,7 @@ private:
     QSystemTrayIcon *appIcon;
     QList<QAction*> menuList;
     QList<QAction*> menuChildList;
+
     // Forms
     EditConfig mCon;
     VpnLog mLog;

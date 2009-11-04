@@ -19,9 +19,24 @@
         <file>images/exit.png</file>
         <file>images/export.png</file>
         <file>images/import.png</file>
-        <file>images/save.png</file>
         <file>images/light_grey.png</file>
         <file>images/light_green.png</file>
+        <file>images/rename.png</file>
+        <file>images/connectmen.png</file>
+        <file>images/disconnetdmen.png</file>
+        <file>images/info.png</file>
+        <file>images/tabinfo.png</file>
+        <file>images/save.png</file>
         <file>images/close.png</file>
+        <file>images/styles/checkbox_unchecked.png</file>
+        <file>images/styles/checkbox_checked.png</file>
+        <file>images/styles/radiobutton_unchecked.png</file>
+        <file>images/styles/checkbox_unchecked_dis.png</file>
+        <file>images/styles/checkbox_checked_dis.png</file>
+        <file>images/styles/radiobutton_unchecked_dis.png</file>
+        <file>images/styles/radiobutton_checked.png</file>
+        <file>images/styles/radiobutton_checked_dis.png</file>
+        <file>images/styles/checkbox_unchecked_hover.png</file>
+        <file>images/styles/checkbox_checked_hover.png</file>
     </qresource>
 </RCC>

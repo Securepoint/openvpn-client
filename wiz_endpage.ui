@@ -147,7 +147,8 @@
      <enum>Qt::NoContextMenu</enum>
     </property>
     <property name="styleSheet">
-     <string notr="true">color: rgb(0, 0, 255);</string>
+     <string notr="true">:enabled {border: 1px solid black;background-color: rgb(195, 195, 195);color: rgb(0, 0, 255);}
+:disabled {border: 1px solid black; background-color: rgb(195, 195, 195);color: rgb(0, 0, 255);}</string>
     </property>
     <property name="readOnly">
      <bool>true</bool>
@@ -182,7 +183,8 @@
      <enum>Qt::NoContextMenu</enum>
     </property>
     <property name="styleSheet">
-     <string notr="true">color: rgb(0, 0, 255);</string>
+     <string notr="true">:enabled {border: 1px solid black;background-color: rgb(195, 195, 195);color: rgb(0, 0, 255);}
+:disabled {border: 1px solid black; background-color: rgb(195, 195, 195);color: rgb(0, 0, 255);}</string>
     </property>
     <property name="readOnly">
      <bool>true</bool>
@@ -217,7 +219,9 @@
      <enum>Qt::NoContextMenu</enum>
     </property>
     <property name="styleSheet">
-     <string notr="true">color: rgb(0, 0, 255);</string>
+     <string notr="true">:enabled {border: 1px solid black;background-color: rgb(195, 195, 195);color: rgb(0, 0, 255);}
+:disabled {border: 1px solid black; background-color: rgb(195, 195, 195);color: rgb(0, 0, 255);}
+</string>
     </property>
     <property name="readOnly">
      <bool>true</bool>

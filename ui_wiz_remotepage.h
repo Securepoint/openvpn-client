@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading ui file 'wiz_remotepage.ui'
 **
-** Created: Tue 3. Nov 16:14:15 2009
+** Created: Wed 4. Nov 17:16:47 2009
 **      by: Qt User Interface Compiler version 4.5.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!
@@ -53,12 +53,21 @@ public:
         txtRemoteIP = new QLineEdit(RemotePage);
         txtRemoteIP->setObjectName(QString::fromUtf8("txtRemoteIP"));
         txtRemoteIP->setGeometry(QRect(80, 69, 171, 20));
+        txtRemoteIP->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}\n"
+":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}\n"
+":hover {border: 1px solid red; }"));
         txtRemotePort = new QLineEdit(RemotePage);
         txtRemotePort->setObjectName(QString::fromUtf8("txtRemotePort"));
         txtRemotePort->setGeometry(QRect(80, 93, 71, 20));
+        txtRemotePort->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}\n"
+":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}\n"
+":hover {border: 1px solid red; }"));
         cmbRemoteProtocol = new QComboBox(RemotePage);
         cmbRemoteProtocol->setObjectName(QString::fromUtf8("cmbRemoteProtocol"));
         cmbRemoteProtocol->setGeometry(QRect(80, 118, 71, 22));
+        cmbRemoteProtocol->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}\n"
+":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}\n"
+":hover {border: 1px solid red; }"));
 
         retranslateUi(RemotePage);
 

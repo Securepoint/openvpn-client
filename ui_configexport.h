@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading ui file 'configexport.ui'
 **
-** Created: Tue 3. Nov 16:14:15 2009
+** Created: Wed 4. Nov 17:16:48 2009
 **      by: Qt User Interface Compiler version 4.5.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!
@@ -57,15 +57,24 @@ public:
         txtExportPwd = new QLineEdit(groupBox);
         txtExportPwd->setObjectName(QString::fromUtf8("txtExportPwd"));
         txtExportPwd->setGeometry(QRect(66, 46, 171, 20));
+        txtExportPwd->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}\n"
+":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}\n"
+":hover {border: 1px solid red; }"));
         label_2 = new QLabel(groupBox);
         label_2->setObjectName(QString::fromUtf8("label_2"));
         label_2->setGeometry(QRect(12, 24, 46, 14));
         txtSaveTo = new QLineEdit(groupBox);
         txtSaveTo->setObjectName(QString::fromUtf8("txtSaveTo"));
         txtSaveTo->setGeometry(QRect(67, 19, 151, 20));
+        txtSaveTo->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}\n"
+":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}\n"
+":hover {border: 1px solid red; }"));
         cmdOpenDir = new QPushButton(groupBox);
         cmdOpenDir->setObjectName(QString::fromUtf8("cmdOpenDir"));
-        cmdOpenDir->setGeometry(QRect(225, 18, 20, 21));
+        cmdOpenDir->setGeometry(QRect(222, 19, 20, 20));
+        cmdOpenDir->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black}\n"
+":disabled {border: 1px solid black}\n"
+":hover {background-color: rgb(195, 195, 195);}"));
         plainTextEdit = new QPlainTextEdit(ConfigExport);
         plainTextEdit->setObjectName(QString::fromUtf8("plainTextEdit"));
         plainTextEdit->setGeometry(QRect(14, 99, 251, 71));
@@ -77,6 +86,9 @@ public:
         cmdExport = new QPushButton(ConfigExport);
         cmdExport->setObjectName(QString::fromUtf8("cmdExport"));
         cmdExport->setGeometry(QRect(94, 179, 75, 24));
+        cmdExport->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black}\n"
+":disabled {border: 1px solid black}\n"
+":hover {background-color: rgb(195, 195, 195);}"));
         QIcon icon1;
         icon1.addFile(QString::fromUtf8(":/images/export.png"), QSize(), QIcon::Normal, QIcon::Off);
         cmdExport->setIcon(icon1);
@@ -84,10 +96,13 @@ public:
         cmdCancel = new QPushButton(ConfigExport);
         cmdCancel->setObjectName(QString::fromUtf8("cmdCancel"));
         cmdCancel->setGeometry(QRect(190, 179, 75, 24));
+        cmdCancel->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black}\n"
+":disabled {border: 1px solid black}\n"
+":hover {background-color: rgb(195, 195, 195);}"));
         QIcon icon2;
         icon2.addFile(QString::fromUtf8(":/images/close.png"), QSize(), QIcon::Normal, QIcon::Off);
         cmdCancel->setIcon(icon2);
-        cmdCancel->setIconSize(QSize(30, 16));
+        cmdCancel->setIconSize(QSize(16, 16));
         cmdCancel->setFlat(true);
 
         retranslateUi(ConfigExport);
@@ -105,7 +120,7 @@ public:
         plainTextEdit->setPlainText(QApplication::translate("ConfigExport", "The exported config will be created into the [save to directory]/[configname].crypt.\n"
 "", 0, QApplication::UnicodeUTF8));
         cmdExport->setText(QApplication::translate("ConfigExport", "E&xport", 0, QApplication::UnicodeUTF8));
-        cmdCancel->setText(QString());
+        cmdCancel->setText(QApplication::translate("ConfigExport", "&Close", 0, QApplication::UnicodeUTF8));
         Q_UNUSED(ConfigExport);
     } // retranslateUi
 

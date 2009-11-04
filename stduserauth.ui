@@ -41,18 +41,23 @@
   <widget class="QPushButton" name="cmdOK">
    <property name="geometry">
     <rect>
-     <x>60</x>
+     <x>54</x>
      <y>139</y>
      <width>75</width>
      <height>24</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">:enabled {border: 1px solid black}
+:disabled {border: 1px solid black}
+:hover {background-color: rgb(195, 195, 195);}</string>
    </property>
    <property name="text">
     <string>C&amp;onnect</string>
    </property>
    <property name="icon">
     <iconset resource="systray.qrc">
-     <normaloff>:/images/connected.png</normaloff>:/images/connected.png</iconset>
+     <normaloff>:/images/connectmen.png</normaloff>:/images/connectmen.png</iconset>
    </property>
    <property name="flat">
     <bool>true</bool>
@@ -61,14 +66,19 @@
   <widget class="QPushButton" name="cmdClose">
    <property name="geometry">
     <rect>
-     <x>138</x>
+     <x>135</x>
      <y>139</y>
      <width>75</width>
      <height>24</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">:enabled {border: 1px solid black}
+:disabled {border: 1px solid black}
+:hover {background-color: rgb(195, 195, 195);}</string>
+   </property>
    <property name="text">
-    <string/>
+    <string>&amp;Close</string>
    </property>
    <property name="icon">
     <iconset resource="systray.qrc">
@@ -76,7 +86,7 @@
    </property>
    <property name="iconSize">
     <size>
-     <width>30</width>
+     <width>16</width>
      <height>16</height>
     </size>
    </property>
@@ -126,20 +136,28 @@
     <property name="geometry">
      <rect>
       <x>70</x>
-      <y>20</y>
+      <y>19</y>
       <width>121</width>
       <height>20</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">:enabled {border: 1px solid black}
+:hover {border: 1px solid red; }</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="txtPwd">
     <property name="geometry">
      <rect>
       <x>70</x>
-      <y>40</y>
+      <y>41</y>
       <width>121</width>
       <height>20</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">:enabled {border: 1px solid black}
+:hover {border: 1px solid red; }</string>
     </property>
    </widget>
    <widget class="QCheckBox" name="cbSavePassword">
@@ -150,6 +168,41 @@
       <width>161</width>
       <height>19</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QCheckBox { 
+spacing: 5px;
+}
+
+QCheckBox::indicator {
+width: 13px;
+height: 13px;
+}
+
+QCheckBox::indicator:unchecked:disabled {
+image: url(:/images/styles/checkbox_unchecked_dis.png);
+}
+
+QCheckBox::indicator:checked:disabled {
+image: url(:/images/styles/checkbox_checked_dis.png);
+}
+
+QCheckBox::indicator:unchecked:enabled {
+image: url(:/images/styles/checkbox_unchecked.png);
+}
+
+QCheckBox::indicator:checked:enabled {
+image: url(:/images/styles/checkbox_checked.png);
+}
+
+QCheckBox::indicator:unchecked:enabled:hover {
+image: url(:/images/styles/checkbox_unchecked_hover.png);
+}
+
+QCheckBox::indicator:checked:enabled:hover {
+image: url(:/images/styles/checkbox_checked_hover.png);
+}
+</string>
     </property>
     <property name="text">
      <string>Remember username</string>
@@ -163,6 +216,41 @@
       <width>141</width>
       <height>19</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QCheckBox { 
+spacing: 5px;
+}
+
+QCheckBox::indicator {
+width: 13px;
+height: 13px;
+}
+
+QCheckBox::indicator:unchecked:disabled {
+image: url(:/images/styles/checkbox_unchecked_dis.png);
+}
+
+QCheckBox::indicator:checked:disabled {
+image: url(:/images/styles/checkbox_checked_dis.png);
+}
+
+QCheckBox::indicator:unchecked:enabled {
+image: url(:/images/styles/checkbox_unchecked.png);
+}
+
+QCheckBox::indicator:checked:enabled {
+image: url(:/images/styles/checkbox_checked.png);
+}
+
+QCheckBox::indicator:unchecked:enabled:hover {
+image: url(:/images/styles/checkbox_unchecked_hover.png);
+}
+
+QCheckBox::indicator:checked:enabled:hover {
+image: url(:/images/styles/checkbox_checked_hover.png);
+}
+</string>
     </property>
     <property name="text">
      <string>Show log</string>

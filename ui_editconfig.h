@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading ui file 'editconfig.ui'
 **
-** Created: Tue 3. Nov 16:14:16 2009
+** Created: Wed 4. Nov 17:16:48 2009
 **      by: Qt User Interface Compiler version 4.5.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!
@@ -58,14 +58,20 @@ public:
         cmdClose = new QPushButton(EditConfig);
         cmdClose->setObjectName(QString::fromUtf8("cmdClose"));
         cmdClose->setGeometry(QRect(500, 384, 75, 24));
+        cmdClose->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black}\n"
+":disabled {border: 1px solid black}\n"
+":hover {background-color: rgb(195, 195, 195);}"));
         QIcon icon1;
         icon1.addFile(QString::fromUtf8(":/images/close.png"), QSize(), QIcon::Normal, QIcon::Off);
         cmdClose->setIcon(icon1);
-        cmdClose->setIconSize(QSize(30, 16));
+        cmdClose->setIconSize(QSize(16, 16));
         cmdClose->setFlat(true);
         cmdSave = new QPushButton(EditConfig);
         cmdSave->setObjectName(QString::fromUtf8("cmdSave"));
         cmdSave->setGeometry(QRect(390, 384, 75, 24));
+        cmdSave->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black}\n"
+":disabled {border: 1px solid black}\n"
+":hover {background-color: rgb(195, 195, 195);}"));
         QIcon icon2;
         icon2.addFile(QString::fromUtf8(":/images/save.png"), QSize(), QIcon::Normal, QIcon::Off);
         cmdSave->setIcon(icon2);
@@ -81,8 +87,8 @@ public:
     {
         EditConfig->setWindowTitle(QApplication::translate("EditConfig", "Edit Config", 0, QApplication::UnicodeUTF8));
         groupBox->setTitle(QApplication::translate("EditConfig", "Edit configuration:", 0, QApplication::UnicodeUTF8));
-        cmdClose->setText(QString());
-        cmdSave->setText(QString());
+        cmdClose->setText(QApplication::translate("EditConfig", "&Close", 0, QApplication::UnicodeUTF8));
+        cmdSave->setText(QApplication::translate("EditConfig", "&Save", 0, QApplication::UnicodeUTF8));
         Q_UNUSED(EditConfig);
     } // retranslateUi
 

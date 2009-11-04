@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading ui file 'importconfig.ui'
 **
-** Created: Tue 3. Nov 16:14:15 2009
+** Created: Wed 4. Nov 17:16:48 2009
 **      by: Qt User Interface Compiler version 4.5.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!
@@ -19,7 +19,6 @@
 #include <QtGui/QHeaderView>
 #include <QtGui/QLabel>
 #include <QtGui/QLineEdit>
-#include <QtGui/QPlainTextEdit>
 #include <QtGui/QPushButton>
 #include <QtGui/QRadioButton>
 
@@ -36,25 +35,28 @@ public:
     QRadioButton *rbSaveAsFile;
     QRadioButton *rbSaveAsName;
     QLineEdit *txtNewName;
-    QPlainTextEdit *plainTextEdit_2;
     QPushButton *cmdCancel;
     QPushButton *cmdImport;
     QGroupBox *groupBox_3;
     QLabel *label_2;
     QLineEdit *txtPassword;
+    QGroupBox *groupBox_4;
+    QLabel *label_3;
+    QLineEdit *txtExistingOvpn;
+    QPushButton *cmdOpenOvpnFile;
 
     void setupUi(QDialog *ImportConfig)
     {
         if (ImportConfig->objectName().isEmpty())
             ImportConfig->setObjectName(QString::fromUtf8("ImportConfig"));
-        ImportConfig->resize(370, 355);
+        ImportConfig->resize(370, 356);
         QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(ImportConfig->sizePolicy().hasHeightForWidth());
         ImportConfig->setSizePolicy(sizePolicy);
-        ImportConfig->setMinimumSize(QSize(370, 355));
-        ImportConfig->setMaximumSize(QSize(370, 355));
+        ImportConfig->setMinimumSize(QSize(370, 356));
+        ImportConfig->setMaximumSize(QSize(370, 356));
         QIcon icon;
         icon.addFile(QString::fromUtf8(":/images/appicon.png"), QSize(), QIcon::Normal, QIcon::Off);
         ImportConfig->setWindowIcon(icon);
@@ -65,48 +67,101 @@ public:
         groupBox->setGeometry(QRect(10, 4, 351, 81));
         label = new QLabel(groupBox);
         label->setObjectName(QString::fromUtf8("label"));
-        label->setGeometry(QRect(10, 20, 141, 16));
+        label->setGeometry(QRect(10, 20, 191, 16));
         txtImportPath = new QLineEdit(groupBox);
         txtImportPath->setObjectName(QString::fromUtf8("txtImportPath"));
-        txtImportPath->setGeometry(QRect(10, 40, 311, 20));
+        txtImportPath->setGeometry(QRect(10, 40, 310, 20));
+        txtImportPath->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black}\n"
+":hover {border: 1px solid red; }"));
         cmdOpenCryptFile = new QPushButton(groupBox);
         cmdOpenCryptFile->setObjectName(QString::fromUtf8("cmdOpenCryptFile"));
-        cmdOpenCryptFile->setGeometry(QRect(321, 40, 21, 21));
+        cmdOpenCryptFile->setGeometry(QRect(323, 40, 20, 20));
+        cmdOpenCryptFile->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black}\n"
+":disabled {border: 1px solid black}\n"
+":hover {background-color: rgb(195, 195, 195);}"));
         groupBox_2 = new QGroupBox(ImportConfig);
         groupBox_2->setObjectName(QString::fromUtf8("groupBox_2"));
         groupBox_2->setGeometry(QRect(10, 90, 351, 81));
         rbSaveAsFile = new QRadioButton(groupBox_2);
         rbSaveAsFile->setObjectName(QString::fromUtf8("rbSaveAsFile"));
         rbSaveAsFile->setGeometry(QRect(11, 22, 82, 19));
+        rbSaveAsFile->setStyleSheet(QString::fromUtf8("QRadioButton { \n"
+"spacing: 5px;\n"
+"}\n"
+"\n"
+"QRadioButton::indicator {\n"
+"width: 13px;\n"
+"height: 13px;\n"
+"}\n"
+"\n"
+"QRadioButton::indicator::unchecked:enabled {\n"
+"image: url(:/images/styles/radiobutton_unchecked.png);\n"
+"}\n"
+"\n"
+"QRadioButton::indicator::checked:enabled {\n"
+"image: url(:/images/styles/radiobutton_checked.png);\n"
+"}\n"
+"\n"
+"QRadioButton::indicator::unchecked:disabled {\n"
+"image: url(:/images/styles/radiobutton_unchecked_dis.png);\n"
+"}\n"
+"\n"
+"QRadioButton::indicator::checked:disabled {\n"
+"image: url(:/images/styles/radiobutton_checked_dis.png);\n"
+"}"));
         rbSaveAsFile->setChecked(true);
         rbSaveAsName = new QRadioButton(groupBox_2);
         rbSaveAsName->setObjectName(QString::fromUtf8("rbSaveAsName"));
         rbSaveAsName->setGeometry(QRect(11, 47, 41, 19));
+        rbSaveAsName->setStyleSheet(QString::fromUtf8("QRadioButton { \n"
+"spacing: 5px;\n"
+"}\n"
+"\n"
+"QRadioButton::indicator {\n"
+"width: 13px;\n"
+"height: 13px;\n"
+"}\n"
+"\n"
+"QRadioButton::indicator::unchecked:enabled {\n"
+"image: url(:/images/styles/radiobutton_unchecked.png);\n"
+"}\n"
+"\n"
+"QRadioButton::indicator::checked:enabled {\n"
+"image: url(:/images/styles/radiobutton_checked.png);\n"
+"}\n"
+"\n"
+"QRadioButton::indicator::unchecked:disabled {\n"
+"image: url(:/images/styles/radiobutton_unchecked_dis.png);\n"
+"}\n"
+"\n"
+"QRadioButton::indicator::checked:disabled {\n"
+"image: url(:/images/styles/radiobutton_checked_dis.png);\n"
+"}"));
         txtNewName = new QLineEdit(groupBox_2);
         txtNewName->setObjectName(QString::fromUtf8("txtNewName"));
         txtNewName->setEnabled(false);
         txtNewName->setGeometry(QRect(50, 47, 151, 20));
-        txtNewName->setStyleSheet(QString::fromUtf8(""));
-        plainTextEdit_2 = new QPlainTextEdit(ImportConfig);
-        plainTextEdit_2->setObjectName(QString::fromUtf8("plainTextEdit_2"));
-        plainTextEdit_2->setEnabled(true);
-        plainTextEdit_2->setGeometry(QRect(10, 231, 351, 81));
-        plainTextEdit_2->setContextMenuPolicy(Qt::NoContextMenu);
-        plainTextEdit_2->setStyleSheet(QString::fromUtf8("background-color: rgb(197, 197, 197);"));
-        plainTextEdit_2->setFrameShape(QFrame::Box);
-        plainTextEdit_2->setFrameShadow(QFrame::Plain);
-        plainTextEdit_2->setReadOnly(true);
+        txtNewName->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}\n"
+":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}\n"
+":hover {border: 1px solid red; }\n"
+""));
         cmdCancel = new QPushButton(ImportConfig);
         cmdCancel->setObjectName(QString::fromUtf8("cmdCancel"));
-        cmdCancel->setGeometry(QRect(280, 323, 75, 24));
+        cmdCancel->setGeometry(QRect(280, 321, 75, 24));
+        cmdCancel->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black}\n"
+":disabled {border: 1px solid black}\n"
+":hover {background-color: rgb(195, 195, 195);}"));
         QIcon icon1;
         icon1.addFile(QString::fromUtf8(":/images/close.png"), QSize(), QIcon::Normal, QIcon::Off);
         cmdCancel->setIcon(icon1);
-        cmdCancel->setIconSize(QSize(30, 16));
+        cmdCancel->setIconSize(QSize(16, 16));
         cmdCancel->setFlat(true);
         cmdImport = new QPushButton(ImportConfig);
         cmdImport->setObjectName(QString::fromUtf8("cmdImport"));
-        cmdImport->setGeometry(QRect(180, 322, 75, 24));
+        cmdImport->setGeometry(QRect(180, 320, 75, 24));
+        cmdImport->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black}\n"
+":disabled {border: 1px solid black}\n"
+":hover {background-color: rgb(195, 195, 195);}"));
         QIcon icon2;
         icon2.addFile(QString::fromUtf8(":/images/import.png"), QSize(), QIcon::Normal, QIcon::Off);
         cmdImport->setIcon(icon2);
@@ -120,6 +175,25 @@ public:
         txtPassword = new QLineEdit(groupBox_3);
         txtPassword->setObjectName(QString::fromUtf8("txtPassword"));
         txtPassword->setGeometry(QRect(65, 21, 201, 20));
+        txtPassword->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black}\n"
+":hover {border: 1px solid red; }"));
+        groupBox_4 = new QGroupBox(ImportConfig);
+        groupBox_4->setObjectName(QString::fromUtf8("groupBox_4"));
+        groupBox_4->setGeometry(QRect(10, 230, 351, 80));
+        label_3 = new QLabel(groupBox_4);
+        label_3->setObjectName(QString::fromUtf8("label_3"));
+        label_3->setGeometry(QRect(12, 20, 161, 16));
+        txtExistingOvpn = new QLineEdit(groupBox_4);
+        txtExistingOvpn->setObjectName(QString::fromUtf8("txtExistingOvpn"));
+        txtExistingOvpn->setGeometry(QRect(10, 40, 310, 20));
+        txtExistingOvpn->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black}\n"
+":hover {border: 1px solid red; }"));
+        cmdOpenOvpnFile = new QPushButton(groupBox_4);
+        cmdOpenOvpnFile->setObjectName(QString::fromUtf8("cmdOpenOvpnFile"));
+        cmdOpenOvpnFile->setGeometry(QRect(323, 40, 20, 20));
+        cmdOpenOvpnFile->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black}\n"
+":disabled {border: 1px solid black}\n"
+":hover {background-color: rgb(195, 195, 195);}"));
 
         retranslateUi(ImportConfig);
 
@@ -134,17 +208,18 @@ public:
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Path to import file [*.crypt]:</span></p></body></html>", 0, QApplication::UnicodeUTF8));
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Path to the import file [*.crypt]:</span></p></body></html>", 0, QApplication::UnicodeUTF8));
         cmdOpenCryptFile->setText(QApplication::translate("ImportConfig", "...", 0, QApplication::UnicodeUTF8));
         groupBox_2->setTitle(QApplication::translate("ImportConfig", "Save as:", 0, QApplication::UnicodeUTF8));
         rbSaveAsFile->setText(QApplication::translate("ImportConfig", "as filename", 0, QApplication::UnicodeUTF8));
         rbSaveAsName->setText(QApplication::translate("ImportConfig", "as:", 0, QApplication::UnicodeUTF8));
-        plainTextEdit_2->setPlainText(QApplication::translate("ImportConfig", "Please notice: If you import a VPN config in portable mode, the new config will be automatically imported into the application directory. In the installation mode the default is to import the new config into the home directory/appdata of the user. \n"
-"", 0, QApplication::UnicodeUTF8));
-        cmdCancel->setText(QString());
+        cmdCancel->setText(QApplication::translate("ImportConfig", "&Close", 0, QApplication::UnicodeUTF8));
         cmdImport->setText(QApplication::translate("ImportConfig", "&Import", 0, QApplication::UnicodeUTF8));
         groupBox_3->setTitle(QApplication::translate("ImportConfig", "Password:", 0, QApplication::UnicodeUTF8));
         label_2->setText(QApplication::translate("ImportConfig", "Password:", 0, QApplication::UnicodeUTF8));
+        groupBox_4->setTitle(QApplication::translate("ImportConfig", "Import existing configuration:", 0, QApplication::UnicodeUTF8));
+        label_3->setText(QApplication::translate("ImportConfig", "Path to the *.ovpn file:", 0, QApplication::UnicodeUTF8));
+        cmdOpenOvpnFile->setText(QApplication::translate("ImportConfig", "...", 0, QApplication::UnicodeUTF8));
         Q_UNUSED(ImportConfig);
     } // retranslateUi
 

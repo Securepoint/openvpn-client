@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>370</width>
-    <height>355</height>
+    <height>356</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -19,13 +19,13 @@
   <property name="minimumSize">
    <size>
     <width>370</width>
-    <height>355</height>
+    <height>356</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>370</width>
-    <height>355</height>
+    <height>356</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -58,7 +58,7 @@
      <rect>
       <x>10</x>
       <y>20</y>
-      <width>141</width>
+      <width>191</width>
       <height>16</height>
      </rect>
     </property>
@@ -67,7 +67,7 @@
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Path to import file [*.crypt]:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Path to the import file [*.crypt]:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="txtImportPath">
@@ -75,19 +75,28 @@ p, li { white-space: pre-wrap; }
      <rect>
       <x>10</x>
       <y>40</y>
-      <width>311</width>
+      <width>310</width>
       <height>20</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">:enabled {border: 1px solid black}
+:hover {border: 1px solid red; }</string>
     </property>
    </widget>
    <widget class="QPushButton" name="cmdOpenCryptFile">
     <property name="geometry">
      <rect>
-      <x>321</x>
+      <x>323</x>
       <y>40</y>
-      <width>21</width>
-      <height>21</height>
+      <width>20</width>
+      <height>20</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">:enabled {border: 1px solid black}
+:disabled {border: 1px solid black}
+:hover {background-color: rgb(195, 195, 195);}</string>
     </property>
     <property name="text">
      <string>...</string>
@@ -115,6 +124,32 @@ p, li { white-space: pre-wrap; }
       <height>19</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true">QRadioButton { 
+spacing: 5px;
+}
+
+QRadioButton::indicator {
+width: 13px;
+height: 13px;
+}
+
+QRadioButton::indicator::unchecked:enabled {
+image: url(:/images/styles/radiobutton_unchecked.png);
+}
+
+QRadioButton::indicator::checked:enabled {
+image: url(:/images/styles/radiobutton_checked.png);
+}
+
+QRadioButton::indicator::unchecked:disabled {
+image: url(:/images/styles/radiobutton_unchecked_dis.png);
+}
+
+QRadioButton::indicator::checked:disabled {
+image: url(:/images/styles/radiobutton_checked_dis.png);
+}</string>
+    </property>
     <property name="text">
      <string>as filename</string>
     </property>
@@ -130,6 +165,32 @@ p, li { white-space: pre-wrap; }
       <width>41</width>
       <height>19</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QRadioButton { 
+spacing: 5px;
+}
+
+QRadioButton::indicator {
+width: 13px;
+height: 13px;
+}
+
+QRadioButton::indicator::unchecked:enabled {
+image: url(:/images/styles/radiobutton_unchecked.png);
+}
+
+QRadioButton::indicator::checked:enabled {
+image: url(:/images/styles/radiobutton_checked.png);
+}
+
+QRadioButton::indicator::unchecked:disabled {
+image: url(:/images/styles/radiobutton_unchecked_dis.png);
+}
+
+QRadioButton::indicator::checked:disabled {
+image: url(:/images/styles/radiobutton_checked_dis.png);
+}</string>
     </property>
     <property name="text">
      <string>as:</string>
@@ -148,53 +209,29 @@ p, li { white-space: pre-wrap; }
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true"/>
+     <string notr="true">:enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}
+:disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}
+:hover {border: 1px solid red; }
+</string>
     </property>
    </widget>
-  </widget>
-  <widget class="QPlainTextEdit" name="plainTextEdit_2">
-   <property name="enabled">
-    <bool>true</bool>
-   </property>
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>231</y>
-     <width>351</width>
-     <height>81</height>
-    </rect>
-   </property>
-   <property name="contextMenuPolicy">
-    <enum>Qt::NoContextMenu</enum>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">background-color: rgb(197, 197, 197);</string>
-   </property>
-   <property name="frameShape">
-    <enum>QFrame::Box</enum>
-   </property>
-   <property name="frameShadow">
-    <enum>QFrame::Plain</enum>
-   </property>
-   <property name="readOnly">
-    <bool>true</bool>
-   </property>
-   <property name="plainText">
-    <string>Please notice: If you import a VPN config in portable mode, the new config will be automatically imported into the application directory. In the installation mode the default is to import the new config into the home directory/appdata of the user. 
-</string>
-   </property>
   </widget>
   <widget class="QPushButton" name="cmdCancel">
    <property name="geometry">
     <rect>
      <x>280</x>
-     <y>323</y>
+     <y>321</y>
      <width>75</width>
      <height>24</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">:enabled {border: 1px solid black}
+:disabled {border: 1px solid black}
+:hover {background-color: rgb(195, 195, 195);}</string>
+   </property>
    <property name="text">
-    <string/>
+    <string>&amp;Close</string>
    </property>
    <property name="icon">
     <iconset resource="systray.qrc">
@@ -202,7 +239,7 @@ p, li { white-space: pre-wrap; }
    </property>
    <property name="iconSize">
     <size>
-     <width>30</width>
+     <width>16</width>
      <height>16</height>
     </size>
    </property>
@@ -214,10 +251,15 @@ p, li { white-space: pre-wrap; }
    <property name="geometry">
     <rect>
      <x>180</x>
-     <y>322</y>
+     <y>320</y>
      <width>75</width>
      <height>24</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">:enabled {border: 1px solid black}
+:disabled {border: 1px solid black}
+:hover {background-color: rgb(195, 195, 195);}</string>
    </property>
    <property name="text">
     <string>&amp;Import</string>
@@ -263,6 +305,68 @@ p, li { white-space: pre-wrap; }
       <width>201</width>
       <height>20</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">:enabled {border: 1px solid black}
+:hover {border: 1px solid red; }</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QGroupBox" name="groupBox_4">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>230</y>
+     <width>351</width>
+     <height>80</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Import existing configuration:</string>
+   </property>
+   <widget class="QLabel" name="label_3">
+    <property name="geometry">
+     <rect>
+      <x>12</x>
+      <y>20</y>
+      <width>161</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Path to the *.ovpn file:</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="txtExistingOvpn">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>40</y>
+      <width>310</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">:enabled {border: 1px solid black}
+:hover {border: 1px solid red; }</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="cmdOpenOvpnFile">
+    <property name="geometry">
+     <rect>
+      <x>323</x>
+      <y>40</y>
+      <width>20</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">:enabled {border: 1px solid black}
+:disabled {border: 1px solid black}
+:hover {background-color: rgb(195, 195, 195);}</string>
+    </property>
+    <property name="text">
+     <string>...</string>
     </property>
    </widget>
   </widget>

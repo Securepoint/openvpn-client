@@ -25,6 +25,7 @@ private:
     Ui::ImportConfig *m_ui;
 
 private slots:
+    void on_cmdOpenOvpnFile_clicked();
     void on_cmdImport_clicked();
     void on_rbSaveAsName_toggled(bool checked);
     void on_cmdCancel_clicked();

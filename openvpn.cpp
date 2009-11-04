@@ -3,6 +3,7 @@
 OpenVpn::OpenVpn () {
     this->connectionStable = false;
     this->onDisconnect = false;
+    this->isLinked = false;
     userauth = new StdUserAuth();
     this->proc = new QProcess(this);
     connect(this, SIGNAL(configSignalIsChanged()), this, SLOT(configIsChanged()));

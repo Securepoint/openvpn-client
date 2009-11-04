@@ -54,9 +54,9 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>290</y>
+     <y>280</y>
      <width>371</width>
-     <height>71</height>
+     <height>81</height>
     </rect>
    </property>
    <property name="contextMenuPolicy">

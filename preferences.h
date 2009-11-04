@@ -13,6 +13,9 @@ class ImportConfig;
 #include "appinfo.h"
 class DeleteConfig;
 #include "deleteconfig.h"
+class RenameConfig;
+#include "renameconfig.h"
+
 #include "tapinfo.h"
 
 #include "tapdriver.h"
@@ -83,6 +86,7 @@ private:
     ProxySettings proxy;
     TapInfo tapDia;
     DeleteConfig *deleteDialog;
+    RenameConfig *renameDialog;
 
     QAction *mySubAction;
 
@@ -122,6 +126,7 @@ private slots:
     void deleteConfig ();
     void editConfig ();
     void connectConfig ();
+    void renameConfig ();
     void exportConfig ();
     void openConfigFromListView (QListWidgetItem * item );
     void closeApp ();

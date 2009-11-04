@@ -24,6 +24,7 @@ INPUT(
 ./release\vpnlog.o
 ./release\editconfig.o
 ./release\tapinfo.o
+./release\renameconfig.o
 ./release\moc_openvpn.o
 ./release\moc_preferences.o
 ./release\moc_wiz_startpage.o
@@ -45,5 +46,6 @@ INPUT(
 ./release\moc_vpnlog.o
 ./release\moc_editconfig.o
 ./release\moc_tapinfo.o
+./release\moc_renameconfig.o
 ./release\qrc_systray.o
 );

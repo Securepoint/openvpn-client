@@ -24,6 +24,7 @@ INPUT(
 ./debug\vpnlog.o
 ./debug\editconfig.o
 ./debug\tapinfo.o
+./debug\renameconfig.o
 ./debug\moc_openvpn.o
 ./debug\moc_preferences.o
 ./debug\moc_wiz_startpage.o
@@ -45,5 +46,6 @@ INPUT(
 ./debug\moc_vpnlog.o
 ./debug\moc_editconfig.o
 ./debug\moc_tapinfo.o
+./debug\moc_renameconfig.o
 ./debug\qrc_systray.o
 );

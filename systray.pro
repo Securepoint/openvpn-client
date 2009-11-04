@@ -21,7 +21,8 @@ HEADERS = Configs.h \
     proxysettings.h \
     vpnlog.h \
     editconfig.h \
-    tapinfo.h
+    tapinfo.h \
+    renameconfig.h
 SOURCES = main.cpp \
     Configs.cpp \
     openvpn.cpp \
@@ -46,7 +47,8 @@ SOURCES = main.cpp \
     proxysettings.cpp \
     vpnlog.cpp \
     editconfig.cpp \
-    tapinfo.cpp
+    tapinfo.cpp \
+    renameconfig.cpp
 RESOURCES = systray.qrc
 QT += xml \
     svg
@@ -85,9 +87,8 @@ FORMS += preferences.ui \
     proxysettings.ui \
     vpnlog.ui \
     editconfig.ui \
-    tapinfo.ui
-LIBS += -L"../../../../mingw/lib"\
-        -liphlpapi
+    tapinfo.ui \
+    renameconfig.ui
+LIBS += -L"../../../../mingw/lib" \
+    -liphlpapi
 RC_FILE = myapp.rc
-
-
