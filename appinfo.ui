@@ -27,7 +27,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="systray.qrc">
-    <normaloff>:/images/appicon.png</normaloff>:/images/appicon.png</iconset>
+    <normaloff>:/images/logo.png</normaloff>:/images/logo.png</iconset>
   </property>
   <property name="modal">
    <bool>true</bool>
@@ -42,7 +42,7 @@
     </rect>
    </property>
    <property name="styleSheet">
-    <string>background-color: rgb(255, 255, 255);</string>
+    <string notr="true">background-color: rgb(255, 255, 255);</string>
    </property>
    <property name="text">
     <string/>
@@ -85,7 +85,7 @@
     </font>
    </property>
    <property name="text">
-    <string>OpenVPN Client</string>
+    <string>SSL VPN Client</string>
    </property>
    <property name="scaledContents">
     <bool>false</bool>
@@ -117,7 +117,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Entwicklung und Konzeption:</string>
+    <string>Concept and Development:</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
@@ -200,29 +200,13 @@
     <set>Qt::AlignCenter</set>
    </property>
   </widget>
-  <widget class="QLabel" name="label_11">
-   <property name="geometry">
-    <rect>
-     <x>50</x>
-     <y>270</y>
-     <width>121</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>www.securepoint.de</string>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignCenter</set>
-   </property>
-  </widget>
   <widget class="QPushButton" name="cmdClose">
    <property name="geometry">
     <rect>
-     <x>240</x>
-     <y>270</y>
-     <width>151</width>
-     <height>20</height>
+     <x>289</x>
+     <y>259</y>
+     <width>100</width>
+     <height>33</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -235,13 +219,16 @@
    </property>
    <property name="icon">
     <iconset resource="systray.qrc">
-     <normaloff>:/images/close.png</normaloff>:/images/close.png</iconset>
+     <normaloff>:/images/close_dialog.png</normaloff>:/images/close_dialog.png</iconset>
    </property>
    <property name="iconSize">
     <size>
-     <width>16</width>
-     <height>16</height>
+     <width>22</width>
+     <height>22</height>
     </size>
+   </property>
+   <property name="default">
+    <bool>true</bool>
    </property>
    <property name="flat">
     <bool>true</bool>
@@ -264,6 +251,19 @@
    </property>
    <property name="scaledContents">
     <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_11">
+   <property name="geometry">
+    <rect>
+     <x>60</x>
+     <y>270</y>
+     <width>111</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>www.securepoint.de</string>
    </property>
   </widget>
  </widget>

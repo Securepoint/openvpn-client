@@ -1,10 +1,10 @@
 /********************************************************************************
-** Form generated from reading ui file 'importconfig.ui'
+** Form generated from reading UI file 'importconfig.ui'
 **
-** Created: Wed 4. Nov 17:16:48 2009
-**      by: Qt User Interface Compiler version 4.5.3
+** Created: Thu 15. Apr 13:48:01 2010
+**      by: Qt User Interface Compiler version 4.6.2
 **
-** WARNING! All changes made in this file will be lost when recompiling ui file!
+** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
 
 #ifndef UI_IMPORTCONFIG_H
@@ -49,16 +49,17 @@ public:
     {
         if (ImportConfig->objectName().isEmpty())
             ImportConfig->setObjectName(QString::fromUtf8("ImportConfig"));
-        ImportConfig->resize(370, 356);
+        ImportConfig->setWindowModality(Qt::ApplicationModal);
+        ImportConfig->resize(370, 350);
         QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(ImportConfig->sizePolicy().hasHeightForWidth());
         ImportConfig->setSizePolicy(sizePolicy);
-        ImportConfig->setMinimumSize(QSize(370, 356));
-        ImportConfig->setMaximumSize(QSize(370, 356));
+        ImportConfig->setMinimumSize(QSize(370, 350));
+        ImportConfig->setMaximumSize(QSize(370, 350));
         QIcon icon;
-        icon.addFile(QString::fromUtf8(":/images/appicon.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon.addFile(QString::fromUtf8(":/images/logo.png"), QSize(), QIcon::Normal, QIcon::Off);
         ImportConfig->setWindowIcon(icon);
         ImportConfig->setStyleSheet(QString::fromUtf8(""));
         ImportConfig->setModal(true);
@@ -84,7 +85,7 @@ public:
         groupBox_2->setGeometry(QRect(10, 90, 351, 81));
         rbSaveAsFile = new QRadioButton(groupBox_2);
         rbSaveAsFile->setObjectName(QString::fromUtf8("rbSaveAsFile"));
-        rbSaveAsFile->setGeometry(QRect(11, 22, 82, 19));
+        rbSaveAsFile->setGeometry(QRect(11, 22, 151, 19));
         rbSaveAsFile->setStyleSheet(QString::fromUtf8("QRadioButton { \n"
 "spacing: 5px;\n"
 "}\n"
@@ -147,24 +148,33 @@ public:
 ""));
         cmdCancel = new QPushButton(ImportConfig);
         cmdCancel->setObjectName(QString::fromUtf8("cmdCancel"));
-        cmdCancel->setGeometry(QRect(280, 321, 75, 24));
+        cmdCancel->setGeometry(QRect(260, 313, 100, 33));
         cmdCancel->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black}\n"
 ":disabled {border: 1px solid black}\n"
-":hover {background-color: rgb(195, 195, 195);}"));
+":hover {background-color: rgb(195, 195, 195);}\n"
+"QPushButton {height: 25px; width: 50px;text-align:left;\n"
+"	padding-left: 10px;\n"
+"	padding-top: 3px;\n"
+"	padding-bottom: 3px;}"));
         QIcon icon1;
-        icon1.addFile(QString::fromUtf8(":/images/close.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon1.addFile(QString::fromUtf8(":/images/close_dialog.png"), QSize(), QIcon::Normal, QIcon::Off);
         cmdCancel->setIcon(icon1);
-        cmdCancel->setIconSize(QSize(16, 16));
+        cmdCancel->setIconSize(QSize(22, 22));
         cmdCancel->setFlat(true);
         cmdImport = new QPushButton(ImportConfig);
         cmdImport->setObjectName(QString::fromUtf8("cmdImport"));
-        cmdImport->setGeometry(QRect(180, 320, 75, 24));
+        cmdImport->setGeometry(QRect(150, 313, 100, 33));
         cmdImport->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black}\n"
 ":disabled {border: 1px solid black}\n"
-":hover {background-color: rgb(195, 195, 195);}"));
+":hover {background-color: rgb(195, 195, 195);}\n"
+"QPushButton {height: 25px; width: 50px;text-align:left;\n"
+"	padding-left: 10px;\n"
+"	padding-top: 3px;\n"
+"	padding-bottom: 3px;}"));
         QIcon icon2;
         icon2.addFile(QString::fromUtf8(":/images/import.png"), QSize(), QIcon::Normal, QIcon::Off);
         cmdImport->setIcon(icon2);
+        cmdImport->setIconSize(QSize(22, 22));
         cmdImport->setFlat(true);
         groupBox_3 = new QGroupBox(ImportConfig);
         groupBox_3->setObjectName(QString::fromUtf8("groupBox_3"));
@@ -213,14 +223,13 @@ public:
         groupBox_2->setTitle(QApplication::translate("ImportConfig", "Save as:", 0, QApplication::UnicodeUTF8));
         rbSaveAsFile->setText(QApplication::translate("ImportConfig", "as filename", 0, QApplication::UnicodeUTF8));
         rbSaveAsName->setText(QApplication::translate("ImportConfig", "as:", 0, QApplication::UnicodeUTF8));
-        cmdCancel->setText(QApplication::translate("ImportConfig", "&Close", 0, QApplication::UnicodeUTF8));
-        cmdImport->setText(QApplication::translate("ImportConfig", "&Import", 0, QApplication::UnicodeUTF8));
+        cmdCancel->setText(QApplication::translate("ImportConfig", "     &Close", 0, QApplication::UnicodeUTF8));
+        cmdImport->setText(QApplication::translate("ImportConfig", "     &Import", 0, QApplication::UnicodeUTF8));
         groupBox_3->setTitle(QApplication::translate("ImportConfig", "Password:", 0, QApplication::UnicodeUTF8));
         label_2->setText(QApplication::translate("ImportConfig", "Password:", 0, QApplication::UnicodeUTF8));
         groupBox_4->setTitle(QApplication::translate("ImportConfig", "Import existing configuration:", 0, QApplication::UnicodeUTF8));
         label_3->setText(QApplication::translate("ImportConfig", "Path to the *.ovpn file:", 0, QApplication::UnicodeUTF8));
         cmdOpenOvpnFile->setText(QApplication::translate("ImportConfig", "...", 0, QApplication::UnicodeUTF8));
-        Q_UNUSED(ImportConfig);
     } // retranslateUi
 
 };

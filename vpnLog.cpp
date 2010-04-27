@@ -1,11 +1,13 @@
 #include "vpnlog.h"
 #include "ui_vpnlog.h"
+#include "preferences.h"
 
 VpnLog::VpnLog(QWidget *parent) :
     QDialog(parent),
     m_ui(new Ui::VpnLog)
 {
     m_ui->setupUi(this);
+    this->setWindowFlags(Qt::Tool  | Qt::WindowStaysOnTopHint);
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(refreshData()));
 }
@@ -35,15 +37,25 @@ void VpnLog::closeEvent(QCloseEvent *event) {
 
 void VpnLog::showDialog() {
     this->refreshData();
+    // Mittig ausrichten
+    int screenH = qApp->desktop()->height();
+    int screenW = qApp->desktop()->width();
+    int winH = 420;
+    int winW = 630;
+    // Nun die neuen setzen
+    this->setGeometry((screenW / 2) - (winW / 2), (screenH / 2) - (winH / 2), winW, winH);
     this->show();
     timer->start(1000);
+    m_ui->cmdStartStopLog->setText(tr("Stop Log"));
 }
 
 void VpnLog::refreshData() {
     m_ui->memLog->clear();
+
     for (int x = 0; x < logList->size(); x++) {
         m_ui->memLog->appendPlainText(logList->at(x) + "\n");
     }
+
 }
 
 void VpnLog::on_cmdClose_clicked()
@@ -65,11 +77,22 @@ void VpnLog::on_cmdSave_clicked()
         // open and write
         QFile wFile (fileName);
         if (!wFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
-            QMessageBox::critical(0,QString ("Securepoint VPN Client"), QString("Can't open file to write!"));
+            QMessageBox::critical(0,QString (tr("Securepoint SSL VPN")), QString(tr("Can't open file to write!")));
             return;
         }
         QTextStream out (&wFile);
         out << m_ui->memLog->toPlainText();
         wFile.close();
+    }
+}
+
+void VpnLog::on_cmdStartStopLog_clicked()
+{
+    if (timer->isActive()) {
+        timer->stop();
+        m_ui->cmdStartStopLog->setText(tr("Start Log"));
+    } else {
+        timer->start(1000);
+        m_ui->cmdStartStopLog->setText(tr("Stop Log"));
     }
 }

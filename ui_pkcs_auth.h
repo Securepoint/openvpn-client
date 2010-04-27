@@ -1,10 +1,10 @@
 /********************************************************************************
-** Form generated from reading ui file 'pkcs_auth.ui'
+** Form generated from reading UI file 'pkcs_auth.ui'
 **
-** Created: Wed 4. Nov 17:16:48 2009
-**      by: Qt User Interface Compiler version 4.5.3
+** Created: Tue 23. Mar 14:57:05 2010
+**      by: Qt User Interface Compiler version 4.6.2
 **
-** WARNING! All changes made in this file will be lost when recompiling ui file!
+** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
 
 #ifndef UI_PKCS_AUTH_H
@@ -80,7 +80,6 @@ public:
         groupBox->setTitle(QApplication::translate("pkcs_auth", "User data:", 0, QApplication::UnicodeUTF8));
         label->setText(QApplication::translate("pkcs_auth", "Password:", 0, QApplication::UnicodeUTF8));
         cmdOK->setText(QApplication::translate("pkcs_auth", "Co&nnect", 0, QApplication::UnicodeUTF8));
-        Q_UNUSED(pkcs_auth);
     } // retranslateUi
 
 };

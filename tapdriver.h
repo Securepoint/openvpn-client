@@ -2,19 +2,21 @@
 #define TAPDRIVER_H
 
 #include <QtGui>
+#include "check64.h"
 
 class TapDriver: public QObject
 {
     Q_OBJECT
 
 public:
-    TapDriver();
-    virtual ~TapDriver(){}
+    static TapDriver *getInstance ();
     bool isTapDriverInstalled ();
     bool installTapDriver ();
     bool removeTapDriver ();
 
 private:
+    static TapDriver *mInst;
+    TapDriver();
     QProcess *drvProc;
     QProcess *drvInstallProc;
     QProcess *drvRemoveProc;

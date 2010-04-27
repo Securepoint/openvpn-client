@@ -9,7 +9,9 @@
 #include "wiz_certpage.h"
 #include "wiz_advpage.h"
 #include "appfunc.h"
-#include "preferences.h"
+#include "openvpn.h"
+#include "Configs.h"
+
 
 QT_BEGIN_NAMESPACE
 class QCheckBox;
@@ -24,9 +26,13 @@ class VpnWizard : public QWizard
     Q_OBJECT
 
 public:
-    VpnWizard(QWidget *parent = 0);
-
+    static VpnWizard *getInstance ();
     void accept();
+
+private:
+    VpnWizard();
+    static VpnWizard *mInst;
+
 };
 
 #endif // WIZ_VPNWIZARD_H

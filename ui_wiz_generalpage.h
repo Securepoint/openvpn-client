@@ -1,10 +1,10 @@
 /********************************************************************************
-** Form generated from reading ui file 'wiz_generalpage.ui'
+** Form generated from reading UI file 'wiz_generalpage.ui'
 **
-** Created: Wed 4. Nov 17:16:47 2009
-**      by: Qt User Interface Compiler version 4.5.3
+** Created: Thu 15. Apr 13:48:01 2010
+**      by: Qt User Interface Compiler version 4.6.2
 **
-** WARNING! All changes made in this file will be lost when recompiling ui file!
+** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
 
 #ifndef UI_WIZ_GENERALPAGE_H
@@ -35,7 +35,7 @@ public:
         GeneralPage->resize(400, 300);
         lblConfigName = new QLabel(GeneralPage);
         lblConfigName->setObjectName(QString::fromUtf8("lblConfigName"));
-        lblConfigName->setGeometry(QRect(20, 20, 191, 20));
+        lblConfigName->setGeometry(QRect(20, 20, 361, 20));
         label = new QLabel(GeneralPage);
         label->setObjectName(QString::fromUtf8("label"));
         label->setGeometry(QRect(20, 50, 46, 14));
@@ -58,7 +58,6 @@ public:
         GeneralPage->setSubTitle(QApplication::translate("GeneralPage", "Specify the name of the config file which should create.", 0, QApplication::UnicodeUTF8));
         lblConfigName->setText(QApplication::translate("GeneralPage", "Please enter the name of the config.", 0, QApplication::UnicodeUTF8));
         label->setText(QApplication::translate("GeneralPage", "Name:", 0, QApplication::UnicodeUTF8));
-        Q_UNUSED(GeneralPage);
     } // retranslateUi
 
 };

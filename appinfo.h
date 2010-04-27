@@ -1,23 +1,29 @@
 #ifndef APPINFO_H
 #define APPINFO_H
 
-#include <QtGui/QDialog>
+#include <QtGui>
 
 namespace Ui {
     class appInfo;
 }
 
-class appInfo : public QDialog {
+
+// Die Appinfo wird nun eine Singleton-Klasse
+// Zudem ist der Name von appInfo auf AppInfo
+// zwecks Nomenklatur geändert.
+class AppInfo : public QDialog {
     Q_OBJECT
 public:
-    appInfo(QWidget *parent = 0);
-    ~appInfo();
+    static AppInfo *getInstance ();
+    ~AppInfo();
 
 protected:
     void changeEvent(QEvent *e);
 
 private:
+    static AppInfo* mInst;
     Ui::appInfo *m_ui;
+    AppInfo();
 
 private slots:
     void on_cmdClose_clicked();

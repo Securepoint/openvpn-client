@@ -1,8 +1,16 @@
 #include "wiz_vpnwizard.h"
 #include <QtGui>
 
-VpnWizard::VpnWizard(QWidget *parent)
-    : QWizard(parent)
+VpnWizard *VpnWizard::mInst = NULL;
+
+VpnWizard *VpnWizard::getInstance() {
+    if (!mInst)
+        mInst = new VpnWizard ();
+    return mInst;
+}
+
+VpnWizard::VpnWizard()
+    : QWizard()
 {
     addPage(new StartPage);
     addPage(new GeneralPage);
@@ -11,28 +19,28 @@ VpnWizard::VpnWizard(QWidget *parent)
     addPage(new AdvPage);
     addPage(new EndPage);
 
-
+    setWizardStyle(ModernStyle);
     setPixmap(QWizard::BannerPixmap, QPixmap(":/images/banner_wiz.png"));
-    setWindowIcon(QIcon(":/images/appicon.png"));
-    setWindowTitle(tr("Create a new VPN connection"));
+    setWindowIcon(QIcon(":/images/logo.png"));
+    setWindowTitle(tr("Create a new SSL VPN connection"));
+    setWindowFlags(Qt::WindowCloseButtonHint | Qt::WindowStaysOnTopHint);
     setModal(true);
 }
 
 void VpnWizard::accept()
-{
-    AppFunc app;
+{    
     QString configFilePath;
     QString dirPath;
 
 
-    configFilePath = app.getAppSavePath()
+    configFilePath = AppFunc::getInstance()->getAppSavePath()
                      + QString ("/")
                      + field("txtConfigName").toString()
                      + QString("/")
                      + field("txtConfigName").toString()
                      + QString(".ovpn");
 
-    dirPath = app.getAppSavePath()
+    dirPath = AppFunc::getInstance()->getAppSavePath()
               + QString ("/")
               + field("txtConfigName").toString();
 
@@ -43,7 +51,15 @@ void VpnWizard::accept()
             // Pfad erstellen
             if (!dirobj.mkpath(dirPath)) {
                 // Pfad konnte nicht erstellt werden
-                QMessageBox::critical(0,"Securepoint VPN Client", "Unable to create directory!");
+                QMessageBox msgBox;
+                msgBox.setWindowTitle(tr("Securepoint SSL VPN"));
+                msgBox.setText(tr("Create a new SSL VPN connection"));
+                msgBox.setWindowIcon(QIcon(":/images/logo.png"));
+                msgBox.setInformativeText(tr("Unable to create directory!"));
+                msgBox.setStandardButtons(QMessageBox::Ok);
+                msgBox.setDefaultButton(QMessageBox::Ok);
+                msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
+                msgBox.exec();
                 return;
             }
         } else {
@@ -51,7 +67,15 @@ void VpnWizard::accept()
             QFile file(configFilePath);
             if (file.exists()) {
                 // Datei existiert bereits
-                QMessageBox::critical(0,"Securepoint VPN Client", "Configfile already exists!");
+                QMessageBox msgBox;
+                msgBox.setWindowTitle(tr("Securepoint SSL VPN"));
+                msgBox.setText(tr("Create a new SSL VPN connection"));
+                msgBox.setWindowIcon(QIcon(":/images/logo.png"));
+                msgBox.setInformativeText(tr("Configfile already exists!"));
+                msgBox.setStandardButtons(QMessageBox::Ok);
+                msgBox.setDefaultButton(QMessageBox::Ok);
+                msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
+                msgBox.exec();
                 return;
             }
             file.close();
@@ -62,7 +86,15 @@ void VpnWizard::accept()
     QFile configFile (configFilePath);
     if (!configFile.open(QIODevice::WriteOnly | QIODevice::Text)){
         // Datei kann nicht erstellt werden
-        QMessageBox::critical(0,"Securepoint VPN Client", "Can't create Configfile!");
+        QMessageBox msgBox;
+        msgBox.setWindowTitle(tr("Securepoint SSL VPN"));
+        msgBox.setText(tr("Create a new SSL VPN connection"));
+        msgBox.setWindowIcon(QIcon(":/images/logo.png"));
+        msgBox.setInformativeText(tr("Can't create Configfile!"));
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        msgBox.setDefaultButton(QMessageBox::Ok);
+        msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
+        msgBox.exec();
         return;
     }
     //  Datei ist offen und wartet auf Daten
@@ -104,11 +136,12 @@ void VpnWizard::accept()
     if (field("txtServerCert").toBool())
         out << "ns-cert-type server\n";
 
-    if (field("txtRouteMethod").toInt() != 0)
+    if (field("txtRouteMethod").toInt() != 0) {
         if (field("txtRouteMethod").toInt() == 1)
             out << "route-method exe\n";
         else
             out << "route-method ipapi\n";
+    }
 
     if (field("txtVerbose").toString() != "")
         out << "verb " << field("txtVerbose").toString() << "\n";
@@ -131,7 +164,15 @@ void VpnWizard::accept()
     QFile caFile (field("txtCAPath").toString());
     QString caDestFile (dirPath + QString("/") + caPath.right(caPath.size() - caPath.lastIndexOf("/") -1));
     if (!caFile.copy(caDestFile)){
-        QMessageBox::critical(0,"Securepoint VPN Client", "Unable to copy CA file!");
+        QMessageBox msgBox;
+        msgBox.setWindowTitle(tr("Securepoint SSL VPN"));
+        msgBox.setText(tr("Create a new SSL VPN connection"));
+        msgBox.setWindowIcon(QIcon(":/images/logo.png"));
+        msgBox.setInformativeText(tr("Unable to copy CA file!"));
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        msgBox.setDefaultButton(QMessageBox::Ok);
+        msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
+        msgBox.exec();
         return;
     }
 
@@ -139,7 +180,15 @@ void VpnWizard::accept()
     QString certDestFile (dirPath + QString("/") + certPath.right(certPath.size() - certPath.lastIndexOf("/") -1));
     if (certDestFile != caDestFile)
         if (!certFile.copy(certDestFile)){
-            QMessageBox::critical(0,"Securepoint VPN Client", "Unable to copy certificate file!");
+            QMessageBox msgBox;
+            msgBox.setWindowTitle(tr("Securepoint SSL VPN"));
+            msgBox.setText(tr("Create a new SSL VPN connection"));
+            msgBox.setWindowIcon(QIcon(":/images/logo.png"));
+            msgBox.setInformativeText(tr("Unable to copy certificate file!"));
+            msgBox.setStandardButtons(QMessageBox::Ok);
+            msgBox.setDefaultButton(QMessageBox::Ok);
+            msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
+            msgBox.exec();
             return;
         }
 
@@ -147,19 +196,44 @@ void VpnWizard::accept()
     QString keyDestFile (dirPath + QString("/") + keyPath.right(keyPath.size() - keyPath.lastIndexOf("/") -1));
     if (keyDestFile != caDestFile && keyDestFile != certDestFile)
         if (!keyFile.copy(keyDestFile)){
-            QMessageBox::critical(0,"Securepoint VPN Client", "Unable to copy key file!");
+            QMessageBox msgBox;
+            msgBox.setWindowTitle(tr("Securepoint SSL VPN"));
+            msgBox.setText(tr("Create a new SSL VPN connection"));
+            msgBox.setWindowIcon(QIcon(":/images/logo.png"));
+            msgBox.setInformativeText(tr("Unable to copy key file!"));
+            msgBox.setStandardButtons(QMessageBox::Ok);
+            msgBox.setDefaultButton(QMessageBox::Ok);
+            msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
+            msgBox.exec();
             return;
         }
     // Alles erstellt und kopiert!
     caFile.close();
     certFile.close();
     keyFile.close();
-    Preferences *prefDialog = dynamic_cast<Preferences*> (this->parent());
-    prefDialog->refreshConfigList();
+    // Refresh des Dialoges
+    // Generieren eines neuen Openvpn Objektes
+    // Das Objekt wird dann an die ObjList angehängt
+    // Dann muss nur noch der Dialog aktualisiert werden
+    /*OpenVpn *item = new OpenVpn ();
+    item->configName = field("txtConfigName").toString();
+    item->configPath = AppFunc::getInstance()->getAppSavePath() + QString ("/") + field("txtConfigName").toString();
+    item->connectionStable = false;
+    Configs::getInstance()->appendConfigToList(item);*/
+    MainWindowControll::getInstance()->refreshConfigs();
+    MainWindowControll::getInstance()->setConnectionStatus();
 
-    QMessageBox::information(0,"Securepoint VPN Client", "Config is successfully created!");
+    QMessageBox msgBox;
+    msgBox.setWindowTitle(tr("Securepoint SSL VPN"));
+    msgBox.setText(tr("Create a new SSL VPN connection"));
+    msgBox.setWindowIcon(QIcon(":/images/logo.png"));
+    msgBox.setInformativeText(tr("Config is successfully created!"));
+    msgBox.setStandardButtons(QMessageBox::Ok);
+    msgBox.setDefaultButton(QMessageBox::Ok);
+    msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
+    msgBox.exec();
+
+    MainWindowControll::getInstance()->refreshDialog();
     this->close();
-
-
     QDialog::accept();
 }

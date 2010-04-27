@@ -4,8 +4,10 @@
 #include <QtGui>
 #include <QFileDialog>
 #include <QProcess>
+#include <QShowEvent>
 #include "appfunc.h"
-#include "preferences.h"
+#include "mainwindowcontroll.h"
+
 
 namespace Ui {
     class ImportConfig;
@@ -14,15 +16,16 @@ namespace Ui {
 class ImportConfig : public QDialog {
     Q_OBJECT
 public:
-    ImportConfig(QWidget *parent = 0);
-    ~ImportConfig();
-    void resetFields ();
+    static ImportConfig *getInstance ();
 
 protected:
     void changeEvent(QEvent *e);
+    void showEvent (QShowEvent *e);
 
 private:
     Ui::ImportConfig *m_ui;
+    ImportConfig();
+    static ImportConfig *mInst;
 
 private slots:
     void on_cmdOpenOvpnFile_clicked();

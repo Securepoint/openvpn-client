@@ -2,7 +2,9 @@
 #define RENAMECONFIG_H
 
 #include <QtGui>
-#include "preferences.h"
+#include <QShowEvent>
+
+#include "Configs.h"
 
 namespace Ui {
     class RenameConfig;
@@ -11,15 +13,17 @@ namespace Ui {
 class RenameConfig : public QDialog {
     Q_OBJECT
 public:
-    RenameConfig(QWidget *parent = 0);
-    ~RenameConfig();
+    static RenameConfig *getInstance ();
     void setOldName (QString oldname);
     void setFullPath (QString path);
 
 protected:
     void changeEvent(QEvent *e);
+    void showEvent (QShowEvent *e);
 
 private:
+    static RenameConfig *mInst;
+    RenameConfig();
     Ui::RenameConfig *m_ui;
     QString fullPath;
 

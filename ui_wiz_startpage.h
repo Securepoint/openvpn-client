@@ -1,10 +1,10 @@
 /********************************************************************************
-** Form generated from reading ui file 'wiz_startpage.ui'
+** Form generated from reading UI file 'wiz_startpage.ui'
 **
-** Created: Wed 4. Nov 17:16:47 2009
-**      by: Qt User Interface Compiler version 4.5.3
+** Created: Thu 15. Apr 13:48:01 2010
+**      by: Qt User Interface Compiler version 4.6.2
 **
-** WARNING! All changes made in this file will be lost when recompiling ui file!
+** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
 
 #ifndef UI_WIZ_STARTPAGE_H
@@ -70,7 +70,6 @@ public:
         plainTextEdit_2->setPlainText(QApplication::translate("StartPage", "Please notice:\n"
 "If you create a VPN config in portable mode, the new config will be automatically created into the application directory. In the installation mode the default is to create the new config into the home directory of the user. ", 0, QApplication::UnicodeUTF8));
         label->setText(QString());
-        Q_UNUSED(StartPage);
     } // retranslateUi
 
 };

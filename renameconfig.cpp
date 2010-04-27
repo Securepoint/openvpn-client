@@ -1,16 +1,20 @@
 #include "renameconfig.h"
 #include "ui_renameconfig.h"
 
-RenameConfig::RenameConfig(QWidget *parent) :
-    QDialog(parent),
+RenameConfig *RenameConfig::mInst = NULL;
+
+RenameConfig *RenameConfig::getInstance() {
+    if (!mInst)
+        mInst = new RenameConfig ();
+    return mInst;
+}
+
+RenameConfig::RenameConfig() :
+    QDialog(),
     m_ui(new Ui::RenameConfig)
 {
     m_ui->setupUi(this);
-}
-
-RenameConfig::~RenameConfig()
-{
-    delete m_ui;
+    this->setWindowFlags(Qt::WindowCloseButtonHint | Qt::WindowStaysOnTopHint);
 }
 
 void RenameConfig::changeEvent(QEvent *e)
@@ -25,6 +29,20 @@ void RenameConfig::changeEvent(QEvent *e)
     }
 }
 
+void RenameConfig::showEvent(QShowEvent *e) {
+    m_ui->txtNewName->setText("");
+    // Mittig ausrichten
+    int screenH = qApp->desktop()->height();
+    int screenW = qApp->desktop()->width();
+    int winH = 120;
+    int winW = 280;
+    // Nun die neuen setzen
+    this->setGeometry((screenW / 2) - (winW / 2), (screenH / 2) - (winH / 2), winW, winH);
+    // Öffnen
+    e->accept();
+    this->setWindowState(Qt::WindowActive);
+}
+
 void RenameConfig::on_cmdClose_clicked()
 {
     this->close();
@@ -33,30 +51,56 @@ void RenameConfig::on_cmdClose_clicked()
 void RenameConfig::on_cmdRename_clicked()
 {
     bool isLinked = false;
-    Configs myConfig;
+    bool fError = false;
+    QString errMes = "";
+
     if (m_ui->txtNewName->text().trimmed() != "") {
         QFile renFile (this->fullPath);
         QString oldPath (this->fullPath);
                 oldPath = oldPath.replace("\\","/");
-        if (myConfig.isConfigLinked(oldPath))
+        if (Configs::getInstance()->isConfigLinked(oldPath))
             isLinked = true;
         if (renFile.exists()) {
             // rename
             QString renPath (this->fullPath.left(this->fullPath.lastIndexOf("/")));
             if (!renFile.rename(renPath + QString("/") + m_ui->txtNewName->text().trimmed() + QString(".ovpn"))) {
-                QMessageBox::critical(0, QString("Securepoint VPN Client"), QString ("Rename failed!"));
-                return;
+                fError = true;
+                errMes = QString (tr("Rename failed!"));
             }
-            QMessageBox::information(0, QString("Securepoint VPN Client"), QString("Rename was successfully!"));
         }
-        if (isLinked) {
-            myConfig.changeConfigNameInLinkedList(oldPath, oldPath.left(oldPath.lastIndexOf("/")) + QString("/") + m_ui->txtNewName->text().trimmed() + QString(".ovpn"));
-        }
-        Preferences *prefDialog = dynamic_cast<Preferences*> (this->parent());
-        prefDialog->refreshConfigList();
-        this->close();
+        if(!fError)
+            if (isLinked) {
+                Configs::getInstance()->changeConfigNameInLinkedList(oldPath, oldPath.left(oldPath.lastIndexOf("/")) + QString("/") + m_ui->txtNewName->text().trimmed() + QString(".ovpn"));
+            }
     } else {
-        QMessageBox::critical(0, QString("Securepoint VPN Client"), QString ("New name is empty!"));
+        fError = true;
+        errMes = QString (tr("New name is empty!"));
+    }
+
+    if (fError) {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle(tr("Securepoint SSL VPN"));
+        msgBox.setText(tr("An error has occurred!"));
+        msgBox.setWindowIcon(QIcon(":/images/logo.png"));
+        msgBox.setInformativeText(errMes);
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        msgBox.setDefaultButton(QMessageBox::Ok);
+        msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
+        msgBox.exec();
+    } else {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle(tr("Securepoint SSL VPN"));
+        msgBox.setText(tr("Rename Configuration"));
+        msgBox.setWindowIcon(QIcon(":/images/logo.png"));
+        msgBox.setInformativeText(tr("Rename was successfully!"));
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        msgBox.setDefaultButton(QMessageBox::Ok);
+        msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
+        msgBox.exec();
+        MainWindowControll::getInstance()->refreshConfigs();
+        MainWindowControll::getInstance()->refreshDialog();
+        MainWindowControll::getInstance()->setConnectionStatus();
+        this->close();
     }
 }
 

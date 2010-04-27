@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>272</width>
+    <width>270</width>
     <height>211</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>272</width>
-    <height>211</height>
+    <width>270</width>
+    <height>210</height>
    </size>
   </property>
   <property name="maximumSize">
@@ -27,7 +27,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="systray.qrc">
-    <normaloff>:/images/appicon.png</normaloff>:/images/appicon.png</iconset>
+    <normaloff>:/images/logo.png</normaloff>:/images/logo.png</iconset>
   </property>
   <property name="modal">
    <bool>true</bool>
@@ -35,8 +35,8 @@
   <widget class="QGroupBox" name="groupBox">
    <property name="geometry">
     <rect>
-     <x>14</x>
-     <y>10</y>
+     <x>10</x>
+     <y>0</y>
      <width>251</width>
      <height>81</height>
     </rect>
@@ -122,8 +122,8 @@
   <widget class="QPlainTextEdit" name="plainTextEdit">
    <property name="geometry">
     <rect>
-     <x>14</x>
-     <y>99</y>
+     <x>10</x>
+     <y>90</y>
      <width>251</width>
      <height>71</height>
     </rect>
@@ -151,23 +151,36 @@
   <widget class="QPushButton" name="cmdExport">
    <property name="geometry">
     <rect>
-     <x>94</x>
-     <y>179</y>
-     <width>75</width>
-     <height>24</height>
+     <x>50</x>
+     <y>170</y>
+     <width>100</width>
+     <height>33</height>
     </rect>
    </property>
    <property name="styleSheet">
     <string notr="true">:enabled {border: 1px solid black}
 :disabled {border: 1px solid black}
-:hover {background-color: rgb(195, 195, 195);}</string>
+:hover {background-color: rgb(195, 195, 195);}
+QPushButton {height: 25px; width: 50px;text-align:left;
+	padding-left: 10px;
+	padding-top: 3px;
+	padding-bottom: 3px;}</string>
    </property>
    <property name="text">
-    <string>E&amp;xport</string>
+    <string>     E&amp;xport</string>
    </property>
    <property name="icon">
     <iconset resource="systray.qrc">
      <normaloff>:/images/export.png</normaloff>:/images/export.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>22</width>
+     <height>22</height>
+    </size>
+   </property>
+   <property name="default">
+    <bool>true</bool>
    </property>
    <property name="flat">
     <bool>true</bool>
@@ -176,28 +189,32 @@
   <widget class="QPushButton" name="cmdCancel">
    <property name="geometry">
     <rect>
-     <x>190</x>
-     <y>179</y>
-     <width>75</width>
-     <height>24</height>
+     <x>160</x>
+     <y>170</y>
+     <width>100</width>
+     <height>33</height>
     </rect>
    </property>
    <property name="styleSheet">
     <string notr="true">:enabled {border: 1px solid black}
 :disabled {border: 1px solid black}
-:hover {background-color: rgb(195, 195, 195);}</string>
+:hover {background-color: rgb(195, 195, 195);}
+QPushButton {height: 25px; width: 50px;text-align:left;
+	padding-left: 10px;
+	padding-top: 3px;
+	padding-bottom: 3px;}</string>
    </property>
    <property name="text">
-    <string>&amp;Close</string>
+    <string>     &amp;Close</string>
    </property>
    <property name="icon">
     <iconset resource="systray.qrc">
-     <normaloff>:/images/close.png</normaloff>:/images/close.png</iconset>
+     <normaloff>:/images/close_dialog.png</normaloff>:/images/close_dialog.png</iconset>
    </property>
    <property name="iconSize">
     <size>
-     <width>16</width>
-     <height>16</height>
+     <width>22</width>
+     <height>22</height>
     </size>
    </property>
    <property name="flat">

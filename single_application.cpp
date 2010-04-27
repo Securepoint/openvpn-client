@@ -2,6 +2,7 @@
 
 #include <QTimer>
 #include <QByteArray>
+#include <QMessageBox>
 
 #include "single_application.h"
 
@@ -73,6 +74,10 @@ bool SingleApplication::sendMessage(const QString &message)
         memcpy(to, from, qMin(sharedMemory.size(), byteArray.size()));
         sharedMemory.unlock();
         return true;
+}
+
+void SingleApplication::receiveMessage(QString message) {
+    this->prefParent->openDialog(false, QString (""));
 }
 
 

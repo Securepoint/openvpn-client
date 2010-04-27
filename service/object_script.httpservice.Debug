@@ -1,0 +1,13 @@
+INPUT(
+./debug\main.o
+./debug\openvpn.o
+./debug\stduserauth.o
+./debug\pkcs_auth.o
+./debug\vpnlog.o
+./debug\qtservice.o
+./debug\qtservice_win.o
+./debug\moc_openvpn.o
+./debug\moc_stduserauth.o
+./debug\moc_pkcs_auth.o
+./debug\moc_vpnlog.o
+);

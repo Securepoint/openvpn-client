@@ -2,6 +2,7 @@
 #define PROXYSETTINGS_H
 
 #include <QtGui>
+#include <QShowEvent>
 
 namespace Ui {
     class ProxySettings;
@@ -10,14 +11,17 @@ namespace Ui {
 class ProxySettings : public QDialog {
     Q_OBJECT
 public:
-    ProxySettings(QWidget *parent = 0);
+    static ProxySettings *getInstance ();
     ~ProxySettings();
 
 protected:
     void changeEvent(QEvent *e);
+    void showEvent (QShowEvent *e);
 
 private:
+    ProxySettings();
     Ui::ProxySettings *m_ui;
+    static ProxySettings *mInst;
 
 private slots:
     void on_rbUseManual_toggled(bool checked);

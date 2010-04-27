@@ -1,17 +1,21 @@
 #include "importconfig.h"
 #include "ui_importconfig.h"
 
-ImportConfig::ImportConfig(QWidget *parent) :
-    QDialog(parent),
+ImportConfig *ImportConfig::mInst = NULL;
+
+ImportConfig *ImportConfig::getInstance() {
+    if (!mInst)
+        mInst = new ImportConfig ();
+    return mInst;
+}
+
+ImportConfig::ImportConfig() :
+    QDialog(),
     m_ui(new Ui::ImportConfig)
 {
     m_ui->setupUi(this);
     m_ui->txtPassword->setEchoMode(QLineEdit::Password);
-}
-
-ImportConfig::~ImportConfig()
-{
-    delete m_ui;
+    this->setWindowFlags(Qt::WindowCloseButtonHint | Qt::WindowStaysOnTopHint);
 }
 
 void ImportConfig::changeEvent(QEvent *e)
@@ -26,10 +30,28 @@ void ImportConfig::changeEvent(QEvent *e)
     }
 }
 
+void ImportConfig::showEvent(QShowEvent *e) {
+    m_ui->txtImportPath->setText("");
+    m_ui->txtNewName->setText("");
+    m_ui->txtPassword->setText("");
+    m_ui->txtNewName->setEnabled(false);
+    m_ui->rbSaveAsFile->setChecked(true);
+    // Mittig ausrichten
+    int screenH = qApp->desktop()->height();
+    int screenW = qApp->desktop()->width();
+    int winH = 370;
+    int winW = 350;
+    // Nun die neuen setzen
+    this->setGeometry((screenW / 2) - (winW / 2), (screenH / 2) - (winH / 2), winW, winH);
+    // Öffnen
+    e->accept();
+    this->setWindowState(Qt::WindowActive);
+}
+
 void ImportConfig::on_cmdOpenCryptFile_clicked()
 {
     QFileDialog certFileDialog;
-    QString filename = certFileDialog.getOpenFileName(this, tr("Find import file"), QApplication::applicationDirPath(), "Import files (*.crypt)");
+    QString filename = certFileDialog.getOpenFileName(this, tr("Find import file"), QApplication::applicationDirPath(), tr("Import files (*.crypt)"));
     if (filename != "") {
         m_ui->txtImportPath->setText(filename);
     }
@@ -50,20 +72,21 @@ void ImportConfig::on_rbSaveAsName_toggled(bool checked)
     }
 }
 
-void ImportConfig::resetFields() {
-    m_ui->txtImportPath->setText("");
-    m_ui->txtNewName->setText("");
-    m_ui->txtNewName->setEnabled(false);
-    m_ui->rbSaveAsFile->setChecked(true);
-}
-
 void ImportConfig::on_cmdImport_clicked()
 {
     if (m_ui->txtExistingOvpn->text() != "") {
         // Import existing file
         QFile linkOvpn (QApplication::applicationDirPath() + QString ("/configs.txt"));
         if (!linkOvpn.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append)) {
-            QMessageBox::critical(0,"Securepoint VPN Client", "Unable to open configs.txt!");
+            QMessageBox msgBox;
+            msgBox.setWindowTitle(tr("Securepoint SSL VPN"));
+            msgBox.setText(tr("Import Configuration"));
+            msgBox.setWindowIcon(QIcon(":/images/logo.png"));
+            msgBox.setInformativeText(tr("Unable to open configs.txt!"));
+            msgBox.setStandardButtons(QMessageBox::Ok);
+            msgBox.setDefaultButton(QMessageBox::Ok);
+            msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
+            msgBox.exec();
             return;
         }
         // Datei offen, Config schreiben
@@ -71,25 +94,50 @@ void ImportConfig::on_cmdImport_clicked()
         out << m_ui->txtExistingOvpn->text() + QString ("\n");
         // Liste aktualisieren
         linkOvpn.close();
-        Preferences *prefDialog = dynamic_cast<Preferences*> (this->parent());
-        prefDialog->refreshConfigList();
+        MainWindowControll::getInstance()->refreshConfigs();
+        MainWindowControll::getInstance()->setConnectionStatus();
+
         // Fertig
-        QMessageBox::information(0, QString("Securepoint VPN Client"), QString("Import successfully ended!"));
+        QMessageBox msgBox;
+        msgBox.setWindowTitle(tr("Securepoint SSL VPN"));
+        msgBox.setText(tr("Import Configuration"));
+        msgBox.setWindowIcon(QIcon(":/images/logo.png"));
+        msgBox.setInformativeText(tr("Import successfully ended!"));
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        msgBox.setDefaultButton(QMessageBox::Ok);
+        msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
+        msgBox.exec();
+        MainWindowControll::getInstance()->refreshDialog();
         this->close();
     } else {
         // Import crypt file
         if (m_ui->txtPassword->text() == "") {
-            QMessageBox::critical(0, QString("Securepoint VPN Client"), QString ("No password specifyed!"));
+            QMessageBox msgBox;
+            msgBox.setWindowTitle(tr("Securepoint SSL VPN"));
+            msgBox.setText(tr("Import Configuration"));
+            msgBox.setWindowIcon(QIcon(":/images/logo.png"));
+            msgBox.setInformativeText(tr("No password specified!"));
+            msgBox.setStandardButtons(QMessageBox::Ok);
+            msgBox.setDefaultButton(QMessageBox::Ok);
+            msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
+            msgBox.exec();
             return;
         }
         if (m_ui->txtImportPath->text() != "") {
             if (m_ui->rbSaveAsName->isChecked() && m_ui->txtNewName->text() == "") {
-                QMessageBox::critical(0, QString("Securepoint VPN Client"), QString ("No import name specifyed!"));
+                QMessageBox msgBox;
+                msgBox.setWindowTitle(tr("Securepoint SSL VPN"));
+                msgBox.setText(tr("Import Configuration"));
+                msgBox.setWindowIcon(QIcon(":/images/logo.png"));
+                msgBox.setInformativeText(tr("No import name specified!"));
+                msgBox.setStandardButtons(QMessageBox::Ok);
+                msgBox.setDefaultButton(QMessageBox::Ok);
+                msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
+                msgBox.exec();
                 return;
             }
 
             // Portale oder install
-            AppFunc app;
             QString dirPath;
             QString configName;
 
@@ -100,7 +148,7 @@ void ImportConfig::on_cmdImport_clicked()
                 configName = m_ui->txtNewName->text().trimmed();
             }
 
-            dirPath = app.getAppSavePath() + QString ("/") + configName;
+            dirPath = AppFunc::getInstance()->getAppSavePath() + QString ("/") + configName;
 
             // Verzeichnis da?
             QDir dirobj (dirPath);
@@ -109,12 +157,28 @@ void ImportConfig::on_cmdImport_clicked()
                 // Pfad erstellen
                 if (!dirobj.mkpath(dirPath)) {
                     // Pfad konnte nicht erstellt werden
-                    QMessageBox::critical(0,"Securepoint VPN Client", "Unable to create directory!");
+                    QMessageBox msgBox;
+                    msgBox.setWindowTitle(tr("Securepoint SSL VPN"));
+                    msgBox.setText(tr("Import Configuration"));
+                    msgBox.setWindowIcon(QIcon(":/images/logo.png"));
+                    msgBox.setInformativeText(tr("Unable to create directory!"));
+                    msgBox.setStandardButtons(QMessageBox::Ok);
+                    msgBox.setDefaultButton(QMessageBox::Ok);
+                    msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
+                    msgBox.exec();
                     return;
                 }
             } else {
                 // Verzeichnis existiert
-                QMessageBox::critical(0, QString("Securepoint VPN Client"), QString ("A diretory with this name already exists!"));
+                QMessageBox msgBox;
+                msgBox.setWindowTitle(tr("Securepoint SSL VPN"));
+                msgBox.setText(tr("Import Configuration"));
+                msgBox.setWindowIcon(QIcon(":/images/logo.png"));
+                msgBox.setInformativeText(tr("A diretory with this name already exists!"));
+                msgBox.setStandardButtons(QMessageBox::Ok);
+                msgBox.setDefaultButton(QMessageBox::Ok);
+                msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
+                msgBox.exec();
                 return;
             }
             // Datei ins neue Verzeichnis kopieren
@@ -139,8 +203,16 @@ void ImportConfig::on_cmdImport_clicked()
 
 
             if (!packCrypt.waitForFinished()) {
-                    QMessageBox::critical(0,QString("Securepoint VPN Client"), QString("OpenSSL process still running!"));
-                    return;
+                QMessageBox msgBox;
+                msgBox.setWindowTitle(tr("Securepoint SSL VPN"));
+                msgBox.setText(tr("Import Configuration"));
+                msgBox.setWindowIcon(QIcon(":/images/logo.png"));
+                msgBox.setInformativeText(tr("OpenSSL process still running!"));
+                msgBox.setStandardButtons(QMessageBox::Ok);
+                msgBox.setDefaultButton(QMessageBox::Ok);
+                msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
+                msgBox.exec();
+                return;
             }
 
             QProcess packProc;
@@ -156,14 +228,30 @@ void ImportConfig::on_cmdImport_clicked()
             connect( &packProc, SIGNAL(error ( QProcess::ProcessError) ), this, SLOT(showProcessError (QProcess::ProcessError)));
 
             if (!packProc.waitForFinished()) {
-                QMessageBox::critical(0,QString("Securepoint VPN Client"), QString("7z process still running!"));
+                QMessageBox msgBox;
+                msgBox.setWindowTitle(tr("Securepoint SSL VPN"));
+                msgBox.setText(tr("Import Configuration"));
+                msgBox.setWindowIcon(QIcon(":/images/logo.png"));
+                msgBox.setInformativeText(tr("7z process still running!"));
+                msgBox.setStandardButtons(QMessageBox::Ok);
+                msgBox.setDefaultButton(QMessageBox::Ok);
+                msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
+                msgBox.exec();
                 return;
             }
 
             // Datei löschen
             QFile configZip (packFile);
             if (!configZip.remove()) {
-                QMessageBox::critical(0, QString("Securepoint VPN Client"), configZip.errorString());
+                QMessageBox msgBox;
+                msgBox.setWindowTitle(tr("Securepoint SSL VPN"));
+                msgBox.setText(tr("Import Configuration"));
+                msgBox.setWindowIcon(QIcon(":/images/logo.png"));
+                msgBox.setInformativeText(configZip.errorString());
+                msgBox.setStandardButtons(QMessageBox::Ok);
+                msgBox.setDefaultButton(QMessageBox::Ok);
+                msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
+                msgBox.exec();
             }
             if (m_ui->rbSaveAsName->isChecked()) {
                 // ovpn umbennen
@@ -175,14 +263,31 @@ void ImportConfig::on_cmdImport_clicked()
                     ovpnFile.rename(dirPath + QString("/") + configName + QString(".ovpn"));
                 }
             }
-            Preferences *prefDialog = dynamic_cast<Preferences*> (this->parent());
-            prefDialog->refreshConfigList();
-            QMessageBox::information(0, QString("Securepoint VPN Client"), QString("Import successfully ended!"));
+            MainWindowControll::getInstance()->refreshConfigs();
+            MainWindowControll::getInstance()->setConnectionStatus();
+            QMessageBox msgBox;
+            msgBox.setWindowTitle(tr("Securepoint SSL VPN"));
+            msgBox.setText(tr("Import Configuration"));
+            msgBox.setWindowIcon(QIcon(":/images/logo.png"));
+            msgBox.setInformativeText(tr("Import successfully ended!"));
+            msgBox.setStandardButtons(QMessageBox::Ok);
+            msgBox.setDefaultButton(QMessageBox::Ok);
+            msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
+            msgBox.exec();
+            MainWindowControll::getInstance()->refreshDialog();
             this->close();
 
 
         } else {
-            QMessageBox::critical(0, QString("Securepoint VPN Client"), QString ("No import file selected!"));
+            QMessageBox msgBox;
+            msgBox.setWindowTitle(tr("Securepoint SSL VPN"));
+            msgBox.setText(tr("Import Configuration"));
+            msgBox.setWindowIcon(QIcon(":/images/logo.png"));
+            msgBox.setInformativeText(tr("No import file selected!"));
+            msgBox.setStandardButtons(QMessageBox::Ok);
+            msgBox.setDefaultButton(QMessageBox::Ok);
+            msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
+            msgBox.exec();
             return;
         }
     }
@@ -215,15 +320,22 @@ void ImportConfig::showProcessError (QProcess::ProcessError err) {
     }
 
     // Daten ausgeben
-    QMessageBox::critical(0, QString("Securepoint VPN Client"), errMessage);
+    QMessageBox msgBox;
+    msgBox.setWindowTitle(tr("Securepoint SSL VPN"));
+    msgBox.setText(tr("Import Configuration"));
+    msgBox.setWindowIcon(QIcon(":/images/logo.png"));
+    msgBox.setInformativeText(errMessage);
+    msgBox.setStandardButtons(QMessageBox::Ok);
+    msgBox.setDefaultButton(QMessageBox::Ok);
+    msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
+    msgBox.exec();
 }
 
 
 void ImportConfig::on_cmdOpenOvpnFile_clicked()
 {
-    AppFunc app;
     QFileDialog certFileDialog;
-    QString filename = certFileDialog.getOpenFileName(this, tr("Find ovpn file"), app.getAppSavePath(), "OpenVPN configs (*.ovpn)");
+    QString filename = certFileDialog.getOpenFileName(this, tr("Find ovpn file"), AppFunc::getInstance()->getAppSavePath(), tr("OpenVPN configs (*.ovpn)"));
     if (filename != "") {
         m_ui->txtExistingOvpn->setText(filename);
     }

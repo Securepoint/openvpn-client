@@ -2,20 +2,35 @@
 <ui version="4.0">
  <class>ProxySettings</class>
  <widget class="QDialog" name="ProxySettings">
+  <property name="windowModality">
+   <enum>Qt::ApplicationModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
+    <width>350</width>
     <height>300</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>350</width>
+    <height>300</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>350</width>
+    <height>300</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>Proxy Settings</string>
   </property>
   <property name="windowIcon">
    <iconset resource="systray.qrc">
-    <normaloff>:/images/appicon.png</normaloff>:/images/appicon.png</iconset>
+    <normaloff>:/images/logo.png</normaloff>:/images/logo.png</iconset>
   </property>
   <property name="modal">
    <bool>true</bool>
@@ -24,190 +39,40 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>10</y>
-     <width>381</width>
-     <height>241</height>
+     <y>4</y>
+     <width>331</width>
+     <height>251</height>
     </rect>
    </property>
    <property name="title">
     <string>Proxy Settings:</string>
    </property>
-   <widget class="QGroupBox" name="groupBox">
-    <property name="geometry">
-     <rect>
-      <x>9</x>
-      <y>121</y>
-      <width>361</width>
-      <height>111</height>
-     </rect>
-    </property>
-    <property name="title">
-     <string>Manual Settings:</string>
-    </property>
-    <widget class="QLabel" name="label">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>69</y>
-       <width>21</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>IP:</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="txtProxyIP">
-     <property name="geometry">
-      <rect>
-       <x>30</x>
-       <y>67</y>
-       <width>151</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">:enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}
-:disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}
-:hover {border: 1px solid red; }</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_2">
-     <property name="geometry">
-      <rect>
-       <x>203</x>
-       <y>67</y>
-       <width>31</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Port:</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="txtProxyPort">
-     <property name="geometry">
-      <rect>
-       <x>230</x>
-       <y>67</y>
-       <width>61</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">:enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}
-:disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}
-:hover {border: 1px solid red; }</string>
-     </property>
-     <property name="text">
-      <string>8080</string>
-     </property>
-    </widget>
-    <widget class="QRadioButton" name="rbHttpProxy">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>20</y>
-       <width>82</width>
-       <height>19</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">QRadioButton { 
-spacing: 5px;
-}
-
-QRadioButton::indicator {
-width: 13px;
-height: 13px;
-}
-
-QRadioButton::indicator::unchecked:enabled {
-image: url(:/images/styles/radiobutton_unchecked.png);
-}
-
-QRadioButton::indicator::checked:enabled {
-image: url(:/images/styles/radiobutton_checked.png);
-}
-
-QRadioButton::indicator::unchecked:disabled {
-image: url(:/images/styles/radiobutton_unchecked_dis.png);
-}
-
-QRadioButton::indicator::checked:disabled {
-image: url(:/images/styles/radiobutton_checked_dis.png);
-}</string>
-     </property>
-     <property name="text">
-      <string>HTTP Proxy</string>
-     </property>
-     <property name="checked">
-      <bool>true</bool>
-     </property>
-    </widget>
-    <widget class="QRadioButton" name="rbSocksProxy">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>40</y>
-       <width>82</width>
-       <height>19</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">QRadioButton { 
-spacing: 5px;
-}
-
-QRadioButton::indicator {
-width: 13px;
-height: 13px;
-}
-
-QRadioButton::indicator::unchecked:enabled {
-image: url(:/images/styles/radiobutton_unchecked.png);
-}
-
-QRadioButton::indicator::checked:enabled {
-image: url(:/images/styles/radiobutton_checked.png);
-}
-
-QRadioButton::indicator::unchecked:disabled {
-image: url(:/images/styles/radiobutton_unchecked_dis.png);
-}
-
-QRadioButton::indicator::checked:disabled {
-image: url(:/images/styles/radiobutton_checked_dis.png);
-}</string>
-     </property>
-     <property name="text">
-      <string>SOCKS Proxy</string>
-     </property>
-    </widget>
-   </widget>
-   <widget class="QGroupBox" name="groupBox_3">
+   <widget class="QWidget" name="verticalLayoutWidget">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>18</y>
-      <width>361</width>
-      <height>101</height>
+      <y>20</y>
+      <width>311</width>
+      <height>221</height>
      </rect>
     </property>
-    <property name="title">
-     <string/>
-    </property>
-    <widget class="QRadioButton" name="rbUseConfig">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>10</y>
-       <width>191</width>
-       <height>19</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">QRadioButton { 
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QGroupBox" name="groupBox_3">
+       <property name="title">
+        <string/>
+       </property>
+       <widget class="QRadioButton" name="rbUseConfig">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>10</y>
+          <width>291</width>
+          <height>19</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QRadioButton { 
 spacing: 5px;
 }
 
@@ -231,28 +96,28 @@ image: url(:/images/styles/radiobutton_unchecked_dis.png);
 QRadioButton::indicator::checked:disabled {
 image: url(:/images/styles/radiobutton_checked_dis.png);
 }</string>
-     </property>
-     <property name="text">
-      <string>Use OpenVPN config settings</string>
-     </property>
-     <property name="checked">
-      <bool>true</bool>
-     </property>
-    </widget>
-    <widget class="QRadioButton" name="rbUseIE">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>40</y>
-       <width>181</width>
-       <height>19</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">QRadioButton { 
+        </property>
+        <property name="text">
+         <string>Use OpenVPN config settings</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QRadioButton" name="rbUseIE">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>40</y>
+          <width>281</width>
+          <height>19</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QRadioButton { 
 spacing: 5px;
 }
 
@@ -276,22 +141,22 @@ image: url(:/images/styles/radiobutton_unchecked_dis.png);
 QRadioButton::indicator::checked:disabled {
 image: url(:/images/styles/radiobutton_checked_dis.png);
 }</string>
-     </property>
-     <property name="text">
-      <string>Use Internet Explorer settings</string>
-     </property>
-    </widget>
-    <widget class="QRadioButton" name="rbUseManual">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>70</y>
-       <width>131</width>
-       <height>19</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">QRadioButton { 
+        </property>
+        <property name="text">
+         <string>Use Internet Explorer settings</string>
+        </property>
+       </widget>
+       <widget class="QRadioButton" name="rbUseManual">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>70</y>
+          <width>281</width>
+          <height>19</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QRadioButton { 
 spacing: 5px;
 }
 
@@ -315,29 +180,183 @@ image: url(:/images/styles/radiobutton_unchecked_dis.png);
 QRadioButton::indicator::checked:disabled {
 image: url(:/images/styles/radiobutton_checked_dis.png);
 }</string>
-     </property>
-     <property name="text">
-      <string>Use manual settings</string>
-     </property>
-    </widget>
+        </property>
+        <property name="text">
+         <string>Use manual settings</string>
+        </property>
+       </widget>
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="groupBox">
+       <property name="title">
+        <string>Manual Settings:</string>
+       </property>
+       <widget class="QLabel" name="label">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>69</y>
+          <width>21</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>IP:</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="txtProxyIP">
+        <property name="geometry">
+         <rect>
+          <x>30</x>
+          <y>67</y>
+          <width>151</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">:enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}
+:disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}
+:hover {border: 1px solid red; }</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_2">
+        <property name="geometry">
+         <rect>
+          <x>203</x>
+          <y>67</y>
+          <width>31</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Port:</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="txtProxyPort">
+        <property name="geometry">
+         <rect>
+          <x>230</x>
+          <y>67</y>
+          <width>61</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">:enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}
+:disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}
+:hover {border: 1px solid red; }</string>
+        </property>
+        <property name="text">
+         <string>8080</string>
+        </property>
+       </widget>
+       <widget class="QRadioButton" name="rbHttpProxy">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>20</y>
+          <width>82</width>
+          <height>19</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QRadioButton { 
+spacing: 5px;
+}
+
+QRadioButton::indicator {
+width: 13px;
+height: 13px;
+}
+
+QRadioButton::indicator::unchecked:enabled {
+image: url(:/images/styles/radiobutton_unchecked.png);
+}
+
+QRadioButton::indicator::checked:enabled {
+image: url(:/images/styles/radiobutton_checked.png);
+}
+
+QRadioButton::indicator::unchecked:disabled {
+image: url(:/images/styles/radiobutton_unchecked_dis.png);
+}
+
+QRadioButton::indicator::checked:disabled {
+image: url(:/images/styles/radiobutton_checked_dis.png);
+}</string>
+        </property>
+        <property name="text">
+         <string>HTTP Proxy</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QRadioButton" name="rbSocksProxy">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>40</y>
+          <width>82</width>
+          <height>19</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QRadioButton { 
+spacing: 5px;
+}
+
+QRadioButton::indicator {
+width: 13px;
+height: 13px;
+}
+
+QRadioButton::indicator::unchecked:enabled {
+image: url(:/images/styles/radiobutton_unchecked.png);
+}
+
+QRadioButton::indicator::checked:enabled {
+image: url(:/images/styles/radiobutton_checked.png);
+}
+
+QRadioButton::indicator::unchecked:disabled {
+image: url(:/images/styles/radiobutton_unchecked_dis.png);
+}
+
+QRadioButton::indicator::checked:disabled {
+image: url(:/images/styles/radiobutton_checked_dis.png);
+}</string>
+        </property>
+        <property name="text">
+         <string>SOCKS Proxy</string>
+        </property>
+       </widget>
+      </widget>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QPushButton" name="cmdSave">
    <property name="geometry">
     <rect>
-     <x>200</x>
+     <x>130</x>
      <y>260</y>
-     <width>75</width>
-     <height>24</height>
+     <width>100</width>
+     <height>33</height>
     </rect>
    </property>
    <property name="styleSheet">
     <string notr="true">:enabled {border: 1px solid black}
 :disabled {border: 1px solid black}
-:hover {background-color: rgb(195, 195, 195);}</string>
+:hover {background-color: rgb(195, 195, 195);}
+QPushButton {height: 25px; width: 50px;text-align:left;
+	padding-left: 10px;
+	padding-top: 3px;
+	padding-bottom: 3px;}</string>
    </property>
    <property name="text">
-    <string>&amp;Save</string>
+    <string>     &amp;Save</string>
    </property>
    <property name="icon">
     <iconset resource="systray.qrc">
@@ -345,9 +364,12 @@ image: url(:/images/styles/radiobutton_checked_dis.png);
    </property>
    <property name="iconSize">
     <size>
-     <width>30</width>
-     <height>16</height>
+     <width>22</width>
+     <height>22</height>
     </size>
+   </property>
+   <property name="default">
+    <bool>true</bool>
    </property>
    <property name="flat">
     <bool>true</bool>
@@ -356,28 +378,32 @@ image: url(:/images/styles/radiobutton_checked_dis.png);
   <widget class="QPushButton" name="cmdClose">
    <property name="geometry">
     <rect>
-     <x>310</x>
+     <x>240</x>
      <y>260</y>
-     <width>75</width>
-     <height>24</height>
+     <width>100</width>
+     <height>33</height>
     </rect>
    </property>
    <property name="styleSheet">
     <string notr="true">:enabled {border: 1px solid black}
 :disabled {border: 1px solid black}
-:hover {background-color: rgb(195, 195, 195);}</string>
+:hover {background-color: rgb(195, 195, 195);}
+QPushButton {height: 25px; width: 50px;text-align:left;
+	padding-left: 10px;
+	padding-top: 3px;
+	padding-bottom: 3px;}</string>
    </property>
    <property name="text">
-    <string>&amp;Close</string>
+    <string>     &amp;Close</string>
    </property>
    <property name="icon">
     <iconset resource="systray.qrc">
-     <normaloff>:/images/close.png</normaloff>:/images/close.png</iconset>
+     <normaloff>:/images/close_dialog.png</normaloff>:/images/close_dialog.png</iconset>
    </property>
    <property name="iconSize">
     <size>
-     <width>16</width>
-     <height>16</height>
+     <width>22</width>
+     <height>22</height>
     </size>
    </property>
    <property name="flat">

@@ -1,19 +1,33 @@
 #include "appinfo.h"
 #include "ui_appinfo.h"
 
-appInfo::appInfo(QWidget *parent) :
-    QDialog(parent),
+#include "usercontroll.h"
+
+#include <QDesktopServices>
+
+AppInfo *AppInfo::mInst = NULL;
+
+AppInfo *AppInfo::getInstance() {
+    if (!mInst)
+        mInst = new AppInfo ();
+    return mInst;
+}
+
+AppInfo::AppInfo() :
+    QDialog(),
     m_ui(new Ui::appInfo)
 {
+    // Window als Toolfenster ohne MinMax setzen
+    this->setWindowFlags(Qt::Tool | Qt::WindowStaysOnTopHint);
     m_ui->setupUi(this);
 }
 
-appInfo::~appInfo()
+AppInfo::~AppInfo()
 {
     delete m_ui;
 }
 
-void appInfo::changeEvent(QEvent *e)
+void AppInfo::changeEvent(QEvent *e)
 {
     QDialog::changeEvent(e);
     switch (e->type()) {
@@ -25,7 +39,9 @@ void appInfo::changeEvent(QEvent *e)
     }
 }
 
-void appInfo::on_cmdClose_clicked()
+void AppInfo::on_cmdClose_clicked()
 {
     this->close();
 }
+
+

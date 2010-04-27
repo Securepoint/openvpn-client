@@ -2,6 +2,7 @@
 #define EDITCONFIG_H
 
 #include <QtGui>
+#include <QShowEvent>
 
 namespace Ui {
     class EditConfig;
@@ -10,16 +11,19 @@ namespace Ui {
 class EditConfig : public QDialog {
     Q_OBJECT
 public:
-    EditConfig(QWidget *parent = 0);
-    ~EditConfig();
+    static EditConfig *getInstance ();
     void setPath (QString path);
-    void setContent (QString con);
 
 protected:
     void changeEvent(QEvent *e);
+    void showEvent (QShowEvent *e);
 
 private:
     Ui::EditConfig *m_ui;
+    EditConfig();
+    static EditConfig *mInst;
+    QString path;
+    QString getContent ();
 
 private slots:
     void on_cmdClose_clicked();

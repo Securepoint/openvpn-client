@@ -25,7 +25,9 @@ private:
     Ui::VpnLog *m_ui;
     QTimer *timer;
 
+
 private slots:
+    void on_cmdStartStopLog_clicked();
     void on_cmdSave_clicked();
     void on_cmdClose_clicked();
     void refreshData ();

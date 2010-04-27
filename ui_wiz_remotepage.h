@@ -1,10 +1,10 @@
 /********************************************************************************
-** Form generated from reading ui file 'wiz_remotepage.ui'
+** Form generated from reading UI file 'wiz_remotepage.ui'
 **
-** Created: Wed 4. Nov 17:16:47 2009
-**      by: Qt User Interface Compiler version 4.5.3
+** Created: Thu 15. Apr 13:48:01 2010
+**      by: Qt User Interface Compiler version 4.6.2
 **
-** WARNING! All changes made in this file will be lost when recompiling ui file!
+** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
 
 #ifndef UI_WIZ_REMOTEPAGE_H
@@ -40,7 +40,7 @@ public:
         RemotePage->resize(400, 300);
         label = new QLabel(RemotePage);
         label->setObjectName(QString::fromUtf8("label"));
-        label->setGeometry(QRect(20, 20, 301, 16));
+        label->setGeometry(QRect(20, 20, 371, 16));
         label_2 = new QLabel(RemotePage);
         label_2->setObjectName(QString::fromUtf8("label_2"));
         label_2->setGeometry(QRect(20, 70, 51, 16));
@@ -83,7 +83,6 @@ public:
         label_2->setText(QApplication::translate("RemotePage", "IP:", 0, QApplication::UnicodeUTF8));
         label_3->setText(QApplication::translate("RemotePage", "Port:", 0, QApplication::UnicodeUTF8));
         label_4->setText(QApplication::translate("RemotePage", "Protocol:", 0, QApplication::UnicodeUTF8));
-        Q_UNUSED(RemotePage);
     } // retranslateUi
 
 };

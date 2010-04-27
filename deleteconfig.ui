@@ -2,24 +2,27 @@
 <ui version="4.0">
  <class>DeleteConfig</class>
  <widget class="QDialog" name="DeleteConfig">
+  <property name="windowModality">
+   <enum>Qt::ApplicationModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>220</width>
-    <height>242</height>
+    <width>230</width>
+    <height>250</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>220</width>
-    <height>242</height>
+    <width>230</width>
+    <height>250</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>220</width>
-    <height>242</height>
+    <width>230</width>
+    <height>250</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -27,7 +30,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="systray.qrc">
-    <normaloff>:/images/appicon.png</normaloff>:/images/appicon.png</iconset>
+    <normaloff>:/images/logo.png</normaloff>:/images/logo.png</iconset>
   </property>
   <property name="modal">
    <bool>true</bool>
@@ -35,9 +38,9 @@
   <widget class="QGroupBox" name="groupBox">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>10</y>
-     <width>201</width>
+     <x>7</x>
+     <y>7</y>
+     <width>207</width>
      <height>191</height>
     </rect>
    </property>
@@ -60,9 +63,9 @@
    <widget class="QCheckBox" name="cbConfigFile">
     <property name="geometry">
      <rect>
-      <x>50</x>
+      <x>38</x>
       <y>40</y>
-      <width>61</width>
+      <width>161</width>
       <height>19</height>
      </rect>
     </property>
@@ -108,9 +111,9 @@ image: url(:/images/styles/checkbox_checked_hover.png);
    <widget class="QCheckBox" name="cbCA">
     <property name="geometry">
      <rect>
-      <x>50</x>
+      <x>38</x>
       <y>60</y>
-      <width>71</width>
+      <width>161</width>
       <height>19</height>
      </rect>
     </property>
@@ -156,9 +159,9 @@ image: url(:/images/styles/checkbox_checked_hover.png);
    <widget class="QCheckBox" name="cbCert">
     <property name="geometry">
      <rect>
-      <x>50</x>
+      <x>38</x>
       <y>80</y>
-      <width>111</width>
+      <width>161</width>
       <height>19</height>
      </rect>
     </property>
@@ -204,9 +207,9 @@ image: url(:/images/styles/checkbox_checked_hover.png);
    <widget class="QCheckBox" name="cbKey">
     <property name="geometry">
      <rect>
-      <x>50</x>
+      <x>38</x>
       <y>100</y>
-      <width>71</width>
+      <width>151</width>
       <height>19</height>
      </rect>
     </property>
@@ -252,9 +255,9 @@ image: url(:/images/styles/checkbox_checked_hover.png);
    <widget class="QCheckBox" name="cbUserdata">
     <property name="geometry">
      <rect>
-      <x>50</x>
+      <x>38</x>
       <y>120</y>
-      <width>131</width>
+      <width>161</width>
       <height>19</height>
      </rect>
     </property>
@@ -294,15 +297,15 @@ image: url(:/images/styles/checkbox_checked_hover.png);
 </string>
     </property>
     <property name="text">
-     <string>Userdata [data.conf]</string>
+     <string>Userdata [auth.dat]</string>
     </property>
    </widget>
    <widget class="QCheckBox" name="cbScript">
     <property name="geometry">
      <rect>
-      <x>50</x>
+      <x>38</x>
       <y>140</y>
-      <width>131</width>
+      <width>161</width>
       <height>19</height>
      </rect>
     </property>
@@ -348,9 +351,9 @@ image: url(:/images/styles/checkbox_checked_hover.png);
    <widget class="QCheckBox" name="cbDir">
     <property name="geometry">
      <rect>
-      <x>50</x>
+      <x>38</x>
       <y>160</y>
-      <width>121</width>
+      <width>161</width>
       <height>19</height>
      </rect>
     </property>
@@ -397,23 +400,36 @@ image: url(:/images/styles/checkbox_checked_hover.png);
   <widget class="QPushButton" name="cmdDelete">
    <property name="geometry">
     <rect>
-     <x>38</x>
-     <y>210</y>
-     <width>75</width>
-     <height>24</height>
+     <x>7</x>
+     <y>208</y>
+     <width>100</width>
+     <height>33</height>
     </rect>
    </property>
    <property name="styleSheet">
     <string notr="true">:enabled {border: 1px solid black}
 :disabled {border: 1px solid black}
-:hover {background-color: rgb(195, 195, 195);}</string>
+:hover {background-color: rgb(195, 195, 195);}
+QPushButton {height: 25px; width: 50px;text-align:left;
+	padding-left: 10px;
+	padding-top: 3px;
+	padding-bottom: 3px;}</string>
    </property>
    <property name="text">
-    <string>&amp;Delete</string>
+    <string>     &amp;Delete</string>
    </property>
    <property name="icon">
     <iconset resource="systray.qrc">
      <normaloff>:/images/delete.png</normaloff>:/images/delete.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>22</width>
+     <height>22</height>
+    </size>
+   </property>
+   <property name="default">
+    <bool>true</bool>
    </property>
    <property name="flat">
     <bool>true</bool>
@@ -422,23 +438,27 @@ image: url(:/images/styles/checkbox_checked_hover.png);
   <widget class="QPushButton" name="cmdCancel">
    <property name="geometry">
     <rect>
-     <x>130</x>
-     <y>210</y>
-     <width>75</width>
-     <height>24</height>
+     <x>113</x>
+     <y>208</y>
+     <width>100</width>
+     <height>33</height>
     </rect>
    </property>
    <property name="styleSheet">
     <string notr="true">:enabled {border: 1px solid black}
 :disabled {border: 1px solid black}
-:hover {background-color: rgb(195, 195, 195);}</string>
+:hover {background-color: rgb(195, 195, 195);}
+QPushButton {height: 25px; width: 50px;text-align:left;
+	padding-left: 10px;
+	padding-top: 3px;
+	padding-bottom: 3px;}</string>
    </property>
    <property name="text">
-    <string>&amp;Close</string>
+    <string>     &amp;Close</string>
    </property>
    <property name="icon">
     <iconset resource="systray.qrc">
-     <normaloff>:/images/close.png</normaloff>:/images/close.png</iconset>
+     <normaloff>:/images/close_dialog.png</normaloff>:/images/close_dialog.png</iconset>
    </property>
    <property name="iconSize">
     <size>

@@ -1,29 +1,32 @@
 #include "openvpn.h"
+#include <windows.h>
 
 OpenVpn::OpenVpn () {
     this->connectionStable = false;
     this->onDisconnect = false;
     this->isLinked = false;
-    userauth = new StdUserAuth();
+    this->errorHasOccurred = false;
+    this->errMessage = "";
+    this->onConnect = false;
+    this->runAsService = false;
     this->proc = new QProcess(this);
+    this->advName = "";
+    this->connectedSinceDate = QDate::currentDate();
+    this->connectedSinceTime = QTime::currentTime();
+    this->isCryptFileAvailable = false;
+    this->menu = NULL;
     connect(this, SIGNAL(configSignalIsChanged()), this, SLOT(configIsChanged()));
 }
 
 void OpenVpn::openConnect() {
-    // Objekte übergeben
-    userauth->pIcon = this->appIcon;
-    userauth->parentVpn = this;
-    // Felder leeren
-    userauth->clearFields();
-    // Kennwort setzen
-    userauth->fillFromConfig();
-    // Dialog zeigen
-    userauth->show();
+    this->disableMenues();
+    this->connectToVpn(false);
+    if (Settings::getInstance()->getIsPortableClient())
+        emit connectionReconnectFromOpenVPNSig();
 }
 
 void OpenVpn::configIsChanged() {
-    QMessageBox::information(0, QString("Securepoint VPN Client"),
-                                QString("Config have been changed! Restart Connection?"));
+    // Nix
 }
 
 QStringList OpenVpn::makeProxyString() {
@@ -68,8 +71,8 @@ QString OpenVpn::getScript(QString type) {
     if (scrtiptFile.exists()) {
         // Öffnen und auslesen
         if (!scrtiptFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
-            QMessageBox::information(0, QString("Securepoint VPN Client"),
-                                QString("Can't read scriptconfig file!"));
+            QMessageBox::information(0, QString(tr("Securepoint SSL VPN")),
+                                QString(tr("Can't read scriptconfig file!")));
              return QString("");
         }
         // Datei offen
@@ -94,10 +97,10 @@ QString OpenVpn::getScript(QString type) {
 
 void OpenVpn::runScript(QString type){
     if (this->getScript(type) != "") {
-        this->openVpnLogData.append(QString ("Starting : ") + type);
+        this->openVpnLogData.append(QString (tr("Starting : ")) + type);
         procScripts = new QProcess(this);
         procScripts->start(this->getScript(type));
-        connect( procScripts, SIGNAL(error ( QProcess::ProcessError) ), this, SLOT(showProcessError (QProcess::ProcessError)));
+        //connect( procScripts, SIGNAL(error ( QProcess::ProcessError) ), this, SLOT(showProcessError (QProcess::ProcessError)));
         qApp->processEvents() ;
     }
 }
@@ -106,48 +109,55 @@ void OpenVpn::showProcessScriptError(QProcess::ProcessError error) {
     QString errMessage;
     switch (error) {
         case QProcess::FailedToStart:
-            errMessage = QString ("Run Script:\nThe process failed to start. Either the invoked program is missing, or you may have insufficient permissions to invoke the program.");
+            errMessage = QString (tr("Run Script:\nThe process failed to start. Either the invoked program is missing, or you may have insufficient permissions to invoke the program."));
             break;
         case QProcess::Crashed:
-            errMessage = QString ("Run Script:\nThe process crashed some time after starting successfully.");
+            errMessage = QString (tr("Run Script:\nThe process crashed some time after starting successfully."));
             break;
         case QProcess::Timedout:
-            errMessage = QString ("Run Script:\nThe last waitFor...() function timed out. The state of QProcess is unchanged, and you can try calling waitFor...() again.");
+            errMessage = QString (tr("Run Script:\nThe last waitFor...() function timed out. The state of QProcess is unchanged, and you can try calling waitFor...() again."));
             break;
         case QProcess::WriteError:
-            errMessage = QString ("Run Script:\nAn error occurred when attempting to write to the process. For example, the process may not be running, or it may have closed its input channel.");
+            errMessage = QString (tr("Run Script:\nAn error occurred when attempting to write to the process. For example, the process may not be running, or it may have closed its input channel."));
             break;
         case QProcess::ReadError:
-            errMessage = QString ("Run Script:\nAn error occurred when attempting to read from the process. For example, the process may not be running.");
+            errMessage = QString (tr("Run Script:\nAn error occurred when attempting to read from the process. For example, the process may not be running."));
             break;
         case QProcess::UnknownError:
-            errMessage = QString ("Run Script:\nAn unknown error occurred. This is the default return value of error().");
+            errMessage = QString (tr("Run Script:\nAn unknown error occurred. This is the default return value of error()."));
             break;
         default:
-            errMessage = QString ("Run Script:\nNo valid error code!");
+            errMessage = QString (tr("Run Script:\nNo valid error code!"));
             break;
     }
 
     // Daten ausgeben
-    QMessageBox::critical(0, QString("Securepoint VPN Client"), errMessage);
-}
-
-void OpenVpn::setTray (QSystemTrayIcon *appIcon){
-    this->appIcon = appIcon;
+    QMessageBox msgBox;
+    msgBox.setWindowTitle(tr("Securepoint SSL VPN"));
+    msgBox.setText(tr("An error has been occured!"));
+    msgBox.setWindowIcon(QIcon(":/images/logo.png"));
+    msgBox.setInformativeText(errMessage);
+    msgBox.setStandardButtons(QMessageBox::Ok);
+    msgBox.setDefaultButton(QMessageBox::Ok);
+    msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
+    msgBox.exec();
 }
 
 void OpenVpn::connectToVpn(bool openLog){
     this->onDisconnect = false;
     // Connect
     if (!this->isConnectionStable()) {
+        this->onConnect = true;
+        this->errorHasOccurred = false;
+        this->errMessage = "";
         this->openVpnLogData.clear();
         if (openLog)
-        if (!mLog.isVisible()) {
-            this->openVpnLog();
-        }
+            if (!mLog.isVisible()) {
+                this->openVpnLog();
+            }
         this->runScript("BC");
         // Icon auf connecting setzen
-        this->setConnected();
+        //this->setConnected();
         this->setIcon(Connecting);
         // connect to VPN
         QString cFile;
@@ -157,6 +167,9 @@ void OpenVpn::connectToVpn(bool openLog){
         // Pfad für die Config bauen
         cFile = this->configPath + QString("/") + this->configName + QString(".ovpn");
         // Als Argument adden
+        arguments << QString ("--service");
+        arguments << QString ("openvpngui_exit");
+        arguments << QString ("0");
         arguments << QString ("--config");
         arguments << cFile;
         QStringList proxyStr = this->makeProxyString();
@@ -165,73 +178,43 @@ void OpenVpn::connectToVpn(bool openLog){
             arguments << proxyStr[1];
             arguments << proxyStr[2];
         }
+
+        if (!Settings::getInstance()->getUseNoInteract()) {
+            arguments << QString ("--auth-retry");
+            arguments << QString ("interact");
+        }
+
         // Prozesssignale zur Überwachung an die Slots binden
         connect( this->proc, SIGNAL(error ( QProcess::ProcessError) ), this, SLOT(showProcessError (QProcess::ProcessError)));
-        connect( this->proc, SIGNAL(finished (int, QProcess::ExitStatus )), this, SLOT(processFinished (int, QProcess::ExitStatus)));
-        connect( this->proc, SIGNAL(started ()), this, SLOT(processIsStarted ()));
         connect( this->proc, SIGNAL(readyReadStandardOutput()), this, SLOT(readProcessData()));
         connect( this->proc, SIGNAL(readyReadStandardError()), this, SLOT(readProcessData()));
+        connect( this->proc, SIGNAL(finished (int, QProcess::ExitStatus)), this, SLOT(processFinished(int, QProcess::ExitStatus)));
         // Programm starten im Config Verzeichnis, sonst findet OpenVPN keine Zertifikate
         this->proc->setWorkingDirectory(this->configPath + QString("/"));
         this->proc->start(program, arguments);
-    } else {
+   } else {
         // Connection already stable
-        QMessageBox::information(0, QString("Securepoint VPN Client"),
-                                QString("Already connected to this network"));
+          QMessageBox::information(0, QString(tr("Securepoint SSL VPN")),
+                                QString(tr("Already connected to this network")));
+   }
+}
+
+void OpenVpn::processFinished(int exitCode, QProcess::ExitStatus exitStatus) {
+    if (!this->onDisconnect) {
+        this->connectionStable = false;
+        this->setIcon(Error);
+        this->enableAllMenus();
+        emit errorOccuredSig("1025");
     }
+
 }
 
 void OpenVpn::showTrayMessage(QString message) {
-     this->appIcon->showMessage("Securepoint VPN Client", message, QSystemTrayIcon::Information, 6000);
-}
-
-void OpenVpn::setMenuChildList(QList<QAction*> List) {
-    this->menuChildList = List;
-}
-
-void OpenVpn::setMenuList(QList<QAction*> List) {
-    this->menuList = List;
-}
-
-void OpenVpn::setConnected() {
-    // Erst alle aktivieren
-    this->setDisconnected();
-    // Main Menu Punkte deaktivieren
-    foreach (QAction *act, this->menuList) {
-        if (act->text() != this->configName)
-            act->setDisabled(true);
-    }
-    // VPN eigene Punkte deaktivieren
-    foreach (QAction *act, this->menuChildList) {
-        if (act->objectName() == this->configName) {
-            if(act->text() == "Connect")
-                act->setDisabled(true);
-            if(act->text() == "Edit config")
-                act->setDisabled(true);
-            if(act->text() == "Change password")
-                act->setDisabled(true);
-            if(act->text() == "Disconnect")
-                act->setEnabled(true);
-        }
-    }
+    MainWindowControll::getInstance()->showTrayMessage(message);
 }
 
 void OpenVpn::setDisconnected() {
-    // Main Menu Punkte deaktivieren
-    foreach (QAction *act, this->menuList) {
-            act->setEnabled(true);
-    }
-    // VPN eigene Punkte deaktivieren
-    foreach (QAction *act, this->menuChildList) {
-        if(act->text() == "Connect")
-            act->setEnabled(true);
-        if(act->text() == "Edit config")
-            act->setEnabled(true);
-        if(act->text() == "Change password")
-            act->setEnabled(true);
-        if(act->text() == "Disconnect")
-            act->setDisabled(true);
-    }
+    this->onConnect = false;
 }
 
 void OpenVpn::setIcon(int index)
@@ -254,7 +237,7 @@ void OpenVpn::setIcon(int index)
             icon = QIcon(":/images/inaktiv.png");
             break;
     }
-    this->appIcon->setIcon(icon);
+    MainWindowControll::getInstance()->setTrayIcon(icon);
 }
 
 bool OpenVpn::isConnectionStable () {
@@ -262,7 +245,6 @@ bool OpenVpn::isConnectionStable () {
 }
 
 void OpenVpn::setObjectToConnected() {
-    this->setConnected();
     this->setIcon(Connected);
 }
 
@@ -270,57 +252,80 @@ void OpenVpn::showProcessError(QProcess::ProcessError error) {
     QString errMessage;
     switch (error) {
         case QProcess::FailedToStart:
-            errMessage = QString ("The process failed to start. Either the invoked program is missing, or you may have insufficient permissions to invoke the program.");
+            errMessage = QString (tr("The process failed to start. Either the invoked program is missing, or you may have insufficient permissions to invoke the program."));
             break;
         case QProcess::Crashed:
-            errMessage = QString ("The process crashed some time after starting successfully.");
+            errMessage = QString (tr("The process crashed some time after starting successfully."));
             break;
         case QProcess::Timedout:
-            errMessage = QString ("The last waitFor...() function timed out. The state of QProcess is unchanged, and you can try calling waitFor...() again.");
+            errMessage = QString (tr("The last waitFor...() function timed out. The state of QProcess is unchanged, and you can try calling waitFor...() again."));
             break;
         case QProcess::WriteError:
-            errMessage = QString ("An error occurred when attempting to write to the process. For example, the process may not be running, or it may have closed its input channel.");
+            errMessage = QString (tr("An error occurred when attempting to write to the process. For example, the process may not be running, or it may have closed its input channel."));
             break;
         case QProcess::ReadError:
-            errMessage = QString ("An error occurred when attempting to read from the process. For example, the process may not be running.");
+            errMessage = QString (tr("An error occurred when attempting to read from the process. For example, the process may not be running."));
             break;
         case QProcess::UnknownError:
-            errMessage = QString ("An unknown error occurred. This is the default return value of error().");
+            errMessage = QString (tr("An unknown error occurred. This is the default return value of error()."));
             break;
         default:
-            errMessage = QString ("No valid error code!");
+            errMessage = QString (tr("No valid error code!"));
             break;
     }
     if (!this->onDisconnect) {
         // Log schreiben
         this->runScript("EC");
         this->openVpnLogData.append(errMessage);
+        this->errorHasOccurred = true;
+        this->errMessage = errMessage;
+        this->enableAllMenus();
+        emit errorOccuredSig(errMessage);
         // Daten ausgeben
-        QMessageBox::critical(0, QString("Securepoint VPN Client"),
-                                    errMessage);
+        QMessageBox msgBox;
+        msgBox.setWindowTitle(tr("Securepoint SSL VPN"));
+        msgBox.setText(tr("An error has been occured!"));
+        msgBox.setWindowIcon(QIcon(":/images/logo.png"));
+        msgBox.setInformativeText(errMessage);
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        msgBox.setDefaultButton(QMessageBox::Ok);
+        msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
+        msgBox.exec();
     }
-}
-
-void OpenVpn::processIsStarted() {
-   // still not used
-}
-
-void OpenVpn::processFinished (int stat, QProcess::ExitStatus status) {
-    // still not used
+    this->onConnect = false;
 }
 
 void OpenVpn::disconnectVpn() {
+    // Skript before Disconnect
     this->runScript("BD");
     this->onDisconnect = true;
-    this->proc->kill();
+    // Process abschiessen
+    HANDLE exitEvent;
+    QString eventName = "openvpngui_exit";
+    exitEvent = CreateEvent(NULL, TRUE, FALSE, (LPCTSTR)eventName.utf16());
+    if (!exitEvent) {
+        return;
+    }
+    SetEvent(exitEvent);
+    CloseHandle (exitEvent);
+    // Progess sollte beendet sein
     this->connectionStable = false;
+    // Tray Icon setzen
     this->setIcon(Inaktiv);
     this->setDisconnected();
-    this->showTrayMessage(QString("Disconnected from VPN.\nName: ") + this->configName);
+    this->showTrayMessage(QString(tr("Disconnected from VPN.\nName: ")) + this->configName);
+    // Skript after Connect ausführen
     this->runScript("AD");
+    // Signal für den Dialog werfen
+    this->enableAllMenus();
+    emit connectionIsDisconnectedSig();
 }
 
 void OpenVpn::startAfterConnectDelayed() {
+    // Diese Funktion wird von einem
+    // Singleshot timer aufgerufen, um
+    // sicherstellen, dass die IP-Adreese
+    // zugewiesen ist.
     this->runScript("AC");
 }
 
@@ -333,20 +338,128 @@ void OpenVpn::readProcessData() {
         line = this->proc->readAllStandardOutput();
     if (line != "") {
         //Enter Private Key Password:
-        if (line == "Enter Private Key Password:") {
+        QString pkkey (line);
+        if (pkkey.contains("Enter Private Key Password:", Qt::CaseInsensitive)) {
             if (this->proc->isWritable()) {
+                this->isUserDataAvailable = false;
+                disconnect (FrmGetUserData::getInstance(), SIGNAL(dataIsAvailable()), 0, 0);
+                connect(FrmGetUserData::getInstance(), SIGNAL(dataIsAvailable()), this, SLOT(userDataIsAvailable()));
+                FrmGetUserData::getInstance()->setFrmType(3);
+                FrmGetUserData::getInstance()->show();
+                while (!this->isUserDataAvailable) {
+                    FrmGetUserData::getInstance()->exec();
+                    QApplication::processEvents();
+                }
+                // Daten da, weiter ...
+                QByteArray ba;
+                ba.append(FrmGetUserData::getInstance()->getDataField() + "\n");
+                this->proc->write(ba);
                 showLine = false;
-                pkcsAuth.parentProc = this->proc;
-                pkcsAuth.clearFields();
-                pkcsAuth.show ();
             }
 
         }
         // Enter Username?
-        if (line == "Enter Auth Username:") {
+        if (line == "Enter Auth Username:" || line == "Enter Challenge Username:") {
             if (this->proc->isWritable()) {
+                QString user = "";
+                if (Settings::getInstance()->getIsStartWithUser()) {
+                    // User wurde von Kommandozeile übergeben
+                    user = Settings::getInstance()->getStartWithUser();
+                } else {
+                    // Es wurde kein User übergeben nun die Art ermitteln,
+                    // woher der User kommt
+                    if (Settings::getInstance()->getUseCryptedData()) {
+                        // Crypt ist an
+                        // Ist eine Crpyt da
+                        UserControll::getInstance()->setConfigDirectory(this->configPath);
+                        if (!UserControll::getInstance()->isUserNameConfigWithCryptAvailable()) {
+                            // Crypt ist nicht vorhanden
+                            // Usernamen holen
+                            // Wurde die noAuth option gesetzt
+                            if (Settings::getInstance()->getIsShowNoUserAuth()) {
+                                // Keine Auth
+                                user = "";
+                            } else {
+                                // Auth ist gesetzt
+                                this->isUserDataAvailable = false;
+                                disconnect (FrmGetUserData::getInstance(), SIGNAL(dataIsAvailable()), 0, 0);
+                                connect(FrmGetUserData::getInstance(), SIGNAL(dataIsAvailable()), this, SLOT(userDataIsAvailable()));
+                                FrmGetUserData::getInstance()->setFrmType(0);
+                                FrmGetUserData::getInstance()->show();
+                                while (!this->isUserDataAvailable) {
+                                    FrmGetUserData::getInstance()->exec();
+                                    QApplication::processEvents();
+                                }
+                                // Daten sind da, speichern?
+                                user = FrmGetUserData::getInstance()->getDataField();
+                                // Nun kann gespeichert werden
+                                if (FrmGetUserData::getInstance()->isSaveChecked()) {
+                                    // Daten sollen gespeichert werden
+                                    // Private key schon bekannt oder force an?
+                                    if (UserControll::getInstance()->getPrivateKeyPub() == "" || Settings::getInstance()->getIsForcePrivateKey()) {
+                                        // Private Ke ermitteln
+                                        this->isUserDataAvailable = false;
+                                        disconnect (FrmGetUserData::getInstance(), SIGNAL(dataIsAvailable()), 0, 0);
+                                        connect(FrmGetUserData::getInstance(), SIGNAL(dataIsAvailable()), this, SLOT(userDataIsAvailable()));
+                                        FrmGetUserData::getInstance()->setFrmType(4);
+                                        FrmGetUserData::getInstance()->show();
+                                        while (!this->isUserDataAvailable) {
+                                            FrmGetUserData::getInstance()->exec();
+                                            QApplication::processEvents();
+                                        }
+                                        // Key in der Klasse setzen und für den Rest der Anwedung merken, ausser bei force key
+                                        UserControll::getInstance()->setPrivateKey(FrmGetUserData::getInstance()->getDataField());
+                                        // Nun Speichern
+                                    }
+                                    UserControll::getInstance()->setConfigDirectory(this->configPath);
+                                    UserControll::getInstance()->setUserNameCrypt(user);
+                                    this->isCryptFileAvailable = true;
+                                    MainWindowControll::getInstance()->refreshDialog();
+                                }
+                            }
+                        } else {
+                            // Crypt ist da, priv key auch?
+                            if (UserControll::getInstance()->getPrivateKeyPub() == "" || Settings::getInstance()->getIsForcePrivateKey()) {
+                                // Key ist nicht da, oder es wird force key verwendet
+                                this->isUserDataAvailable = false;
+                                disconnect (FrmGetUserData::getInstance(), SIGNAL(dataIsAvailable()), 0, 0);
+                                connect(FrmGetUserData::getInstance(), SIGNAL(dataIsAvailable()), this, SLOT(userDataIsAvailable()));
+                                FrmGetUserData::getInstance()->setFrmType(4);
+                                FrmGetUserData::getInstance()->show();
+                                while (!this->isUserDataAvailable) {
+                                    FrmGetUserData::getInstance()->exec();
+                                    QApplication::processEvents();
+                                }
+                                // Key in der Klasse setzen und für den Rest der Anwedung merken, ausser bei force key
+                                UserControll::getInstance()->setPrivateKey(FrmGetUserData::getInstance()->getDataField());
+                            }
+                            // Alles da user holen
+                            user = UserControll::getInstance()->getUserNamePlain();
+                        }
+                    } else {
+                        // Keine Crypt Daten verwenden
+                        // Ist die Auth Anzeige an?
+                        if (!Settings::getInstance()->getIsShowNoUserAuth()) {
+                            // Auth Anzeige ist an
+                            this->isUserDataAvailable = false;
+                            disconnect (FrmGetUserData::getInstance(), SIGNAL(dataIsAvailable()), 0, 0);
+                            connect(FrmGetUserData::getInstance(), SIGNAL(dataIsAvailable()), this, SLOT(userDataIsAvailable()));
+                            FrmGetUserData::getInstance()->setFrmType(0);
+                            FrmGetUserData::getInstance()->show();
+                            while (!this->isUserDataAvailable) {
+                                FrmGetUserData::getInstance()->exec();
+                                QApplication::processEvents();
+                            }
+                            // Daten da
+                            user = FrmGetUserData::getInstance()->getDataField();
+                        } else {
+                            // Es gibt keine Authentifizierung
+                            user = "";
+                        }
+                    }
+                }
                 QByteArray ba;
-                ba.append(this->configUser + "\n");
+                ba.append(user + "\n");
                 this->proc->write(ba);
                 showLine = false;
             }
@@ -355,12 +468,130 @@ void OpenVpn::readProcessData() {
         // Enter Password
         if (line == "Enter Auth Password:") {
             if (this->proc->isWritable()) {
+                QString pwd = "";
+                if (Settings::getInstance()->getIsStartWithPwd()) {
+                    // User wurde von Kommandozeile übergeben
+                    pwd = Settings::getInstance()->getStartWithPwdPwd();
+                } else {
+                    // Es wurde kein User übergeben nun die Art ermitteln,
+                    // woher der User kommt
+                    if (Settings::getInstance()->getUseCryptedData()) {
+                        // Crypt ist an
+                        // Ist eine Crpyt da
+                        UserControll::getInstance()->setConfigDirectory(this->configPath);
+                        if (!UserControll::getInstance()->isUserPasswordConfigWithCryptAvailable()) {
+                            // Crypt ist nicht vorhanden
+                            // Usernamen holen
+                            // Wurde die noAuth option gesetzt
+                            if (Settings::getInstance()->getIsShowNoUserAuth()) {
+                                // Keine Auth
+                                pwd = "";
+                            } else {
+                                // Auth ist gesetzt
+                                this->isUserDataAvailable = false;
+                                disconnect (FrmGetUserData::getInstance(), SIGNAL(dataIsAvailable()), 0, 0);
+                                connect(FrmGetUserData::getInstance(), SIGNAL(dataIsAvailable()), this, SLOT(userDataIsAvailable()));
+                                FrmGetUserData::getInstance()->setFrmType(1);
+                                FrmGetUserData::getInstance()->show();
+                                while (!this->isUserDataAvailable) {
+                                    FrmGetUserData::getInstance()->exec();
+                                    QApplication::processEvents();
+                                }
+                                // Daten sind da, speichern?
+                                pwd = FrmGetUserData::getInstance()->getDataField();
+                                // Nun kann gespeichert werden
+                                if (FrmGetUserData::getInstance()->isSaveChecked()) {
+                                    // Daten sollen gespeichert werden
+                                    // Private key schon bekannt oder force an?
+                                    if (UserControll::getInstance()->getPrivateKeyPub() == "" || Settings::getInstance()->getIsForcePrivateKey()) {
+                                        // Private Ke ermitteln
+                                        this->isUserDataAvailable = false;
+                                        disconnect (FrmGetUserData::getInstance(), SIGNAL(dataIsAvailable()), 0, 0);
+                                        connect(FrmGetUserData::getInstance(), SIGNAL(dataIsAvailable()), this, SLOT(userDataIsAvailable()));
+                                        FrmGetUserData::getInstance()->setFrmType(4);
+                                        FrmGetUserData::getInstance()->show();
+                                        while (!this->isUserDataAvailable) {
+                                            FrmGetUserData::getInstance()->exec();
+                                            QApplication::processEvents();
+                                        }
+                                        // Key in der Klasse setzen und für den Rest der Anwedung merken, ausser bei force key
+                                        UserControll::getInstance()->setPrivateKey(FrmGetUserData::getInstance()->getDataField());
+                                        // Nun Speichern
+                                    }
+                                    UserControll::getInstance()->setConfigDirectory(this->configPath);
+                                    UserControll::getInstance()->setUserPasswordCrypt(pwd);
+                                    this->isCryptFileAvailable = true;
+                                    MainWindowControll::getInstance()->refreshDialog();
+                                }
+                            }
+                        } else {
+                            // Crypt ist da, priv key auch?
+                            if (UserControll::getInstance()->getPrivateKeyPub() == "" || Settings::getInstance()->getIsForcePrivateKey()) {
+                                // Key ist nicht da, oder es wird force key verwendet
+                                this->isUserDataAvailable = false;
+                                disconnect (FrmGetUserData::getInstance(), SIGNAL(dataIsAvailable()), 0, 0);
+                                connect(FrmGetUserData::getInstance(), SIGNAL(dataIsAvailable()), this, SLOT(userDataIsAvailable()));
+                                FrmGetUserData::getInstance()->setFrmType(4);
+                                FrmGetUserData::getInstance()->show();
+                                while (!this->isUserDataAvailable) {
+                                    FrmGetUserData::getInstance()->exec();
+                                    QApplication::processEvents();
+                                }
+                                // Key in der Klasse setzen und für den Rest der Anwedung merken, ausser bei force key
+                                UserControll::getInstance()->setPrivateKey(FrmGetUserData::getInstance()->getDataField());
+                            }
+                            // Alles da user holen
+                            pwd = UserControll::getInstance()->getUserPasswordPlain();
+                        }
+                    } else {
+                        // Keine Crypt Daten verwenden
+                        // Ist die Auth Anzeige an?
+                        if (!Settings::getInstance()->getIsShowNoUserAuth()) {
+                            // Auth Anzeige ist an
+                            this->isUserDataAvailable = false;
+                            disconnect (FrmGetUserData::getInstance(), SIGNAL(dataIsAvailable()), 0, 0);
+                            connect(FrmGetUserData::getInstance(), SIGNAL(dataIsAvailable()), this, SLOT(userDataIsAvailable()));
+                            FrmGetUserData::getInstance()->setFrmType(1);
+                            FrmGetUserData::getInstance()->show();
+                            while (!this->isUserDataAvailable) {
+                                FrmGetUserData::getInstance()->exec();
+                                QApplication::processEvents();
+                            }
+                            // Daten da
+                            pwd = FrmGetUserData::getInstance()->getDataField();
+                        } else {
+                            // Es gibt keine Authentifizierung
+                            pwd = "";
+                        }
+                    }
+                }
                 QByteArray ba;
-                ba.append(this->configPwd + "\n");
+                ba.append(pwd + "\n");
                 this->proc->write(ba);
                 showLine = false;
             }
-
+        }
+        // Enter Challenge Password
+        if (line == "Enter Challenge Password:") {
+            if (this->proc->isWritable()) {
+                //
+                QString pwd = "";
+                this->isUserDataAvailable = false;
+                disconnect (FrmGetUserData::getInstance(), SIGNAL(dataIsAvailable()), 0, 0);
+                connect(FrmGetUserData::getInstance(), SIGNAL(dataIsAvailable()), this, SLOT(userDataIsAvailable()));
+                FrmGetUserData::getInstance()->setFrmType(2);
+                FrmGetUserData::getInstance()->show();
+                while (!this->isUserDataAvailable) {
+                    FrmGetUserData::getInstance()->exec();
+                    QApplication::processEvents();
+                }
+                // Daten sind da, speichern?
+                pwd = FrmGetUserData::getInstance()->getDataField();
+                QByteArray ba;
+                ba.append(pwd + "\n");
+                this->proc->write(ba);
+                showLine = false;
+            }
         }
         // QByteArray in QString
         QString lineOut(line);
@@ -385,9 +616,13 @@ void OpenVpn::readProcessData() {
 
             // Meldung zeigen connected
             this->connectionIP = connIP;
-            this->showTrayMessage(QString("Connnected to VPN.\nName: ") + this->configName + QString("\nIP: ") + this->connectionIP);
+            this->showTrayMessage(QString(tr("Connnected to VPN.\nName: ")) + this->configName + QString(tr("\nIP: ")) + this->connectionIP);
             // Status speichern und Tray Icon setzen
+            this->connectedSinceDate = QDate::currentDate();
+            this->connectedSinceTime = QTime::currentTime();
+            this->onConnect = false;
             this->connectionStable = true;
+            emit connectionIsStableSig(this->connectionIP);
             this->setIcon(Connected);
             QString timeOut = this->getScript("TO");
             int scriptDelay = 0;
@@ -396,55 +631,81 @@ void OpenVpn::readProcessData() {
             }
             QTimer::singleShot(scriptDelay, this, SLOT(startAfterConnectDelayed()));
         }
+
+
         // Fehler abfangen
         bool errorOcurred = false;
-        QString errorMessage;
+        QString errorMessage = "";
         //"All TAP-Win32 adapters on this system are currently in use"
         if (lineOut.contains("All TAP-Win32 adapters on this system are currently in use", Qt::CaseInsensitive)) {
-            errorMessage = QString ("All TAP-Win32 adapters on this system are currently in use");
+            errorMessage = QString (tr("All TAP-Win32 adapters on this system are currently in use"));
             errorOcurred = true;
         } else if (lineOut.contains("TLS Error: Need PEM pass phrase for private key", Qt::CaseInsensitive)) {
-            errorMessage = QString ("TLS Error: Need PEM pass phrase for private key");
+            errorMessage = QString (tr("TLS Error: Need PEM pass phrase for private key"));
             errorOcurred = true;
         } else if (lineOut.contains("EVP_DecryptFinal:bad decrypt", Qt::CaseInsensitive)) {
-            errorMessage = QString ("EVP_DecryptFinal:bad decrypt");
+            errorMessage = QString (tr("EVP_DecryptFinal:bad decrypt"));
             errorOcurred = true;
         } else if (lineOut.contains("PKCS12_parse:mac verify failure", Qt::CaseInsensitive)) {
-            errorMessage = QString ("PKCS12_parse:mac verify failure");
+            errorMessage = QString (tr("PKCS12_parse:mac verify failure"));
             errorOcurred = true;
         } else if (lineOut.contains("Received AUTH_FAILED control message", Qt::CaseInsensitive)) {
-            errorMessage = QString ("Received AUTH_FAILED control message");
+            errorMessage = QString (tr("Received AUTH_FAILED control message"));
             errorOcurred = true;
         } else if (lineOut.contains("Auth username is empty", Qt::CaseInsensitive)) {
-            errorMessage = QString ("Auth username is empty");
+            errorMessage = QString (tr("Auth username is empty"));
             errorOcurred = true;
         } else if (lineOut.contains("error=certificate has expired", Qt::CaseInsensitive)) {
-            errorMessage = QString ("error=certificate has expired");
+            errorMessage = QString (tr("error=certificate has expired"));
             errorOcurred = true;
         } else if (lineOut.contains("error=certificate is not yet valid", Qt::CaseInsensitive)) {
-            errorMessage = QString ("error=certificate is not yet valid");
+            errorMessage = QString (tr("error=certificate is not yet valid"));
             errorOcurred = true;
         } else if (lineOut.contains("Cannot load certificate file", Qt::CaseInsensitive)) {
-            errorMessage = QString ("Cannot load certificate file");
+            errorMessage = QString (tr("Cannot load certificate file"));
             errorOcurred = true;
         } else if (lineOut.contains("Exiting", Qt::CaseInsensitive)) {
-            errorMessage = QString ("Application Exiting!");
+            errorMessage = QString (tr("Application Exiting!"));
             errorOcurred = true;
         } else if (lineOut.contains("Use --help for more information.", Qt::CaseInsensitive)) {
-            errorMessage = QString ("OpenVPN parameter error!\nSee log for details");
+            errorMessage = QString (tr("OpenVPN parameter error!\nSee log for details"));
             errorOcurred = true;
         } else if (lineOut.contains("will try again in 5 seconds", Qt::CaseInsensitive)) {
-            errorMessage = QString ("OpenVPN connection error!\nSee log for details");
+            errorMessage = QString (tr("OpenVPN connection error!\nSee log for details"));
             //errorOcurred = true;
         }
 
+        // Fehler durch normalen Disconnect verhindern
+        if (lineOut.contains("SIGTERM[hard,] received, process exiting", Qt::CaseInsensitive))
+            errorOcurred = false;
 
         if (errorOcurred) {
+            this->runScript("EC");
             this->showTrayMessage(errorMessage);
             this->connectionStable = false;
             this->setIcon(Error);
             this->setDisconnected();
+            this->errorHasOccurred = true;
+            this->errMessage = errorMessage;
+            this->enableAllMenus();
+            emit errorOccuredSig(errorMessage);
         }
+
+        if (lineOut.contains("Restart pause", Qt::CaseInsensitive)) {
+            // Bei Restart Pause befinden wir uns immer noch im Connect auch wenn vorher ein Fehler aufgetreten ist!
+            this->setIcon(Connecting);
+            this->disableMenues();
+            emit connectionReconnectFromOpenVPNSig ();
+        }
+        //Initialization Sequence Completed
+        if (lineOut.contains("Initialization Sequence Completed", Qt::CaseInsensitive)) {
+            this->onConnect = false;
+            this->connectionStable = true;
+            this->disableMenues();
+            emit connectionIsStableSig(this->connectionIP);
+            this->setIcon(Connected);
+        }
+
 
         // Output ins Log?
         if (showLine) {
@@ -455,38 +716,133 @@ void OpenVpn::readProcessData() {
 
 }
 
-void OpenVpn::editVpnConfig() {
-    // Variablen
-    QString fileContent = QString("");
-    QString cFile;
-
-    cFile = this->configPath + QString("/") + this->configName + QString(".ovpn");
-    QFile cf (cFile);
-
-    if (!cf.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        QMessageBox msgBox;
-                    msgBox.setWindowTitle("Securepoint VPN Client");
-                    msgBox.setText("Cannot read file.");
-                    msgBox.exec();
-         return;
-    }
-
-    QTextStream in(&cf);
-    while (!in.atEnd()) {
-        QString line = in.readLine();
-        fileContent += line + QString("\n");
-    }
-    cf.close();
-    if (fileContent != "") {
-        mCon.setContent(fileContent);
-        mCon.setPath(cFile);
-        mCon.show();
-    }
-    //emit configSignalIsChanged();
-}
-
 void OpenVpn::openVpnLog() {
     mLog.logList = &this->openVpnLogData;
     mLog.showDialog();
 }
 
+QString OpenVpn::getConnectionIP() {
+    return this->connectionIP;
+}
+
+bool OpenVpn::isConnecting() {
+    return this->onConnect;
+}
+
+bool OpenVpn::isError() {
+    return this->errorHasOccurred;
+}
+
+QString OpenVpn::getErrorString() {
+    return this->errMessage;
+}
+
+void OpenVpn::userDataIsAvailable() {
+    this->isUserDataAvailable = true;
+}
+
+void OpenVpn::setConnectedIP(QString ip) {
+    this->connectionIP = ip;
+}
+
+void OpenVpn::setIsConnected(bool flag) {
+    this->connectionStable = flag;
+}
+
+void OpenVpn::setIsError(bool flag) {
+    this->errorHasOccurred = flag;
+}
+
+void OpenVpn::setErrorString(QString errMes) {
+    this->errMessage = errMes;
+}
+
+void OpenVpn::setIsConnecting(bool flag) {
+    this->onConnect = flag;
+}
+
+bool OpenVpn::isOnConnect() {
+    return this->onConnect;
+}
+
+void OpenVpn::setAdvName(QString name) {
+    this->advName = name;
+}
+
+QString OpenVpn::getAdvName() {
+    return this->advName;
+}
+
+void OpenVpn::setIsCryptFileAvailable(bool flag) {
+    this->isCryptFileAvailable = flag;
+}
+
+bool OpenVpn::getIsCryptFileAvailable() {
+    return this->isCryptFileAvailable;
+}
+
+void OpenVpn::setConnectedSinceDate(QDate since) {
+    this->connectedSinceDate = since;
+}
+
+void OpenVpn::setConnectedSinceTime(QTime since) {
+    this->connectedSinceTime = since;
+}
+
+QDate OpenVpn::getConnectedSinceDate() {
+    return this->connectedSinceDate;
+}
+
+QTime OpenVpn::getConnectedSinceTime() {
+    return this->connectedSinceTime;
+}
+
+void OpenVpn::enableAllMenus() {
+    if (Settings::getInstance()->getIsPortableClient()) {
+        foreach (QAction *act, MainWindowControll::getInstance()->getSystray()->actions()) {
+            if (act->menu() != NULL && !act->menu()->actions().isEmpty()) {
+                if (act == this->menu) {
+                    foreach (QAction *subact, act->menu()->actions()) {
+                        if (subact->objectName() == "CONNECT") {
+                            subact->setEnabled(true);
+                        } else if (subact->objectName() == "DISCONNECT") {
+                            subact->setEnabled(false);
+                        }
+                    }
+                }
+                act->menu()->setEnabled(true);
+            }
+        }
+        FrmGetUserData::getInstance()->closeMe();
+    }
+}
+
+void OpenVpn::disableMenues() {
+    if (Settings::getInstance()->getIsPortableClient()) {
+        foreach (QAction *act, MainWindowControll::getInstance()->getSystray()->actions()) {
+            if (act->menu() != NULL && !act->menu()->actions().isEmpty()) {
+                if (act != this->menu) {
+                    act->menu()->setDisabled(true);
+                } else {
+                    foreach (QAction *subact, act->menu()->actions()) {
+                        if (subact->objectName() == "CONNECT") {
+                            subact->setEnabled(false);
+                        } else if (subact->objectName() == "DISCONNECT") {
+                            subact->setEnabled(true);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+void OpenVpn::openEditConfig() {
+    EditConfig::getInstance()->setPath(this->configPath + "/" + this->configName + ".ovpn");
+    EditConfig::getInstance()->show();
+}
+
+void OpenVpn::openExport() {
+    ConfigExport::getInstance()->setConfigPath(this->configPath + "/" + this->configName + ".ovpn");
+    ConfigExport::getInstance()->show();
+}

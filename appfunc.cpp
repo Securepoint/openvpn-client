@@ -1,25 +1,23 @@
 #include "appfunc.h"
+#include "settings.h"
+
+AppFunc *AppFunc::mInst = NULL;
+
+AppFunc *AppFunc::getInstance() {
+    if (!mInst)
+        mInst = new AppFunc ();
+    return mInst;
+}
 
 AppFunc::AppFunc()
 {
 }
 
-bool AppFunc::isAppPortable() {
-    #ifdef Q_OS_WIN32
-       // Portabel oder nicht?
-       QFile appSettings (QApplication::applicationDirPath() + QString("/setup.txt"));
-       if (appSettings.exists()) {
-           // Installation
-           return false;
-       } else {
-           // Portable
-           return true;
-       }
-    #elif Q_OS_Unix
-         // Unix Code
-    #elif Q_OS_Mac
-       // Mac code
-    #endif
+bool AppFunc::isAppPortable() {    
+    // Die Dienstanwendung darf nur als Setupversion sein.
+    // Wegen dem Dienst, könnte eine Portabel Verwirrung
+    // beim dem Benutzer stiften ;)
+    return Settings::getInstance()->getIsPortableClient();
 }
 
 QString AppFunc::getOS() {
@@ -33,15 +31,17 @@ QString AppFunc::getOS() {
 }
 
 QString AppFunc::getAppSavePath() {
+    // Gibt das Configverzeichnis zurück
+    // Dieses ist standardmäßig in User/Appdata/
+    QString retVal = QString(getenv("APPDATA")) + QString("/Securepoint SSL VPN");
     #ifdef Q_OS_WIN32
-        if (!this->isAppPortable()) {
-            return QString(getenv("APPDATA")) + QString("/Securepoint VPN");
-        } else {
-            return QApplication::applicationDirPath() + QString("/data");
-        }
+        if (this->isAppPortable())
+            retVal = QApplication::applicationDirPath();
     #elif Q_OS_Unix
          // Unix Code
     #elif Q_OS_Mac
        // Mac code
     #endif
+
+    return retVal;
 }

@@ -1,29 +1,43 @@
 #ifndef PREFERENCES_H
 #define PREFERENCES_H
-#include "openvpn.h"
-#include "Configs.h"
-#include "openvpnqlistitem.h"
-class VpnWizard;
-#include "wiz_vpnwizard.h"
-#include "appfunc.h"
-#include "configexport.h"
-class ImportConfig;
-#include "importconfig.h"
-#include "appfunc.h"
-#include "appinfo.h"
-class DeleteConfig;
-#include "deleteconfig.h"
-class RenameConfig;
-#include "renameconfig.h"
 
-#include "tapinfo.h"
+// Qt Includes
+#include <QFileDialog>
+#include <QSettings>
+#include <QSystemTrayIcon>
+#include <QtCore>
+#include <QtGui>
+#include <QtNetwork/QTcpServer>
+#include <QtNetwork/QTcpSocket>
+
+// Normale Includes
+#include "appfunc.h"
+#include "Configs.h"
+#include "openvpn.h"
+#include "openvpnqlistitem.h"
+#include "settings.h"
+#include "treebutton.h"
+#include "treeconitem.h"
 
 #include "tapdriver.h"
-#include "proxysettings.h"
 
-#include <QtGui/QDialog>
-#include <QSystemTrayIcon>
-#include <QFileDialog>
+// Form Includes
+#include "appinfo.h"
+#include "frmgetuserdata.h"
+#include "proxysettings.h"
+#include "wiz_vpnwizard.h"
+#include "deleteconfig.h"
+#include "renameconfig.h"
+#include "importconfig.h"
+#include "manageconnection.h"
+
+
+// Circle References vermeiden
+class DataControll;
+#include "datacontroll.h"
+
+class ServiceLog;
+#include "servicelog.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -48,90 +62,78 @@ class Preferences : public QDialog {
 public:
     Preferences(QWidget *parent = 0);
     ~Preferences();
-    void openDialog ();
+    void openDialog (bool configFromCommandLine, QString commandLineConfig);
     void setVisible(bool visible);
     void refreshConfigList ();
-    void deleteConfigFromList (bool fconFile, bool fconCaFile, bool fconCertFile,
-                               bool fconKeyFile, bool fconUserFile, bool fconScriptFile,
-                               bool fconDir);
+    void setIcon (int index);
+    void showTrayMessage(QString message, QSystemTrayIcon::MessageIcon messageType);    
+    QStringList vpnLog;
+    QSystemTrayIcon *trayIcon;    
+    DataControll *data;
+    QString configUser;
+    QString configPwd;
+    void startDaemon ();
+    void searchStartConfigDir ();
+    void refreshDialog ();
+    void enableTreeButtons ();
+    void setConnectionStatus ();
+
+
 protected:
     void closeEvent(QCloseEvent *event);
 
 private:
     Ui::Preferences *m_ui;
-    void fillCipherCombo ();
-    int getIndexFromCipher (QString cipher);
-    void enableFields (bool flag);
-    void resetFields ();
     OpenVpn *actObject;
-    VpnWizard *vpnwiz;
-    ConfigExport exportDialog;
-    ImportConfig *importDialog;
+
+    // Enum für die Icons
+    enum Icons {
+        Inaktiv,
+        Connected,
+        Error,
+        Connecting
+    };
+
     // Methoden um feste Events erzeugen
     void createActions();
     // Methode um das Tray zu setzen
     void createTrayIcon();
-    void refreshDialog ();
+
 
     // Actions für Menu
-    QAction *connectVpnAction;
+
     QAction *preferencesAction;
-    QAction *infoAction;
     QAction *quitAction;
-    QAction *importAction;
     QAction *proxyAction;
-    QAction *tapAction;
-    //Preferences mydia;
-    appInfo infoDialog;
-    ProxySettings proxy;
-    TapInfo tapDia;
-    DeleteConfig *deleteDialog;
-    RenameConfig *renameDialog;
+    QAction *appInfoAction;
 
     QAction *mySubAction;
+    QMenu *trayIconMenu;    
 
-    QSystemTrayIcon *trayIcon;
-    QMenu *trayIconMenu;
-    QMenu *trayTest;
 
-    // Configlisten
-    Configs myConfigs;
-    QList<OpenVpn*> subMenuList;
-    // Menuliste
-    QList<QAction*> menuList;
-    QList<QAction*> menuChildList;
-    // Dir für Certs merken
-    QString lastDir;
-    QAction *conAct;
-
-private slots:
+private slots:    
     void on_cmdImportConfig_clicked();
+    void on_cmdRefreshData_clicked();
+    void on_trvConnections_customContextMenuRequested(QPoint pos);
+    void on_cmdNewConfig_clicked();
+    void on_cbForcePrivKey_toggled(bool checked);
+    void on_cmdToggleExtensions_clicked();
+    void on_trvConnections_itemDoubleClicked(QTreeWidgetItem* item, int column);    
+    void on_cmdOpenInfo_clicked();    
     void manageConnections ();
     void trayActivated(QSystemTrayIcon::ActivationReason reason);
     void openInfo ();
-    void importConfig ();
-    void on_cmdConnect_clicked();
-    void on_cmdErrorConnect_clicked();
-    void on_cmdAfterDisconnect_clicked();
-    void on_cmdBeforeDisconnect_clicked();
-    void on_cmdAfterConnect_clicked();
-    void on_cmdBeforeConnect_clicked();
-    void on_cmdGetKeyPath_clicked();
-    void on_cmdGetCertPath_clicked();
-    void on_cmdGetCAPath_clicked();
-    void on_cmdSave_clicked();
-    void on_cmdAddConfig_clicked();
     void on_cmdClose_clicked();
-    void openContextMenuListView (const QPoint &pos);
-    void deleteConfig ();
-    void editConfig ();
-    void connectConfig ();
-    void renameConfig ();
-    void exportConfig ();
-    void openConfigFromListView (QListWidgetItem * item );
     void closeApp ();
-    void proxySettings ();
-    void tapInfo ();
+    void startDelayDisconnectScript ();
+
+    void treePushButtonClicked ();
+
+    void disableTreeButtons (TreeButton *button);
+    void openProxySettings ();
+    void openAppInfo ();
+    void deleteLinkedConfig ();
+    void deleteCryptedData ();
 };
 
 #endif // PREFERENCES_H

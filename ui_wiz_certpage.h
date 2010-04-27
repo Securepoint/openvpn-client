@@ -1,10 +1,10 @@
 /********************************************************************************
-** Form generated from reading ui file 'wiz_certpage.ui'
+** Form generated from reading UI file 'wiz_certpage.ui'
 **
-** Created: Wed 4. Nov 17:16:47 2009
-**      by: Qt User Interface Compiler version 4.5.3
+** Created: Thu 15. Apr 13:48:01 2010
+**      by: Qt User Interface Compiler version 4.6.2
 **
-** WARNING! All changes made in this file will be lost when recompiling ui file!
+** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
 
 #ifndef UI_WIZ_CERTPAGE_H
@@ -149,7 +149,6 @@ public:
         cmdOpenCA->setText(QApplication::translate("CertPage", "...", 0, QApplication::UnicodeUTF8));
         cmdOpenCert->setText(QApplication::translate("CertPage", "...", 0, QApplication::UnicodeUTF8));
         cmdOpenKey->setText(QApplication::translate("CertPage", "...", 0, QApplication::UnicodeUTF8));
-        Q_UNUSED(CertPage);
     } // retranslateUi
 
 };

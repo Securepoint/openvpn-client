@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>FrmGetUserData</class>
+ <widget class="QDialog" name="FrmGetUserData">
+  <property name="windowModality">
+   <enum>Qt::ApplicationModal</enum>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>330</width>
+    <height>140</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>330</width>
+    <height>140</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>330</width>
+    <height>140</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>User data requested</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="systray.qrc">
+    <normaloff>:/images/logo.png</normaloff>:/images/logo.png</iconset>
+  </property>
+  <property name="modal">
+   <bool>true</bool>
+  </property>
+  <widget class="QGroupBox" name="groupBox">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>311</width>
+     <height>81</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Please insert:</string>
+   </property>
+   <widget class="QWidget" name="horizontalLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>20</y>
+      <width>291</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="lblDescription">
+       <property name="text">
+        <string>Username:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="txtDataField">
+       <property name="styleSheet">
+        <string notr="true">:enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}
+:disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}
+:hover {border: 1px solid red; }</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QCheckBox" name="cbSaveData">
+    <property name="geometry">
+     <rect>
+      <x>11</x>
+      <y>57</y>
+      <width>291</width>
+      <height>18</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QCheckBox { 
+spacing: 5px;
+}
+
+QCheckBox::indicator {
+width: 13px;
+height: 13px;
+}
+
+QCheckBox::indicator:unchecked:disabled {
+image: url(:/images/styles/checkbox_unchecked_dis.png);
+}
+
+QCheckBox::indicator:checked:disabled {
+image: url(:/images/styles/checkbox_checked_dis.png);
+}
+
+QCheckBox::indicator:unchecked:enabled {
+image: url(:/images/styles/checkbox_unchecked.png);
+}
+
+QCheckBox::indicator:checked:enabled {
+image: url(:/images/styles/checkbox_checked.png);
+}
+
+QCheckBox::indicator:unchecked:enabled:hover {
+image: url(:/images/styles/checkbox_unchecked_hover.png);
+}
+
+QCheckBox::indicator:checked:enabled:hover {
+image: url(:/images/styles/checkbox_checked_hover.png);
+}
+</string>
+    </property>
+    <property name="text">
+     <string>Save data [only possible with -useCryptedData ]</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QPushButton" name="cmdClose">
+   <property name="geometry">
+    <rect>
+     <x>220</x>
+     <y>100</y>
+     <width>100</width>
+     <height>33</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">:enabled {border: 1px solid black}
+:disabled {border: 1px solid black}
+:hover {background-color: rgb(195, 195, 195);}</string>
+   </property>
+   <property name="text">
+    <string>Cancel</string>
+   </property>
+   <property name="flat">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="cmdOK">
+   <property name="geometry">
+    <rect>
+     <x>110</x>
+     <y>100</y>
+     <width>100</width>
+     <height>33</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">:enabled {border: 1px solid black}
+:disabled {border: 1px solid black}
+:hover {background-color: rgb(195, 195, 195);}</string>
+   </property>
+   <property name="text">
+    <string>OK</string>
+   </property>
+   <property name="default">
+    <bool>true</bool>
+   </property>
+   <property name="flat">
+    <bool>true</bool>
+   </property>
+  </widget>
+ </widget>
+ <resources>
+  <include location="systray.qrc"/>
+ </resources>
+ <connections/>
+</ui>
