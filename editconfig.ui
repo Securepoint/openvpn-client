@@ -96,7 +96,7 @@ QPushButton {height: 25px; width: 50px;text-align:left;
 	padding-bottom: 3px;}</string>
    </property>
    <property name="text">
-    <string>     &amp;Close</string>
+    <string>     &amp;Cancel</string>
    </property>
    <property name="icon">
     <iconset resource="systray.qrc">
@@ -134,7 +134,7 @@ QPushButton {height: 25px; width: 50px;text-align:left;
 	padding-bottom: 3px;}</string>
    </property>
    <property name="text">
-    <string>     &amp;Save</string>
+    <string>     &amp;OK</string>
    </property>
    <property name="icon">
     <iconset resource="systray.qrc">

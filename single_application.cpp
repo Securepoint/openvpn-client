@@ -34,6 +34,26 @@ SingleApplication::SingleApplication(int &argc, char *argv[], const QString uniq
 }
 
 // public slots.
+bool SingleApplication::winEventFilter(MSG* msg, long* result) {
+   if(msg->message == WM_QUERYENDSESSION) {
+       if (this->prefParent->isConnectionActive()) {
+           QMessageBox msgBox;
+           msgBox.setWindowTitle(tr("Securepoint SSL VPN"));
+           msgBox.setText(tr("Exit Application"));
+           msgBox.setWindowIcon(QIcon(":/images/logo.png"));
+           msgBox.setInformativeText(tr("You are still connected to a vpn network!\nPlease disconnect bevor you close your windows session.\nBy forcing the quit from windows malfunctions can occurred!"));
+           msgBox.setStandardButtons(QMessageBox::Ok);
+           msgBox.setDefaultButton(QMessageBox::Ok);
+           msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
+           msgBox.exec();
+           *result = 0;
+           return true;
+       }
+
+
+   }
+   return false;
+};
 
 void SingleApplication::checkForMessage()
 {

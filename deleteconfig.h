@@ -29,10 +29,12 @@ private:
     QString getCAFromConfig ();
     QString getCertFromConfig ();
     QString getKeyFromConfig ();
+    QString explorerPath;
 
 private slots:
     void on_cmdDelete_clicked();
     void on_cmdCancel_clicked();
+    void openExplorer ();
 };
 
 #endif // DELETECONFIG_H

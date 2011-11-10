@@ -9,6 +9,21 @@
 #include <QtCore/QDateTime>
 #include <QtCore/QCoreApplication>
 
+#include <QtCore>
+
+class Log {
+public:
+    static void write (const QString &message) {
+        QFile log ("c:/newsrvlog.log");
+        if (log.open(QIODevice::WriteOnly | QIODevice::Append)) {
+            QTextStream out (&log);
+            out << message << "\n";
+            log.waitForBytesWritten(300);
+            log.close();
+        }
+    }
+};
+
 class OpenVpn : public QObject
 {
     Q_OBJECT
@@ -43,6 +58,7 @@ private slots:
     void showProcessError (QProcess::ProcessError error);
     void readProcessData ();    
     void processFinished (int exitCode, QProcess::ExitStatus exitStatus);
+    void errorSocket (QAbstractSocket::SocketError err);
 
 public slots:
     void disconnectVpn ();

@@ -243,77 +243,77 @@
 <context>
     <name>DataControll</name>
     <message>
-        <location filename="datacontroll.cpp" line="109"/>
+        <location filename="datacontroll.cpp" line="118"/>
         <source>Username requested.
 </source>
         <translation>Benutzername wird angefordert.
 </translation>
     </message>
     <message>
-        <location filename="datacontroll.cpp" line="198"/>
+        <location filename="datacontroll.cpp" line="207"/>
         <source>User password requested.
 </source>
         <translation>Benutzer Kennwort wird angefordert.
 </translation>
     </message>
     <message>
-        <location filename="datacontroll.cpp" line="287"/>
+        <location filename="datacontroll.cpp" line="296"/>
         <source>PKCS12 key requested.
 </source>
         <translation>PKCS12 Schlüssel wird angefordert.
 </translation>
     </message>
     <message>
-        <location filename="datacontroll.cpp" line="302"/>
+        <location filename="datacontroll.cpp" line="311"/>
         <source>Challenge key requested.
 </source>
         <translation>Challenge Schlüssel angefordert.
 </translation>
     </message>
     <message>
-        <location filename="datacontroll.cpp" line="319"/>
+        <location filename="datacontroll.cpp" line="328"/>
         <source>Received Restart.
 </source>
         <translation>Neustart erhalten.
 </translation>
     </message>
     <message>
-        <location filename="datacontroll.cpp" line="330"/>
+        <location filename="datacontroll.cpp" line="339"/>
         <source>Connection lost! Try restart ...</source>
         <translation>Verbindung wurde unterbrochen! Versuche Neustart ...</translation>
     </message>
     <message>
-        <location filename="datacontroll.cpp" line="366"/>
+        <location filename="datacontroll.cpp" line="380"/>
         <source>Sending connect ...</source>
         <translation>Sende Verbindungsaufbau ...</translation>
     </message>
     <message>
-        <location filename="datacontroll.cpp" line="449"/>
+        <location filename="datacontroll.cpp" line="464"/>
         <source>Sending disconnect ...</source>
         <translation>Sende Trennen ...</translation>
     </message>
     <message>
-        <location filename="datacontroll.cpp" line="533"/>
+        <location filename="datacontroll.cpp" line="548"/>
         <source>Sending user ...</source>
         <translation>Sende Benutzernamen ...</translation>
     </message>
     <message>
-        <location filename="datacontroll.cpp" line="600"/>
+        <location filename="datacontroll.cpp" line="615"/>
         <source>Sending password ...</source>
         <translation>Sende Kennwort ...</translation>
     </message>
     <message>
-        <location filename="datacontroll.cpp" line="667"/>
+        <location filename="datacontroll.cpp" line="682"/>
         <source>Sending PKCS12 ...</source>
         <translation>Sende PKCS12 ...</translation>
     </message>
     <message>
-        <location filename="datacontroll.cpp" line="694"/>
+        <location filename="datacontroll.cpp" line="709"/>
         <source>Sending Challenge Key ...</source>
         <translation>Sende Challenge Schlüssel ...</translation>
     </message>
     <message>
-        <location filename="datacontroll.cpp" line="780"/>
+        <location filename="datacontroll.cpp" line="795"/>
         <source>Restart Connection ...</source>
         <translation>Neustart der Verbindung ...</translation>
     </message>
@@ -321,19 +321,26 @@
 <context>
     <name>DeleteConfig</name>
     <message>
-        <location filename="deleteconfig.cpp" line="156"/>
+        <location filename="deleteconfig.cpp" line="158"/>
         <source>Directory is not empty! Please delete it by hand!</source>
         <translation>Verzeichnis ist nicht leer! Bitte löschen Sie es per Hand!</translation>
     </message>
     <message>
-        <location filename="deleteconfig.cpp" line="162"/>
+        <location filename="deleteconfig.cpp" line="164"/>
         <source>Securepoint SSL VPN</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="deleteconfig.cpp" line="163"/>
+        <location filename="deleteconfig.cpp" line="165"/>
         <source>Delete Configuration</source>
         <translation>Konfiguration löschen</translation>
+    </message>
+    <message>
+        <location filename="deleteconfig.cpp" line="167"/>
+        <source>Do you want to open the explorer to check the files?
+Otherwise maybe malfunctions can be occurred.</source>
+        <translation>Möchten Sie den Windows Explorer öffnen um die Dateien zu überprüfen?
+Andernfalls kann es zu Fehlfunktionen [z.B. beim Import] kommen.</translation>
     </message>
     <message>
         <location filename="deleteconfig.ui" line="29"/>
@@ -410,13 +417,15 @@
     </message>
     <message>
         <location filename="editconfig.ui" line="99"/>
-        <source>     &amp;Close</source>
-        <translation>  &amp;Schließen</translation>
+        <source>     &amp;Cancel</source>
+        <oldsource>     &amp;Close</oldsource>
+        <translation> &amp;Abbrechen</translation>
     </message>
     <message>
         <location filename="editconfig.ui" line="137"/>
-        <source>     &amp;Save</source>
-        <translation>  &amp;Speichern</translation>
+        <source>     &amp;OK</source>
+        <oldsource>     &amp;Save</oldsource>
+        <translation>  &amp;OK</translation>
     </message>
 </context>
 <context>
@@ -561,8 +570,8 @@
 <context>
     <name>FrmGetUserData</name>
     <message>
-        <location filename="frmgetuserdata.cpp" line="54"/>
         <location filename="frmgetuserdata.ui" line="63"/>
+        <location filename="frmgetuserdata.cpp" line="54"/>
         <source>Username:</source>
         <translation>Benutzername:</translation>
     </message>
@@ -684,9 +693,10 @@
         <location filename="importconfig.cpp" line="207"/>
         <location filename="importconfig.cpp" line="232"/>
         <location filename="importconfig.cpp" line="247"/>
-        <location filename="importconfig.cpp" line="269"/>
+        <location filename="importconfig.cpp" line="270"/>
         <location filename="importconfig.cpp" line="283"/>
-        <location filename="importconfig.cpp" line="324"/>
+        <location filename="importconfig.cpp" line="296"/>
+        <location filename="importconfig.cpp" line="337"/>
         <source>Securepoint SSL VPN</source>
         <translation></translation>
     </message>
@@ -700,9 +710,10 @@
         <location filename="importconfig.cpp" line="208"/>
         <location filename="importconfig.cpp" line="233"/>
         <location filename="importconfig.cpp" line="248"/>
-        <location filename="importconfig.cpp" line="270"/>
+        <location filename="importconfig.cpp" line="271"/>
         <location filename="importconfig.cpp" line="284"/>
-        <location filename="importconfig.cpp" line="325"/>
+        <location filename="importconfig.cpp" line="297"/>
+        <location filename="importconfig.cpp" line="338"/>
         <source>Import Configuration</source>
         <translation>Konfiguration importieren</translation>
     </message>
@@ -713,7 +724,7 @@
     </message>
     <message>
         <location filename="importconfig.cpp" line="105"/>
-        <location filename="importconfig.cpp" line="272"/>
+        <location filename="importconfig.cpp" line="286"/>
         <source>Import successfully ended!</source>
         <translation>Import war erfolgreich!</translation>
     </message>
@@ -748,17 +759,22 @@
         <translation>7z ist noch aktiv!</translation>
     </message>
     <message>
-        <location filename="importconfig.cpp" line="286"/>
+        <location filename="importconfig.cpp" line="273"/>
+        <source>Import failed! Removing empty directory.</source>
+        <translation>Das Importieren ist fehlgeschlagen! Tempverzeichnis wird entfernt.</translation>
+    </message>
+    <message>
+        <location filename="importconfig.cpp" line="299"/>
         <source>No import file selected!</source>
         <translation>Keine Importdatei selektiert!</translation>
     </message>
     <message>
-        <location filename="importconfig.cpp" line="338"/>
+        <location filename="importconfig.cpp" line="351"/>
         <source>Find ovpn file</source>
         <translation>Finde ovpn Datei</translation>
     </message>
     <message>
-        <location filename="importconfig.cpp" line="338"/>
+        <location filename="importconfig.cpp" line="351"/>
         <source>OpenVPN configs (*.ovpn)</source>
         <translation>OpenVPN Konfigurationen (*.ovpn)</translation>
     </message>
@@ -847,97 +863,97 @@ p, li { white-space: pre-wrap; }
         <translation>Nicht definiert</translation>
     </message>
     <message>
-        <location filename="manageconnection.cpp" line="277"/>
-        <location filename="manageconnection.cpp" line="678"/>
-        <location filename="manageconnection.cpp" line="805"/>
-        <location filename="manageconnection.cpp" line="849"/>
-        <location filename="manageconnection.cpp" line="862"/>
+        <location filename="manageconnection.cpp" line="278"/>
+        <location filename="manageconnection.cpp" line="691"/>
+        <location filename="manageconnection.cpp" line="827"/>
+        <location filename="manageconnection.cpp" line="871"/>
+        <location filename="manageconnection.cpp" line="996"/>
         <source>Securepoint SSL VPN</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="manageconnection.cpp" line="278"/>
+        <location filename="manageconnection.cpp" line="279"/>
+        <location filename="manageconnection.cpp" line="997"/>
         <source>Load Configuration</source>
         <translation>Konfiguration laden</translation>
     </message>
     <message>
-        <location filename="manageconnection.cpp" line="280"/>
+        <location filename="manageconnection.cpp" line="281"/>
+        <location filename="manageconnection.cpp" line="999"/>
         <source>Unable to read file!</source>
         <translation>Datei kann nicht gelsen werden!</translation>
     </message>
     <message>
-        <location filename="manageconnection.cpp" line="679"/>
+        <location filename="manageconnection.cpp" line="692"/>
         <source>Save Configuration</source>
         <translation>Konfiguration speichern</translation>
     </message>
     <message>
-        <location filename="manageconnection.cpp" line="681"/>
-        <location filename="manageconnection.cpp" line="808"/>
+        <location filename="manageconnection.cpp" line="694"/>
+        <location filename="manageconnection.cpp" line="830"/>
         <source>Unable to open file!</source>
         <translation>Datei kann nicht geöffnet werden!</translation>
     </message>
     <message>
-        <location filename="manageconnection.cpp" line="806"/>
-        <location filename="manageconnection.cpp" line="850"/>
+        <location filename="manageconnection.cpp" line="828"/>
+        <location filename="manageconnection.cpp" line="872"/>
         <source>Save Scripts</source>
         <translation>Skripte speichern</translation>
     </message>
     <message>
-        <location filename="manageconnection.cpp" line="852"/>
+        <location filename="manageconnection.cpp" line="874"/>
         <source>Can&apos;t delete scriptfile!</source>
         <translation>Skriptdatei kann nicht gelöscht werden!</translation>
     </message>
     <message>
-        <location filename="manageconnection.cpp" line="863"/>
         <source>Save configuration</source>
-        <translation>Konfiguration speichern</translation>
+        <translation type="obsolete">Konfiguration speichern</translation>
     </message>
     <message>
-        <location filename="manageconnection.cpp" line="865"/>
         <source>Save successfully ended!</source>
-        <translation>Speichern erfolgreich!</translation>
+        <translation type="obsolete">Speichern erfolgreich!</translation>
     </message>
     <message>
-        <location filename="manageconnection.cpp" line="875"/>
+        <location filename="manageconnection.cpp" line="899"/>
         <source>Find root ca</source>
         <translation>Finde root CA</translation>
     </message>
     <message>
-        <location filename="manageconnection.cpp" line="875"/>
-        <location filename="manageconnection.cpp" line="890"/>
+        <location filename="manageconnection.cpp" line="899"/>
+        <location filename="manageconnection.cpp" line="914"/>
         <source>Certificates (*.cert *.pem)</source>
         <translation>Zertifikate (*.cert *.pem)</translation>
     </message>
     <message>
-        <location filename="manageconnection.cpp" line="890"/>
+        <location filename="manageconnection.cpp" line="914"/>
         <source>Find certificates</source>
         <translation>Finde Zertifikate</translation>
     </message>
     <message>
-        <location filename="manageconnection.cpp" line="905"/>
+        <location filename="manageconnection.cpp" line="929"/>
         <source>Find key files</source>
         <translation>Finde Schlüssel Dateien</translation>
     </message>
     <message>
-        <location filename="manageconnection.cpp" line="905"/>
+        <location filename="manageconnection.cpp" line="929"/>
         <source>Key files (*.key *.pem)</source>
         <translation>Schlüssel Dateien (*.key *.pem)</translation>
     </message>
     <message>
-        <location filename="manageconnection.cpp" line="920"/>
-        <location filename="manageconnection.cpp" line="929"/>
-        <location filename="manageconnection.cpp" line="938"/>
-        <location filename="manageconnection.cpp" line="947"/>
-        <location filename="manageconnection.cpp" line="956"/>
+        <location filename="manageconnection.cpp" line="944"/>
+        <location filename="manageconnection.cpp" line="953"/>
+        <location filename="manageconnection.cpp" line="962"/>
+        <location filename="manageconnection.cpp" line="971"/>
+        <location filename="manageconnection.cpp" line="980"/>
         <source>Find executeable files</source>
         <translation>Finde ausführbare Datei</translation>
     </message>
     <message>
-        <location filename="manageconnection.cpp" line="920"/>
-        <location filename="manageconnection.cpp" line="929"/>
-        <location filename="manageconnection.cpp" line="938"/>
-        <location filename="manageconnection.cpp" line="947"/>
-        <location filename="manageconnection.cpp" line="956"/>
+        <location filename="manageconnection.cpp" line="944"/>
+        <location filename="manageconnection.cpp" line="953"/>
+        <location filename="manageconnection.cpp" line="962"/>
+        <location filename="manageconnection.cpp" line="971"/>
+        <location filename="manageconnection.cpp" line="980"/>
         <source>All files (*.*)</source>
         <translation>Alle Dateien (*.*)</translation>
     </message>
@@ -948,8 +964,9 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="manageconnection.ui" line="45"/>
-        <source>     &amp;Close</source>
-        <translation>&amp;Schließen</translation>
+        <source>     &amp;Cancel</source>
+        <oldsource>     &amp;Close</oldsource>
+        <translation>&amp;Abbrechen</translation>
     </message>
     <message>
         <location filename="manageconnection.ui" line="86"/>
@@ -1002,183 +1019,188 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="manageconnection.ui" line="623"/>
-        <location filename="manageconnection.ui" line="1682"/>
-        <source>Advanced:</source>
-        <translation>Erweitert:</translation>
-    </message>
-    <message>
-        <location filename="manageconnection.ui" line="653"/>
-        <source>Dev:</source>
+        <location filename="manageconnection.ui" line="622"/>
+        <source>Redirect Gateway:</source>
         <translation></translation>
     </message>
     <message>
         <location filename="manageconnection.ui" line="684"/>
+        <location filename="manageconnection.ui" line="1743"/>
+        <source>Advanced:</source>
+        <translation>Erweitert:</translation>
+    </message>
+    <message>
+        <location filename="manageconnection.ui" line="714"/>
+        <source>Dev:</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="manageconnection.ui" line="745"/>
         <source>Dev mtu:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="manageconnection.ui" line="698"/>
+        <location filename="manageconnection.ui" line="759"/>
         <source>Connection:</source>
         <translation>Verbindung:</translation>
     </message>
     <message>
-        <location filename="manageconnection.ui" line="728"/>
+        <location filename="manageconnection.ui" line="789"/>
         <source>Remote port:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="manageconnection.ui" line="759"/>
+        <location filename="manageconnection.ui" line="820"/>
         <source>Remote:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="manageconnection.ui" line="790"/>
+        <location filename="manageconnection.ui" line="851"/>
         <source>Protocol:</source>
         <translation>Protokoll:</translation>
     </message>
     <message>
-        <location filename="manageconnection.ui" line="804"/>
+        <location filename="manageconnection.ui" line="865"/>
         <source>Certifikate - Key:</source>
         <translation>Zertifikat - Schlüssel:</translation>
     </message>
     <message>
-        <location filename="manageconnection.ui" line="837"/>
+        <location filename="manageconnection.ui" line="898"/>
         <source>CA path:</source>
         <translation>CA Pfad:</translation>
     </message>
     <message>
-        <location filename="manageconnection.ui" line="892"/>
+        <location filename="manageconnection.ui" line="953"/>
         <source>Key path:</source>
         <translation>Schlüssel Pfad:</translation>
     </message>
     <message>
-        <location filename="manageconnection.ui" line="905"/>
+        <location filename="manageconnection.ui" line="966"/>
         <source>Certitificate path:</source>
         <translation>Zertifikat Pfad:</translation>
     </message>
     <message>
-        <location filename="manageconnection.ui" line="918"/>
+        <location filename="manageconnection.ui" line="979"/>
         <source>Server certificate:</source>
         <translation>Server Zertifikat:</translation>
     </message>
     <message>
-        <location filename="manageconnection.ui" line="991"/>
-        <location filename="manageconnection.ui" line="1013"/>
-        <location filename="manageconnection.ui" line="1034"/>
-        <location filename="manageconnection.ui" line="1398"/>
-        <location filename="manageconnection.ui" line="1416"/>
-        <location filename="manageconnection.ui" line="1509"/>
-        <location filename="manageconnection.ui" line="1527"/>
-        <location filename="manageconnection.ui" line="1571"/>
+        <location filename="manageconnection.ui" line="1052"/>
+        <location filename="manageconnection.ui" line="1074"/>
+        <location filename="manageconnection.ui" line="1095"/>
+        <location filename="manageconnection.ui" line="1459"/>
+        <location filename="manageconnection.ui" line="1477"/>
+        <location filename="manageconnection.ui" line="1570"/>
+        <location filename="manageconnection.ui" line="1588"/>
+        <location filename="manageconnection.ui" line="1632"/>
         <source>...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="manageconnection.ui" line="1049"/>
+        <location filename="manageconnection.ui" line="1110"/>
         <source>Linux / Windows</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="manageconnection.ui" line="1061"/>
+        <location filename="manageconnection.ui" line="1122"/>
         <source>Downgrade privileges of Linux process:</source>
         <translation>Rechte des Prozess bei Linux herabsetzen:</translation>
     </message>
     <message>
-        <location filename="manageconnection.ui" line="1073"/>
+        <location filename="manageconnection.ui" line="1134"/>
         <source>User:</source>
         <translation>Benutzer:</translation>
     </message>
     <message>
-        <location filename="manageconnection.ui" line="1086"/>
+        <location filename="manageconnection.ui" line="1147"/>
         <source>Group:</source>
         <translation>Gruppe:</translation>
     </message>
     <message>
-        <location filename="manageconnection.ui" line="1136"/>
+        <location filename="manageconnection.ui" line="1197"/>
         <source>Only Windows:</source>
         <translation>Nur Winddows:</translation>
     </message>
     <message>
-        <location filename="manageconnection.ui" line="1199"/>
+        <location filename="manageconnection.ui" line="1260"/>
         <source>MSSFIX:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="manageconnection.ui" line="1230"/>
+        <location filename="manageconnection.ui" line="1291"/>
         <source>Fragment:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="manageconnection.ui" line="1261"/>
+        <location filename="manageconnection.ui" line="1322"/>
         <source>Route method:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="manageconnection.ui" line="1274"/>
+        <location filename="manageconnection.ui" line="1335"/>
         <source>Dev Node:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="manageconnection.ui" line="1307"/>
+        <location filename="manageconnection.ui" line="1368"/>
         <source>Scripts</source>
         <translation>Skripte</translation>
     </message>
     <message>
-        <location filename="manageconnection.ui" line="1319"/>
+        <location filename="manageconnection.ui" line="1380"/>
         <source>Connect:</source>
         <translation>Verbindung:</translation>
     </message>
     <message>
-        <location filename="manageconnection.ui" line="1331"/>
+        <location filename="manageconnection.ui" line="1392"/>
         <source>Before connect:</source>
         <translation>Vor dem Verbinden:</translation>
     </message>
     <message>
-        <location filename="manageconnection.ui" line="1344"/>
+        <location filename="manageconnection.ui" line="1405"/>
         <source>After connect:</source>
         <translation>Nach dem Verbinden:</translation>
     </message>
     <message>
-        <location filename="manageconnection.ui" line="1430"/>
+        <location filename="manageconnection.ui" line="1491"/>
         <source>Disconnect:</source>
         <translation>Trennen:</translation>
     </message>
     <message>
-        <location filename="manageconnection.ui" line="1442"/>
-        <location filename="manageconnection.ui" line="1553"/>
+        <location filename="manageconnection.ui" line="1503"/>
+        <location filename="manageconnection.ui" line="1614"/>
         <source>Before disconnect:</source>
         <translation>Vor dem Trennen:</translation>
     </message>
     <message>
-        <location filename="manageconnection.ui" line="1455"/>
+        <location filename="manageconnection.ui" line="1516"/>
         <source>After disconnect:</source>
         <translation>Nach dem Trennen:</translation>
     </message>
     <message>
-        <location filename="manageconnection.ui" line="1541"/>
+        <location filename="manageconnection.ui" line="1602"/>
         <source>Error while connecting:</source>
         <translation>Fehler beim Verbinden:</translation>
     </message>
     <message>
-        <location filename="manageconnection.ui" line="1603"/>
+        <location filename="manageconnection.ui" line="1664"/>
         <source>Delay:</source>
         <translation>Verzögerung:</translation>
     </message>
     <message>
-        <location filename="manageconnection.ui" line="1615"/>
+        <location filename="manageconnection.ui" line="1676"/>
         <source>This delay is sometimes necessary to ensure, that the IP from the Tap device is already set. To set the IP with DHCP maybe take some seconds after the connection is succesfully comming up. 
 At least 5000 ms delay is recommended. Otherwise the after connect skript maybe didn&apos;t has a working connection.</source>
         <translation>Diese Verzögerung ist manchmal notwendig, um sicherzustellen, dass die IP vom Tap gesetzt ist. Das setzen der IP über DHCP dauert manchmal noch einige Sekunden, nachdem die Verbindung hergestellt wurde.
 Mindestens 5000 ms sind empfohlen, um zu verhindern, dass das &quot;Nach dem verbinden&quot; Skript keine Verbindung hat.</translation>
     </message>
     <message>
-        <location filename="manageconnection.ui" line="1619"/>
+        <location filename="manageconnection.ui" line="1680"/>
         <source>After connection delay: </source>
         <translation>N.d.V. Verzögerung:</translation>
     </message>
     <message>
-        <location filename="manageconnection.ui" line="1632"/>
+        <location filename="manageconnection.ui" line="1693"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -1193,326 +1215,345 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Mindestens 5000 ms sind empfohlen, um zu verhindern, dass das &quot;Nach dem verbinden&quot; Skript keine Verbindung hat.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="manageconnection.ui" line="1655"/>
+        <location filename="manageconnection.ui" line="1716"/>
         <source>ms</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="manageconnection.ui" line="1670"/>
+        <location filename="manageconnection.ui" line="1731"/>
         <source>Advanced</source>
         <translation>Erweitert</translation>
     </message>
     <message>
-        <location filename="manageconnection.ui" line="1730"/>
+        <location filename="manageconnection.ui" line="1791"/>
         <source>Mute:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="manageconnection.ui" line="1743"/>
+        <location filename="manageconnection.ui" line="1804"/>
         <source>Route delay:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="manageconnection.ui" line="1756"/>
+        <location filename="manageconnection.ui" line="1817"/>
         <source>Verbosity:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="manageconnection.ui" line="1788"/>
+        <location filename="manageconnection.ui" line="1849"/>
         <source>Host:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="manageconnection.ui" line="1851"/>
+        <location filename="manageconnection.ui" line="1912"/>
         <source>Random host:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="manageconnection.ui" line="1864"/>
+        <location filename="manageconnection.ui" line="1925"/>
         <source>Resolve host name:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="manageconnection.ui" line="1929"/>
+        <location filename="manageconnection.ui" line="1990"/>
         <source>HTTP-Proxy:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="manageconnection.ui" line="1941"/>
+        <location filename="manageconnection.ui" line="2002"/>
         <source>Retry:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="manageconnection.ui" line="2005"/>
+        <location filename="manageconnection.ui" line="2066"/>
         <source>Proxy IP:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="manageconnection.ui" line="2036"/>
+        <location filename="manageconnection.ui" line="2097"/>
         <source>Proxy port:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="manageconnection.ui" line="2068"/>
+        <location filename="manageconnection.ui" line="2129"/>
         <source>Wireless:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="manageconnection.ui" line="2080"/>
+        <location filename="manageconnection.ui" line="2141"/>
         <source>Mute replay warnings:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="manageconnection.ui" line="2148"/>
+        <location filename="manageconnection.ui" line="2209"/>
         <source>Ciphers:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="manageconnection.ui" line="2160"/>
+        <location filename="manageconnection.ui" line="2221"/>
         <source>Chipher:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="manageconnection.ui" line="2250"/>
-        <source>     &amp;Save</source>
-        <translation>&amp;Speichern</translation>
+        <location filename="manageconnection.ui" line="2311"/>
+        <source>     &amp;OK</source>
+        <oldsource>     &amp;Save</oldsource>
+        <translation>&amp;OK</translation>
     </message>
 </context>
 <context>
     <name>OpenVpn</name>
     <message>
-        <location filename="openvpn.cpp" line="73"/>
-        <location filename="openvpn.cpp" line="135"/>
-        <location filename="openvpn.cpp" line="192"/>
-        <location filename="openvpn.cpp" line="281"/>
+        <location filename="openvpn.cpp" line="74"/>
+        <location filename="openvpn.cpp" line="136"/>
+        <location filename="openvpn.cpp" line="197"/>
+        <location filename="openvpn.cpp" line="286"/>
         <source>Securepoint SSL VPN</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="74"/>
+        <location filename="openvpn.cpp" line="75"/>
         <source>Can&apos;t read scriptconfig file!</source>
         <translation>Scriptconfig Datei kann nicht gelesen werden!</translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="99"/>
+        <location filename="openvpn.cpp" line="100"/>
         <source>Starting : </source>
         <translation>Starte : </translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="111"/>
+        <location filename="openvpn.cpp" line="112"/>
         <source>Run Script:
 The process failed to start. Either the invoked program is missing, or you may have insufficient permissions to invoke the program.</source>
         <translation>Run Skript:
 Fehler: Der Prozess kann nicht gestartet werden. Entweder fehlt das Programm oder Sie besitzen nicht die nötigen Rechte.</translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="114"/>
+        <location filename="openvpn.cpp" line="115"/>
         <source>Run Script:
 The process crashed some time after starting successfully.</source>
         <translation>Run Skript:
 Fehler: Der Prozess beendete sich nachdem er erfolgreich gestartet wurde.</translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="117"/>
+        <location filename="openvpn.cpp" line="118"/>
         <source>Run Script:
 The last waitFor...() function timed out. The state of QProcess is unchanged, and you can try calling waitFor...() again.</source>
         <translation>Run Skript:
 Fehler: The last waitFor...() function timed out.</translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="120"/>
+        <location filename="openvpn.cpp" line="121"/>
         <source>Run Script:
 An error occurred when attempting to write to the process. For example, the process may not be running, or it may have closed its input channel.</source>
         <translation>Run Skript:
 Fehler: Vielleicht hat der Prozess einen geschlossenen &quot;Input channel&quot;.</translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="123"/>
+        <location filename="openvpn.cpp" line="124"/>
         <source>Run Script:
 An error occurred when attempting to read from the process. For example, the process may not be running.</source>
         <translation>Run Skript:
 Fehler: Vielleicht läuft der Prozess nicht.</translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="126"/>
+        <location filename="openvpn.cpp" line="127"/>
         <source>Run Script:
 An unknown error occurred. This is the default return value of error().</source>
         <translation>Run Skript:
 Fehler: Unbekannter Fehlercode ist aufgetreten.</translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="129"/>
+        <location filename="openvpn.cpp" line="130"/>
         <source>Run Script:
 No valid error code!</source>
         <translation>Run Skript:
 Fehler:Kein gültiger Fehlercode!</translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="136"/>
-        <location filename="openvpn.cpp" line="282"/>
+        <location filename="openvpn.cpp" line="137"/>
+        <location filename="openvpn.cpp" line="287"/>
         <source>An error has been occured!</source>
         <translation>Ein Fehler ist aufgetreten!</translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="193"/>
+        <location filename="openvpn.cpp" line="198"/>
         <source>Already connected to this network</source>
         <translation>Bereits zu diesem Netzwerk verbunden</translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="250"/>
+        <location filename="openvpn.cpp" line="255"/>
         <source>The process failed to start. Either the invoked program is missing, or you may have insufficient permissions to invoke the program.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="253"/>
+        <location filename="openvpn.cpp" line="258"/>
         <source>The process crashed some time after starting successfully.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="256"/>
+        <location filename="openvpn.cpp" line="261"/>
         <source>The last waitFor...() function timed out. The state of QProcess is unchanged, and you can try calling waitFor...() again.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="259"/>
+        <location filename="openvpn.cpp" line="264"/>
         <source>An error occurred when attempting to write to the process. For example, the process may not be running, or it may have closed its input channel.</source>
         <translation>Fehler: Prozess hat eventuell einen geschlossenen &quot;Input channel&quot;.</translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="262"/>
+        <location filename="openvpn.cpp" line="267"/>
         <source>An error occurred when attempting to read from the process. For example, the process may not be running.</source>
         <translation>Fehler: Prozess läuft eventuell nicht.</translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="265"/>
+        <location filename="openvpn.cpp" line="270"/>
         <source>An unknown error occurred. This is the default return value of error().</source>
         <translation>Es ist ein unbekannter Fehler aufgetreten.</translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="268"/>
+        <location filename="openvpn.cpp" line="273"/>
         <source>No valid error code!</source>
         <translation>Kein gültiger Fehlercode!</translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="303"/>
+        <location filename="openvpn.cpp" line="316"/>
         <source>Disconnected from VPN.
 Name: </source>
         <translation>Getrennt von VPN.
 Name: </translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="606"/>
+        <location filename="openvpn.cpp" line="619"/>
         <source>Connnected to VPN.
 Name: </source>
         <translation>Verbunden mit VPN.
 Name: </translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="606"/>
+        <location filename="openvpn.cpp" line="619"/>
         <source>
 IP: </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="628"/>
+        <location filename="openvpn.cpp" line="642"/>
         <source>All TAP-Win32 adapters on this system are currently in use</source>
         <translation>Alle TAP Win32 Adapter auf diesem System sind in momentan in Benutzung</translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="631"/>
+        <location filename="openvpn.cpp" line="645"/>
         <source>TLS Error: Need PEM pass phrase for private key</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="634"/>
+        <location filename="openvpn.cpp" line="648"/>
+        <source>TLS error! See log for details</source>
+        <translation>TLS Fehler! Siehe Log für Details</translation>
+    </message>
+    <message>
+        <location filename="openvpn.cpp" line="652"/>
         <source>EVP_DecryptFinal:bad decrypt</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="637"/>
+        <location filename="openvpn.cpp" line="655"/>
+        <source>Connection error! See log for details</source>
+        <translation>Verbindungsfehler! Siehe Log für Details</translation>
+    </message>
+    <message>
+        <location filename="openvpn.cpp" line="659"/>
         <source>PKCS12_parse:mac verify failure</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="640"/>
+        <location filename="openvpn.cpp" line="662"/>
         <source>Received AUTH_FAILED control message</source>
         <translation>Anmeldung ist fehlgeschlagen</translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="643"/>
+        <location filename="openvpn.cpp" line="665"/>
         <source>Auth username is empty</source>
         <translation>Benutzername ist leer</translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="646"/>
+        <location filename="openvpn.cpp" line="668"/>
         <source>error=certificate has expired</source>
         <translation>Zertifikate sind abgelaufen</translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="649"/>
+        <location filename="openvpn.cpp" line="671"/>
         <source>error=certificate is not yet valid</source>
         <translation>Zertifikate nicht gültig</translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="652"/>
+        <location filename="openvpn.cpp" line="674"/>
         <source>Cannot load certificate file</source>
         <translation>Zertifikate können nicht geladen werden</translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="655"/>
+        <location filename="openvpn.cpp" line="677"/>
         <source>Application Exiting!</source>
         <translation>Anwendung wird geschlossen!</translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="658"/>
-        <source>OpenVPN parameter error!
-See log for details</source>
-        <translation>OpenVPN Parameterfehler! Details im Log</translation>
+        <location filename="openvpn.cpp" line="680"/>
+        <source>OpenVPN parameter error! See log for details</source>
+        <translation>OpenVPN Parameterfehler! Siehe Log für Details</translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="661"/>
+        <location filename="openvpn.cpp" line="683"/>
+        <source>OpenVPN connection error! See log for details</source>
+        <translation>OpenVPN Parameterfehler! Siehe Log für Details</translation>
+    </message>
+    <message>
+        <source>OpenVPN parameter error!
+See log for details</source>
+        <translation type="obsolete">OpenVPN Parameterfehler! Details im Log</translation>
+    </message>
+    <message>
         <source>OpenVPN connection error!
 See log for details</source>
-        <translation>OpenVPN Verbindungsfehler! Details im Log</translation>
+        <translation type="obsolete">OpenVPN Verbindungsfehler! Details im Log</translation>
     </message>
 </context>
 <context>
     <name>Preferences</name>
     <message>
-        <location filename="preferences.cpp" line="18"/>
-        <location filename="preferences.cpp" line="30"/>
-        <location filename="preferences.cpp" line="74"/>
-        <location filename="preferences.cpp" line="468"/>
-        <location filename="preferences.cpp" line="482"/>
-        <location filename="preferences.cpp" line="517"/>
-        <location filename="preferences.cpp" line="562"/>
-        <location filename="preferences.cpp" line="658"/>
-        <location filename="preferences.cpp" line="798"/>
-        <location filename="preferences.cpp" line="812"/>
-        <location filename="preferences.cpp" line="831"/>
-        <location filename="preferences.cpp" line="849"/>
+        <location filename="preferences.cpp" line="20"/>
+        <location filename="preferences.cpp" line="32"/>
+        <location filename="preferences.cpp" line="77"/>
+        <location filename="preferences.cpp" line="498"/>
+        <location filename="preferences.cpp" line="512"/>
+        <location filename="preferences.cpp" line="547"/>
+        <location filename="preferences.cpp" line="592"/>
+        <location filename="preferences.cpp" line="688"/>
+        <location filename="preferences.cpp" line="844"/>
+        <location filename="preferences.cpp" line="858"/>
+        <location filename="preferences.cpp" line="877"/>
+        <location filename="preferences.cpp" line="895"/>
         <source>Securepoint SSL VPN</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="20"/>
+        <location filename="preferences.cpp" line="22"/>
         <source>No Tap-Win32 driver was found on this system.</source>
         <translation>Es wurde kein Tap Win32 Treiber gefunden.</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="21"/>
+        <location filename="preferences.cpp" line="23"/>
         <source>Install the driver?
 For this action you need administrator permissions!</source>
         <translation>Soll der Tap Treiber installiert werden?
 Für diese Aktion benötigen Sie Administratorrechte!</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="31"/>
+        <location filename="preferences.cpp" line="33"/>
         <source>Install Tap Device</source>
         <translation>Tap Treiber Installation</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="33"/>
+        <location filename="preferences.cpp" line="35"/>
         <source>Unable to install Tap-Win32 driver!
 Maybe you have no permissions.
 Please contact your system administrator.</source>
@@ -1521,129 +1562,129 @@ Eventuell haben Sie nicht die benötigten Rechte.
 Bitte setzen Sie sich mit Ihrem Systemadministrator in Verbindung.</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="69"/>
+        <location filename="preferences.cpp" line="72"/>
         <source> - manage</source>
         <translation> - Manage</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="222"/>
+        <location filename="preferences.cpp" line="247"/>
         <source>Service</source>
         <translation>Dienst</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="222"/>
+        <location filename="preferences.cpp" line="247"/>
         <source>OpenVPN</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="223"/>
-        <location filename="preferences.cpp" line="224"/>
-        <location filename="preferences.cpp" line="225"/>
-        <location filename="preferences.cpp" line="226"/>
-        <location filename="preferences.cpp" line="227"/>
-        <location filename="preferences.cpp" line="229"/>
-        <location filename="preferences.cpp" line="230"/>
-        <location filename="preferences.cpp" line="231"/>
+        <location filename="preferences.cpp" line="248"/>
+        <location filename="preferences.cpp" line="249"/>
+        <location filename="preferences.cpp" line="250"/>
+        <location filename="preferences.cpp" line="251"/>
+        <location filename="preferences.cpp" line="252"/>
+        <location filename="preferences.cpp" line="254"/>
+        <location filename="preferences.cpp" line="255"/>
+        <location filename="preferences.cpp" line="256"/>
         <source>yes</source>
         <translation>ja</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="223"/>
-        <location filename="preferences.cpp" line="224"/>
-        <location filename="preferences.cpp" line="225"/>
-        <location filename="preferences.cpp" line="226"/>
-        <location filename="preferences.cpp" line="227"/>
-        <location filename="preferences.cpp" line="229"/>
-        <location filename="preferences.cpp" line="230"/>
-        <location filename="preferences.cpp" line="231"/>
+        <location filename="preferences.cpp" line="248"/>
+        <location filename="preferences.cpp" line="249"/>
+        <location filename="preferences.cpp" line="250"/>
+        <location filename="preferences.cpp" line="251"/>
+        <location filename="preferences.cpp" line="252"/>
+        <location filename="preferences.cpp" line="254"/>
+        <location filename="preferences.cpp" line="255"/>
+        <location filename="preferences.cpp" line="256"/>
         <source>no</source>
         <translation>nein</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="228"/>
+        <location filename="preferences.cpp" line="253"/>
         <source>none</source>
         <translation>keine</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="238"/>
+        <location filename="preferences.cpp" line="263"/>
         <source>German</source>
         <translation>Deutsch</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="238"/>
+        <location filename="preferences.cpp" line="263"/>
         <source>English</source>
         <translation>Englisch</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="301"/>
-        <location filename="preferences.cpp" line="302"/>
-        <location filename="preferences.cpp" line="311"/>
-        <location filename="preferences.cpp" line="322"/>
+        <location filename="preferences.cpp" line="327"/>
+        <location filename="preferences.cpp" line="328"/>
+        <location filename="preferences.cpp" line="337"/>
+        <location filename="preferences.cpp" line="348"/>
         <source>- Start config</source>
         <translation>- Start Konfiguration</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="404"/>
+        <location filename="preferences.cpp" line="434"/>
         <source>Connect</source>
         <translation>Verbinden</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="417"/>
+        <location filename="preferences.cpp" line="447"/>
         <source>Show log</source>
         <translation>Log zeigen</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="422"/>
+        <location filename="preferences.cpp" line="452"/>
         <source>Quick edit</source>
         <translation>Quick Edit</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="447"/>
+        <location filename="preferences.cpp" line="477"/>
         <source>&amp;Status</source>
         <translation>&amp;Status</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="452"/>
+        <location filename="preferences.cpp" line="482"/>
         <source>&amp;Proxy Settings</source>
         <translation>&amp;Proxy Einstellungen</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="455"/>
+        <location filename="preferences.cpp" line="485"/>
         <source>&amp;Information</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="459"/>
+        <location filename="preferences.cpp" line="489"/>
         <source>&amp;Quit</source>
         <translation>&amp;Beenden</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="469"/>
-        <location filename="preferences.cpp" line="483"/>
-        <location filename="preferences.cpp" line="659"/>
+        <location filename="preferences.cpp" line="499"/>
+        <location filename="preferences.cpp" line="513"/>
+        <location filename="preferences.cpp" line="689"/>
         <source>A connection is still connected!</source>
         <translation>Eine Verbindung ist gerade verbunden!</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="471"/>
-        <location filename="preferences.cpp" line="661"/>
+        <location filename="preferences.cpp" line="501"/>
+        <location filename="preferences.cpp" line="691"/>
         <source>You are still connected. Please disconnect first.</source>
         <translation>Momentan ist eine Verbindung aktiv, bitte trennen Sie die Verbindung zuerst.</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="485"/>
-        <location filename="preferences.cpp" line="604"/>
+        <location filename="preferences.cpp" line="515"/>
+        <location filename="preferences.cpp" line="634"/>
         <source>Do you want to disconnect the connection?</source>
         <translation>Wollen Sie die Verbindung trennen?</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="506"/>
-        <location filename="preferences.cpp" line="518"/>
+        <location filename="preferences.cpp" line="536"/>
+        <location filename="preferences.cpp" line="548"/>
         <source>Remove Tap-Win32 driver</source>
         <translation>Tap Win32 Treiber entfernen</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="508"/>
+        <location filename="preferences.cpp" line="538"/>
         <source>Uninstall the driver?
 For this action you need administrator permissions!</source>
         <translation>Soll der Tap Treiber deinstalliert werden?
@@ -1654,7 +1695,7 @@ Für diese Aktion benötigen Sie Administratorrechte!</translation>
         <translation type="obsolete">Konfiguration löschen</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="520"/>
+        <location filename="preferences.cpp" line="550"/>
         <source>Unable to uninstall Tap-Win32 driver!
 Maybe you have no permissions.
 Please contact your system administrator.</source>
@@ -1663,96 +1704,101 @@ Eventuell haben Sie nicht die benötigten Rechte.
 Bitte setzen Sie sich mit Ihrem Systemadministrator in Verbindung.</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="762"/>
+        <location filename="preferences.cpp" line="804"/>
         <source>&amp;Disconnect</source>
         <translation>&amp;Trennen</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="764"/>
+        <location filename="preferences.cpp" line="806"/>
         <source>Con&amp;nect</source>
         <translation>&amp;Verbinden</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="773"/>
-        <location filename="preferences.cpp" line="775"/>
+        <location filename="preferences.cpp" line="810"/>
+        <source>Service log</source>
+        <translation>Dienstlog</translation>
+    </message>
+    <message>
+        <location filename="preferences.cpp" line="819"/>
+        <location filename="preferences.cpp" line="821"/>
         <source>&amp;Delete</source>
         <translation>&amp;Löschen</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="779"/>
+        <location filename="preferences.cpp" line="825"/>
         <source>&amp;Delete crypted data</source>
         <translation>Kryptdaten &amp;löschen</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="782"/>
+        <location filename="preferences.cpp" line="828"/>
         <source>&amp;Rename</source>
         <translation>&amp;Umbennen</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="784"/>
+        <location filename="preferences.cpp" line="830"/>
         <source>&amp;Edit</source>
         <translation>&amp;Editieren</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="785"/>
+        <location filename="preferences.cpp" line="831"/>
         <source>&amp;Quick edit</source>
         <translation>&amp;Quick Edit</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="787"/>
+        <location filename="preferences.cpp" line="833"/>
         <source>&amp;Export</source>
         <translation>E&amp;xportieren</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="789"/>
+        <location filename="preferences.cpp" line="835"/>
         <source>&amp;Import</source>
         <translation>&amp;Importieren</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="799"/>
-        <location filename="preferences.cpp" line="813"/>
+        <location filename="preferences.cpp" line="845"/>
+        <location filename="preferences.cpp" line="859"/>
         <source>Delete linked configuration</source>
         <translation>Gelinkte Konfiguration löschen</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="801"/>
+        <location filename="preferences.cpp" line="847"/>
         <source>Remove the linked configuration from list?</source>
         <translation>Gelinkte Konfiguration löschen?</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="815"/>
+        <location filename="preferences.cpp" line="861"/>
         <source>Configuration successfully removed!</source>
         <translation>Konfiguration erfolgreich gelöscht!</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="832"/>
-        <location filename="preferences.cpp" line="850"/>
+        <location filename="preferences.cpp" line="878"/>
+        <location filename="preferences.cpp" line="896"/>
         <source>Delete crypted user data</source>
         <translation>Verschlüsselte Benutzerdaten löschen</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="834"/>
+        <location filename="preferences.cpp" line="880"/>
         <source>Remove the crypted user data for the configuration?</source>
         <translation>Sollen die verschlüsselten Benutzerdaten für diese Konfiguration gelöscht werden?</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="852"/>
+        <location filename="preferences.cpp" line="898"/>
         <source>Crypted user data successfully removed!</source>
         <translation>Verschlüsselte Benutzerdaten wurden erfolgreich entfernt!</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="409"/>
-        <location filename="preferences.cpp" line="603"/>
+        <location filename="preferences.cpp" line="439"/>
+        <location filename="preferences.cpp" line="633"/>
         <source>Disconnect</source>
         <translation>Trennen</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="72"/>
+        <location filename="preferences.cpp" line="75"/>
         <source> - portable</source>
         <translation> - Portabel</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="676"/>
+        <location filename="preferences.cpp" line="706"/>
         <source>You are already connected.</source>
         <translation>Sie sind bereits verbunden.</translation>
     </message>
@@ -2272,9 +2318,9 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
+        <location filename="proxysettings.ui" line="29"/>
         <location filename="proxysettings.cpp" line="30"/>
         <location filename="proxysettings.cpp" line="103"/>
-        <location filename="proxysettings.ui" line="29"/>
         <source>Proxy Settings</source>
         <translation>Proxy Einstllungen</translation>
     </message>
@@ -2348,12 +2394,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QObject</name>
     <message>
-        <location filename="main.cpp" line="89"/>
+        <location filename="main.cpp" line="92"/>
         <source>Securepoint SSL VPN</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="main.cpp" line="90"/>
+        <location filename="main.cpp" line="93"/>
         <source>No systray found on this system.</source>
         <translation>Es wurde kein Systray gefunden.</translation>
     </message>
@@ -2528,6 +2574,28 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>SingleApplication</name>
+    <message>
+        <location filename="single_application.cpp" line="41"/>
+        <source>Securepoint SSL VPN</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="single_application.cpp" line="42"/>
+        <source>Exit Application</source>
+        <translation>Anwendung beenden</translation>
+    </message>
+    <message>
+        <location filename="single_application.cpp" line="44"/>
+        <source>You are still connected to a vpn network!
+Please disconnect bevor you close your windows session.
+By forcing the quit from windows malfunctions can occurred!</source>
+        <translation>Sie sind noch mit einer VPN-Verbindung verbunden!
+Bitte trennen Sie zuerst die Verbindung bevor Sie sich abmelden.
+Wenn Sie das Beenden von Windows aus erzwingen, kann es zu Fehlfunktionen kommen!</translation>
+    </message>
+</context>
+<context>
     <name>StartPage</name>
     <message>
         <location filename="wiz_startpage.ui" line="14"/>
@@ -2535,12 +2603,12 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="wiz_startpage.ui" line="47"/>
+        <location filename="wiz_startpage.ui" line="53"/>
         <source>This wizard will guides you through your way to generate a new VPN connection. You simply need to specify the fields you want include into the new config.</source>
         <translation>Dieser Assistent begleitet Sie bei der Generierung einer neuen SSL VPN Verbindung. Sie müssen nur die Felder angeben, die Sie in Ihrer Konfiguration aufnehmen möchten.</translation>
     </message>
     <message>
-        <location filename="wiz_startpage.ui" line="78"/>
+        <location filename="wiz_startpage.ui" line="84"/>
         <source>Please notice:
 If you create a VPN config in portable mode, the new config will be automatically created into the application directory. In the installation mode the default is to create the new config into the home directory of the user. </source>
         <translation>Bitte beachten Sie:
@@ -2629,6 +2697,7 @@ Wenn Sie eine neue Konfiguration im portablen Modus erstellen wird die Konfigura
     </message>
     <message>
         <location filename="treebutton.cpp" line="69"/>
+        <location filename="treebutton.cpp" line="70"/>
         <source>An error has occurred.</source>
         <translation>Es ist ein Fehler aufgetreten.</translation>
     </message>
@@ -2759,8 +2828,9 @@ Wenn Sie eine neue Konfiguration im portablen Modus erstellen wird die Konfigura
     </message>
     <message>
         <location filename="appinfo.ui" line="88"/>
-        <source>SSL VPN Client</source>
-        <translation>SSL VPN Client</translation>
+        <source>SSL VPN Client v.0.9.6 RC3</source>
+        <oldsource>SSL VPN Client</oldsource>
+        <translation></translation>
     </message>
     <message>
         <location filename="appinfo.ui" line="107"/>

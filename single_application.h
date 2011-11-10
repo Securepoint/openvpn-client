@@ -8,6 +8,7 @@
 
 class Preferences;
 #include "preferences.h"
+#include <windows.h>
 
 class SingleApplication : public QApplication
 {
@@ -17,6 +18,9 @@ public:
         Preferences *prefParent;
         bool isRunning();
         bool sendMessage(const QString &message);
+
+protected:
+        virtual bool winEventFilter(MSG* msg, long* result);
 
 public slots:
         void checkForMessage();

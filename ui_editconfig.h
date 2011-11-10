@@ -1,8 +1,8 @@
 /********************************************************************************
 ** Form generated from reading UI file 'editconfig.ui'
 **
-** Created: Thu 15. Apr 13:48:01 2010
-**      by: Qt User Interface Compiler version 4.6.2
+** Created: Mon 22. Nov 15:04:36 2010
+**      by: Qt User Interface Compiler version 4.7.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -97,8 +97,8 @@ public:
     {
         EditConfig->setWindowTitle(QApplication::translate("EditConfig", "Edit Config", 0, QApplication::UnicodeUTF8));
         groupBox->setTitle(QApplication::translate("EditConfig", "Edit configuration:", 0, QApplication::UnicodeUTF8));
-        cmdClose->setText(QApplication::translate("EditConfig", "     &Close", 0, QApplication::UnicodeUTF8));
-        cmdSave->setText(QApplication::translate("EditConfig", "     &Save", 0, QApplication::UnicodeUTF8));
+        cmdClose->setText(QApplication::translate("EditConfig", "     &Cancel", 0, QApplication::UnicodeUTF8));
+        cmdSave->setText(QApplication::translate("EditConfig", "     &OK", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
 };

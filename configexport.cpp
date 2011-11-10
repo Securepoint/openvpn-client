@@ -208,7 +208,7 @@ void ConfigExport::on_cmdExport_clicked()
             arguments << scriptConfig;
             packProc.start(program, arguments);
 
-            if (!packProc.waitForFinished()) {
+            if (!packProc.waitForFinished(3000)) {
                 QMessageBox msgBox;
                 msgBox.setWindowTitle(tr("Securepoint SSL VPN"));
                 msgBox.setText(tr("Export Configuration"));
@@ -238,7 +238,7 @@ void ConfigExport::on_cmdExport_clicked()
             packCrypt.start(programCrypt, argCrypt);
 
 
-            if (!packCrypt.waitForFinished()) {
+            if (!packCrypt.waitForFinished(3000)) {
                 fError = true;
                 errMes = QString(tr("OpenSSL process still running!"));
             }
@@ -250,7 +250,7 @@ void ConfigExport::on_cmdExport_clicked()
                     fError = true;
                     errMes = configZip.errorString();
                 }
-            }
+            }            
         } else {
             this->close();
             QMessageBox msgBox;

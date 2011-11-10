@@ -67,6 +67,7 @@ void TreeButton::setError(QString error) {
         }
     }
     this->getParentItem()->setText(2, QString (tr("An error has occurred.")) + QString ("\n") + error);
+    this->getParentItem()->setToolTip(2, QString (tr("An error has occurred.")) + QString ("\n") + error);
     this->getParentItem()->setBackgroundColor(1, QColor("#ff0000")); // rot
     this->getParentItem()->setBackgroundColor(2, QColor("#ff0000")); // rot
     this->getParentItem()->setBackgroundColor(3, QColor("#ff0000")); // rot

@@ -63,6 +63,7 @@ void EditConfig::on_cmdSave_clicked()
      saveFile.close();
      // Reload File
      m_ui->memConfigContent->setPlainText(this->getContent());
+     this->close();
 }
 
 void EditConfig::on_cmdClose_clicked()

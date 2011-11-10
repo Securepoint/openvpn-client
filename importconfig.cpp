@@ -263,21 +263,34 @@ void ImportConfig::on_cmdImport_clicked()
                     ovpnFile.rename(dirPath + QString("/") + configName + QString(".ovpn"));
                 }
             }
-            MainWindowControll::getInstance()->refreshConfigs();
-            MainWindowControll::getInstance()->setConnectionStatus();
-            QMessageBox msgBox;
-            msgBox.setWindowTitle(tr("Securepoint SSL VPN"));
-            msgBox.setText(tr("Import Configuration"));
-            msgBox.setWindowIcon(QIcon(":/images/logo.png"));
-            msgBox.setInformativeText(tr("Import successfully ended!"));
-            msgBox.setStandardButtons(QMessageBox::Ok);
-            msgBox.setDefaultButton(QMessageBox::Ok);
-            msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
-            msgBox.exec();
-            MainWindowControll::getInstance()->refreshDialog();
-            this->close();
 
-
+            QFile ovpnFile (dirPath + QString("/") + configName + QString(".ovpn"));
+            if (!ovpnFile.exists()) {
+                QMessageBox msgBox;
+                msgBox.setWindowTitle(tr("Securepoint SSL VPN"));
+                msgBox.setText(tr("Import Configuration"));
+                msgBox.setWindowIcon(QIcon(":/images/logo.png"));
+                msgBox.setInformativeText(tr("Import failed! Removing empty directory."));
+                msgBox.setStandardButtons(QMessageBox::Ok);
+                msgBox.setDefaultButton(QMessageBox::Ok);
+                msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
+                msgBox.exec();
+                dirobj.rmdir(dirPath);
+            } else {
+                MainWindowControll::getInstance()->refreshConfigs();
+                MainWindowControll::getInstance()->setConnectionStatus();
+                QMessageBox msgBox;
+                msgBox.setWindowTitle(tr("Securepoint SSL VPN"));
+                msgBox.setText(tr("Import Configuration"));
+                msgBox.setWindowIcon(QIcon(":/images/logo.png"));
+                msgBox.setInformativeText(tr("Import successfully ended!"));
+                msgBox.setStandardButtons(QMessageBox::Ok);
+                msgBox.setDefaultButton(QMessageBox::Ok);
+                msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
+                msgBox.exec();
+                MainWindowControll::getInstance()->refreshDialog();
+                this->close();
+            }
         } else {
             QMessageBox msgBox;
             msgBox.setWindowTitle(tr("Securepoint SSL VPN"));

@@ -635,6 +635,7 @@ void OpenVpn::readProcessData() {
 
         // Fehler abfangen
         bool errorOcurred = false;
+        bool _tlsHandshakeFailed (false);
         QString errorMessage = "";
         //"All TAP-Win32 adapters on this system are currently in use"
         if (lineOut.contains("All TAP-Win32 adapters on this system are currently in use", Qt::CaseInsensitive)) {
@@ -643,9 +644,17 @@ void OpenVpn::readProcessData() {
         } else if (lineOut.contains("TLS Error: Need PEM pass phrase for private key", Qt::CaseInsensitive)) {
             errorMessage = QString (tr("TLS Error: Need PEM pass phrase for private key"));
             errorOcurred = true;
+        } else if (lineOut.contains("TLS Error: TLS handshake failed", Qt::CaseInsensitive)) {
+            errorMessage = QString (tr("TLS error! See log for details"));
+            errorOcurred = true;
+            _tlsHandshakeFailed = true;
         } else if (lineOut.contains("EVP_DecryptFinal:bad decrypt", Qt::CaseInsensitive)) {
             errorMessage = QString (tr("EVP_DecryptFinal:bad decrypt"));
             errorOcurred = true;
+        } else if (lineOut.contains("RESOLVE: Cannot resolve host address:", Qt::CaseInsensitive)) {
+            errorMessage = QString (tr("Connection error! See log for details"));
+            errorOcurred = true;
+            _tlsHandshakeFailed = true;
         } else if (lineOut.contains("PKCS12_parse:mac verify failure", Qt::CaseInsensitive)) {
             errorMessage = QString (tr("PKCS12_parse:mac verify failure"));
             errorOcurred = true;
@@ -668,10 +677,10 @@ void OpenVpn::readProcessData() {
             errorMessage = QString (tr("Application Exiting!"));
             errorOcurred = true;
         } else if (lineOut.contains("Use --help for more information.", Qt::CaseInsensitive)) {
-            errorMessage = QString (tr("OpenVPN parameter error!\nSee log for details"));
+            errorMessage = QString (tr("OpenVPN parameter error! See log for details"));
             errorOcurred = true;
         } else if (lineOut.contains("will try again in 5 seconds", Qt::CaseInsensitive)) {
-            errorMessage = QString (tr("OpenVPN connection error!\nSee log for details"));
+            errorMessage = QString (tr("OpenVPN connection error! See log for details"));
             //errorOcurred = true;
         }
 
@@ -691,11 +700,13 @@ void OpenVpn::readProcessData() {
             emit errorOccuredSig(errorMessage);
         }
 
-        if (lineOut.contains("Restart pause", Qt::CaseInsensitive)) {
+        if (lineOut.contains("Restart pause", Qt::CaseInsensitive)) {            
             // Bei Restart Pause befinden wir uns immer noch im Connect auch wenn vorher ein Fehler aufgetreten ist!
-            this->setIcon(Connecting);
-            this->disableMenues();
-            emit connectionReconnectFromOpenVPNSig ();
+            if (!_tlsHandshakeFailed) {
+                this->setIcon(Connecting);
+                this->disableMenues();
+                emit connectionReconnectFromOpenVPNSig ();
+            }
         }
         //Initialization Sequence Completed
         if (lineOut.contains("Initialization Sequence Completed", Qt::CaseInsensitive)) {

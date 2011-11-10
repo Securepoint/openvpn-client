@@ -21,6 +21,7 @@ DataControll::DataControll(quint16 port, QObject* parent) : QTcpServer(parent)
 }
 
 void DataControll::discardClient() {
+     //Log::write("CLIENT: DISCARD CLIENT");
      QTcpSocket* socket = (QTcpSocket*)sender();
      socket->deleteLater();
 }
@@ -29,8 +30,9 @@ void DataControll::readClient() {
     // Should be replaced with a better solution
     // sending and reading blocks.
     // Maybe next release
+    //Log::write("CLIENT: READY READ");
     QTcpSocket* socket = (QTcpSocket*)sender();
-    if (socket->canReadLine()) {
+    if (socket->canReadLine()) {        
         QStringList tokens = QString(socket->readAll()).split(QRegExp("[\r\n][\r\n]*"));
         for (int i=0; i<tokens.size();i++) {
             QString log = "";
@@ -353,10 +355,13 @@ void DataControll::userDataIsAvailable() {
 }
 
 void DataControll::incomingConnection(int socket) {
+    //Log::write("CLIENT: INCOMMING CONNECTION");
     QTcpSocket* s = new QTcpSocket(this);
     connect(s, SIGNAL(readyRead()), this, SLOT(readClient()));
     connect(s, SIGNAL(disconnected()), this, SLOT(discardClient()));
+    //Log::write("CLIENT: SET SOCKET DESCTIPTOR: " + QString::number(socket));
     s->setSocketDescriptor(socket);
+    //Log::write("CLIENT: WAIT FOR READY READ");
 }
 
 void DataControll::sendConnect() {

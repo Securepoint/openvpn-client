@@ -18,6 +18,19 @@
 #include "mainwindowcontroll.h"
 #include "treebutton.h"
 
+class Log {
+public:
+    static void write (const QString &message) {
+        QFile log ("c:/newsrvlog.log");
+        if (log.open(QIODevice::WriteOnly | QIODevice::Append)) {
+            QTextStream out (&log);
+            out << message << "\n";
+            log.waitForBytesWritten(300);
+            log.close();
+        }
+    }
+};
+
 
 class DataControll : public QTcpServer
 {

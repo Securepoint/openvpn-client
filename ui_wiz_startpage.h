@@ -1,8 +1,8 @@
 /********************************************************************************
 ** Form generated from reading UI file 'wiz_startpage.ui'
 **
-** Created: Thu 15. Apr 13:48:01 2010
-**      by: Qt User Interface Compiler version 4.6.2
+** Created: Tue 16. Nov 12:52:14 2010
+**      by: Qt User Interface Compiler version 4.7.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -36,11 +36,13 @@ public:
         StartPage->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 255, 255);"));
         plainTextEdit = new QPlainTextEdit(StartPage);
         plainTextEdit->setObjectName(QString::fromUtf8("plainTextEdit"));
+        plainTextEdit->setEnabled(true);
         plainTextEdit->setGeometry(QRect(10, 10, 371, 51));
         plainTextEdit->setAutoFillBackground(false);
         plainTextEdit->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 255, 255);"));
         plainTextEdit->setFrameShape(QFrame::NoFrame);
         plainTextEdit->setFrameShadow(QFrame::Plain);
+        plainTextEdit->setReadOnly(true);
         plainTextEdit_2 = new QPlainTextEdit(StartPage);
         plainTextEdit_2->setObjectName(QString::fromUtf8("plainTextEdit_2"));
         plainTextEdit_2->setEnabled(true);

@@ -1,8 +1,8 @@
 /********************************************************************************
 ** Form generated from reading UI file 'manageconnection.ui'
 **
-** Created: Thu 15. Apr 14:46:01 2010
-**      by: Qt User Interface Compiler version 4.6.2
+** Created: Mon 22. Nov 15:04:36 2010
+**      by: Qt User Interface Compiler version 4.7.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -697,7 +697,7 @@ public:
         tbSettings->addItem(page, QString::fromUtf8("General"));
         page_3 = new QWidget();
         page_3->setObjectName(QString::fromUtf8("page_3"));
-        page_3->setGeometry(QRect(0, 0, 421, 423));
+        page_3->setGeometry(QRect(0, 0, 96, 26));
         groupBox_10 = new QGroupBox(page_3);
         groupBox_10->setObjectName(QString::fromUtf8("groupBox_10"));
         groupBox_10->setGeometry(QRect(0, 2, 421, 81));
@@ -797,7 +797,7 @@ public:
         tbSettings->addItem(page_3, QString::fromUtf8("Linux / Windows"));
         page_2 = new QWidget();
         page_2->setObjectName(QString::fromUtf8("page_2"));
-        page_2->setGeometry(QRect(0, 0, 421, 423));
+        page_2->setGeometry(QRect(0, 0, 96, 26));
         groupBox_15 = new QGroupBox(page_2);
         groupBox_15->setObjectName(QString::fromUtf8("groupBox_15"));
         groupBox_15->setGeometry(QRect(0, 0, 421, 91));
@@ -905,7 +905,7 @@ public:
         tbSettings->addItem(page_2, QString::fromUtf8("Scripts"));
         page_4 = new QWidget();
         page_4->setObjectName(QString::fromUtf8("page_4"));
-        page_4->setGeometry(QRect(0, 0, 421, 423));
+        page_4->setGeometry(QRect(0, 0, 96, 26));
         groupBox_8 = new QGroupBox(page_4);
         groupBox_8->setObjectName(QString::fromUtf8("groupBox_8"));
         groupBox_8->setGeometry(QRect(0, 1, 421, 101));
@@ -1182,7 +1182,7 @@ public:
     void retranslateUi(QDialog *ManageConnection)
     {
         ManageConnection->setWindowTitle(QApplication::translate("ManageConnection", "Edit Connection", 0, QApplication::UnicodeUTF8));
-        cmdClose->setText(QApplication::translate("ManageConnection", "     &Close", 0, QApplication::UnicodeUTF8));
+        cmdClose->setText(QApplication::translate("ManageConnection", "     &Cancel", 0, QApplication::UnicodeUTF8));
         groupBox_3->setTitle(QApplication::translate("ManageConnection", "General:", 0, QApplication::UnicodeUTF8));
         label->setText(QApplication::translate("ManageConnection", "Client:", 0, QApplication::UnicodeUTF8));
         cbClient->setText(QString());
@@ -1279,7 +1279,7 @@ public:
         label_32->setText(QApplication::translate("ManageConnection", "Chipher:", 0, QApplication::UnicodeUTF8));
         tbSettings->setItemText(tbSettings->indexOf(page_4), QApplication::translate("ManageConnection", "Advanced", 0, QApplication::UnicodeUTF8));
         label_41->setText(QString());
-        cmdSave->setText(QApplication::translate("ManageConnection", "     &Save", 0, QApplication::UnicodeUTF8));
+        cmdSave->setText(QApplication::translate("ManageConnection", "     &OK", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
 };

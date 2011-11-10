@@ -880,6 +880,7 @@ void ManageConnection::on_cmdSave_clicked()
         }
     }
     sf.close();
+    /*
     QMessageBox msgBox;
     msgBox.setWindowTitle(tr("Securepoint SSL VPN"));
     msgBox.setText(tr("Save configuration"));
@@ -888,7 +889,8 @@ void ManageConnection::on_cmdSave_clicked()
     msgBox.setStandardButtons(QMessageBox::Ok);
     msgBox.setDefaultButton(QMessageBox::Ok);
     msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
-    msgBox.exec();
+    msgBox.exec();*/
+    this->close();
 }
 
 void ManageConnection::on_cmdGetCAPath_clicked()

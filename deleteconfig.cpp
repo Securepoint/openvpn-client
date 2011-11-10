@@ -16,6 +16,7 @@ DeleteConfig::DeleteConfig() :
     m_ui->setupUi(this);
     this->setWindowFlags(Qt::WindowCloseButtonHint | Qt::WindowStaysOnTopHint);
     this->obj = NULL;
+    this->explorerPath = "";
 }
 
 void DeleteConfig::changeEvent(QEvent *e)
@@ -57,6 +58,7 @@ void DeleteConfig::on_cmdCancel_clicked()
 
 void DeleteConfig::on_cmdDelete_clicked()
 {
+    this->explorerPath = "";
     bool fError = false;
     QString errMes = "";
 
@@ -162,12 +164,16 @@ void DeleteConfig::on_cmdDelete_clicked()
         msgBox.setWindowTitle(tr("Securepoint SSL VPN"));
         msgBox.setText(tr("Delete Configuration"));
         msgBox.setWindowIcon(QIcon(":/images/logo.png"));
-        msgBox.setInformativeText(errMes);
-        msgBox.setStandardButtons(QMessageBox::Ok);
-        msgBox.setDefaultButton(QMessageBox::Ok);
+        msgBox.setInformativeText(errMes + QString ("\n") + tr("Do you want to open the explorer to check the files?\nOtherwise maybe malfunctions can be occurred."));
+        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+        msgBox.setDefaultButton(QMessageBox::Yes);
         msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
-        msgBox.exec();
-        return;
+        int ret = msgBox.exec();
+        if (ret == QMessageBox::Yes) {
+            this->explorerPath = QString("file:///") + this->obj->configPath;
+            if (!this->explorerPath.isEmpty())
+                QTimer::singleShot(300, this, SLOT(openExplorer()));
+        }
     }
 
     // Daten aktualisieren
@@ -176,6 +182,11 @@ void DeleteConfig::on_cmdDelete_clicked()
     MainWindowControll::getInstance()->setConnectionStatus();
     // Fertig und schliessen
     this->close();
+}
+
+void DeleteConfig::openExplorer() {
+
+    QDesktopServices::openUrl(QUrl(this->explorerPath, QUrl::TolerantMode));
 }
 
 void DeleteConfig::setOpenVpnObject(OpenVpn *obj) {

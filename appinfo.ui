@@ -85,7 +85,7 @@
     </font>
    </property>
    <property name="text">
-    <string>SSL VPN Client</string>
+    <string>SSL VPN Client v.0.9.6 RC3</string>
    </property>
    <property name="scaledContents">
     <bool>false</bool>

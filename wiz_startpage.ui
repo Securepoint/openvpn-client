@@ -23,6 +23,9 @@
    <string/>
   </property>
   <widget class="QPlainTextEdit" name="plainTextEdit">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -42,6 +45,9 @@
    </property>
    <property name="frameShadow">
     <enum>QFrame::Plain</enum>
+   </property>
+   <property name="readOnly">
+    <bool>true</bool>
    </property>
    <property name="plainText">
     <string>This wizard will guides you through your way to generate a new VPN connection. You simply need to specify the fields you want include into the new config.</string>

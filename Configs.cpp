@@ -154,5 +154,5 @@ void Configs::appendConfigToList(OpenVpn *obj) {
 }
 
 void Configs::swap(int i, int j) {
-    this->myList.swap(i,j);
+    //this->myList.swap(i,j);
 }

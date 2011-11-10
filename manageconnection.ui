@@ -42,7 +42,7 @@ QPushButton {height: 25px; width: 50px;text-align:left;
 	padding-bottom: 3px;}</string>
    </property>
    <property name="text">
-    <string>     &amp;Close</string>
+    <string>     &amp;Cancel</string>
    </property>
    <property name="icon">
     <iconset resource="systray.qrc">
@@ -1102,8 +1102,8 @@ image: url(:/images/styles/checkbox_checked_hover.png);
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>421</width>
-      <height>423</height>
+      <width>96</width>
+      <height>26</height>
      </rect>
     </property>
     <attribute name="label">
@@ -1360,8 +1360,8 @@ image: url(:/images/styles/checkbox_checked_hover.png);
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>421</width>
-      <height>423</height>
+      <width>96</width>
+      <height>26</height>
      </rect>
     </property>
     <attribute name="label">
@@ -1723,8 +1723,8 @@ p, li { white-space: pre-wrap; }
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>421</width>
-      <height>423</height>
+      <width>96</width>
+      <height>26</height>
      </rect>
     </property>
     <attribute name="label">
@@ -2308,7 +2308,7 @@ QPushButton {height: 25px; width: 50px;text-align:left;
 	padding-bottom: 3px;}</string>
    </property>
    <property name="text">
-    <string>     &amp;Save</string>
+    <string>     &amp;OK</string>
    </property>
    <property name="icon">
     <iconset resource="systray.qrc">

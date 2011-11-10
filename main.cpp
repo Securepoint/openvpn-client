@@ -71,7 +71,8 @@ int main(int argc, char *argv[])
             Settings::getInstance()->setIsManageClient(true);
         }
     }
-
+    // Portabel bauen
+    //Settings::getInstance()->setIsPortableClient(true);
     // Wenn Portable ist, immer mit lokalen VPN verbinden
     if (Settings::getInstance()->getIsPortableClient())
         Settings::getInstance()->setIsRunAsService(false);
@@ -98,6 +99,7 @@ int main(int argc, char *argv[])
     QApplication::setQuitOnLastWindowClosed(false);
 
     // Splashscreen öffnen
+    app.addLibraryPath(app.applicationDirPath() + QDir::separator() + "plugins");
     QPixmap pixmap(":/images/startscreen.jpg");
     QSplashScreen splash(pixmap);
     splash.show();

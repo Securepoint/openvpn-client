@@ -58,7 +58,7 @@ Preferences::Preferences(QWidget *parent) :
     this->setMinimumHeight(390);
     this->setMaximumHeight(390);
 
-    this->setWindowFlags(Qt::MSWindowsFixedSizeDialogHint | Qt::WindowCloseButtonHint | Qt::WindowStaysOnTopHint);
+    this->setWindowFlags(Qt::MSWindowsFixedSizeDialogHint | Qt::WindowCloseButtonHint);
 
     // Icon setzen und anzeigen
     this->configPwd = "";
@@ -91,12 +91,34 @@ void Preferences::searchStartConfigDir(){
     this->refreshDialog();
 }
 
+bool Preferences::isConnectionActive() const {
+    bool retVal = false;
+    foreach (OpenVpn* obj, Configs::getInstance()->getConfigsObjects()) {
+        if (obj->isConnectionStable()) {
+            retVal = true;
+        } else if (obj->isConnecting()) {
+            retVal = true;
+        }
+    }
+    return retVal;
+}
+
 void Preferences::trayActivated(QSystemTrayIcon::ActivationReason reason){
     if (reason == QSystemTrayIcon::DoubleClick)
         if (!this->isMinimized()) {
             this->refreshDialog();
+            if (Settings::getInstance()->getIsPortableClient() || Settings::getInstance()->getIsManageClient()) {
+                m_ui->cmdNewConfig->show();
+                m_ui->cmdImportConfig->show();
+                m_ui->cmdRefreshData->show();
+            } else {
+                m_ui->cmdNewConfig->hide();
+                m_ui->cmdImportConfig->hide();
+                m_ui->cmdRefreshData->hide();
+            }
             this->showNormal();
             this->setFocus();
+            this->activateWindow();
         }
 }
 
@@ -259,6 +281,7 @@ void Preferences::startDaemon(){
 }
 
 void Preferences::openDialog(bool configFromCommandLine, QString commandLineConfig) {
+    bool showMe (false);
     if (configFromCommandLine) {
 
         QString commandConfigDir = "";
@@ -352,11 +375,12 @@ void Preferences::openDialog(bool configFromCommandLine, QString commandLineConf
         }
         // Den Dialog bei Startconfig immer anzeigen.
         if (!Settings::getInstance()->getIsNoPopUp())
-            this->show();
+            showMe = true;
     } else {
         this->refreshDialog();
-        this->show();
+        showMe = true;
     }
+
     if (Settings::getInstance()->getIsPortableClient() || Settings::getInstance()->getIsManageClient()) {
         m_ui->cmdNewConfig->show();
         m_ui->cmdImportConfig->show();
@@ -366,6 +390,9 @@ void Preferences::openDialog(bool configFromCommandLine, QString commandLineConf
         m_ui->cmdImportConfig->hide();
         m_ui->cmdRefreshData->hide();
     }
+
+    if (showMe)
+        this->show();
 
 }
 
@@ -701,7 +728,15 @@ void Preferences::enableTreeButtons() {
 
 void Preferences::on_trvConnections_itemDoubleClicked(QTreeWidgetItem* item, int column)
 {
-    if (column == 2) {
+    if (column == 1) {
+        if (Settings::getInstance()->getIsManageClient()) {
+            TreeConItem* _item(dynamic_cast<TreeConItem*>(item));
+            if (_item) {
+                ManageConnection::getInstance()->setOpenVpnObject(_item->getOpenVPN());
+                ManageConnection::getInstance()->show();
+            }
+        }
+    } else if (column == 2) {
         if (Settings::getInstance()->getIsRunAsSevice()) {
             ServiceLog::getInstance()->show();
         } else {
@@ -744,6 +779,12 @@ void Preferences::on_cmdNewConfig_clicked()
     VpnWizard::getInstance()->show();
 }
 
+void Preferences::showLogFromContextMenu() {
+    if (Settings::getInstance()->getIsRunAsSevice()) {
+        ServiceLog::getInstance()->show();
+    }
+}
+
 void Preferences::on_trvConnections_customContextMenuRequested(QPoint pos)
 {
     // Nur anzeigen wenn Manage oder Portable ist
@@ -765,6 +806,10 @@ void Preferences::on_trvConnections_customContextMenuRequested(QPoint pos)
                 configPopUp->addAction(QPixmap(":/images/disconnetdmen.png"), tr("&Disconnect"), item->getTreeButton(), SLOT(click()));
             } else {
                 configPopUp->addAction(QPixmap(":/images/connectmen.png"), tr("Con&nect"), item->getTreeButton(), SLOT(click()));
+            }
+            if (Settings::getInstance()->getIsRunAsSevice()) {
+                configPopUp->addSeparator();
+                configPopUp->addAction(QPixmap(":/images/logstartstop.png"), tr("Service log"), this, SLOT(showLogFromContextMenu()));
             }
             configPopUp->addSeparator();
             // Delete
@@ -788,7 +833,7 @@ void Preferences::on_trvConnections_customContextMenuRequested(QPoint pos)
             configPopUp->addAction(QPixmap(":/images/edit.png"), tr("&Quick edit"), item->getOpenVPN(), SLOT(openEditConfig()))->setEnabled(toggleMenues);
             configPopUp->addSeparator();
             configPopUp->addAction(QPixmap(":/images/export.png"), tr("&Export"), item->getOpenVPN(), SLOT(openExport()));
-            configPopUp->addSeparator();
+            //configPopUp->addSeparator();
             configPopUp->addAction(QPixmap(":/images/import.png"), tr("&Import"), ImportConfig::getInstance(), SLOT(show()));
             configPopUp->addSeparator();
             configPopUp->exec(m_ui->trvConnections->mapToGlobal(pos));

@@ -77,6 +77,7 @@ public:
     void refreshDialog ();
     void enableTreeButtons ();
     void setConnectionStatus ();
+    bool isConnectionActive () const;
 
 
 protected:
@@ -126,6 +127,8 @@ private slots:
     void on_cmdClose_clicked();
     void closeApp ();
     void startDelayDisconnectScript ();
+
+    void showLogFromContextMenu ();
 
     void treePushButtonClicked ();
 

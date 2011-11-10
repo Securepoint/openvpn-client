@@ -137,6 +137,7 @@ void OpenVpn::readProcessData() {
             if (this->proc->isWritable()) {
                 QByteArray ba;
                 this->waitForData = true;
+                ////Log::write("PKPWD:NEEDED");
                 this->writeLogDataToSocket("PKPWD:NEEDED");
                 while (this->waitForData) {
                     qApp->processEvents();
@@ -154,6 +155,7 @@ void OpenVpn::readProcessData() {
             if (this->proc->isWritable()) {
                 QByteArray ba;
                 this->waitForData = true;
+                //Log::write("User:NEEDED");
                 this->writeLogDataToSocket("USER:NEEDED");
                 while (this->waitForData) {
                     qApp->processEvents();
@@ -171,6 +173,7 @@ void OpenVpn::readProcessData() {
             if (this->proc->isWritable()) {
                 QByteArray ba;
                 this->waitForData = true;
+                //Log::write("UPWD:NEEDED");
                 this->writeLogDataToSocket("UPWD:NEEDED");
                 while (this->waitForData) {
                     qApp->processEvents();
@@ -187,6 +190,7 @@ void OpenVpn::readProcessData() {
             if (this->proc->isWritable()) {
                 QByteArray ba;
                 this->waitForData = true;
+                //Log::write("CKPWD:NEEDED");
                 this->writeLogDataToSocket("CKPWD:NEEDED");
                 while (this->waitForData) {
                     qApp->processEvents();
@@ -228,6 +232,7 @@ void OpenVpn::readProcessData() {
         
         // Fehler abfangen
         bool errorOcurred = false;
+        bool _tlsHandshakeFailed (false);
         QString errorMessage;
         //"All TAP-Win32 adapters on this system are currently in use"
         if (lineOut.contains("All TAP-Win32 adapters on this system are currently in use", Qt::CaseInsensitive)) {
@@ -236,6 +241,14 @@ void OpenVpn::readProcessData() {
         } else if (lineOut.contains("TLS Error: Need PEM pass phrase for private key", Qt::CaseInsensitive)) {
             errorMessage = QString ("TLS Error: Need PEM pass phrase for private key");
             errorOcurred = true;
+        } else if (lineOut.contains("TLS Error: TLS handshake failed", Qt::CaseInsensitive)) {
+            errorMessage = QString (tr("TLS error! See log for details"));
+            errorOcurred = true;
+            _tlsHandshakeFailed = true;
+        } else if (lineOut.contains("RESOLVE: Cannot resolve host address:", Qt::CaseInsensitive)) {
+            errorMessage = QString (tr("Connection error! See log for details"));
+            errorOcurred = true;
+            _tlsHandshakeFailed = true;
         } else if (lineOut.contains("EVP_DecryptFinal:bad decrypt", Qt::CaseInsensitive)) {
             errorMessage = QString ("EVP_DecryptFinal:bad decrypt");
             errorOcurred = true;
@@ -281,15 +294,25 @@ void OpenVpn::readProcessData() {
         if (errorOcurred) {
             this->connectionStable = false;
             this->writeLogDataToSocket("ERROR:" + errorMessage);
-        } else {
-            if (showLine)
-                this->writeLogDataToSocket(line);
+        }
+        // Die Ausgabe von OpenVPN immer senden, sofern es keine Useraufforderungen sind
+        if (showLine)
+            this->writeLogDataToSocket(line);
+
+
+        //Log::write("Line: line");
+        if (_tlsHandshakeFailed) {
+            this->disconnectVpn();
         }
 
         if (lineOut.contains("Restart pause", Qt::CaseInsensitive)) {
             // Bei Restart Pause befinden wir uns immer noch im Connect auch wenn vorher ein Fehler aufgetreten ist!
             // Status speichern und Tray Icon setzen
-            this->writeLogDataToSocket("RESTART:ACTION");
+            if (!_tlsHandshakeFailed) {
+                this->writeLogDataToSocket("RESTART:ACTION");
+            } else {
+                this->writeLogDataToSocket("Timeout[Maybe your cetificates are not valid. Please check if it is revoked], restart pause will be ignored! Shuting down OpenVPN ...");
+            }
         }
         //Initialization Sequence Completed
         if (lineOut.contains("Initialization Sequence Completed", Qt::CaseInsensitive)) {
@@ -301,24 +324,61 @@ void OpenVpn::readProcessData() {
 
 }
 
+void OpenVpn::errorSocket(QAbstractSocket::SocketError err) {
+    //Log::write("SOCKERT ERROR NR: " + QString::number(err));
+}
+
 void OpenVpn::writeLogDataToSocket(QString logData) {
-    QTcpSocket *socket = new QTcpSocket(this);
+    QTcpSocket socket (this);
+    connect(&socket, SIGNAL(disconnected()), &socket, SLOT(deleteLater()));
+    connect(&socket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(errorSocket(QAbstractSocket::SocketError)));
+    socket.connectToHost(QString("127.0.0.1"), this->clientPort);
+    //Log::write("Wait for Connect to 127.0.0.1:" + QString::number(this->clientPort));
+    if (socket.waitForConnected(500)) {
+        /*
+        if (socket.isValid()) {
+            //Log::write("Socket is valid");
+        } else {
+            //Log::write("Socket is NOT valid");
+        }
 
-    socket->connectToHost(QString("127.0.0.1"), this->clientPort);
+        if (socket.isTextModeEnabled()) {
+            //Log::write("Socket is in Textmode");
+        } else {
+            //Log::write("Socket is NOT in Textmode");
+        }
 
-    if (socket->waitForConnected(500)) {
-        QTextStream os(socket);
-
-        os.setAutoDetectUnicode(true);
+        if (socket.isWritable()) {
+            //Log::write("Socket is writable");
+        } else {
+            //Log::write("Socket is NOT writable");
+        }*/
+        QTextStream os(&socket);
+        //Log::write("Write LogData: " + logData);
+        os.setAutoDetectUnicode(true);        
         os << "log->" + logData.replace("\r\n", "#<>#") + "\r\n"
-           << QDateTime::currentDateTime().toString() << "\n";
+           << QDateTime::currentDateTime().toString() << "\n";        
+        os.flush();
+        if (socket.waitForBytesWritten(500)){
+            //Log::write("Disconnect from host");
+            socket.disconnectFromHost();
+            //Log::write("Wait for disconnect");
+            while (socket.state() != QTcpSocket::UnconnectedState
+                   && !socket.waitForDisconnected(-1)) {
+                qApp->processEvents();
+            }
+            //Log::write("Disconnected");
+        } else {
+            //Log::write("Wait Bytes written false");
+        }
+    } else {
+        //Log::write("Wait Connect false");
+    }
 
-        socket->close();
+    if (socket.isValid()) {
+        socket.disconnectFromHost();
     }
-    if (socket->state() == QAbstractSocket::UnconnectedState ||
-                           socket->waitForDisconnected(500)) {
-        delete socket;
-    }
+    //Log::write("End of Write Log Data");
 }
 
 void OpenVpn::setUsername(QString username) {
