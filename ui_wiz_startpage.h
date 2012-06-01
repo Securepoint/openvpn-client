@@ -1,8 +1,8 @@
 /********************************************************************************
 ** Form generated from reading UI file 'wiz_startpage.ui'
 **
-** Created: Tue 16. Nov 12:52:14 2010
-**      by: Qt User Interface Compiler version 4.7.0
+** Created: Thu 12. Jan 13:39:28 2012
+**      by: Qt User Interface Compiler version 4.7.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -32,6 +32,7 @@ public:
     {
         if (StartPage->objectName().isEmpty())
             StartPage->setObjectName(QString::fromUtf8("StartPage"));
+        StartPage->setWindowModality(Qt::NonModal);
         StartPage->resize(400, 368);
         StartPage->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 255, 255);"));
         plainTextEdit = new QPlainTextEdit(StartPage);

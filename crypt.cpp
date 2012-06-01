@@ -1,52 +1,99 @@
 #include "crypt.h"
-
-Crypt *Crypt::mInst = NULL;
-
-Crypt *Crypt::getInstance() {
-    if (!mInst)
-        mInst = new Crypt ();
-    return mInst;
-}
+#include "qca.h"
 
 Crypt::Crypt()
-{
-    this->secretKey = "";
+    : secretKey("aes128-cbc-pkcs7-sn93-sh21-jks-12")
+{        
 }
 
-void Crypt::setSecretKey(QString key) {
+Crypt::~Crypt() {
+
+}
+
+void Crypt::setSecretKey(const QString &key) {
     this->secretKey = key;
 }
 
-QString Crypt::cryptPlainText(const QString &plain) {
-    QString encText = "";
-
-    char buffer[3];
-
-    int pos = plain.length() % this->secretKey.length();
-
-    for (int i=0; i<plain.length(); i++) {
-        sprintf(buffer, "%03d", (unsigned char)plain[i].toAscii() ^ this->secretKey[(i+pos) % this->secretKey.length()].toAscii());
-        encText = encText + QString(buffer);
-    }
-    return encText;
+QStringList Crypt::magicsKey()
+{
+    QStringList lst = QString("aes128-cbc-pkcs7-sn93-sh21-jks-12").split(QLatin1String("-"));
+    lst = lst.replaceInStrings(QLatin1String("c"), QLatin1String("m"));
+    lst.removeAt(0);
+    lst.removeAt(5);
+    return lst;
 }
 
-QString Crypt::cryptToPlainText(const QString &cyrpt) {
-    QString plainText = "";
-    QChar c;
-    char digit;
+QByteArray Crypt::cryptPlainTextExt (const QByteArray &plain)
+{
+    QByteArray res;
 
-    int pos = (cyrpt.length() / 3 % this->secretKey.length());
+    QCA::Initializer init;
+    QCA::SecureArray arg = plain;
 
-    for (int i=0; i<cyrpt.length()/3; i++) {
-        int number = 0;
-        c = cyrpt[i*3]; digit = c.toAscii();   if (digit<'0' || digit>'9') return "";
-        number += (digit-'0') * 100;
-        c = cyrpt[i*3+1]; digit = c.toAscii(); if (digit<'0' || digit>'9') return "";
-        number += (digit-'0') * 10;
-        c = cyrpt[i*3+2]; digit = c.toAscii(); if (digit<'0' || digit>'9') return "";
-        number += digit - '0';
-        plainText = plainText + QChar(number ^ this->secretKey[(i + pos) % this->secretKey.length()].toAscii());
+    QByteArray key_arr;
+
+    if (QCA::isSupported("aes128-cbc-pkcs7")) {
+
+        key_arr = secretKey.toAscii();
+
+        QCA::SymmetricKey key(key_arr);
+        QCA::InitializationVector iv(QVariant(magicsKey().join("<")).toByteArray());
+
+        QCA::Cipher cipher(QLatin1String("aes128"), QCA::Cipher::CBC, QCA::Cipher::DefaultPadding, QCA::Encode, key, iv);
+        QCA::SecureArray u = cipher.update(arg);
+
+        if (!cipher.ok()) {            
+            return res;
+        }
+
+        QCA::SecureArray f = cipher.final();
+
+        if (!cipher.ok()) {            
+            return res;
+        }
+
+        res = QCA::arrayToHex(u.toByteArray()).toAscii() + QCA::arrayToHex(f.toByteArray()).toAscii();
     }
-    return plainText;
+
+    return res;
+}
+
+QByteArray Crypt::cryptToPlainTextExt (const QByteArray &crypt)
+{
+    QByteArray res("");
+    QByteArray key_arr;
+    QCA::Initializer init;
+
+    if (QCA::isSupported("aes128-cbc-pkcs7")) {
+
+        key_arr = secretKey.toAscii();
+
+        QCA::SymmetricKey key(key_arr);
+        QCA::InitializationVector iv(QVariant(magicsKey().join("<")).toByteArray());
+
+        QCA::Cipher cipher(QLatin1String("aes128"), QCA::Cipher::CBC, QCA::Cipher::DefaultPadding, QCA::Decode, key, iv);
+
+        // Build a single cipher text array. You could also call update() with
+        // each block as you receive it, if that is more useful.
+
+        QCA::SecureArray arg = QCA::hexToArray(crypt);
+        QCA::SecureArray cipherText = arg;//u.append(crypt);
+        // take that cipher text, and decrypt it
+        QCA::SecureArray u = cipher.update(cipherText);
+        // check if the update() call worked
+        if (!cipher.ok()) {
+            return res;
+        }
+
+        // Again we need to call final(), to get the last block (with its padding removed)
+        QCA::SecureArray f = cipher.final();
+        // check if the final() call worked
+        if (!cipher.ok()) {
+            return res;
+        }
+
+        res = u.toByteArray() + f.toByteArray();
+    }
+
+    return res;
 }

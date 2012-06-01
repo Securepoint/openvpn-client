@@ -1,8 +1,8 @@
 /********************************************************************************
 ** Form generated from reading UI file 'configexport.ui'
 **
-** Created: Tue 16. Nov 12:52:14 2010
-**      by: Qt User Interface Compiler version 4.7.0
+** Created: Fri 13. Jan 11:16:40 2012
+**      by: Qt User Interface Compiler version 4.7.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -41,58 +41,65 @@ public:
     {
         if (ConfigExport->objectName().isEmpty())
             ConfigExport->setObjectName(QString::fromUtf8("ConfigExport"));
-        ConfigExport->resize(270, 211);
-        ConfigExport->setMinimumSize(QSize(270, 210));
-        ConfigExport->setMaximumSize(QSize(272, 211));
+        ConfigExport->setWindowModality(Qt::ApplicationModal);
+        ConfigExport->resize(270, 200);
+        ConfigExport->setMinimumSize(QSize(270, 200));
+        ConfigExport->setMaximumSize(QSize(272, 200));
         QIcon icon;
         icon.addFile(QString::fromUtf8(":/images/logo.png"), QSize(), QIcon::Normal, QIcon::Off);
         ConfigExport->setWindowIcon(icon);
+        ConfigExport->setStyleSheet(QString::fromUtf8(""));
         ConfigExport->setModal(true);
         groupBox = new QGroupBox(ConfigExport);
         groupBox->setObjectName(QString::fromUtf8("groupBox"));
-        groupBox->setGeometry(QRect(10, 0, 251, 81));
+        groupBox->setGeometry(QRect(10, 4, 251, 81));
         label = new QLabel(groupBox);
         label->setObjectName(QString::fromUtf8("label"));
         label->setGeometry(QRect(12, 48, 61, 16));
         txtExportPwd = new QLineEdit(groupBox);
         txtExportPwd->setObjectName(QString::fromUtf8("txtExportPwd"));
-        txtExportPwd->setGeometry(QRect(66, 46, 171, 20));
+        txtExportPwd->setGeometry(QRect(76, 46, 161, 20));
         txtExportPwd->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}\n"
 ":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}\n"
 ":hover {border: 1px solid red; }"));
         label_2 = new QLabel(groupBox);
         label_2->setObjectName(QString::fromUtf8("label_2"));
-        label_2->setGeometry(QRect(12, 24, 46, 14));
+        label_2->setGeometry(QRect(12, 22, 61, 16));
         txtSaveTo = new QLineEdit(groupBox);
         txtSaveTo->setObjectName(QString::fromUtf8("txtSaveTo"));
-        txtSaveTo->setGeometry(QRect(67, 19, 151, 20));
+        txtSaveTo->setGeometry(QRect(77, 19, 141, 20));
         txtSaveTo->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}\n"
 ":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}\n"
-":hover {border: 1px solid red; }"));
+":hover {border: 1px solid red; }\n"
+"QLineEdit {border-radius: 3px;}"));
         cmdOpenDir = new QPushButton(groupBox);
         cmdOpenDir->setObjectName(QString::fromUtf8("cmdOpenDir"));
         cmdOpenDir->setGeometry(QRect(222, 19, 20, 20));
         cmdOpenDir->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black}\n"
 ":disabled {border: 1px solid black}\n"
-":hover {background-color: rgb(195, 195, 195);}"));
+":hover {background-color: rgb(195, 195, 195);}\n"
+"QPushButton {border-radius: 3px;}"));
         plainTextEdit = new QPlainTextEdit(ConfigExport);
         plainTextEdit->setObjectName(QString::fromUtf8("plainTextEdit"));
-        plainTextEdit->setGeometry(QRect(10, 90, 251, 71));
+        plainTextEdit->setGeometry(QRect(10, 90, 251, 61));
         plainTextEdit->setContextMenuPolicy(Qt::NoContextMenu);
-        plainTextEdit->setStyleSheet(QString::fromUtf8("background-color: rgb(197, 197, 197);"));
+        plainTextEdit->setStyleSheet(QString::fromUtf8("\n"
+"background-color: rgb(255, 170, 0);"));
         plainTextEdit->setFrameShape(QFrame::Box);
         plainTextEdit->setFrameShadow(QFrame::Plain);
         plainTextEdit->setReadOnly(true);
         cmdExport = new QPushButton(ConfigExport);
         cmdExport->setObjectName(QString::fromUtf8("cmdExport"));
-        cmdExport->setGeometry(QRect(50, 170, 100, 33));
+        cmdExport->setGeometry(QRect(50, 159, 100, 33));
         cmdExport->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black}\n"
 ":disabled {border: 1px solid black}\n"
 ":hover {background-color: rgb(195, 195, 195);}\n"
 "QPushButton {height: 25px; width: 50px;text-align:left;\n"
+"border-radius: 3px;\n"
 "	padding-left: 10px;\n"
 "	padding-top: 3px;\n"
-"	padding-bottom: 3px;}"));
+"	padding-bottom: 3px;}\n"
+""));
         QIcon icon1;
         icon1.addFile(QString::fromUtf8(":/images/export.png"), QSize(), QIcon::Normal, QIcon::Off);
         cmdExport->setIcon(icon1);
@@ -101,11 +108,12 @@ public:
         cmdExport->setFlat(true);
         cmdCancel = new QPushButton(ConfigExport);
         cmdCancel->setObjectName(QString::fromUtf8("cmdCancel"));
-        cmdCancel->setGeometry(QRect(160, 170, 100, 33));
+        cmdCancel->setGeometry(QRect(160, 159, 100, 33));
         cmdCancel->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black}\n"
 ":disabled {border: 1px solid black}\n"
 ":hover {background-color: rgb(195, 195, 195);}\n"
 "QPushButton {height: 25px; width: 50px;text-align:left;\n"
+"border-radius: 3px;\n"
 "	padding-left: 10px;\n"
 "	padding-top: 3px;\n"
 "	padding-bottom: 3px;}"));

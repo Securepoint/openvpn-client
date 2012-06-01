@@ -8,57 +8,66 @@ class Settings
 public:
     static Settings *getInstance ();
 
+
+    void refresh ();
     // Getter
-    bool getIsAutoReconnect ();
-    bool getIsShowNoBallonMessage ();
-    bool getIsShowNoUserAuth ();
-    bool getIsRunAsSevice ();
-    bool getIsStartCommandConfig ();
-    bool getIsStartConfigDir ();
-    bool getIsStartWithPwd ();
-    bool getIsStartWithUser ();
-    bool getIsNoPopUp ();
-    bool getUseCryptedData ();
-    bool getIsForcePrivateKey ();
-    bool getIsLanguageGerman ();
-    bool getUseNoInteract ();
-    bool getIsPortableClient ();
-    bool getIsManageClient ();
+    bool getIsAutoReconnect () const;
+    bool getIsShowNoBallonMessage () const;
+    bool getIsRunAsSevice () const;
+    bool getIsStartCommandConfig () const;
+    bool getIsStartConfigDir () const;        
+    bool getIsLanguageGerman () const;
+    bool getUseNoInteract () const;
+    bool getIsPortableClient () const;
+    bool getIsManageClient () const;
 
-    QString getCommandConfigPath ();
-    QString getStartConfigDirPath ();
-    QString getStartWithPwdPwd ();
-    QString getStartWithUser ();
+    QString getCommandConfigPath () const;
+    QString getStartConfigDirPath () const;
+    QString getStartWithPwdPwd () const;
+    QString getStartWithUser () const;
 
-    quint16 getListenPort ();
-    quint16 getServerPort ();
+    quint16 getListenPort () const;
+    quint16 getServerPort () const;
+
+    QString getCryptKey () const;
+    QString getProxyIniPath ();
+
+    bool popUpDialog () const;
+    bool showSplashScreen () const;
+
+    bool autoStartOnWindowsStartup ();
+
+    QString delayConfig () const;
 
     // Setter
-    void setIsAutoReconnect (bool flag);
-    void setIsShowNoBallonMessage (bool flag);
-    void setIsShowNoUserAuth (bool flag);
-    void setIsRunAsService (bool flag);
-    void setIsStartCommandConfig (bool flag);
-    void setIsStartConfigDir (bool flag);
-    void setIsStartWithPwd (bool flag);
-    void setIsStartWithUser (bool flag);
-    void setIsNoPopUp (bool flag);
-    void setUseCryptedData (bool flag);
-    void setForcePrivateKey (bool flag);
-    void setIsLanguageGerman (bool flag);
-    void setUseNoInteract (bool flag);
-    void setIsPortableClient (bool flag);
-    void setIsManageClient (bool flag);
+    void setIsAutoReconnect (const bool &flag);
+    void setIsShowNoBallonMessage (const bool &flag);
 
-    void setCommandConfigPath (QString path);
-    void setStartConfigDirPath (QString path);
-    void setStartWithPwdPwd (QString pwd);
-    void setStartWithUserName (QString user);
+    void setIsRunAsService (const bool &flag);
+    void setIsStartCommandConfig (const bool &flag, bool save = false);
+    void setIsStartConfigDir (const bool &flag);
+
+    void setIsNoPopUp (const bool &flag);    
+    void setIsLanguageGerman (const bool &flag);
+    void setUseNoInteract (const bool &flag);
+    void setIsPortableClient (const bool &flag);
+    void setIsManageClient (const bool &flag);
+
+    void setCommandConfigPath (const QString &path, bool save = false);
+    void setStartConfigDirPath (const QString &path);
+    void setStartWithPwdPwd (const QString &pwd);
+    void setStartWithUserName (const QString &user);
 
     void setListenPort (quint16 port);
     void setServerPort (quint16 port);
 
-    // Normale Methoden
+    void setCryptKey (const QString &key);
+
+    void setPopUpDialog (const bool &flag);
+    void setShowSplashScreen (const bool &flag);
+
+    void setAutoStartOnWindowsStartup (const bool &flag);
+    void setDelayStartConfig (const QString &value);
 
 private:
     static Settings *mInst;
@@ -67,28 +76,29 @@ private:
 
     bool autoReconnect;
     bool noBallonMessage;
-    bool noUserAuth;
+
     bool runAsService;
     bool startCommandConfig;
     bool startConfigDir;
-    bool startWithPwd;
-    bool startWithUser;
-    bool startNoPopUp;
-    bool useCryptedData;
-    bool forcePrivateKey;
+
     bool isLangGerman;
     bool useNoInteract;
     bool isPortableClient;
     bool manageClient;
 
+    bool popUpDialogValue;
+    bool showSplashScreenValue;
+
     QString commandConfigPath;
-    QString startConfigDirPath;
-    QString startWithPwdPwd;
-    QString startWithUserName;
+    QString startConfigDirPath;    
 
     // Client und Serverport
     quint16 listenPort;
     quint16 servicePort;
+    QString iniPath;
+
+    QString cryptKey;
+    QString delayConfigVal;
 };
 
 #endif // SETTINGS_H

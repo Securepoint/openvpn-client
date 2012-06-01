@@ -2,6 +2,9 @@
 <ui version="4.0">
  <class>appInfo</class>
  <widget class="QDialog" name="appInfo">
+  <property name="windowModality">
+   <enum>Qt::ApplicationModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -85,7 +88,7 @@
     </font>
    </property>
    <property name="text">
-    <string>SSL VPN Client v.0.9.6 RC3</string>
+    <string>SSL VPN Client v.0.9.7 RC4</string>
    </property>
    <property name="scaledContents">
     <bool>false</bool>

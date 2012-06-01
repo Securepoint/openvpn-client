@@ -2,43 +2,13 @@
 #define PREFERENCES_H
 
 // Qt Includes
-#include <QFileDialog>
-#include <QSettings>
-#include <QSystemTrayIcon>
 #include <QtCore>
 #include <QtGui>
-#include <QtNetwork/QTcpServer>
-#include <QtNetwork/QTcpSocket>
-
-// Normale Includes
-#include "appfunc.h"
-#include "Configs.h"
-#include "openvpn.h"
-#include "openvpnqlistitem.h"
-#include "settings.h"
-#include "treebutton.h"
-#include "treeconitem.h"
-
-#include "tapdriver.h"
-
-// Form Includes
-#include "appinfo.h"
-#include "frmgetuserdata.h"
-#include "proxysettings.h"
-#include "wiz_vpnwizard.h"
-#include "deleteconfig.h"
-#include "renameconfig.h"
-#include "importconfig.h"
-#include "manageconnection.h"
 
 
-// Circle References vermeiden
-class DataControll;
-#include "datacontroll.h"
-
-class ServiceLog;
-#include "servicelog.h"
-
+class OpenVpn;
+class TreeButton;
+class SslServer;
 
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -57,35 +27,46 @@ namespace Ui {
     class Preferences;
 }
 
+typedef QPair <int, OpenVpn*> ListObject;
+
 class Preferences : public QDialog {
     Q_OBJECT
-public:
-    Preferences(QWidget *parent = 0);
+public:    
+    static Preferences *instance ();
     ~Preferences();
     void openDialog (bool configFromCommandLine, QString commandLineConfig);
     void setVisible(bool visible);
     void refreshConfigList ();
-    void setIcon (int index);
-    void showTrayMessage(QString message, QSystemTrayIcon::MessageIcon messageType);    
+    void setIcon ();
+    void showTrayMessage(const QString &message, QSystemTrayIcon::MessageIcon messageType, int duration=3000);
+    void showTrayMessageChecked(const QString &message, QSystemTrayIcon::MessageIcon messageType, int duration=3000);
     QStringList vpnLog;
-    QSystemTrayIcon *trayIcon;    
-    DataControll *data;
-    QString configUser;
-    QString configPwd;
-    void startDaemon ();
+    QSystemTrayIcon *getSystrayIcon () const;        
+    bool startDaemon ();
     void searchStartConfigDir ();
-    void refreshDialog ();
-    void enableTreeButtons ();
+    void refreshDialog ();    
     void setConnectionStatus ();
     bool isConnectionActive () const;
+    void showBallonMessage ();
+    void setSavedDataIcon (int id);
+    void removeSavedDataIcon (int id);
 
+public slots:
+    void setDisconnected (int id);
+    void setError (int id, QString message);
+    void userInputIsNeeded (int id, int type);
+    void receivedIP (int id, QString ip);
+    void receivedReconnect (int id);
+    void receivedTapControl(int type);
+    void receivedRemoveTap (QString state);
+    void saveUserData (int id, int type, QString value, bool save);
 
 protected:
     void closeEvent(QCloseEvent *event);
 
 private:
-    Ui::Preferences *m_ui;
-    OpenVpn *actObject;
+    Preferences();
+    static Preferences *mInst;
 
     // Enum für die Icons
     enum Icons {
@@ -94,6 +75,10 @@ private:
         Error,
         Connecting
     };
+
+    QSystemTrayIcon *trayIcon;
+    Ui::Preferences *m_ui;
+    OpenVpn *actObject;
 
     // Methoden um feste Events erzeugen
     void createActions();
@@ -109,15 +94,17 @@ private:
     QAction *appInfoAction;
 
     QAction *mySubAction;
-    QMenu *trayIconMenu;    
+    QMenu *trayIconMenu;
+
+    // Neues Netzwerk-Handling
+    SslServer *server;
 
 
 private slots:    
     void on_cmdImportConfig_clicked();
     void on_cmdRefreshData_clicked();
     void on_trvConnections_customContextMenuRequested(QPoint pos);
-    void on_cmdNewConfig_clicked();
-    void on_cbForcePrivKey_toggled(bool checked);
+    void on_cmdNewConfig_clicked();    
     void on_cmdToggleExtensions_clicked();
     void on_trvConnections_itemDoubleClicked(QTreeWidgetItem* item, int column);    
     void on_cmdOpenInfo_clicked();    
@@ -125,18 +112,26 @@ private slots:
     void trayActivated(QSystemTrayIcon::ActivationReason reason);
     void openInfo ();
     void on_cmdClose_clicked();
-    void closeApp ();
-    void startDelayDisconnectScript ();
+    void closeApp ();    
 
-    void showLogFromContextMenu ();
+    void setStartConfig ();
+    void removeStartConfig ();
+    void removeErrorFromConfig ();
 
-    void treePushButtonClicked ();
-
-    void disableTreeButtons (TreeButton *button);
     void openProxySettings ();
     void openAppInfo ();
-    void deleteLinkedConfig ();
-    void deleteCryptedData ();
+    void deleteLinkedConfig ();    
+    void on_cmdToogleBallon_clicked();
+    void on_cmdTooglePopup_clicked();
+    void on_cmdToogleReconnect_clicked();    
+    void on_cmdAddNewTap_clicked();
+    void on_cmdRemoveAllTap_clicked();
+    void on_cmdToogleUseInteract_clicked();
+    void on_cmdRemoveCredentials_clicked();
+    void on_cmdShowCredentials_clicked();
+    void on_cmdToogleSpalshScreen_clicked();
+    void on_cmdToogleStartup_clicked();
+    void on_cmbDelay_currentIndexChanged(int index);
 };
 
 #endif // PREFERENCES_H

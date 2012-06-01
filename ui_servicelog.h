@@ -1,8 +1,8 @@
 /********************************************************************************
 ** Form generated from reading UI file 'servicelog.ui'
 **
-** Created: Tue 16. Nov 12:52:14 2010
-**      by: Qt User Interface Compiler version 4.7.0
+** Created: Tue 17. Jan 13:18:53 2012
+**      by: Qt User Interface Compiler version 4.7.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -35,6 +35,8 @@ public:
             ServiceLog->setObjectName(QString::fromUtf8("ServiceLog"));
         ServiceLog->setWindowModality(Qt::ApplicationModal);
         ServiceLog->resize(600, 430);
+        ServiceLog->setMinimumSize(QSize(600, 430));
+        ServiceLog->setMaximumSize(QSize(600, 430));
         QIcon icon;
         icon.addFile(QString::fromUtf8(":/images/logo.png"), QSize(), QIcon::Normal, QIcon::Off);
         ServiceLog->setWindowIcon(icon);
@@ -44,6 +46,7 @@ public:
         memLog->setGeometry(QRect(10, 10, 581, 371));
         memLog->setFrameShape(QFrame::Box);
         memLog->setFrameShadow(QFrame::Plain);
+        memLog->setReadOnly(true);
         cmdClose = new QPushButton(ServiceLog);
         cmdClose->setObjectName(QString::fromUtf8("cmdClose"));
         cmdClose->setGeometry(QRect(490, 390, 100, 33));

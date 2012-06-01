@@ -1,21 +1,15 @@
 #include "editconfig.h"
 #include "ui_editconfig.h"
 
-EditConfig *EditConfig::mInst = NULL;
+#include "preferences.h"
 
-EditConfig *EditConfig::getInstance() {
-    if (!mInst)
-        mInst = new EditConfig ();
-    return mInst;
-}
-
-EditConfig::EditConfig() :
+EditConfig::EditConfig(const QString &path) :
     QDialog(),
-    m_ui(new Ui::EditConfig)
+    m_ui(new Ui::EditConfig),
+    path (path)
 {
-    m_ui->setupUi(this);
-    this->path = "";
-    this->setWindowFlags(Qt::WindowCloseButtonHint | Qt::WindowStaysOnTopHint);
+    m_ui->setupUi(this);    
+    this->setWindowFlags(Qt::WindowCloseButtonHint);
 }
 
 void EditConfig::changeEvent(QEvent *e)
@@ -36,27 +30,37 @@ void EditConfig::showEvent(QShowEvent *e) {
     m_ui->memConfigContent->setPlainText(this->getContent());
     // Dialog öffnen
     // Mittig ausrichten
-    int screenH = qApp->desktop()->height();
-    int screenW = qApp->desktop()->width();
-    int winH = 420;
-    int winW = 590;
+    int winW = this->width();
+    int winH = this->height();
+
+    int left (0);
+    if (Preferences::instance()->isVisible()) {
+        // Wenn das Hauptfenster offen ist mittig über diesem plazieren
+        left = Preferences::instance()->geometry().x();
+        left = left + (Preferences::instance()->geometry().width() - winW) / 2;
+    } else {
+        // Desktop auswerten
+        left = qApp->desktop()->width();
+        // Die Breite bei virtuellen Desktops vierteln
+        if (left > 2000 && qApp->desktop()->isVirtualDesktop()) {
+            left /= 4;
+        }
+    }
     // Nun die neuen setzen
-    this->setGeometry((screenW / 2) - (winW / 2), (screenH / 2) - (winH / 2), winW, winH);
+    this->setGeometry(left, (qApp->desktop()->height() / 2) - (winH / 2), winW, winH);
+
     // Öffnen
     e->accept();
     this->setWindowState(Qt::WindowActive);
-}
-
-void EditConfig::setPath(QString path) {
-    this->path = path;
 }
 
 void EditConfig::on_cmdSave_clicked()
 {
     // Speichern
     QFile saveFile (this->path);
-    if (!saveFile.open(QIODevice::WriteOnly | QIODevice::Text))
+    if (!saveFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
          return;
+    }
 
      QTextStream out(&saveFile);
      out << m_ui->memConfigContent->toPlainText();
@@ -72,17 +76,18 @@ void EditConfig::on_cmdClose_clicked()
 }
 
 QString EditConfig::getContent() {
-    QString fileContent = QString("");
+    QString fileContent ("");
     QFile cf (this->path);
 
     if (!cf.open(QIODevice::ReadOnly | QIODevice::Text))
-         return "";
+         return QLatin1String("");
 
     QTextStream in(&cf);
     while (!in.atEnd()) {
         QString line = in.readLine();
-        fileContent += line + QString("\n");
+        fileContent += line + QLatin1String("\n");
     }
     cf.close();
+
     return fileContent;
 }

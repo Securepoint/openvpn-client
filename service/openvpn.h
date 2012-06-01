@@ -11,70 +11,62 @@
 
 #include <QtCore>
 
-class Log {
-public:
-    static void write (const QString &message) {
-        QFile log ("c:/newsrvlog.log");
-        if (log.open(QIODevice::WriteOnly | QIODevice::Append)) {
-            QTextStream out (&log);
-            out << message << "\n";
-            log.waitForBytesWritten(300);
-            log.close();
-        }
-    }
-};
-
 class OpenVpn : public QObject
 {
     Q_OBJECT
 
 public:
     OpenVpn();
-    virtual ~OpenVpn() {}
+    virtual ~OpenVpn();
 
-    //Methoden
     void connectToVpn ();
-    bool isConnectionStable ();
     void sendStatus ();
-    // Public Member
-    QString configName;
-    QString configPath;
-    QString configPwd;
-    QString configUser;
-    QString configPrivKey;
-    QString challengeKey;
-    bool waitForData;
-    quint16 clientPort;
-    QCoreApplication *capp;
-    QString appPath;
-    void setUsername (QString username);
-    void setPWd (QString pwd);
-    void setPrivKey (QString key);
-    void setChallengeKey (QString key);
-    bool useNoInteract;
+    void setUsername (const QString &username);
+    void setPassword (const QString &pwd);
+    void setPrivateKey (const QString &key);
+    void setChallengeKey (const QString &key);
 
+    void setUseInteract (const QString &interact);
 
-private slots:
-    void showProcessError (QProcess::ProcessError error);
-    void readProcessData ();    
-    void processFinished (int exitCode, QProcess::ExitStatus exitStatus);
-    void errorSocket (QAbstractSocket::SocketError err);
+    void setConfigName (const QString &name);
+    void setConfigPath (const QString &path);
+
+    void setProxyString (const QString &proxy);
 
 public slots:
+    void setId (const int &ident);
     void disconnectVpn ();
 
 private:
-    // Methoden
-    bool onDisconnect;
-    void writeLogDataToSocket(QString logData);
+    volatile bool onDisconnect;
+    bool useNoInteract;
+    volatile bool connectionStable;
+    bool isConnectionStable () const;
+    int id () const;
 
-    // Member
-    QProcess *proc;
-    QProcess *procScripts;
+    int _id;
+    QString configName;
+    QString configPath;    
+    QString configPrivKey;
+    QString challengeKey;
+
     QString connectionIP;
     QString connectionLineBak;
-    bool connectionStable;
-    bool isLinked;
+
+    QProcess proc;
+    QProcess *procScripts;
+
+    QString proxyString;
+
+private slots:
+    void showProcessError (QProcess::ProcessError error);
+    void readProcessData ();
+    void processFinished (int exitCode, QProcess::ExitStatus exitStatus);
+    void errorSocket (QAbstractSocket::SocketError err);
+
+signals:    
+    void removeItemFromList (int id);
+    void foobar (int id);
 };
 
 #endif // OPENVPN_H

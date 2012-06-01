@@ -9,13 +9,13 @@ namespace Ui {
 
 class VpnLog : public QDialog {
     Q_OBJECT
+
 public:
     VpnLog(QWidget *parent = 0);
     ~VpnLog();
-    void setContent (QString con);
+    void setContent (const QString &con);
     QList<QString> *logList;
     void showDialog();
-
 
 protected:
     void changeEvent(QEvent *e);
@@ -24,7 +24,6 @@ protected:
 private:
     Ui::VpnLog *m_ui;
     QTimer *timer;
-
 
 private slots:
     void on_cmdStartStopLog_clicked();

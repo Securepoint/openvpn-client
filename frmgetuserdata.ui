@@ -120,7 +120,7 @@ image: url(:/images/styles/checkbox_checked_hover.png);
 </string>
     </property>
     <property name="text">
-     <string>Save data [only possible with -useCryptedData ]</string>
+     <string>Save data</string>
     </property>
    </widget>
   </widget>
@@ -170,6 +170,12 @@ image: url(:/images/styles/checkbox_checked_hover.png);
    </property>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>txtDataField</tabstop>
+  <tabstop>cbSaveData</tabstop>
+  <tabstop>cmdOK</tabstop>
+  <tabstop>cmdClose</tabstop>
+ </tabstops>
  <resources>
   <include location="systray.qrc"/>
  </resources>

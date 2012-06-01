@@ -6,7 +6,6 @@
 #include <QDialog>
 
 #include "openvpn.h"
-#include "appfunc.h"
 
 namespace Ui {
     class ManageConnection;
@@ -15,22 +14,18 @@ namespace Ui {
 class ManageConnection : public QDialog {
     Q_OBJECT
 public:
-    static ManageConnection *getInstance ();
-    void setOpenVpnObject (OpenVpn *obj);
+    ManageConnection(OpenVpn *obj);
 
 protected:
     void changeEvent(QEvent *e);
     void showEvent(QShowEvent *e);
 
 private:
-    Ui::ManageConnection *ui;
-    static ManageConnection *mInst;
+    Ui::ManageConnection *ui;    
     OpenVpn *configObj;
     QString lastDir;
 
     // Methoden
-
-    ManageConnection();
     void fillCipherCombo ();
     int getIndexFromCipher(QString cipher);
     void resetFields ();
@@ -48,6 +43,11 @@ private slots:
     void on_cmdGetCAPath_clicked();
     void on_cmdSave_clicked();
     void on_cmdClose_clicked();
+    void on_cbWinDirOther_2_toggled(bool checked);
+    void on_cbWinDirPath_2_toggled(bool checked);
+    void on_rbPkcs_toggled(bool checked);
+    void on_cmdGetPkcs12Path_clicked();
+    void on_rbNormal_toggled(bool checked);
 };
 
 #endif // MANAGECONNECTION_H

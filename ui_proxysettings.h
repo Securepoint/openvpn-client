@@ -1,8 +1,8 @@
 /********************************************************************************
 ** Form generated from reading UI file 'proxysettings.ui'
 **
-** Created: Tue 16. Nov 12:52:14 2010
-**      by: Qt User Interface Compiler version 4.7.0
+** Created: Thu 12. Jan 13:39:28 2012
+**      by: Qt User Interface Compiler version 4.7.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -21,8 +21,6 @@
 #include <QtGui/QLineEdit>
 #include <QtGui/QPushButton>
 #include <QtGui/QRadioButton>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QWidget>
 
 QT_BEGIN_NAMESPACE
 
@@ -30,11 +28,8 @@ class Ui_ProxySettings
 {
 public:
     QGroupBox *groupBox_2;
-    QWidget *verticalLayoutWidget;
-    QVBoxLayout *verticalLayout;
-    QGroupBox *groupBox_3;
-    QRadioButton *rbUseConfig;
     QRadioButton *rbUseIE;
+    QRadioButton *rbUseConfig;
     QRadioButton *rbUseManual;
     QGroupBox *groupBox;
     QLabel *label;
@@ -43,6 +38,7 @@ public:
     QLineEdit *txtProxyPort;
     QRadioButton *rbHttpProxy;
     QRadioButton *rbSocksProxy;
+    QLabel *label_3;
     QPushButton *cmdSave;
     QPushButton *cmdClose;
 
@@ -61,17 +57,37 @@ public:
         groupBox_2 = new QGroupBox(ProxySettings);
         groupBox_2->setObjectName(QString::fromUtf8("groupBox_2"));
         groupBox_2->setGeometry(QRect(10, 4, 331, 251));
-        verticalLayoutWidget = new QWidget(groupBox_2);
-        verticalLayoutWidget->setObjectName(QString::fromUtf8("verticalLayoutWidget"));
-        verticalLayoutWidget->setGeometry(QRect(10, 20, 311, 221));
-        verticalLayout = new QVBoxLayout(verticalLayoutWidget);
-        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
-        verticalLayout->setContentsMargins(0, 0, 0, 0);
-        groupBox_3 = new QGroupBox(verticalLayoutWidget);
-        groupBox_3->setObjectName(QString::fromUtf8("groupBox_3"));
-        rbUseConfig = new QRadioButton(groupBox_3);
+        rbUseIE = new QRadioButton(groupBox_2);
+        rbUseIE->setObjectName(QString::fromUtf8("rbUseIE"));
+        rbUseIE->setEnabled(false);
+        rbUseIE->setGeometry(QRect(12, 38, 281, 19));
+        rbUseIE->setStyleSheet(QString::fromUtf8("QRadioButton { \n"
+"spacing: 5px;\n"
+"}\n"
+"\n"
+"QRadioButton::indicator {\n"
+"width: 13px;\n"
+"height: 13px;\n"
+"}\n"
+"\n"
+"QRadioButton::indicator::unchecked:enabled {\n"
+"image: url(:/images/styles/radiobutton_unchecked.png);\n"
+"}\n"
+"\n"
+"QRadioButton::indicator::checked:enabled {\n"
+"image: url(:/images/styles/radiobutton_checked.png);\n"
+"}\n"
+"\n"
+"QRadioButton::indicator::unchecked:disabled {\n"
+"image: url(:/images/styles/radiobutton_unchecked_dis.png);\n"
+"}\n"
+"\n"
+"QRadioButton::indicator::checked:disabled {\n"
+"image: url(:/images/styles/radiobutton_checked_dis.png);\n"
+"}"));
+        rbUseConfig = new QRadioButton(groupBox_2);
         rbUseConfig->setObjectName(QString::fromUtf8("rbUseConfig"));
-        rbUseConfig->setGeometry(QRect(10, 10, 291, 19));
+        rbUseConfig->setGeometry(QRect(12, 18, 291, 19));
         rbUseConfig->setStyleSheet(QString::fromUtf8("QRadioButton { \n"
 "spacing: 5px;\n"
 "}\n"
@@ -97,37 +113,9 @@ public:
 "image: url(:/images/styles/radiobutton_checked_dis.png);\n"
 "}"));
         rbUseConfig->setChecked(true);
-        rbUseIE = new QRadioButton(groupBox_3);
-        rbUseIE->setObjectName(QString::fromUtf8("rbUseIE"));
-        rbUseIE->setEnabled(false);
-        rbUseIE->setGeometry(QRect(10, 40, 281, 19));
-        rbUseIE->setStyleSheet(QString::fromUtf8("QRadioButton { \n"
-"spacing: 5px;\n"
-"}\n"
-"\n"
-"QRadioButton::indicator {\n"
-"width: 13px;\n"
-"height: 13px;\n"
-"}\n"
-"\n"
-"QRadioButton::indicator::unchecked:enabled {\n"
-"image: url(:/images/styles/radiobutton_unchecked.png);\n"
-"}\n"
-"\n"
-"QRadioButton::indicator::checked:enabled {\n"
-"image: url(:/images/styles/radiobutton_checked.png);\n"
-"}\n"
-"\n"
-"QRadioButton::indicator::unchecked:disabled {\n"
-"image: url(:/images/styles/radiobutton_unchecked_dis.png);\n"
-"}\n"
-"\n"
-"QRadioButton::indicator::checked:disabled {\n"
-"image: url(:/images/styles/radiobutton_checked_dis.png);\n"
-"}"));
-        rbUseManual = new QRadioButton(groupBox_3);
+        rbUseManual = new QRadioButton(groupBox_2);
         rbUseManual->setObjectName(QString::fromUtf8("rbUseManual"));
-        rbUseManual->setGeometry(QRect(10, 70, 281, 19));
+        rbUseManual->setGeometry(QRect(12, 59, 281, 19));
         rbUseManual->setStyleSheet(QString::fromUtf8("QRadioButton { \n"
 "spacing: 5px;\n"
 "}\n"
@@ -152,26 +140,24 @@ public:
 "QRadioButton::indicator::checked:disabled {\n"
 "image: url(:/images/styles/radiobutton_checked_dis.png);\n"
 "}"));
-
-        verticalLayout->addWidget(groupBox_3);
-
-        groupBox = new QGroupBox(verticalLayoutWidget);
+        groupBox = new QGroupBox(groupBox_2);
         groupBox->setObjectName(QString::fromUtf8("groupBox"));
+        groupBox->setGeometry(QRect(29, 80, 281, 91));
         label = new QLabel(groupBox);
         label->setObjectName(QString::fromUtf8("label"));
-        label->setGeometry(QRect(10, 69, 21, 16));
+        label->setGeometry(QRect(10, 63, 21, 16));
         txtProxyIP = new QLineEdit(groupBox);
         txtProxyIP->setObjectName(QString::fromUtf8("txtProxyIP"));
-        txtProxyIP->setGeometry(QRect(30, 67, 151, 20));
+        txtProxyIP->setGeometry(QRect(30, 61, 151, 20));
         txtProxyIP->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}\n"
 ":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}\n"
 ":hover {border: 1px solid red; }"));
         label_2 = new QLabel(groupBox);
         label_2->setObjectName(QString::fromUtf8("label_2"));
-        label_2->setGeometry(QRect(203, 67, 31, 20));
+        label_2->setGeometry(QRect(188, 61, 31, 20));
         txtProxyPort = new QLineEdit(groupBox);
         txtProxyPort->setObjectName(QString::fromUtf8("txtProxyPort"));
-        txtProxyPort->setGeometry(QRect(230, 67, 61, 20));
+        txtProxyPort->setGeometry(QRect(215, 61, 51, 20));
         txtProxyPort->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}\n"
 ":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}\n"
 ":hover {border: 1px solid red; }"));
@@ -230,9 +216,12 @@ public:
 "QRadioButton::indicator::checked:disabled {\n"
 "image: url(:/images/styles/radiobutton_checked_dis.png);\n"
 "}"));
-
-        verticalLayout->addWidget(groupBox);
-
+        label_3 = new QLabel(groupBox_2);
+        label_3->setObjectName(QString::fromUtf8("label_3"));
+        label_3->setGeometry(QRect(10, 174, 311, 71));
+        label_3->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 170, 0);\n"
+"border: 2px solid #FFFFFF;"));
+        label_3->setWordWrap(true);
         cmdSave = new QPushButton(ProxySettings);
         cmdSave->setObjectName(QString::fromUtf8("cmdSave"));
         cmdSave->setGeometry(QRect(130, 260, 100, 33));
@@ -274,9 +263,8 @@ public:
     {
         ProxySettings->setWindowTitle(QApplication::translate("ProxySettings", "Proxy Settings", 0, QApplication::UnicodeUTF8));
         groupBox_2->setTitle(QApplication::translate("ProxySettings", "Proxy Settings:", 0, QApplication::UnicodeUTF8));
-        groupBox_3->setTitle(QString());
-        rbUseConfig->setText(QApplication::translate("ProxySettings", "Use OpenVPN config settings", 0, QApplication::UnicodeUTF8));
         rbUseIE->setText(QApplication::translate("ProxySettings", "Use Internet Explorer settings", 0, QApplication::UnicodeUTF8));
+        rbUseConfig->setText(QApplication::translate("ProxySettings", "Use OpenVPN config settings", 0, QApplication::UnicodeUTF8));
         rbUseManual->setText(QApplication::translate("ProxySettings", "Use manual settings", 0, QApplication::UnicodeUTF8));
         groupBox->setTitle(QApplication::translate("ProxySettings", "Manual Settings:", 0, QApplication::UnicodeUTF8));
         label->setText(QApplication::translate("ProxySettings", "IP:", 0, QApplication::UnicodeUTF8));
@@ -284,6 +272,12 @@ public:
         txtProxyPort->setText(QApplication::translate("ProxySettings", "8080", 0, QApplication::UnicodeUTF8));
         rbHttpProxy->setText(QApplication::translate("ProxySettings", "HTTP Proxy", 0, QApplication::UnicodeUTF8));
         rbSocksProxy->setText(QApplication::translate("ProxySettings", "SOCKS Proxy", 0, QApplication::UnicodeUTF8));
+        label_3->setText(QApplication::translate("ProxySettings", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">For a connection to a HTTP-Proxy with authentication, please use the config settings.</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">It is possible to configure at manage settings, tab advanced.</span></p></body></html>", 0, QApplication::UnicodeUTF8));
         cmdSave->setText(QApplication::translate("ProxySettings", "     &Save", 0, QApplication::UnicodeUTF8));
         cmdClose->setText(QApplication::translate("ProxySettings", "     &Close", 0, QApplication::UnicodeUTF8));
     } // retranslateUi

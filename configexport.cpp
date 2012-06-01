@@ -1,26 +1,20 @@
 #include "configexport.h"
 #include "ui_configexport.h"
 
-ConfigExport *ConfigExport::mInst = NULL;
+#include "preferences.h"
+#include "message.h"
+#include "zip.h"
 
-ConfigExport *ConfigExport::getInstance() {
-    if (!mInst)
-        mInst = new ConfigExport ();
-    return mInst;
-}
+#include "crypt.h"
 
-ConfigExport::ConfigExport() :
+ConfigExport::ConfigExport(const QString &path) :
     QDialog(),
-    m_ui(new Ui::ConfigExport)
+    m_ui(new Ui::ConfigExport),
+    configPath (path)
 {
     m_ui->setupUi(this);
-    m_ui->txtExportPwd->setEchoMode(QLineEdit::Password);
-    this->configPath = "";
-    this->setWindowFlags(Qt::WindowCloseButtonHint | Qt::WindowStaysOnTopHint);
-}
-
-void ConfigExport::setConfigPath(QString path) {
-    this->configPath = path;
+    m_ui->txtExportPwd->setEchoMode(QLineEdit::Password);    
+    this->setWindowFlags(Qt::WindowCloseButtonHint);
 }
 
 void ConfigExport::changeEvent(QEvent *e)
@@ -36,15 +30,17 @@ void ConfigExport::changeEvent(QEvent *e)
 }
 
 void ConfigExport::showEvent(QShowEvent *e) {
-    m_ui->txtExportPwd->setText("");
-    m_ui->txtSaveTo->setText("");
+    m_ui->txtExportPwd->clear();
+    m_ui->txtSaveTo->clear();
     // Mittig ausrichten
-    int screenH = qApp->desktop()->height();
-    int screenW = qApp->desktop()->width();
-    int winH = 270;
-    int winW = 220;
+    int winW = this->width();
+    int winH = this->height();
+
+    int left = Preferences::instance()->geometry().x();
+    left = left + (Preferences::instance()->geometry().width() - winW) / 2;
+
     // Nun die neuen setzen
-    this->setGeometry((screenW / 2) - (winW / 2), (screenH / 2) - (winH / 2), winW, winH);
+    this->setGeometry(left, (qApp->desktop()->height() / 2) - (winH / 2), winW, winH);
     // Öffnen
     e->accept();
     this->setWindowState(Qt::WindowActive);
@@ -58,36 +54,29 @@ void ConfigExport::on_cmdCancel_clicked()
 
 void ConfigExport::on_cmdExport_clicked()
 {
-    bool fError = false;
-    QString errMes = "";
+    bool fError (false);
+    QString errMes ("");
 
-    if (m_ui->txtSaveTo->text() == "") {
+    if (m_ui->txtSaveTo->text().isEmpty()) {
         fError = true;
-        errMes = QString(tr("Invalid path specify[empty]!"));
+        errMes = QObject::tr("Invalid path specify[empty]!");
     }
 
-    if (!fError)
-        if (m_ui->txtExportPwd->text() == "") {
+    if (!fError) {
+        if (m_ui->txtExportPwd->text().isEmpty()) {
             fError = true;
-            errMes = QString(tr("Invalid password specify[empty]!"));
+            errMes = QObject::tr("Invalid password specify[empty]!");
         }
+    }
     // Viel zu tun
     // Dateien ermitteln, packen, verschlüsseln und löschen
     if (!fError) {
-        if (this->configPath != "") {
+        if (!this->configPath.isEmpty()) {
             // Config öffen und Zertifikate auslesen
             QFile configFile (this->configPath);
 
             if (!configFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
-                QMessageBox msgBox;
-                msgBox.setWindowTitle(tr("Securepoint SSL VPN"));
-                msgBox.setText(tr("Export Configuration"));
-                msgBox.setWindowIcon(QIcon(":/images/logo.png"));
-                msgBox.setInformativeText(tr("Can't open config!"));
-                msgBox.setStandardButtons(QMessageBox::Ok);
-                msgBox.setDefaultButton(QMessageBox::Ok);
-                msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
-                msgBox.exec();
+                Message::error(QObject::tr("Can't open config!"), QObject::tr("Export Configuration"));
                 return;
             }
             // Datei offen, einlesen
@@ -95,9 +84,11 @@ void ConfigExport::on_cmdExport_clicked()
             QString sCA;
             QString sCert;
             QString sKey;
+            QString sPkcs12;
+
             while (!in.atEnd()) {
                 QString line = in.readLine();
-                if (line.left(2).toUpper().trimmed() == "CA") {
+                if (line.left(2).toUpper().trimmed() == QLatin1String("CA")) {
                     QStringList keyvalList = line.split(" ");
                     if (keyvalList.size() != 2)
                         sCA = QString("");
@@ -106,7 +97,7 @@ void ConfigExport::on_cmdExport_clicked()
                         sCA = val.replace("\"","");
                     }
                 }
-                if (line.left(4).toUpper().trimmed() == "CERT") {
+                if (line.left(4).toUpper().trimmed() == QLatin1String("CERT")) {
                     QStringList keyvalList = line.split(" ");
                     if (keyvalList.size() != 2)
                         sCert = QString("");
@@ -115,7 +106,7 @@ void ConfigExport::on_cmdExport_clicked()
                         sCert = val.replace("\"","");
                     }
                 }
-                if (line.left(3).toUpper().trimmed() == "KEY") {
+                if (line.left(3).toUpper().trimmed() == QLatin1String("KEY")) {
                     QStringList keyvalList = line.split(" ");
                     if (keyvalList.size() != 2)
                         sKey = QString("");
@@ -124,25 +115,41 @@ void ConfigExport::on_cmdExport_clicked()
                         sKey = val.replace("\"","");
                     }
                 }
+                // Pkcs12
+                if (line.left(6).toUpper().trimmed() == QLatin1String("PKCS12")) {
+                    QStringList keyvalList = line.split(" ");
+                    if (keyvalList.size() != 2)
+                        sPkcs12 = QString("");
+                    else {
+                        QString val = keyvalList[1];
+                        sPkcs12 = val.replace("\"","");
+                    }
+                }
             }
             configFile.close();
 
             // Zertifikatpfade bauen
-            if (sCA.indexOf("/") == -1) {
+            if (sCA.indexOf("/") == -1 && sCA.indexOf("\\") == -1) {
                 // Kein Pfad angeben
                 sCA = this->configPath.left(this->configPath.lastIndexOf("/")) + "/" + sCA;
             }
-            if (sCert.indexOf("/") == -1) {
+            if (sCert.indexOf("/") == -1 && sCert.indexOf("\\") == -1) {
                 // Kein Pfad angeben
                 sCert = this->configPath.left(this->configPath.lastIndexOf("/")) + "/" + sCert;
             }
-            if (sKey.indexOf("/") == -1) {
+            if (sKey.indexOf("/") == -1 && sKey.indexOf("\\") == -1) {
                 // Kein Pfad angeben
                 sKey = this->configPath.left(this->configPath.lastIndexOf("/"))  + "/" + sKey;
             }
+
+            if (sPkcs12.indexOf("/") == -1 && sPkcs12.indexOf("\\") == -1) {
+                // Kein Pfad angeben
+                sPkcs12 = this->configPath.left(this->configPath.lastIndexOf("/"))  + "/" + sPkcs12;
+            }
+
             // COnfig, CA, Cert und KEy Pfade sind da
             // nun noch die Script Config
-            QString scriptConfig  = this->configPath.left(this->configPath.lastIndexOf("/"))  + "/scripts.conf";
+            QString scriptConfig  = this->configPath.left(this->configPath.lastIndexOf("/"))  + QLatin1String("/scripts.conf");
             QFile scriptFile (scriptConfig);
             if (!scriptFile.exists())
                 scriptConfig = QString("");
@@ -150,25 +157,17 @@ void ConfigExport::on_cmdExport_clicked()
 
             // Besteht das Verzeichnis schon?
             QString dirPath = m_ui->txtSaveTo->text();
-            QString zipFile = dirPath + QString("/export.7z");
+            QString zipFile = dirPath + QLatin1String("/export.zip");
             QString configName = this->configPath.right(this->configPath.size() - this->configPath.lastIndexOf("/") -1);
             configName = configName.left(configName.size()-5);
-            QString cryptFile = dirPath + QString("/") + configName + QString(".crypt");
+            QString cryptFile = dirPath + QLatin1String("/") + configName + QLatin1String(".crypt");
             QDir dirobj (dirPath);
             if (!dirobj.exists(dirPath)){
                 //Verzeichnis existiert nicht
                 // Pfad erstellen
                 if (!dirobj.mkpath(dirPath)) {
                     // Pfad konnte nicht erstellt werden
-                    QMessageBox msgBox;
-                    msgBox.setWindowTitle(tr("Securepoint SSL VPN"));
-                    msgBox.setText(tr("Export Configuration"));
-                    msgBox.setWindowIcon(QIcon(":/images/logo.png"));
-                    msgBox.setInformativeText(tr("Unable to create directory!"));
-                    msgBox.setStandardButtons(QMessageBox::Ok);
-                    msgBox.setDefaultButton(QMessageBox::Ok);
-                    msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
-                    msgBox.exec();
+                    Message::error(QObject::tr("Unable to create directory!"), QObject::tr("Export Configuration"));
                     return;
                 }
             } else {
@@ -178,114 +177,95 @@ void ConfigExport::on_cmdExport_clicked()
                     // Datei existiert bereits
                     // löschen
                     if (!file.remove()) {
-                        QMessageBox msgBox;
-                        msgBox.setWindowTitle(tr("Securepoint SSL VPN"));
-                        msgBox.setText(tr("Export Configuration"));
-                        msgBox.setWindowIcon(QIcon(":/images/logo.png"));
-                        msgBox.setInformativeText(file.errorString());
-                        msgBox.setStandardButtons(QMessageBox::Ok);
-                        msgBox.setDefaultButton(QMessageBox::Ok);
-                        msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
-                        msgBox.exec();
+                        Message::error(file.errorString(), QObject::tr("Export Configuration"));
                         return;
                     }
                 }
             }
 
             // Alle Daten da, packen
-            QProcess packProc;
-            QStringList arguments;
-            QString program = "./app/bin/7za.exe";
+            bool error (false);
+            if (!Zip::archiveFile(zipFile, this->configPath, false)) {
+                error = true;
+            }
 
-            arguments << QString("a");
-            arguments << zipFile;
-            arguments << QString("-p") + m_ui->txtExportPwd->text();
-            arguments << QString("-mhe");
-            arguments << this->configPath;
-            arguments << sCA;
-            arguments << sCert;
-            arguments << sKey;
-            arguments << scriptConfig;
-            packProc.start(program, arguments);
+            if (!Zip::archiveFile(zipFile, sCA, true)) {
+                error = true;
+            }
 
-            if (!packProc.waitForFinished(3000)) {
-                QMessageBox msgBox;
-                msgBox.setWindowTitle(tr("Securepoint SSL VPN"));
-                msgBox.setText(tr("Export Configuration"));
-                msgBox.setWindowIcon(QIcon(":/images/logo.png"));
-                msgBox.setInformativeText(tr("7z process still running!"));
-                msgBox.setStandardButtons(QMessageBox::Ok);
-                msgBox.setDefaultButton(QMessageBox::Ok);
-                msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
-                msgBox.exec();
+            if (!Zip::archiveFile(zipFile, sCert, true)) {
+                error = true;
+            }
+
+            if (!Zip::archiveFile(zipFile, sKey, true)) {
+                error = true;
+            }
+
+            if (!Zip::archiveFile(zipFile, scriptConfig, true)) {
+                error = true;
+            }
+
+            if (!Zip::archiveFile(zipFile, sPkcs12, true)) {
+                error = true;
+            }
+
+            if (error) {
+                Message::error(QObject::tr("Can't zip the data."), QObject::tr("Export Configuration"));
                 return;
             }
 
+            // Nun verschlüsseln
+            if (!fError) {
+                {
+                    QFile zipToCrypt (zipFile);
+                    if (zipToCrypt.open(QIODevice::ReadOnly)) {
+                        QFile cryptedFile (cryptFile);
+                        if (cryptedFile.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+                            // Daten einlesen, verschlüsseln und wieder schreiben
+                            QByteArray data;
+                            data = zipToCrypt.readAll();
+                            // Crypt bauen
+                            Crypt crypt;
+                            // Den Schlüssel setzen
+                            crypt.setSecretKey(m_ui->txtExportPwd->text());
+                            // Verschlüsseln und schreiben
+                            cryptedFile.write(crypt.cryptPlainTextExt(data));
+                            cryptedFile.waitForBytesWritten(2000);
+                            cryptedFile.flush();
+                            cryptedFile.waitForBytesWritten(2000);
 
-            QProcess packCrypt;
-            QStringList argCrypt;
-            QString programCrypt = "./app/bin/openssl.exe";
-
-            argCrypt << QString("des3");
-            argCrypt << QString("-in");
-            argCrypt << zipFile;
-            argCrypt << QString("-out");
-            argCrypt << cryptFile;
-            argCrypt << QString("-e");
-            argCrypt << QString("-salt");
-            argCrypt << QString("-k");
-            argCrypt << m_ui->txtExportPwd->text();
-            packCrypt.start(programCrypt, argCrypt);
-
-
-            if (!packCrypt.waitForFinished(3000)) {
-                fError = true;
-                errMes = QString(tr("OpenSSL process still running!"));
+                            // Nun alles wieder schliessen
+                            cryptedFile.close();
+                            zipToCrypt.close();
+                            // Alles fertig
+                        } else {
+                            Message::error(QObject::tr("Can't open crypt file."), QObject::tr("Export Configuration"));
+                        }
+                    } else {
+                        Message::error(QObject::tr("Can't read zip data."), QObject::tr("Export Configuration"));
+                    }
+                }               
             }
 
-            // Datei löschen
-            if (!fError) {
-                QFile configZip (zipFile);
+            // Das Zip-File nun löschen
+            QFile configZip (zipFile);
+            if (configZip.exists()) {
                 if (!configZip.remove()) {
                     fError = true;
                     errMes = configZip.errorString();
                 }
-            }            
+            }
         } else {
             this->close();
-            QMessageBox msgBox;
-            msgBox.setWindowTitle(tr("Securepoint SSL VPN"));
-            msgBox.setText(tr("Export Configuration"));
-            msgBox.setWindowIcon(QIcon(":/images/logo.png"));
-            msgBox.setInformativeText(tr("No configuration"));
-            msgBox.setStandardButtons(QMessageBox::Ok);
-            msgBox.setDefaultButton(QMessageBox::Ok);
-            msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
-            msgBox.exec();
+            Message::error(QObject::tr("No configuration"), QObject::tr("Export Configuration"));
         }
     }
 
     if (fError) {
-        QMessageBox msgBox;
-        msgBox.setWindowTitle(tr("Securepoint SSL VPN"));
-        msgBox.setText(tr("Export Configuration"));
-        msgBox.setWindowIcon(QIcon(":/images/logo.png"));
-        msgBox.setInformativeText(errMes);
-        msgBox.setStandardButtons(QMessageBox::Ok);
-        msgBox.setDefaultButton(QMessageBox::Ok);
-        msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
-        msgBox.exec();
+        Message::error(errMes, QObject::tr("Export Configuration"));
         return;
     } else {
-        QMessageBox msgBox;
-        msgBox.setWindowTitle(tr("Securepoint SSL VPN"));
-        msgBox.setText(tr("Export Configuration"));
-        msgBox.setWindowIcon(QIcon(":/images/logo.png"));
-        msgBox.setInformativeText(tr("Export successfully ended!"));
-        msgBox.setStandardButtons(QMessageBox::Ok);
-        msgBox.setDefaultButton(QMessageBox::Ok);
-        msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
-        msgBox.exec();
+        Message::information(QObject::tr("Export successfully ended!"), QObject::tr("Export Configuration"));
         this->close();
     }
 }
@@ -293,11 +273,8 @@ void ConfigExport::on_cmdExport_clicked()
 void ConfigExport::on_cmdOpenDir_clicked()
 {
     QFileDialog exportDirDialog;
-    QString dirname = exportDirDialog.getExistingDirectory(this, tr("Open Directory"),
-                                                 QApplication::applicationDirPath(),
-                                                 QFileDialog::ShowDirsOnly
-                                                 | QFileDialog::DontResolveSymlinks);
-    if (dirname != "") {
+    QString dirname = exportDirDialog.getExistingDirectory(this, tr("Open Directory"), QApplication::applicationDirPath(), QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+    if (!dirname.isEmpty()) {
        m_ui->txtSaveTo->setText(dirname);
     }
 }

@@ -1,10 +1,8 @@
 #ifndef CONFIGEXPORT_H
 #define CONFIGEXPORT_H
 
+#include <QtCore>
 #include <QtGui>
-#include <QProcess>
-#include <QMessageBox>
-#include <QShowEvent>
 
 namespace Ui {
     class ConfigExport;
@@ -13,17 +11,14 @@ namespace Ui {
 class ConfigExport : public QDialog {
     Q_OBJECT
 public:
-    static ConfigExport *getInstance ();
-    void setConfigPath (QString path);
+    ConfigExport(const QString &path);
 
 protected:
     void changeEvent(QEvent *e);
     void showEvent (QShowEvent *e);
 
-private:
-    static ConfigExport *mInst;
-    Ui::ConfigExport *m_ui;
-    ConfigExport();
+private:    
+    Ui::ConfigExport *m_ui;    
     QString configPath;
 
 private slots:

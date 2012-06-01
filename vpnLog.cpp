@@ -1,5 +1,7 @@
 #include "vpnlog.h"
 #include "ui_vpnlog.h"
+
+#include "message.h"
 #include "preferences.h"
 
 VpnLog::VpnLog(QWidget *parent) :
@@ -7,9 +9,10 @@ VpnLog::VpnLog(QWidget *parent) :
     m_ui(new Ui::VpnLog)
 {
     m_ui->setupUi(this);
-    this->setWindowFlags(Qt::Tool  | Qt::WindowStaysOnTopHint);
-    timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), this, SLOT(refreshData()));
+    this->setWindowFlags(Qt::Tool);
+    this->timer = new QTimer(this);
+    this->timer->setInterval(1000);
+    QObject::connect(this->timer, SIGNAL(timeout()), this, SLOT(refreshData()));
 }
 
 VpnLog::~VpnLog()
@@ -30,32 +33,50 @@ void VpnLog::changeEvent(QEvent *e)
 }
 
 void VpnLog::closeEvent(QCloseEvent *event) {
-    timer->stop();
+    this->timer->stop();
     hide ();
     event->ignore();
 }
 
 void VpnLog::showDialog() {
     this->refreshData();
-    // Mittig ausrichten
-    int screenH = qApp->desktop()->height();
-    int screenW = qApp->desktop()->width();
-    int winH = 420;
-    int winW = 630;
+
+    int winW = this->width();
+    int winH = this->height();
+
+    int left (0);
+    if (Preferences::instance()->isVisible()) {
+        // Wenn das Hauptfenster offen ist mittig über diesem plazieren
+        left = Preferences::instance()->geometry().x();
+        left = left + (Preferences::instance()->geometry().width() - winW) / 2;
+    } else {
+        // Desktop auswerten
+        left = qApp->desktop()->width();
+        // Die Breite bei virtuellen Desktops vierteln
+        if (left > 2000 && qApp->desktop()->isVirtualDesktop()) {
+            left /= 4;
+        }
+    }
     // Nun die neuen setzen
-    this->setGeometry((screenW / 2) - (winW / 2), (screenH / 2) - (winH / 2), winW, winH);
+    this->setGeometry(left, (qApp->desktop()->height() / 2) - (winH / 2), winW, winH);
+
     this->show();
-    timer->start(1000);
-    m_ui->cmdStartStopLog->setText(tr("Stop Log"));
+
+    this->timer->start();
+
+    m_ui->cmdStartStopLog->setText(QObject::tr("Stop Log"));
 }
 
 void VpnLog::refreshData() {
     m_ui->memLog->clear();
 
-    for (int x = 0; x < logList->size(); x++) {
+    for (int x = 0, llsize = logList->size(); x < llsize; x++) {
         m_ui->memLog->appendPlainText(logList->at(x) + "\n");
     }
 
+    // Da das TextEdit readonly ist, nehmen wir die scrollbar für den auto scroll. ansonsten ist der cursor besser
+    QScrollBar *sb = m_ui->memLog->verticalScrollBar();
+    sb->setValue(sb->maximum());
 }
 
 void VpnLog::on_cmdClose_clicked()
@@ -64,22 +85,24 @@ void VpnLog::on_cmdClose_clicked()
     this->close();
 }
 
-void VpnLog::setContent(QString con){
+void VpnLog::setContent(const QString &con)
+{
     m_ui->memLog->setPlainText(con);
 }
 
 void VpnLog::on_cmdSave_clicked()
 {
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save log"),
-                            QApplication::applicationDirPath(),
-                            tr("Log files (*.log *.txt)"));
-    if (fileName != "") {
+    QString fileName = QFileDialog::getSaveFileName(this, QObject::tr("Save log"), QApplication::applicationDirPath(), QObject::tr("Log files (*.log *.txt)"));
+
+    if (!fileName.isEmpty()) {
         // open and write
         QFile wFile (fileName);
         if (!wFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
-            QMessageBox::critical(0,QString (tr("Securepoint SSL VPN")), QString(tr("Can't open file to write!")));
+            Message::error(QObject::tr("Can't open file to write!"));
+
             return;
         }
+
         QTextStream out (&wFile);
         out << m_ui->memLog->toPlainText();
         wFile.close();
@@ -90,9 +113,9 @@ void VpnLog::on_cmdStartStopLog_clicked()
 {
     if (timer->isActive()) {
         timer->stop();
-        m_ui->cmdStartStopLog->setText(tr("Start Log"));
+        m_ui->cmdStartStopLog->setText(QObject::tr("Start Log"));
     } else {
-        timer->start(1000);
-        m_ui->cmdStartStopLog->setText(tr("Stop Log"));
+        timer->start();
+        m_ui->cmdStartStopLog->setText(QObject::tr("Stop Log"));
     }
 }

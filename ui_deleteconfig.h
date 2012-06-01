@@ -1,8 +1,8 @@
 /********************************************************************************
 ** Form generated from reading UI file 'deleteconfig.ui'
 **
-** Created: Tue 16. Nov 12:52:14 2010
-**      by: Qt User Interface Compiler version 4.7.0
+** Created: Thu 12. Jan 13:39:28 2012
+**      by: Qt User Interface Compiler version 4.7.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -35,6 +35,7 @@ public:
     QCheckBox *cbUserdata;
     QCheckBox *cbScript;
     QCheckBox *cbDir;
+    QCheckBox *cbRemovePkcs12;
     QPushButton *cmdDelete;
     QPushButton *cmdCancel;
 
@@ -58,7 +59,7 @@ public:
         label->setGeometry(QRect(10, 20, 41, 16));
         cbConfigFile = new QCheckBox(groupBox);
         cbConfigFile->setObjectName(QString::fromUtf8("cbConfigFile"));
-        cbConfigFile->setGeometry(QRect(38, 40, 161, 19));
+        cbConfigFile->setGeometry(QRect(38, 37, 161, 19));
         cbConfigFile->setStyleSheet(QString::fromUtf8("QCheckBox { \n"
 "spacing: 5px;\n"
 "}\n"
@@ -94,7 +95,7 @@ public:
 ""));
         cbCA = new QCheckBox(groupBox);
         cbCA->setObjectName(QString::fromUtf8("cbCA"));
-        cbCA->setGeometry(QRect(38, 60, 161, 19));
+        cbCA->setGeometry(QRect(38, 55, 161, 19));
         cbCA->setStyleSheet(QString::fromUtf8("QCheckBox { \n"
 "spacing: 5px;\n"
 "}\n"
@@ -130,7 +131,7 @@ public:
 ""));
         cbCert = new QCheckBox(groupBox);
         cbCert->setObjectName(QString::fromUtf8("cbCert"));
-        cbCert->setGeometry(QRect(38, 80, 161, 19));
+        cbCert->setGeometry(QRect(38, 75, 161, 19));
         cbCert->setStyleSheet(QString::fromUtf8("QCheckBox { \n"
 "spacing: 5px;\n"
 "}\n"
@@ -166,7 +167,7 @@ public:
 ""));
         cbKey = new QCheckBox(groupBox);
         cbKey->setObjectName(QString::fromUtf8("cbKey"));
-        cbKey->setGeometry(QRect(38, 100, 151, 19));
+        cbKey->setGeometry(QRect(38, 93, 151, 19));
         cbKey->setStyleSheet(QString::fromUtf8("QCheckBox { \n"
 "spacing: 5px;\n"
 "}\n"
@@ -202,7 +203,7 @@ public:
 ""));
         cbUserdata = new QCheckBox(groupBox);
         cbUserdata->setObjectName(QString::fromUtf8("cbUserdata"));
-        cbUserdata->setGeometry(QRect(38, 120, 161, 19));
+        cbUserdata->setGeometry(QRect(38, 131, 161, 19));
         cbUserdata->setStyleSheet(QString::fromUtf8("QCheckBox { \n"
 "spacing: 5px;\n"
 "}\n"
@@ -238,7 +239,7 @@ public:
 ""));
         cbScript = new QCheckBox(groupBox);
         cbScript->setObjectName(QString::fromUtf8("cbScript"));
-        cbScript->setGeometry(QRect(38, 140, 161, 19));
+        cbScript->setGeometry(QRect(38, 151, 161, 19));
         cbScript->setStyleSheet(QString::fromUtf8("QCheckBox { \n"
 "spacing: 5px;\n"
 "}\n"
@@ -274,8 +275,44 @@ public:
 ""));
         cbDir = new QCheckBox(groupBox);
         cbDir->setObjectName(QString::fromUtf8("cbDir"));
-        cbDir->setGeometry(QRect(38, 160, 161, 19));
+        cbDir->setGeometry(QRect(38, 169, 161, 19));
         cbDir->setStyleSheet(QString::fromUtf8("QCheckBox { \n"
+"spacing: 5px;\n"
+"}\n"
+"\n"
+"QCheckBox::indicator {\n"
+"width: 13px;\n"
+"height: 13px;\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked:disabled {\n"
+"image: url(:/images/styles/checkbox_unchecked_dis.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked:disabled {\n"
+"image: url(:/images/styles/checkbox_checked_dis.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked:enabled {\n"
+"image: url(:/images/styles/checkbox_unchecked.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked:enabled {\n"
+"image: url(:/images/styles/checkbox_checked.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked:enabled:hover {\n"
+"image: url(:/images/styles/checkbox_unchecked_hover.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked:enabled:hover {\n"
+"image: url(:/images/styles/checkbox_checked_hover.png);\n"
+"}\n"
+""));
+        cbRemovePkcs12 = new QCheckBox(groupBox);
+        cbRemovePkcs12->setObjectName(QString::fromUtf8("cbRemovePkcs12"));
+        cbRemovePkcs12->setGeometry(QRect(38, 113, 131, 17));
+        cbRemovePkcs12->setStyleSheet(QString::fromUtf8("QCheckBox { \n"
 "spacing: 5px;\n"
 "}\n"
 "\n"
@@ -354,9 +391,10 @@ public:
         cbCA->setText(QApplication::translate("DeleteConfig", "CA [.pem]", 0, QApplication::UnicodeUTF8));
         cbCert->setText(QApplication::translate("DeleteConfig", "Certificate [.pem]", 0, QApplication::UnicodeUTF8));
         cbKey->setText(QApplication::translate("DeleteConfig", "Key [.key]", 0, QApplication::UnicodeUTF8));
-        cbUserdata->setText(QApplication::translate("DeleteConfig", "Userdata [auth.dat]", 0, QApplication::UnicodeUTF8));
+        cbUserdata->setText(QApplication::translate("DeleteConfig", "Userdata [.dat]", 0, QApplication::UnicodeUTF8));
         cbScript->setText(QApplication::translate("DeleteConfig", "Scripts [scripts.conf]", 0, QApplication::UnicodeUTF8));
         cbDir->setText(QApplication::translate("DeleteConfig", "Directory if empty", 0, QApplication::UnicodeUTF8));
+        cbRemovePkcs12->setText(QApplication::translate("DeleteConfig", "Pkcs12 [.p12]", 0, QApplication::UnicodeUTF8));
         cmdDelete->setText(QApplication::translate("DeleteConfig", "     &Delete", 0, QApplication::UnicodeUTF8));
         cmdCancel->setText(QApplication::translate("DeleteConfig", "     &Close", 0, QApplication::UnicodeUTF8));
     } // retranslateUi

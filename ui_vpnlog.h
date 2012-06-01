@@ -1,8 +1,8 @@
 /********************************************************************************
 ** Form generated from reading UI file 'vpnlog.ui'
 **
-** Created: Tue 16. Nov 12:52:13 2010
-**      by: Qt User Interface Compiler version 4.7.0
+** Created: Thu 12. Jan 13:39:27 2012
+**      by: Qt User Interface Compiler version 4.7.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -33,6 +33,7 @@ public:
     {
         if (VpnLog->objectName().isEmpty())
             VpnLog->setObjectName(QString::fromUtf8("VpnLog"));
+        VpnLog->setWindowModality(Qt::ApplicationModal);
         VpnLog->resize(630, 420);
         VpnLog->setMinimumSize(QSize(0, 400));
         VpnLog->setMaximumSize(QSize(1000, 1000));

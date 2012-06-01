@@ -1,150 +1,142 @@
 #include "tapdriver.h"
+#include "message.h"
 
 TapDriver *TapDriver::mInst = NULL;
 
-TapDriver *TapDriver::getInstance() {
-    if (!mInst)
+TapDriver *TapDriver::instance()
+{
+    if (!mInst) {
         mInst = new TapDriver ();
+    }
     return mInst;
 }
 
 TapDriver::TapDriver()
+    : tapDriverAvailable (false),
+      tapDriverInstalledSuccess (false),
+      tapDriverRemovedSuccess (false)
 {
 }
 
-bool TapDriver::isTapDriverInstalled() {
+bool TapDriver::isTapDriverInstalled()
+{
     this->tapDriverAvailable = false;
     this->checkTapDriver();
+
     return this->tapDriverAvailable;
 }
 
-void TapDriver::checkTapDriver() {
-    drvProc = new QProcess(this);
-    QString drvInstallApp = QString("./app/bin/tapinstall.exe");
-    if (Check64::getInstance()->isRunning64Bit())
-        drvInstallApp = QString("./app/bin/tapinstall64.exe");
-    QStringList argIsDrvInstalled;
-    argIsDrvInstalled << QString ("hwids") << QString ("tap0901");
-    drvProc->start(drvInstallApp, argIsDrvInstalled);
-    connect (drvProc, SIGNAL(readyReadStandardOutput()), this, SLOT(readDriverData()));
-    connect (drvProc, SIGNAL(readyReadStandardError()), this, SLOT(readDriverData()));
+void TapDriver::checkTapDriver()
+{
 
-    if(!drvProc->waitForFinished()) {
-        QMessageBox msgBox;
-        msgBox.setWindowTitle(tr("Securepoint SSL VPN"));
-        msgBox.setText(tr("Delete Configuration"));
-        msgBox.setWindowIcon(QIcon(":/images/logo.png"));
-        msgBox.setInformativeText(QString(tr("TAP driver check process failed!")));
-        msgBox.setStandardButtons(QMessageBox::Ok);
-        msgBox.setDefaultButton(QMessageBox::Ok);
-        msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
-        msgBox.exec();
+    QString drvInstallApp (QCoreApplication::applicationDirPath() + QLatin1String("/app/bin/tapinstall.exe"));
+
+    if (Check64::isRunning64Bit()) {
+        drvInstallApp = QCoreApplication::applicationDirPath() + QLatin1String("/app/bin/tapinstall64.exe");
+    }
+
+    QStringList argIsDrvInstalled;
+    argIsDrvInstalled << QLatin1String ("hwids");
+    argIsDrvInstalled << QLatin1String ("tap0901");
+
+    QObject::connect (&this->drvProc, SIGNAL(readyReadStandardOutput()), this, SLOT(readDriverData()));
+    QObject::connect (&this->drvProc, SIGNAL(readyReadStandardError()), this, SLOT(readDriverData()));
+
+    this->drvProc.start(drvInstallApp, argIsDrvInstalled);
+
+    if(!this->drvProc.waitForFinished()) {
+        Message::error(QObject::tr("TAP driver check process failed!"));
         QApplication::exit(1);
         return;
     }
 }
 
-bool TapDriver::installTapDriver() {
+bool TapDriver::installTapDriver()
+{
     //Treiber installieren
     this->tapDriverInstalledSuccess = false;
-    drvInstallProc = new QProcess(this);
-    QString drvInstallApp = QString("./app/bin/tapinstall.exe");
-    QString drvPath = QString ("./app/bin/driver/OemWin2k.inf");
-    if (Check64::getInstance()->isRunning64Bit()) {
-        drvInstallApp = QString("./app/bin/tapinstall64.exe");
-        drvPath = QString ("./app/bin/driver/64bit/OemWin2k.inf");
-    }
-    QStringList argDrvInstall;
-    argDrvInstall << QString ("install");
-    argDrvInstall << drvPath;
-    argDrvInstall << QString ("tap0901");
-    drvInstallProc->start(drvInstallApp, argDrvInstall);
-    connect (drvInstallProc, SIGNAL(readyReadStandardOutput()), this, SLOT(readDriverInstallData()));
-    connect (drvInstallProc, SIGNAL(readyReadStandardError()), this, SLOT(readDriverInstallData()));
 
-    if(!drvInstallProc->waitForFinished()) {
-        QMessageBox msgBox;
-        msgBox.setWindowTitle(tr("Securepoint SSL VPN"));
-        msgBox.setText(tr("Delete Configuration"));
-        msgBox.setWindowIcon(QIcon(":/images/logo.png"));
-        msgBox.setInformativeText(QString(tr("TAP driver install process failed!")));
-        msgBox.setStandardButtons(QMessageBox::Ok);
-        msgBox.setDefaultButton(QMessageBox::Ok);
-        msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
-        msgBox.exec();
+    QString drvInstallApp (QCoreApplication::applicationDirPath() + QLatin1String("/app/bin/tapinstall.exe"));
+    QString drvPath (QCoreApplication::applicationDirPath() + QLatin1String("/app/bin/driver/OemWin2k.inf"));
+
+    if (Check64::isRunning64Bit()) {
+        drvInstallApp = QCoreApplication::applicationDirPath() + QLatin1String("/app/bin/tapinstall64.exe");
+        drvPath = QCoreApplication::applicationDirPath() + QLatin1String("/app/bin/driver/64bit/OemWin2k.inf");
+    }
+
+    QStringList argDrvInstall;
+    argDrvInstall << QLatin1String ("install");
+    argDrvInstall << drvPath;
+    argDrvInstall << QLatin1String ("tap0901");
+
+    QObject::connect (&this->drvInstallProc, SIGNAL(readyReadStandardOutput()), this, SLOT(readDriverData()));
+    QObject::connect (&this->drvInstallProc, SIGNAL(readyReadStandardError()), this, SLOT(readDriverData()));
+
+    this->drvInstallProc.start(drvInstallApp, argDrvInstall);
+
+
+    if(!this->drvInstallProc.waitForFinished()) {
+        Message::error(QObject::tr("TAP driver install process failed!"));
         QApplication::exit(1);
         return false;
     }
+
     return this->tapDriverInstalledSuccess;
 }
 
-bool TapDriver::removeTapDriver() {
-    this->tapDriverRemovedSuccess = false;
-    drvRemoveProc = new QProcess(this);
-    QString drvInstallApp = QString("./app/bin/tapinstall.exe");
-    if (Check64::getInstance()->isRunning64Bit())
-        drvInstallApp = QString("./app/bin/tapinstall64.exe");
-    QStringList argDrvRemove;
-    argDrvRemove << QString ("remove");
-    argDrvRemove << QString ("tap0901");
-    drvRemoveProc->start(drvInstallApp, argDrvRemove);
-    connect (drvRemoveProc, SIGNAL(readyReadStandardOutput()), this, SLOT(readDriverRemoveData()));
-    connect (drvRemoveProc, SIGNAL(readyReadStandardError()), this, SLOT(readDriverRemoveData()));
+bool TapDriver::removeTapDriver()
+{
 
-    if(!drvRemoveProc->waitForFinished()) {
-        QMessageBox msgBox;
-        msgBox.setWindowTitle(tr("Securepoint SSL VPN"));
-        msgBox.setText(tr("Delete Configuration"));
-        msgBox.setWindowIcon(QIcon(":/images/logo.png"));
-        msgBox.setInformativeText(QString(tr("TAP driver remove process failed!")));
-        msgBox.setStandardButtons(QMessageBox::Ok);
-        msgBox.setDefaultButton(QMessageBox::Ok);
-        msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
-        msgBox.exec();
+    if (!this->isTapDriverInstalled()) {
+        return true;
+    }
+
+    this->tapDriverRemovedSuccess = false;
+
+    QString drvInstallApp (QCoreApplication::applicationDirPath() + QLatin1String("/app/bin/tapinstall.exe"));
+
+    if (Check64::isRunning64Bit()) {
+        drvInstallApp = QCoreApplication::applicationDirPath() + QLatin1String("/app/bin/tapinstall64.exe");
+    }
+
+    QStringList argDrvRemove;
+    argDrvRemove << QLatin1String ("remove");
+    argDrvRemove << QLatin1String ("tap0901");
+
+    QObject::connect (&this->drvRemoveProc, SIGNAL(readyReadStandardOutput()), this, SLOT(readDriverData()));
+    QObject::connect (&this->drvRemoveProc, SIGNAL(readyReadStandardError()), this, SLOT(readDriverData()));
+
+    this->drvRemoveProc.start(drvInstallApp, argDrvRemove);
+
+
+    if(!this->drvRemoveProc.waitForFinished()) {
+        Message::error(QObject::tr("TAP driver remove process failed!"));
         QApplication::exit(1);
         return false;
     }
+
     return this->tapDriverRemovedSuccess;
 }
 
-void TapDriver::readDriverData() {
+void TapDriver::readDriverData()
+{
+
+    QProcess *signalProcess = qobject_cast<QProcess*> (sender());
+
     QByteArray line;
-    line = this->drvProc->readAllStandardError();
-    if (line == "")
-        line = this->drvProc->readAllStandardOutput();
-    if (line != "") {
+    line = signalProcess->readAllStandardError();
+    if (line.isEmpty()) {
+        line = signalProcess->readAllStandardOutput();
+    }
+
+    // Daten da?
+    if (!line.isEmpty()) {
         QString lineConvert (line);
-        if (lineConvert.contains("TAP-Win32", Qt::CaseInsensitive)) {
+        if (lineConvert.contains(QLatin1String("TAP-Win32"), Qt::CaseInsensitive)) {
             this->tapDriverAvailable = true;
-        } else if (lineConvert.contains("Drivers installed successfully.", Qt::CaseInsensitive)) {
+        } else if (lineConvert.contains(QLatin1String("Drivers installed successfully."), Qt::CaseInsensitive)) {
             this->tapDriverInstalledSuccess = true;
-        } else if (lineConvert.contains("1 device(s) were removed.", Qt::CaseInsensitive)) {
-            this->tapDriverRemovedSuccess = true;
-        }
-    }
-}
-
-void TapDriver::readDriverInstallData() {
-    QByteArray line;
-    line = this->drvInstallProc->readAllStandardError();
-    if (line == "")
-        line = this->drvInstallProc->readAllStandardOutput();
-    if (line != "") {
-        QString lineConvert (line);
-        if (lineConvert.contains("Drivers installed successfully.", Qt::CaseInsensitive)) {
-            this->tapDriverInstalledSuccess = true;
-        }
-    }
-}
-
-void TapDriver::readDriverRemoveData() {
-    QByteArray line;
-    line = this->drvRemoveProc->readAllStandardError();
-    if (line == "")
-        line = this->drvRemoveProc->readAllStandardOutput();
-    if (line != "") {
-        QString lineConvert (line);
-        if (lineConvert.contains("1 device(s) were removed.", Qt::CaseInsensitive)) {
+        } else if (lineConvert.contains(QLatin1String("device(s) were removed."), Qt::CaseInsensitive)) {
             this->tapDriverRemovedSuccess = true;
         }
     }

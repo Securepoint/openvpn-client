@@ -1,79 +1,146 @@
 #include "openvpn.h"
 #include <windows.h>
 
-OpenVpn::OpenVpn () {
-    this->connectionStable = false;
-    this->onDisconnect = false;
-    this->isLinked = false;
-    this->configName = "";
-    this->configPath = "";
-    this->configPwd = "";
-    this->configPrivKey = "";
-    this->configUser = "";
-    this->clientPort = 3655;
-    this->appPath = "";
-    this->waitForData = false;
-    this->connectionLineBak = "";
-    this->useNoInteract = false;
-    this->challengeKey = "";
-    this->proc = new QProcess(this);
+#include "debug.h"
+#include "qthreadexec.h"
+#include "srvcli.h"
+
+OpenVpn::OpenVpn ()
+    : onDisconnect (false),      
+      useNoInteract (false),
+      connectionStable (false),      
+      _id(-1),
+      configName (""),
+      configPath (""),      
+      configPrivKey (""),
+      challengeKey (""),
+      connectionIP (""),
+      connectionLineBak (""),      
+      procScripts (0),
+      proxyString ("")
+{
+
 }
 
-void OpenVpn::connectToVpn(){
-    // Connect
-    this->connectionLineBak = "";
-    this->onDisconnect = true;
-    this->connectionStable = false;
-    this->proc->kill();
+OpenVpn::~OpenVpn()
+{
+    Debug::log(QLatin1String("Destroy openvpn"), DebugLevel::Destruktor);
+}
 
-    this->onDisconnect = false;
+void OpenVpn::connectToVpn()
+{
+    //
+    // Die OpenVpn.exe mit der Config starten, um die Verbindung aufzubauen
+    //
 
-    // connect to VPN
-    QString cFile;
-    QStringList arguments;
-    QString program = this->appPath + "/app/bin/openvpn";
-    //this->writeLogDataToSocket(program);
-
+    // Haben wir eine ID?
+    if (this->id() == -1) {
+        // Das hier dürfte nie passieren!
+        Debug::error(QLatin1String("OpenVpn: No valid id to connect."));
+        return;
+    }
 
     // Pfad für die Config bauen
-    cFile = this->configPath + QString("/") + this->configName + QString(".ovpn");
-    // Als Argument adden
+    QString cFile (this->configPath + QLatin1String("/") + this->configName + QLatin1String(".ovpn"));
+
+    // Die Parameter für OpenVpn bauen
+    QStringList arguments;
     arguments << QString ("--service");
-    arguments << QString ("openvpngui_exit");
+    arguments << QString ("openvpngui_exit_%1").arg(this->id());
     arguments << QString ("0");
     arguments << QString ("--config");
     arguments << cFile;
 
-    // Interact setzen
+    // Wurde ein Proxy übergeben
+    if (!this->proxyString.trimmed().isEmpty()) {
+        // Proxy wurde übergeben
+        arguments << this->proxyString.split(" ");
+    }
+
+    // Interact setzen -> wegen OTP
     if (!this->useNoInteract) {
         arguments << QString ("--auth-retry");
         arguments << QString ("interact");
     }
 
     // Prozesssignale zur Überwachung an die Slots binden
-    connect( this->proc, SIGNAL(error ( QProcess::ProcessError) ), this, SLOT(showProcessError (QProcess::ProcessError)));    
-    connect( this->proc, SIGNAL(readyReadStandardOutput()), this, SLOT(readProcessData()));    
-    connect( this->proc, SIGNAL(readyReadStandardError()), this, SLOT(readProcessData()));
-    connect( this->proc, SIGNAL(finished (int, QProcess::ExitStatus)), this, SLOT(processFinished(int, QProcess::ExitStatus)));
+    if (!QObject::connect(&this->proc, SIGNAL(error ( QProcess::ProcessError)), this, SLOT(showProcessError (QProcess::ProcessError)))) {
+        Debug::error(QLatin1String("OpenVPN: Can't connect process error signal"));
+    }
+
+    if(!QObject::connect(&this->proc, SIGNAL(readyReadStandardOutput()), this, SLOT(readProcessData()))) {
+        Debug::error(QLatin1String("OpenVPN: Can't connect read std signal"));
+    }
+
+    if(!QObject::connect(&this->proc, SIGNAL(readyReadStandardError()), this, SLOT(readProcessData()))) {
+        Debug::error(QLatin1String("OpenVPN: Can't connect read err signal"));
+    }
+
+    if (!QObject::connect(&this->proc, SIGNAL(finished (int, QProcess::ExitStatus)), this, SLOT(processFinished(int, QProcess::ExitStatus)))) {
+        Debug::error(QLatin1String("OpenVPN: Can't connect finished signal"));
+    }
+
     // Programm starten im Config Verzeichnis, sonst findet OpenVPN keine Zertifikate
-    this->proc->setWorkingDirectory(this->configPath + QString("/"));
-    this->proc->start(program, arguments);
+    this->proc.setWorkingDirectory(this->configPath + QLatin1String("/"));
+
+    QString program (QCoreApplication::applicationDirPath() + QLatin1String("/app/bin/openvpn.exe"));
+
+    Debug::log(QLatin1String("OpenVpn path: ") + program);
+    Debug::log(QLatin1String("Start OpenVpn with: ") + arguments.join(QLatin1String(" ")));
+
+    // Ist die exe da
+    if (!QFile::exists(program)) {
+        // Leider nicht
+        Debug::error(QLatin1String("OpenVPN.exe is missing"));
+        emit removeItemFromList(this->id());
+        return;
+    }
+
+    // Programm starten
+    this->proc.start(program, arguments);
+    //
+    Debug::log(QLatin1String("wait for started"));
+    if (!this->proc.waitForStarted()) {
+        Debug::error(QLatin1String("Start failed"));
+        Debug::log(this->proc.errorString());
+        emit removeItemFromList(this->id());
+    }
+
+    Debug::log(QLatin1String("End of connect vpn"));
 }
 
-void OpenVpn::processFinished(int exitCode, QProcess::ExitStatus exitStatus) {
-    this->connectionStable = false;
-    this->sendStatus();
+void OpenVpn::processFinished(int exitCode, QProcess::ExitStatus exitStatus)
+{
+    Q_UNUSED(exitCode)
+    Q_UNUSED(exitStatus)
+
+    // OpenVpn beenden
+    QObject::disconnect(&this->proc, 0, 0, 0);
+
+    emit removeItemFromList(this->id());
+
+    Debug::log(QLatin1String("OpenVpn: Process finished"));
+
+    this->connectionStable = false;    
 }
 
-bool OpenVpn::isConnectionStable () {
+bool OpenVpn::isConnectionStable () const
+{
     return this->connectionStable;
 }
 
-void OpenVpn::sendStatus() {
-    this->writeLogDataToSocket(QString("STATUS:") + (this->isConnectionStable() ? QString("true") : QString("false")) + QString("<>") + this->configPath + QString("<>") + this->configName);
+void OpenVpn::setProxyString(const QString &proxy)
+{
+    this->proxyString = proxy;
 }
 
-void OpenVpn::showProcessError(QProcess::ProcessError error) {
+void OpenVpn::sendStatus()
+{
+    SrvCLI::instance()->send(QString::number(this->id()) + QLatin1String(";") + (this->isConnectionStable() ? QLatin1String("true") : QLatin1String("false")) + QLatin1String(";") + this->configPath + QLatin1String(";") + this->configName, QLatin1String("STATUS"));
+}
+
+void OpenVpn::showProcessError(QProcess::ProcessError error)
+{
     this->connectionStable = false;
     QString errMessage;
     switch (error) {
@@ -99,107 +166,100 @@ void OpenVpn::showProcessError(QProcess::ProcessError error) {
             errMessage = QString ("No valid error code!");
             break;
     }
-    if (!this->onDisconnect)
-        this->writeLogDataToSocket("ERROR:" + errMessage);
-}
 
-void OpenVpn::disconnectVpn() {
-        this->configName = "";
-        this->configPath = "";
-        this->configPwd = "";
-        this->configUser = "";
-        this->onDisconnect = true;
-        this->connectionStable = false;
-        // Per Winapi killen
-        HANDLE exitEvent;
-        QString eventName = "openvpngui_exit";
-        exitEvent = CreateEvent(NULL, TRUE, FALSE, (LPCTSTR)eventName.utf16());
-        if (!exitEvent) {
-            return;
+    Debug::error(QLatin1String("OpenVpn: ") + errMessage);
+    if (!this->onDisconnect) {
+        SrvCLI::instance()->send(QString::number(this->id()) + QLatin1String(";") + errMessage, QLatin1String("ERROR"));
+        // Wenn der Process nicht gestartet werden kann, gibt es auch kein finished Signal
+        if (error == QProcess::FailedToStart) {
+            // Element aus der Liste löschen
+            emit removeItemFromList(this->id());
         }
-        SetEvent(exitEvent);
-        CloseHandle (exitEvent);
-
-        this->writeLogDataToSocket("DISCONNECTED:");
+    }
 }
 
-void OpenVpn::readProcessData() {
-    QByteArray line;
-    QString output;
+void OpenVpn::disconnectVpn()
+{
+
+    Debug::log(QLatin1String("Disconnect OpenVPN.  Id: ") + QString::number(this->id()));
+
+    // OpenVpn beenden
+    QObject::disconnect(&this->proc, 0, 0, 0);
+
+    this->onDisconnect = true;
+
+    this->configName = "";
+    this->configPath = "";
+    this->connectionStable = false;
+    // Per Winapi killen
+    HANDLE exitEvent;
+    QString eventName (QLatin1String("openvpngui_exit_") + QString::number(this->id()));
+    exitEvent = CreateEvent(NULL, TRUE, FALSE, (LPCTSTR)eventName.utf16());
+    if (!exitEvent) {
+        return;
+    }
+    SetEvent(exitEvent);
+    CloseHandle (exitEvent);
+
+    if(!this->proc.waitForFinished(5000)) {
+        Debug::log(QLatin1String("OpenVpn do kill"));
+        this->proc.kill();
+        this->proc.waitForFinished(5000);
+    }
+
+    //
+    emit removeItemFromList(this->id());
+
+    SrvCLI::instance()->send(QString::number(this->id()), QLatin1String("DISCONNECTED"));
+
+}
+
+void OpenVpn::readProcessData()
+{
+    if (this->onDisconnect) {
+        return;
+    }
+
+    Debug::log (QLatin1String("Read process data"));
+
+    QByteArray line;    
     bool showLine = true;
-    line = this->proc->readAllStandardError();
+    line = this->proc.readAllStandardError();
     if (line == "")
-        line = this->proc->readAllStandardOutput();
+        line = this->proc.readAllStandardOutput();
     if (line != "") {
+        Debug::log (line);
         //Enter Private Key Password:
+        // 0 - Username
+        // 1 - Pwd
+        // 2 - OTP
+        // 3 - PKCS12
+        // 4 - Private Key für Crypted User Data
         QString pkkey (line);
         if (pkkey.contains("Enter Private Key Password:", Qt::CaseInsensitive)) {
-            if (this->proc->isWritable()) {
-                QByteArray ba;
-                this->waitForData = true;
-                ////Log::write("PKPWD:NEEDED");
-                this->writeLogDataToSocket("PKPWD:NEEDED");
-                while (this->waitForData) {
-                    qApp->processEvents();
-                }
-                // Daten da
-                ba.append(this->configPrivKey + "\n");
-
-                this->proc->write(ba);
-                showLine = false;
-            }
-
-        }
-        // Enter Username?
-        if (line == "Enter Auth Username:" || line == "Enter Challenge Username:" ) {
-            if (this->proc->isWritable()) {
-                QByteArray ba;
-                this->waitForData = true;
-                //Log::write("User:NEEDED");
-                this->writeLogDataToSocket("USER:NEEDED");
-                while (this->waitForData) {
-                    qApp->processEvents();
-                }
-                // Daten da
-                ba.append(this->configUser + "\n");
-
-                this->proc->write(ba);
-                showLine = false;
-            }
-
-        }
-        // Enter Password
-        if (line == "Enter Auth Password:") {
-            if (this->proc->isWritable()) {
-                QByteArray ba;
-                this->waitForData = true;
-                //Log::write("UPWD:NEEDED");
-                this->writeLogDataToSocket("UPWD:NEEDED");
-                while (this->waitForData) {
-                    qApp->processEvents();
-                }
-                ba.append(this->configPwd + "\n");
-                this->proc->write(ba);
-                showLine = false;
-            }
-
-        }
-
-        // Challenge Key
-        if (line == "Enter Challenge Password:") {
-            if (this->proc->isWritable()) {
-                QByteArray ba;
-                this->waitForData = true;
-                //Log::write("CKPWD:NEEDED");
-                this->writeLogDataToSocket("CKPWD:NEEDED");
-                while (this->waitForData) {
-                    qApp->processEvents();
-                }
-                ba.append(this->challengeKey + "\n");
-                this->proc->write(ba);
-                showLine = false;
-            }
-
+            Debug::log(QLatin1String("Wait for private key"));
+            SrvCLI::instance()->send(QString("%1;3").arg(this->id()), QLatin1String("INPUT"));
+            showLine = false;
+        } else if (line == "Enter Auth Username:" || line == "Enter Challenge Username:" ) { // Enter Username?
+            Debug::log(QLatin1String("Wait for User"));
+            SrvCLI::instance()->send(QString("%1;0").arg(this->id()), QLatin1String("INPUT"));
+            showLine = false;
+        } else if (line == "Enter Auth Password:") { // Enter Password
+            Debug::log(QLatin1String("Wait for pass"));
+            SrvCLI::instance()->send(QString("%1;1").arg(this->id()), QLatin1String("INPUT"));
+            showLine = false;
+        } else if (line == "Enter Challenge Password:") { // Challenge Key
+            Debug::log(QLatin1String("Wait for challenge"));
+            SrvCLI::instance()->send(QString("%1;2").arg(this->id()), QLatin1String("INPUT"));
+            showLine = false;
+        } else if (line.contains("Enter HTTP Proxy Username:")) {
+            Debug::log(QLatin1String("Wait for http user"));
+            SrvCLI::instance()->send(QString("%1;5").arg(this->id()), QLatin1String("INPUT"));
+            showLine = false;
+        } else if (line.contains("Enter HTTP Proxy Password:")) {
+            Debug::log(QLatin1String("Wait for http pass"));
+            SrvCLI::instance()->send(QString("%1;6").arg(this->id()), QLatin1String("INPUT"));
+            showLine = false;
         }
         // QByteArray in QString
         QString lineOut(line);
@@ -223,7 +283,7 @@ void OpenVpn::readProcessData() {
             }
 
             // Meldung zeigen connected
-            this->connectionIP = connIP;
+            this->connectionIP = connIP;            
             // Status speichern und Tray Icon setzen
             this->connectionStable = true;
             // Line speichern
@@ -236,71 +296,93 @@ void OpenVpn::readProcessData() {
         QString errorMessage;
         //"All TAP-Win32 adapters on this system are currently in use"
         if (lineOut.contains("All TAP-Win32 adapters on this system are currently in use", Qt::CaseInsensitive)) {
-            errorMessage = QString ("All TAP-Win32 adapters on this system are currently in use");
+            SrvCLI::instance()->send(QLatin1String("NEEDED"), QLatin1String("TAPINSTALL"));
+            errorMessage = QLatin1String ("All TAP-Win32 adapters on this system are currently in use");
+            errorOcurred = true;
+        } else if (lineOut.contains("There are no TAP-Win32 adapters on this system", Qt::CaseInsensitive)) {
+            SrvCLI::instance()->send(QLatin1String("NEEDED"), QLatin1String("TAPINSTALL"));
+            errorMessage = QLatin1String ("There are no TAP-Win32 adapters on this system");
             errorOcurred = true;
         } else if (lineOut.contains("TLS Error: Need PEM pass phrase for private key", Qt::CaseInsensitive)) {
-            errorMessage = QString ("TLS Error: Need PEM pass phrase for private key");
+            errorMessage = QLatin1String ("TLS Error: Need PEM pass phrase for private key");
             errorOcurred = true;
         } else if (lineOut.contains("TLS Error: TLS handshake failed", Qt::CaseInsensitive)) {
-            errorMessage = QString (tr("TLS error! See log for details"));
+            errorMessage = QLatin1String ("TLS error! See log for details");
             errorOcurred = true;
             _tlsHandshakeFailed = true;
         } else if (lineOut.contains("RESOLVE: Cannot resolve host address:", Qt::CaseInsensitive)) {
-            errorMessage = QString (tr("Connection error! See log for details"));
+            errorMessage = QLatin1String ("Connection error! See log for details");
             errorOcurred = true;
             _tlsHandshakeFailed = true;
         } else if (lineOut.contains("EVP_DecryptFinal:bad decrypt", Qt::CaseInsensitive)) {
-            errorMessage = QString ("EVP_DecryptFinal:bad decrypt");
+            errorMessage = QLatin1String ("EVP_DecryptFinal:bad decrypt");
             errorOcurred = true;
         } else if (lineOut.contains("PKCS12_parse:mac verify failure", Qt::CaseInsensitive)) {
-            errorMessage = QString ("PKCS12_parse:mac verify failure");
+            errorMessage = QLatin1String ("PKCS12_parse:mac verify failure");
             errorOcurred = true;
         } else if (lineOut.contains("Received AUTH_FAILED control message", Qt::CaseInsensitive)) {
-            errorMessage = QString ("Received AUTH_FAILED control message");
+            errorMessage = QLatin1String ("Received AUTH_FAILED control message");
             errorOcurred = true;
         } else if (lineOut.contains("Auth username is empty", Qt::CaseInsensitive)) {
-            errorMessage = QString ("Auth username is empty");
+            errorMessage = QLatin1String ("Auth username is empty");
             errorOcurred = true;
         } else if (lineOut.contains("error=certificate has expired", Qt::CaseInsensitive)) {
-            errorMessage = QString ("error=certificate has expired");
+            errorMessage = QLatin1String ("error=certificate has expired");
             errorOcurred = true;
         } else if (lineOut.contains("error=certificate is not yet valid", Qt::CaseInsensitive)) {
-            errorMessage = QString ("error=certificate is not yet valid");
+            errorMessage = QLatin1String ("error=certificate is not yet valid");
+            errorOcurred = true;
+        } else if (lineOut.contains("Proxy Authentication Required", Qt::CaseInsensitive)) {
+            errorMessage = QLatin1String ("Proxy Authentication Required");
             errorOcurred = true;
         } else if (lineOut.contains("Cannot load certificate file", Qt::CaseInsensitive)) {
-            errorMessage = QString ("Cannot load certificate file");
+            errorMessage = QLatin1String ("Cannot load certificate file");
             errorOcurred = true;
         } else if (lineOut.contains("Exiting", Qt::CaseInsensitive)) {
-            errorMessage = QString ("Application Exiting!");
+            errorMessage = QLatin1String ("Application Exiting!");
             errorOcurred = true;
         } else if (lineOut.contains("Use --help for more information.", Qt::CaseInsensitive)) {
-            errorMessage = QString ("OpenVPN parameter error!\nSee log for details");
+            errorMessage = QLatin1String ("OpenVPN parameter error!\nSee log for details");
             errorOcurred = true;
         } else if (lineOut.contains("will try again in 5 seconds", Qt::CaseInsensitive)) {
-            errorMessage = QString ("OpenVPN connection error!\nSee log for details");
-            //errorOcurred = true;
+            errorMessage = QLatin1String ("OpenVPN connection error!\nSee log for details");
         } else if (lineOut.contains("No Route to Host", Qt::CaseInsensitive)) {
-            errorMessage = QString ("No Route to Host!\nSee log for details");
-            this->writeLogDataToSocket("ERROR:" + errorMessage);
+            errorMessage = QLatin1String ("No Route to Host!\nSee log for details");
+            SrvCLI::instance()->send(QString("%1;%2")
+                             .arg(this->id())
+                             .arg(errorMessage), QLatin1String("ERROR"));
+
             this->onDisconnect = true;
             this->connectionStable = false;
-            this->proc->kill();
+            this->proc.kill();
         }
 
-        // Fehler durch normalen Disconnect verhindern
-        if (lineOut.contains("SIGTERM[hard,] received, process exiting", Qt::CaseInsensitive))
+        if (lineOut.contains("Proxy requires authentication") && !lineOut.contains("process exiting")) {
+            // Kein Fehler
             errorOcurred = false;
+            errorMessage = "";
+        }        
+
+        // Fehler durch normalen Disconnect verhindern
+        if (lineOut.contains("SIGTERM[hard,] received, process exiting", Qt::CaseInsensitive)) {
+            errorOcurred = false;
+        }
 
         if (errorOcurred) {
             this->connectionStable = false;
-            this->writeLogDataToSocket("ERROR:" + errorMessage);
+            SrvCLI::instance()->send(QString("%1;%2")
+                             .arg(this->id())
+                             .arg(errorMessage), QLatin1String("ERROR"));
         }
+
         // Die Ausgabe von OpenVPN immer senden, sofern es keine Useraufforderungen sind
-        if (showLine)
-            this->writeLogDataToSocket(line);
+        if (showLine) {
+            SrvCLI::instance()->send(QString("%1;%2")
+                             .arg(this->id())
+                             .arg(QString(line)), QLatin1String("LOG"));
+        }
 
 
-        //Log::write("Line: line");
         if (_tlsHandshakeFailed) {
             this->disconnectVpn();
         }
@@ -309,94 +391,103 @@ void OpenVpn::readProcessData() {
             // Bei Restart Pause befinden wir uns immer noch im Connect auch wenn vorher ein Fehler aufgetreten ist!
             // Status speichern und Tray Icon setzen
             if (!_tlsHandshakeFailed) {
-                this->writeLogDataToSocket("RESTART:ACTION");
+                SrvCLI::instance()->send(QString("%1").arg(this->id()), QLatin1String("RESTART"));
             } else {
-                this->writeLogDataToSocket("Timeout[Maybe your cetificates are not valid. Please check if it is revoked], restart pause will be ignored! Shuting down OpenVPN ...");
+                SrvCLI::instance()->send(QString ("%1;%2")
+                                 .arg(this->id())
+                                 .arg(QLatin1String("Timeout[Maybe your cetificates are not valid. Please check if it is revoked], restart pause will be ignored! Shuting down OpenVPN ...")), QLatin1String("LOG"));
             }
         }
+
         //Initialization Sequence Completed
         if (lineOut.contains("Initialization Sequence Completed", Qt::CaseInsensitive)) {
             this->connectionStable = true;
-            this->writeLogDataToSocket(this->connectionLineBak);
+            SrvCLI::instance()->send(QString ("%1;%2")
+                             .arg(this->id())
+                             .arg(connectionLineBak), QLatin1String("LOG"));
+
+            // Nun die Ip senden, damit kann der Client auf grün gehen
+            SrvCLI::instance()->send(QString("%1;%2").arg(this->id()).arg(this->connectionIP), QLatin1String("RECEIVEDIP"));
         }
 
     }
-
 }
 
-void OpenVpn::errorSocket(QAbstractSocket::SocketError err) {
-    //Log::write("SOCKERT ERROR NR: " + QString::number(err));
+void OpenVpn::errorSocket(QAbstractSocket::SocketError err)
+{
+    Q_UNUSED(err)
 }
 
-void OpenVpn::writeLogDataToSocket(QString logData) {
-    QTcpSocket socket (this);
-    connect(&socket, SIGNAL(disconnected()), &socket, SLOT(deleteLater()));
-    connect(&socket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(errorSocket(QAbstractSocket::SocketError)));
-    socket.connectToHost(QString("127.0.0.1"), this->clientPort);
-    //Log::write("Wait for Connect to 127.0.0.1:" + QString::number(this->clientPort));
-    if (socket.waitForConnected(500)) {
-        /*
-        if (socket.isValid()) {
-            //Log::write("Socket is valid");
-        } else {
-            //Log::write("Socket is NOT valid");
-        }
-
-        if (socket.isTextModeEnabled()) {
-            //Log::write("Socket is in Textmode");
-        } else {
-            //Log::write("Socket is NOT in Textmode");
-        }
-
-        if (socket.isWritable()) {
-            //Log::write("Socket is writable");
-        } else {
-            //Log::write("Socket is NOT writable");
-        }*/
-        QTextStream os(&socket);
-        //Log::write("Write LogData: " + logData);
-        os.setAutoDetectUnicode(true);        
-        os << "log->" + logData.replace("\r\n", "#<>#") + "\r\n"
-           << QDateTime::currentDateTime().toString() << "\n";        
-        os.flush();
-        if (socket.waitForBytesWritten(500)){
-            //Log::write("Disconnect from host");
-            socket.disconnectFromHost();
-            //Log::write("Wait for disconnect");
-            while (socket.state() != QTcpSocket::UnconnectedState
-                   && !socket.waitForDisconnected(-1)) {
-                qApp->processEvents();
-            }
-            //Log::write("Disconnected");
-        } else {
-            //Log::write("Wait Bytes written false");
-        }
+void OpenVpn::setUsername(const QString &username)
+{
+    Debug::log(QLatin1String("Set username: ") + username);
+    if (this->proc.isWritable()) {
+        QByteArray ba;
+        ba.append(username + "\n");
+        this->proc.write(ba);
     } else {
-        //Log::write("Wait Connect false");
+        Debug::error(QLatin1String("Process is not writable"));
     }
+}
 
-    if (socket.isValid()) {
-        socket.disconnectFromHost();
+
+void OpenVpn::setPassword(const QString &pwd)
+{
+    Debug::log(QLatin1String("Set password: ") + pwd);
+    if (this->proc.isWritable()) {
+        QByteArray ba;
+        ba.append(pwd + "\n");
+        this->proc.write(ba);
+    } else {
+        Debug::error(QLatin1String("Process is not writable"));
     }
-    //Log::write("End of Write Log Data");
 }
 
-void OpenVpn::setUsername(QString username) {
-    this->configUser = username;
-    this->waitForData = false;
+void OpenVpn::setPrivateKey(const QString &key)
+{
+    Debug::log(QLatin1String("Set private key: ") + key);
+    if (this->proc.isWritable()) {
+        QByteArray ba;
+        ba.append(key + "\n");
+        this->proc.write(ba);
+    } else {
+        Debug::error(QLatin1String("Process is not writable"));
+    }
 }
 
-void OpenVpn::setPWd(QString pwd) {
-    this->configPwd = pwd;
-    this->waitForData = false;
+void OpenVpn::setChallengeKey(const QString &key)
+{
+    Debug::log(QLatin1String("Set challenge key: ") + key);
+    if (this->proc.isWritable()) {
+        QByteArray ba;
+        ba.append(key + "\n");
+        this->proc.write(ba);
+    } else {
+        Debug::error(QLatin1String("Process is not writable"));
+    }
 }
 
-void OpenVpn::setPrivKey(QString key) {
-    this->configPrivKey = key;
-    this->waitForData = false;
+int OpenVpn::id() const
+{
+    return this->_id;
 }
 
-void OpenVpn::setChallengeKey(QString key) {
-    this->challengeKey = key;
-    this->waitForData = false;
+void OpenVpn::setId(const int &ident)
+{
+    this->_id = ident;
+}
+
+void OpenVpn::setConfigName(const QString &name)
+{
+    this->configName = name;
+}
+
+void OpenVpn::setConfigPath(const QString &path)
+{
+    this->configPath = path;
+}
+
+void OpenVpn::setUseInteract(const QString &interact)
+{
+    this->useNoInteract = (interact == QLatin1String("1") ? true : false);
 }

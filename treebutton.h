@@ -9,8 +9,7 @@
 #include <QTimer>
 
 #include "treeconitem.h"
-#include "mainwindowcontroll.h"
-#include "Configs.h"
+#include "configs.h"
 
 
 class TreeButton : public  QPushButton
@@ -21,14 +20,18 @@ public:
     void setParentItem (QTreeWidgetItem *item);
     QTreeWidgetItem *getParentItem ();
     TreeConItem *getParentItemCast ();
+
     void setReadyToConnect ();
     void setConnecting ();
     void setConnected (QString ip);
     void setError (QString error);
 
+    int getState () const;
+
 private:
     QTreeWidgetItem *parentItem;
-    QTimer *timer;
+    QTimer timer;
+    int state;
 
 public slots:
     void receivedError (QString errMessage);
@@ -39,9 +42,7 @@ public slots:
 private slots:
     void doReconnect ();
     void refreshConnectedSince ();
-
-signals:
-    void sendEnableTree ();
+    void clickMe ();
 };
 
 #endif // TREEBUTTON_H

@@ -4,7 +4,6 @@
 #include <QShowEvent>
 
 #include "openvpn.h"
-#include "mainwindowcontroll.h"
 
 namespace Ui {
     class DeleteConfig;
@@ -27,6 +26,7 @@ private:
     Ui::DeleteConfig *m_ui;
     OpenVpn *obj;
     QString getCAFromConfig ();
+    QString getP12FromConfig ();
     QString getCertFromConfig ();
     QString getKeyFromConfig ();
     QString explorerPath;

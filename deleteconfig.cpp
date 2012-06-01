@@ -1,5 +1,8 @@
 #include "deleteconfig.h"
 #include "ui_deleteconfig.h"
+#include "preferences.h"
+
+#include "message.h"
 
 DeleteConfig *DeleteConfig::mInst = NULL;
 
@@ -14,7 +17,7 @@ DeleteConfig::DeleteConfig() :
     m_ui(new Ui::DeleteConfig)
 {
     m_ui->setupUi(this);
-    this->setWindowFlags(Qt::WindowCloseButtonHint | Qt::WindowStaysOnTopHint);
+    this->setWindowFlags(Qt::WindowCloseButtonHint);
     this->obj = NULL;
     this->explorerPath = "";
 }
@@ -31,7 +34,7 @@ void DeleteConfig::changeEvent(QEvent *e)
     }
 }
 
-void DeleteConfig::showEvent(QShowEvent *e) {
+void DeleteConfig::showEvent(QShowEvent *e) {    
     m_ui->cbCA->setChecked(true);
     m_ui->cbCert->setChecked(true);
     m_ui->cbConfigFile->setChecked(true);
@@ -39,13 +42,16 @@ void DeleteConfig::showEvent(QShowEvent *e) {
     m_ui->cbKey->setChecked(true);
     m_ui->cbUserdata->setChecked(true);
     m_ui->cbScript->setChecked(true);
+    m_ui->cbRemovePkcs12->setChecked(true);
     // Mittig ausrichten
-    int screenH = qApp->desktop()->height();
-    int screenW = qApp->desktop()->width();
-    int winH = 250;
-    int winW = 230;
+    int winW = this->width();
+    int winH = this->height();
+
+    int left = Preferences::instance()->geometry().x();
+    left = left + (Preferences::instance()->geometry().width() - winW) / 2;
+
     // Nun die neuen setzen
-    this->setGeometry((screenW / 2) - (winW / 2), (screenH / 2) - (winH / 2), winW, winH);
+    this->setGeometry(left, (qApp->desktop()->height() / 2) - (winH / 2), winW, winH);
     // Öffnen
     e->accept();
     this->setWindowState(Qt::WindowActive);
@@ -58,128 +64,145 @@ void DeleteConfig::on_cmdCancel_clicked()
 
 void DeleteConfig::on_cmdDelete_clicked()
 {
+    if (obj) {
+        if (this->obj->getConfigFullPath() == Settings::getInstance()->getCommandConfigPath()) {
+            Message::error(QObject::tr("Can't remove a start config. Please release it first."));
+            this->close();
+            return;
+        }
+    }
+
     this->explorerPath = "";
     bool fError = false;
-    QString errMes = "";
+    QString errMes;
 
     if (m_ui->cbCA->isChecked()) {
         QString ca = this->getCAFromConfig();
-        if (ca != "") {
+        if (!ca.isEmpty()) {
             QString caPath;
-            if (ca.indexOf("/") != -1)
+            if (ca.indexOf("/") != -1) {
                 caPath = ca;
-            else
-                caPath = this->obj->configPath + "/" + ca;
+            } else {
+                caPath = this->obj->getConfigPath() + "/" + ca;
+            }
 
             QFile caFile(caPath);
-            if (caFile.exists())
+            if (caFile.exists()) {
                 if (!caFile.remove()) {
                     fError = true;
                     errMes =  caFile.errorString();
                 }
+            }
         }
     }
 
-    if (!fError)
-        if (m_ui->cbCert->isChecked()) {
-            QString cert = this->getCertFromConfig();
-            if (cert != "") {
-                QString certPath;
-                if (cert.indexOf("/") != -1)
-                    certPath = cert;
-                else
-                    certPath = this->obj->configPath + "/" + cert;
+    if (!fError && m_ui->cbCert->isChecked()) {
+        QString cert = this->getCertFromConfig();
+        if (!cert.isEmpty()) {
+            QString certPath;
+            if (cert.indexOf("/") != -1) {
+                certPath = cert;
+            } else {
+                certPath = this->obj->getConfigPath() + "/" + cert;
+            }
 
-                QFile certFile(certPath);
-                if (certFile.exists())
-                    if (!certFile.remove()) {
-                        fError = true;
-                        errMes =  certFile.errorString();
-                    }
+            QFile certFile(certPath);
+            if (certFile.exists()) {
+                if (!certFile.remove()) {
+                    fError = true;
+                    errMes =  certFile.errorString();
+                }
             }
         }
+    }
 
-    if (!fError)
-        if (m_ui->cbKey->isChecked()) {
-            QString key = this->getKeyFromConfig();
-            if (key != "") {
-                QString keyPath;
-                if (key.indexOf("/") != -1)
-                    keyPath = key;
-                else
-                    keyPath = this->obj->configPath + "/" + key;
+    if (!fError && m_ui->cbRemovePkcs12->isChecked()) {
+        QString key = this->getP12FromConfig();
+        if (!key.isEmpty()) {
+            QString keyPath;
+            if (key.indexOf("/") != -1) {
+                keyPath = key;
+            } else {
+                keyPath = this->obj->getConfigPath() + "/" + key;
+            }
 
-                QFile keyFile(keyPath);
-                if (keyFile.exists())
-                    if (!keyFile.remove()) {
-                        fError = true;
-                        errMes =  keyFile.errorString();
-                    }
-
+            QFile keyFile(keyPath);
+            if (keyFile.exists()) {
+                if (!keyFile.remove()) {
+                    fError = true;
+                    errMes =  keyFile.errorString();
+                }
             }
         }
+    }
 
-    if (!fError)
-        if (m_ui->cbConfigFile->isChecked()) {
-            QFile configFile(this->obj->configPath + "/" + this->obj->configName + ".ovpn");
-            if (configFile.exists())
-                if (!configFile.remove()) {
+    if (!fError && m_ui->cbKey->isChecked()) {
+        QString key = this->getKeyFromConfig();
+        if (!key.isEmpty()) {
+            QString keyPath;
+            if (key.indexOf("/") != -1) {
+                keyPath = key;
+            } else {
+                keyPath = this->obj->getConfigPath() + "/" + key;
+            }
+
+            QFile keyFile(keyPath);
+            if (keyFile.exists()) {
+                if (!keyFile.remove()) {
                     fError = true;
-                    errMes = configFile.errorString();
+                    errMes =  keyFile.errorString();
                 }
+            }
         }
+    }
 
-    if (!fError)
-        if (m_ui->cbUserdata->isChecked()) {
-            QFile userFile(this->obj->configPath + "/auth.dat");
-            if (userFile.exists())
-                if (!userFile.remove()) {
-                    fError = true;
-                    errMes = userFile.errorString();
-                }
-        }
-
-    if (!fError)
-        if (m_ui->cbScript->isChecked()) {
-            QFile scriptFile(this->obj->configPath + "/scripts.conf");
-            if (scriptFile.exists())
-                if (!scriptFile.remove()) {
-                    fError = true;
-                    errMes = scriptFile.errorString();
-                }
-        }
-
-    if (!fError)
-        if (m_ui->cbDir->isChecked()) {
-            // Dir löschen wenn leer
-            QDir delDir (this->obj->configPath);
-            if (!delDir.rmdir(this->obj->configPath)){
+    if (!fError && m_ui->cbConfigFile->isChecked()) {
+        QFile configFile(this->obj->getConfigPath() + "/" + this->obj->getConfigName() + ".ovpn");
+        if (configFile.exists()) {
+            if (!configFile.remove()) {
                 fError = true;
-                errMes = QString(tr("Directory is not empty! Please delete it by hand!"));
+                errMes = configFile.errorString();
             }
         }
+    }
 
-    if (fError) {
-        QMessageBox msgBox;
-        msgBox.setWindowTitle(tr("Securepoint SSL VPN"));
-        msgBox.setText(tr("Delete Configuration"));
-        msgBox.setWindowIcon(QIcon(":/images/logo.png"));
-        msgBox.setInformativeText(errMes + QString ("\n") + tr("Do you want to open the explorer to check the files?\nOtherwise maybe malfunctions can be occurred."));
-        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-        msgBox.setDefaultButton(QMessageBox::Yes);
-        msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
-        int ret = msgBox.exec();
-        if (ret == QMessageBox::Yes) {
-            this->explorerPath = QString("file:///") + this->obj->configPath;
-            if (!this->explorerPath.isEmpty())
+    if (!fError && m_ui->cbUserdata->isChecked()) {
+        this->getOpenVpnObject()->removeCredentials(false);
+    }
+
+    if (!fError && m_ui->cbScript->isChecked()) {
+        QFile scriptFile(this->obj->getConfigPath() + "/scripts.conf");
+        if (scriptFile.exists()) {
+            if (!scriptFile.remove()) {
+                fError = true;
+                errMes = scriptFile.errorString();
+            }
+        }
+    }
+
+    if (!fError && m_ui->cbDir->isChecked()) {
+        // Dir löschen wenn leer
+        QDir delDir (this->obj->getConfigPath());
+        if (!delDir.rmdir(this->obj->getConfigPath())){
+            fError = true;
+            errMes = QString(tr("Directory is not empty! Please delete it by hand!"));
+        }
+    }
+
+    if (fError) {                
+        if (Message::confirm(errMes + QLatin1String ("\n") + QObject::tr("Do you want to open the explorer to check the files?\nOtherwise maybe malfunctions can be occurred."))) {
+            this->explorerPath = QLatin1String("file:///") + this->obj->getConfigPath();
+            if (!this->explorerPath.isEmpty()) {
                 QTimer::singleShot(300, this, SLOT(openExplorer()));
+            }
         }
     }
 
     // Daten aktualisieren
-    MainWindowControll::getInstance()->refreshConfigs();
-    MainWindowControll::getInstance()->refreshDialog();
-    MainWindowControll::getInstance()->setConnectionStatus();
+    Preferences::instance()->refreshConfigList();
+    Preferences::instance()->refreshDialog();
+    Preferences::instance()->setConnectionStatus();
+    Preferences::instance()->setIcon();
     // Fertig und schliessen
     this->close();
 }
@@ -194,8 +217,8 @@ void DeleteConfig::setOpenVpnObject(OpenVpn *obj) {
 }
 
 QString DeleteConfig::getCAFromConfig() {
-    QString retVal = "";
-    QFile conf (obj->configPath + "/" + obj->configName + ".ovpn");
+    QString retVal ("");
+    QFile conf (obj->getConfigPath() + QLatin1String("/") + obj->getConfigName() + QLatin1String(".ovpn"));
     if (conf.open(QIODevice::ReadOnly)) {
         // Nach ca suchen
         QTextStream in (&conf);
@@ -218,7 +241,7 @@ QString DeleteConfig::getCAFromConfig() {
 
 QString DeleteConfig::getCertFromConfig() {
     QString retVal = "";
-    QFile conf (obj->configPath + "/" + obj->configName + ".ovpn");
+    QFile conf (obj->getConfigPath() + "/" + obj->getConfigName() + ".ovpn");
     if (conf.open(QIODevice::ReadOnly)) {
         // Nach ca suchen
         QTextStream in (&conf);
@@ -239,9 +262,34 @@ QString DeleteConfig::getCertFromConfig() {
     return retVal;
 }
 
-QString DeleteConfig::getKeyFromConfig() {
+QString DeleteConfig::getP12FromConfig()
+{
     QString retVal = "";
-    QFile conf (obj->configPath + "/" + obj->configName + ".ovpn");
+    QFile conf (obj->getConfigPath() + "/" + obj->getConfigName() + ".ovpn");
+    if (conf.open(QIODevice::ReadOnly)) {
+        // Nach ca suchen
+        QTextStream in (&conf);
+        while (!in.atEnd()) {
+            QString line = in.readLine();
+            if (line.trimmed().left(6).toLower() == "pkcs12") {
+                // ca gefunden
+                QStringList keyvalList = line.split(" ");
+                if (keyvalList.size() == 2) {
+                    QString val = keyvalList[1];
+                    retVal = val.replace("\"","");
+                    break;
+                }
+            }
+        }
+        conf.close();
+    }
+    return retVal;
+}
+
+QString DeleteConfig::getKeyFromConfig()
+{
+    QString retVal = "";
+    QFile conf (obj->getConfigPath() + "/" + obj->getConfigName() + ".ovpn");
     if (conf.open(QIODevice::ReadOnly)) {
         // Nach ca suchen
         QTextStream in (&conf);
@@ -262,6 +310,7 @@ QString DeleteConfig::getKeyFromConfig() {
     return retVal;
 }
 
-OpenVpn *DeleteConfig::getOpenVpnObject() {
+OpenVpn *DeleteConfig::getOpenVpnObject()
+{
     return this->obj;
 }

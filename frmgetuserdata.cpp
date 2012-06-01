@@ -3,30 +3,29 @@
 #include "settings.h"
 #include <QtGui>
 
-FrmGetUserData *FrmGetUserData::mInst = NULL;
+#include "message.h"
+#include "preferences.h"
 
-FrmGetUserData *FrmGetUserData::getInstance() {
-    if (!mInst)
-        mInst = new FrmGetUserData ();
-    return mInst;
-}
+#include "network/srvcli.h"
 
-FrmGetUserData::FrmGetUserData() :
-    QDialog(),
-    ui(new Ui::FrmGetUserData)
+FrmGetUserData::FrmGetUserData(InputType::UserInputType type, int id)
+    : QDialog(),
+      ui(new Ui::FrmGetUserData),
+      dataAvail(false),
+      frmType (type),
+      vpnId (id),
+      force (false)
 {
     ui->setupUi(this);
-    this->dataAvail = false;
+
     // 0 - Username
     // 1 - Pwd
     // 2 - OTP
     // 3 - PKCS12
     // 4 - Private Key für Crypted User Data
-    this->frmType = 0;
-    this->dataField = "";
+
     ui->cbSaveData->setChecked(false);
-    ui->cbSaveData->setEnabled(false);
-    this->setWindowFlags(Qt::WindowCloseButtonHint | Qt::WindowStaysOnTopHint);
+    this->setWindowFlags(Qt::WindowCloseButtonHint);
 }
 
 FrmGetUserData::~FrmGetUserData()
@@ -46,53 +45,113 @@ void FrmGetUserData::changeEvent(QEvent *e)
     }
 }
 
-void FrmGetUserData::showEvent(QShowEvent *e) {
-    this->dataAvail = false;
-    this->dataField = "";
-    ui->txtDataField->setText("");
-    if (this->frmType == 0) {
-        ui->lblDescription->setText(tr("Username:"));
-        ui->txtDataField->setEchoMode(QLineEdit::Normal);
-        if (Settings::getInstance()->getUseCryptedData()) {
-            ui->cbSaveData->setChecked(true);
-            ui->cbSaveData->setEnabled(true);
-        } else {
-            ui->cbSaveData->setChecked(false);
-            ui->cbSaveData->setEnabled(false);
+void FrmGetUserData::receivedCloseMe()
+{
+    force = true;
+    this->close();
+}
+
+void FrmGetUserData::closeEvent(QCloseEvent *e)
+{        
+    if (!force && !this->dataAvail) {
+        // Default senden
+        if (frmType == InputType::PrivateKey) {
+            if (Message::confirm(QObject::tr("The private key will be set to default <insecure>!"))) {
+                emit cryptKey (QString("insecure"));
+            }
+        } else if (frmType == InputType::Username) {
+            if (Settings::getInstance()->getIsPortableClient()) {
+                emit writeUserData("");
+            } else {
+                SrvCLI::instance()->send(QLatin1String("UNEEDED"), QString("%1;").arg(this->vpnId));
+            }
+        } else if (frmType == InputType::Password) {
+            if (Settings::getInstance()->getIsPortableClient()) {
+                emit writeUserData("");
+            } else {
+                SrvCLI::instance()->send(QLatin1String("PWDNEEDED"), QString("%1;").arg(this->vpnId));
+            }
+        } else if (frmType == InputType::Pkcs12) {
+            if (Settings::getInstance()->getIsPortableClient()) {
+                emit writeUserData("");
+            } else {
+                SrvCLI::instance()->send(QLatin1String("PKNEEDED"), QString("%1;").arg(this->vpnId));
+            }
+        } else if (frmType == InputType::Otp) {
+            if (Settings::getInstance()->getIsPortableClient()) {
+                emit writeUserData("");
+            } else {
+                SrvCLI::instance()->send(QLatin1String("CKNEEDED"), QString("%1;").arg(this->vpnId));
+            }
+        } else if (frmType == InputType::HttpUsername) {
+            if (Settings::getInstance()->getIsPortableClient()) {
+                emit writeUserData("");
+            } else {
+                SrvCLI::instance()->send(QLatin1String("HTTPUSERNEEDED"), QString("%1;").arg(this->vpnId));
+            }
+        } else if (frmType == InputType::HttpPassword) {
+            if (Settings::getInstance()->getIsPortableClient()) {
+                emit writeUserData("");
+            } else {
+                SrvCLI::instance()->send(QLatin1String("HTTPPASSNEEDED"), QString("%1;").arg(this->vpnId));
+            }
         }
-    } else if (this->frmType == 1) {
-        ui->lblDescription->setText(tr("Password:"));
-        ui->txtDataField->setEchoMode(QLineEdit::Password);
-        if (Settings::getInstance()->getUseCryptedData()) {
-            ui->cbSaveData->setChecked(true);
-            ui->cbSaveData->setEnabled(true);
-        } else {
-            ui->cbSaveData->setChecked(false);
-            ui->cbSaveData->setEnabled(false);
-        }
-    } else if (this->frmType == 2) {
-        ui->lblDescription->setText(tr("One Time Pad:"));
-        ui->txtDataField->setEchoMode(QLineEdit::Password);
-        ui->cbSaveData->setChecked(false);
-        ui->cbSaveData->setEnabled(false);
-    } else if (this->frmType == 4) {
-        ui->lblDescription->setText(tr("Crypt Key:"));
-        ui->txtDataField->setEchoMode(QLineEdit::Password);
-        ui->cbSaveData->setChecked(false);
-        ui->cbSaveData->setEnabled(false);
-    } else {
-        ui->lblDescription->setText(tr("PKCS12:"));
-        ui->txtDataField->setEchoMode(QLineEdit::Password);
-        ui->cbSaveData->setChecked(false);
-        ui->cbSaveData->setEnabled(false);
     }
-    // Mittig ausrichten
-    int screenH = qApp->desktop()->height();
-    int screenW = qApp->desktop()->width();
-    int winH = 140;
-    int winW = 330;
+
+    e->accept();
+}
+
+void FrmGetUserData::showEvent(QShowEvent *e) {        
+    ui->txtDataField->setText("");
+    if (this->frmType == InputType::Username) {
+        ui->lblDescription->setText(QObject::tr("Username:"));
+        ui->txtDataField->setEchoMode(QLineEdit::Normal);
+        ui->cbSaveData->setEnabled(true);
+    } else if (this->frmType == InputType::Password) {
+        ui->lblDescription->setText(QObject::tr("Password:"));
+        ui->txtDataField->setEchoMode(QLineEdit::Password);        
+        ui->cbSaveData->setEnabled(true);
+    } else if (this->frmType == InputType::Otp) {
+        ui->lblDescription->setText(QObject::tr("One Time Pad:"));
+        ui->txtDataField->setEchoMode(QLineEdit::Password);        
+        ui->cbSaveData->setEnabled(false);
+    } else if (this->frmType == InputType::PrivateKey) {
+        ui->lblDescription->setText(QObject::tr("Crypt Key:"));
+        ui->txtDataField->setEchoMode(QLineEdit::Password);        
+        ui->cbSaveData->setEnabled(false);
+    } else if (this->frmType == InputType::HttpUsername) {
+        ui->lblDescription->setText(QObject::tr("Http user:"));
+        ui->txtDataField->setEchoMode(QLineEdit::Normal);
+        ui->cbSaveData->setEnabled(true);
+    } else if (this->frmType == InputType::HttpPassword) {
+        ui->lblDescription->setText(QObject::tr("Http password:"));
+        ui->txtDataField->setEchoMode(QLineEdit::Password);
+        ui->cbSaveData->setEnabled(true);
+    } else {
+        ui->lblDescription->setText(QObject::tr("PKCS12:"));
+        ui->txtDataField->setEchoMode(QLineEdit::Password);        
+        ui->cbSaveData->setEnabled(true);
+    }
+
+    int winW = this->width();
+    int winH = this->height();
+
+    int left (0);
+    if (Preferences::instance()->isVisible()) {
+        // Wenn das Hauptfenster offen ist mittig über diesem plazieren
+        left = Preferences::instance()->geometry().x();
+        left = left + (Preferences::instance()->geometry().width() - winW) / 2;
+    } else {
+        // Desktop auswerten
+        left = qApp->desktop()->width();
+        // Die Breite bei virtuellen Desktops vierteln
+        if (left > 2000 && qApp->desktop()->isVirtualDesktop()) {
+            left /= 4;
+        }
+    }
     // Nun die neuen setzen
-    this->setGeometry((screenW / 2) - (winW / 2), (screenH / 2) - (winH / 2), winW, winH);
+    this->setGeometry(left, (qApp->desktop()->height() / 2) - (winH / 2), winW, winH);
+
     // Öffnen
     e->accept();
     this->setWindowState(Qt::WindowActive);
@@ -100,76 +159,75 @@ void FrmGetUserData::showEvent(QShowEvent *e) {
 }
 
 void FrmGetUserData::on_cmdClose_clicked()
-{
-    this->dataField = "";
-    if (this->frmType == 4) {
-        // Bei Crypt darf kein leerer String zurückgegeben werden,
-        // da die CryptFunktion nicht mit leeren Key ver- und entschlüsseln kann
-        QMessageBox msgBox;
-                    msgBox.setWindowTitle(tr("Securepoint SSL VPN"));
-                    msgBox.setWindowIcon(QIcon(":/images/logo.png"));
-                    msgBox.setText(tr("Private Key"));
-                    msgBox.setInformativeText(tr("The private key will be set to default <insecure>!"));
-                    msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
-                    msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
-        int ret = msgBox.exec();
-        if (ret == QMessageBox::Ok) {
-            this->dataField = "insecure";
-            this->dataAvail = true;
-            emit dataIsAvailable();
-            this->close();
-        }
-        // Cancel gedrückt, Dialog kann noch geändert werden
-    } else {
-        this->dataAvail = true;
-        emit dataIsAvailable();
-        this->close();
-    }
+{        
+    this->close();
 }
 
 void FrmGetUserData::on_cmdOK_clicked()
-{
-    if (this->frmType == 4) {
-        if (ui->txtDataField->text() == "") {
-            QMessageBox msgBox;
-                        msgBox.setWindowTitle(tr("Securepoint SSL VPN"));
-                        msgBox.setWindowIcon(QIcon(":/images/logo.png"));
-                        msgBox.setText(tr("Private Key"));
-                        msgBox.setInformativeText(tr("It is not possible to use an empty private key!"));
-                        msgBox.setStandardButtons(QMessageBox::Ok);
-                        msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
-            msgBox.exec();
-        } else {
-            // Nicht leer alles ok
-            this->dataField = ui->txtDataField->text();
-            this->dataAvail = true;
-            emit dataIsAvailable();
-            this->close();
+{    
+    if (frmType == InputType::PrivateKey) {
+        if (ui->txtDataField->text().isEmpty()) {
+            Message::error(QObject::tr("It is not possible to use an empty private key!"), QObject::tr("Private Key"));
+            return;
         }
-    } else {
-        this->dataField = ui->txtDataField->text();
-        this->dataAvail = true;
-        emit dataIsAvailable();
+    }
+
+    // 0 - Username
+    // 1 - Pwd
+    // 2 - OTP
+    // 3 - PKCS12
+    // 4 - Private Key für Crypted User Data
+    this->dataAvail = true;
+    if (frmType == InputType::Username) {
+        if (Settings::getInstance()->getIsPortableClient()) {
+            emit writeUserData(ui->txtDataField->text());
+        } else {
+            SrvCLI::instance()->send(QLatin1String("UNEEDED"), QString("%1;%2").arg(this->vpnId).arg(ui->txtDataField->text()));
+        }
+        emit saveUserData(this->vpnId, 0, ui->txtDataField->text(), ui->cbSaveData->isChecked());
+        this->close();
+    } else if (frmType == InputType::Password) {
+        if (Settings::getInstance()->getIsPortableClient()) {
+            emit writeUserData(ui->txtDataField->text());
+        } else {
+            SrvCLI::instance()->send(QLatin1String("PWDNEEDED"), QString("%1;%2").arg(this->vpnId).arg(ui->txtDataField->text()));
+        }
+        emit saveUserData(this->vpnId, 1, ui->txtDataField->text(), ui->cbSaveData->isChecked());
+        this->close();
+    } else if (frmType == InputType::Pkcs12) {
+        if (Settings::getInstance()->getIsPortableClient()) {
+            emit writeUserData(ui->txtDataField->text());
+        } else {
+            SrvCLI::instance()->send(QLatin1String("PKNEEDED"), QString("%1;%2").arg(this->vpnId).arg(ui->txtDataField->text()));
+        }
+        emit saveUserData(this->vpnId, 3, ui->txtDataField->text(), ui->cbSaveData->isChecked());
+        this->close();
+    } else if (frmType == InputType::HttpUsername) {
+        if (Settings::getInstance()->getIsPortableClient()) {
+            emit writeUserData(ui->txtDataField->text());
+        } else {
+            SrvCLI::instance()->send(QLatin1String("HTTPUSERNEEDED"), QString("%1;%2").arg(this->vpnId).arg(ui->txtDataField->text()));
+        }
+        emit saveUserData(this->vpnId, 5, ui->txtDataField->text(), ui->cbSaveData->isChecked());
+        this->close();
+    } else if (frmType == InputType::HttpPassword) {
+        if (Settings::getInstance()->getIsPortableClient()) {
+            emit writeUserData(ui->txtDataField->text());
+        } else {
+            SrvCLI::instance()->send(QLatin1String("HTTPPASSNEEDED"), QString("%1;%2").arg(this->vpnId).arg(ui->txtDataField->text()));
+        }
+        emit saveUserData(this->vpnId, 6, ui->txtDataField->text(), ui->cbSaveData->isChecked());
+        this->close();
+    } else if (frmType == InputType::Otp) {
+        if (Settings::getInstance()->getIsPortableClient()) {
+            emit writeUserData(ui->txtDataField->text());
+        } else {
+            SrvCLI::instance()->send(QLatin1String("CKNEEDED"), QString("%1;%2").arg(this->vpnId).arg(ui->txtDataField->text()));
+        }
+        emit saveUserData(this->vpnId, 2, ui->txtDataField->text(), ui->cbSaveData->isChecked());
+        this->close();
+    } else if (frmType == InputType::PrivateKey) {
+        emit cryptKey(ui->txtDataField->text());
         this->close();
     }
-}
-
-bool FrmGetUserData::isDataAvailable() {
-    return this->dataAvail;
-}
-
-QString FrmGetUserData::getDataField() {
-    return this->dataField;
-}
-
-void FrmGetUserData::setFrmType(int type) {
-    this->frmType = type;
-}
-
-bool FrmGetUserData::isSaveChecked() {
-    return ui->cbSaveData->isChecked();
-}
-
-void FrmGetUserData::closeMe() {
-    //this->hide();
 }

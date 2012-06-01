@@ -13,6 +13,18 @@
     <height>430</height>
    </rect>
   </property>
+  <property name="minimumSize">
+   <size>
+    <width>600</width>
+    <height>430</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>600</width>
+    <height>430</height>
+   </size>
+  </property>
   <property name="windowTitle">
    <string>Securepoint SSL VPN Service Log</string>
   </property>
@@ -37,6 +49,9 @@
    </property>
    <property name="frameShadow">
     <enum>QFrame::Plain</enum>
+   </property>
+   <property name="readOnly">
+    <bool>true</bool>
    </property>
   </widget>
   <widget class="QPushButton" name="cmdClose">

@@ -4,19 +4,18 @@
 #include <QtCore>
 #include <QtGui>
 
-#include "openvpn.h"
-
+class OpenVpn;
 class TreeButton;
-
 
 class TreeConItem : public QTreeWidgetItem
 {
 public:
     TreeConItem(QTreeWidgetItem *parent=0);
-    void setTreeButton (TreeButton *button);
-    void setOpenVPN (OpenVpn *vpn);
-    OpenVpn *getOpenVPN ();
-    TreeButton *getTreeButton ();
+    void setTreeButton (TreeButton *button=0);
+    void setOpenVPN (OpenVpn *vpn=0);
+
+    OpenVpn *getOpenVPN () const;
+    TreeButton *getTreeButton () const;
 
 private:
     TreeButton *button;

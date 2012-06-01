@@ -1,8 +1,8 @@
 /********************************************************************************
 ** Form generated from reading UI file 'importconfig.ui'
 **
-** Created: Tue 16. Nov 12:52:15 2010
-**      by: Qt User Interface Compiler version 4.7.0
+** Created: Thu 12. Jan 13:39:29 2012
+**      by: Qt User Interface Compiler version 4.7.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/

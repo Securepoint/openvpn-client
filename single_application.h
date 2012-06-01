@@ -1,21 +1,15 @@
-// "single_application.h"
-
 #ifndef SINGLE_APPLICATION_H
 #define SINGLE_APPLICATION_H
 
 #include <QApplication>
 #include <QSharedMemory>
-
-class Preferences;
-#include "preferences.h"
 #include <windows.h>
 
 class SingleApplication : public QApplication
 {
         Q_OBJECT
 public:
-        SingleApplication(int &argc, char *argv[], const QString uniqueKey);
-        Preferences *prefParent;
+        SingleApplication(int &argc, char *argv[], const QString uniqueKey);        
         bool isRunning();
         bool sendMessage(const QString &message);
 

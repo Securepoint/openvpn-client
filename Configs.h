@@ -12,21 +12,20 @@ class Configs
     static Configs *getInstance ();
     void searchConfigs (QString sDir);
     void clearConfigs ();
-    QList<OpenVpn*> getConfigsObjects ();
+    QList<QPair<int, OpenVpn*> > getConfigsObjects ();
     void searchLinkedConfigs ();
-    bool isConfigLinked (QString config);
-    void removeConfigFromList (QString config);
-    void changeConfigNameInLinkedList (QString oldName, QString newName);
-    void appendConfigToList (OpenVpn *obj);    
-    void swap (int i, int j);
+    bool isConfigLinked (const QString &config);
+    void removeConfigFromList (const QString &config);
+    void changeConfigNameInLinkedList (const QString &oldName, const QString &newName);
+    void appendConfigToList (OpenVpn *obj);        
 
   private:
-     Configs(){
-          this->refreshConnectionPath = QString("");
-     }
+     Configs();
      static Configs *mInst;
-     QList<OpenVpn*> myList;
+     QList<QPair<int, OpenVpn*> > myList;
      QString refreshConnectionPath;
+     int id;
+     bool isConfigInList (const QString &path);
 };
 
 

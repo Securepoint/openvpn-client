@@ -1,13 +1,11 @@
 #include "appinfo.h"
 #include "ui_appinfo.h"
-
-#include "usercontroll.h"
-
 #include <QDesktopServices>
 
 AppInfo *AppInfo::mInst = NULL;
 
-AppInfo *AppInfo::getInstance() {
+AppInfo *AppInfo::getInstance()
+{
     if (!mInst)
         mInst = new AppInfo ();
     return mInst;
@@ -18,7 +16,7 @@ AppInfo::AppInfo() :
     m_ui(new Ui::appInfo)
 {
     // Window als Toolfenster ohne MinMax setzen
-    this->setWindowFlags(Qt::Tool | Qt::WindowStaysOnTopHint);
+    this->setWindowFlags(Qt::Tool);
     m_ui->setupUi(this);
 }
 

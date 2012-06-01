@@ -64,7 +64,7 @@
     <property name="geometry">
      <rect>
       <x>38</x>
-      <y>40</y>
+      <y>37</y>
       <width>161</width>
       <height>19</height>
      </rect>
@@ -112,7 +112,7 @@ image: url(:/images/styles/checkbox_checked_hover.png);
     <property name="geometry">
      <rect>
       <x>38</x>
-      <y>60</y>
+      <y>55</y>
       <width>161</width>
       <height>19</height>
      </rect>
@@ -160,7 +160,7 @@ image: url(:/images/styles/checkbox_checked_hover.png);
     <property name="geometry">
      <rect>
       <x>38</x>
-      <y>80</y>
+      <y>75</y>
       <width>161</width>
       <height>19</height>
      </rect>
@@ -208,7 +208,7 @@ image: url(:/images/styles/checkbox_checked_hover.png);
     <property name="geometry">
      <rect>
       <x>38</x>
-      <y>100</y>
+      <y>93</y>
       <width>151</width>
       <height>19</height>
      </rect>
@@ -256,7 +256,7 @@ image: url(:/images/styles/checkbox_checked_hover.png);
     <property name="geometry">
      <rect>
       <x>38</x>
-      <y>120</y>
+      <y>131</y>
       <width>161</width>
       <height>19</height>
      </rect>
@@ -297,14 +297,14 @@ image: url(:/images/styles/checkbox_checked_hover.png);
 </string>
     </property>
     <property name="text">
-     <string>Userdata [auth.dat]</string>
+     <string>Userdata [.dat]</string>
     </property>
    </widget>
    <widget class="QCheckBox" name="cbScript">
     <property name="geometry">
      <rect>
       <x>38</x>
-      <y>140</y>
+      <y>151</y>
       <width>161</width>
       <height>19</height>
      </rect>
@@ -352,7 +352,7 @@ image: url(:/images/styles/checkbox_checked_hover.png);
     <property name="geometry">
      <rect>
       <x>38</x>
-      <y>160</y>
+      <y>169</y>
       <width>161</width>
       <height>19</height>
      </rect>
@@ -394,6 +394,54 @@ image: url(:/images/styles/checkbox_checked_hover.png);
     </property>
     <property name="text">
      <string>Directory if empty</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="cbRemovePkcs12">
+    <property name="geometry">
+     <rect>
+      <x>38</x>
+      <y>113</y>
+      <width>131</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QCheckBox { 
+spacing: 5px;
+}
+
+QCheckBox::indicator {
+width: 13px;
+height: 13px;
+}
+
+QCheckBox::indicator:unchecked:disabled {
+image: url(:/images/styles/checkbox_unchecked_dis.png);
+}
+
+QCheckBox::indicator:checked:disabled {
+image: url(:/images/styles/checkbox_checked_dis.png);
+}
+
+QCheckBox::indicator:unchecked:enabled {
+image: url(:/images/styles/checkbox_unchecked.png);
+}
+
+QCheckBox::indicator:checked:enabled {
+image: url(:/images/styles/checkbox_checked.png);
+}
+
+QCheckBox::indicator:unchecked:enabled:hover {
+image: url(:/images/styles/checkbox_unchecked_hover.png);
+}
+
+QCheckBox::indicator:checked:enabled:hover {
+image: url(:/images/styles/checkbox_checked_hover.png);
+}
+</string>
+    </property>
+    <property name="text">
+     <string>Pkcs12 [.p12]</string>
     </property>
    </widget>
   </widget>

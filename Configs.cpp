@@ -1,77 +1,133 @@
-#include "Configs.h"
-#include "usercontroll.h"
+#include "configs.h"
 #include "appfunc.h"
 
 Configs *Configs::mInst = NULL;
 
-Configs *Configs::getInstance() {
-    if (!mInst)
+Configs *Configs::getInstance()
+{
+    if (!mInst) {
         mInst = new Configs ();
+    }
+
     return mInst;
 }
 
-QList<OpenVpn*> Configs::getConfigsObjects (){
+Configs::Configs ()
+    : refreshConnectionPath (""),
+      id (1)
+{
+
+}
+
+QList<QPair<int, OpenVpn*> > Configs::getConfigsObjects ()
+{
     return this->myList;
 }
 
-void Configs::clearConfigs() {
-    this->refreshConnectionPath = QString("");
-    foreach (OpenVpn* obj, this->myList) {
-        if (!obj->isConnectionStable() && !obj->isConnecting()) {
-            this->myList.removeOne(obj);
+void Configs::clearConfigs()
+{    
+    this->refreshConnectionPath.clear();
+
+    // OD: Mutable List statt foreach
+    QMutableListIterator<QPair<int, OpenVpn*> > i(this->myList);
+
+    while (i.hasNext()) {
+        QPair <int, OpenVpn*> entry = i.next();
+        OpenVpn *obj = entry.second;
+
+        if (!obj->isConnectionStable() && !obj->isConnecting() && !obj->isError() && obj->getAdvName().isEmpty() && !obj->isDelayed()) {
+            // Objekt löschen
+            delete obj;
+            obj = 0;
+            // Nun aus der Liste entfernen
+            i.remove();
         } else {
             // Pfad merken
-            this->refreshConnectionPath = obj->configPath
-                                        + QString ("/")
-                                        + obj->configName
-                                        + QString (".ovpn");
-        }
+            this->refreshConnectionPath = obj->getConfigFullPath();
+        }        
     }
 }
 
-void Configs::searchLinkedConfigs() {
-    QFile linkedOvpn (QApplication::applicationDirPath() + QString ("/configs.txt"));
+bool Configs::isConfigInList(const QString &path)
+{
+    //
+    // Ist die Konfiguration bereits in der Liste
+    //
+
+    if (path.isEmpty()) {
+        return false;
+    }
+
+    QListIterator<QPair<int, OpenVpn*> > i(this->myList);
+
+    while (i.hasNext()) {
+        QPair <int, OpenVpn*> entry = i.next();
+        OpenVpn *obj = entry.second;
+
+        // Den Pfad kontrollieren
+        if (path == obj->getConfigFullPath()) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+void Configs::searchLinkedConfigs()
+{
+    QFile linkedOvpn (AppFunc::getAppSavePath() + QLatin1String ("/configs.txt"));
+
     if (linkedOvpn.exists()) {
-        if (!linkedOvpn.open(QIODevice::ReadOnly | QIODevice::Text))
+        if (!linkedOvpn.open(QIODevice::ReadOnly | QIODevice::Text)) {
             return;
+        }
         // Offen einlesen
         QTextStream in (&linkedOvpn);
         while (!in.atEnd()) {
-            QString line = in.readLine();
-            if (line.trimmed() != this->refreshConnectionPath) {
+            QString line = in.readLine();            
+            if (!this->isConfigInList(line)) {
                 // Add to list
                 QFile linkFileExists (line.trimmed());
                 if (linkFileExists.exists()) {
-                    QString configName = line.trimmed().right(line.trimmed().size() - line.trimmed().lastIndexOf("/") -1);
+                    int _id (this->id++);
+                    QString configName = line.trimmed().right(line.trimmed().size() - line.trimmed().lastIndexOf("/") - 1);
                     configName = configName.left(configName.size()-5);
                     OpenVpn* myObj = new OpenVpn();
-                    myObj->connectionStable = false;
-                    myObj->isLinked = true;
-                    myObj->configName = configName;
-                    myObj->configPath = line.trimmed().left(line.lastIndexOf("/"));
-                    UserControll::getInstance()->setConfigDirectory(myObj->configPath);
-                    bool isCDAvail = UserControll::getInstance()->isConfigUserDataAvailable();
-                    myObj->setIsCryptFileAvailable(isCDAvail);
-                    this->myList.append(myObj);
+                    myObj->setConfigStable(false);
+                    myObj->setConfigLinked(true);
+                    myObj->setConfigName(configName);
+                    myObj->setConfigPath(line.trimmed().left(line.lastIndexOf("/")));
+                    myObj->setId(_id);
+                    // An die Liste anfügen
+                    this->myList.append(qMakePair(_id, myObj));
                 }
             }
         }
         linkedOvpn.close();
     }
 }
-void Configs::changeConfigNameInLinkedList (QString oldName, QString newName) {
-    this->removeConfigFromList(oldName);
-    QFile linkedWriteOvpn (QApplication::applicationDirPath()  + QString ("/configs.txt"));
-    if (!linkedWriteOvpn.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append))
+
+void Configs::changeConfigNameInLinkedList (const QString &oldName, const QString &newName)
+{
+    if (this->isConfigInList(newName)) {
+        // ist bereits drin
         return;
+    }
+    this->removeConfigFromList(oldName);
+    QFile linkedWriteOvpn (AppFunc::getAppSavePath()  + QLatin1String ("/configs.txt"));
+    if (!linkedWriteOvpn.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append)) {
+        return;
+    }
+
     QTextStream out (&linkedWriteOvpn);
-    out << newName + QString ("\n");
+    out << newName + QLatin1String ("\n");
     linkedWriteOvpn.close();
 }
 
-bool Configs::isConfigLinked(QString config) {
+bool Configs::isConfigLinked(const QString &config)
+{
     bool retVal = false;
-    QFile linkedOvpn (QApplication::applicationDirPath()  + QString ("/configs.txt"));
+    QFile linkedOvpn (AppFunc::getAppSavePath()  + QLatin1String ("/configs.txt"));
     if (linkedOvpn.exists()) {
         if (!linkedOvpn.open(QIODevice::ReadOnly | QIODevice::Text))
             return false;
@@ -89,9 +145,12 @@ bool Configs::isConfigLinked(QString config) {
     return retVal;
 }
 
-void Configs::removeConfigFromList(QString config) {
-    config = config.replace("\\", "/");
-    QFile linkedOvpn (QApplication::applicationDirPath()  + QString ("/configs.txt"));
+void Configs::removeConfigFromList(const QString &config)
+{
+    QString configClean (config);
+    configClean = configClean.replace("\\", "/");
+
+    QFile linkedOvpn (AppFunc::getAppSavePath()  + QLatin1String ("/configs.txt"));
     if (linkedOvpn.exists()) {
         if (!linkedOvpn.open(QIODevice::ReadOnly | QIODevice::Text))
             return;
@@ -100,23 +159,24 @@ void Configs::removeConfigFromList(QString config) {
         QTextStream in (&linkedOvpn);
         while (!in.atEnd()) {
             QString line = in.readLine();
-            if (line.trimmed() != config) {
+            if (line.trimmed() != configClean) {
                 fileContent.append(line.trimmed());
             }
         }
         linkedOvpn.close();
         // Datei schreiben
-        QFile linkedWriteOvpn (QApplication::applicationDirPath()  + QString ("/configs.txt"));
+        QFile linkedWriteOvpn (AppFunc::getAppSavePath()  + QLatin1String ("/configs.txt"));
         if (!linkedWriteOvpn.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate))
             return;
         QTextStream out (&linkedWriteOvpn);
         foreach (QString str, fileContent)
-            out << str + QString ("\n");
+            out << str + QLatin1String ("\n");
         linkedWriteOvpn.close();
     }
 }
 
-void Configs::searchConfigs (QString sDir) {
+void Configs::searchConfigs (QString sDir)
+{
     // Dateien im aktuellen Verzeichnis suchen
 
     QDir dir (sDir);
@@ -128,31 +188,31 @@ void Configs::searchConfigs (QString sDir) {
         QFileInfo fileInfo = list.at(i);
         if (fileInfo.isDir()) {
             // Verzeichnis auf Configs durchsuchen
-            if (fileInfo.fileName() != "." && fileInfo.fileName() != "..")
-                this->searchConfigs(sDir + QString ("/") + fileInfo.fileName());
+            if (fileInfo.fileName() != "." && fileInfo.fileName() != QLatin1String("..")) {
+                this->searchConfigs(sDir + QLatin1String ("/") + fileInfo.fileName());
+            }
         } else {
-            // Ist eine Datei, VPN Config?
-            if (fileInfo.suffix() == "ovpn"){
-                if (this->refreshConnectionPath.replace("\\", "/") != sDir.replace("\\", "/") + QString ("/") + fileInfo.fileName()) {
+            // Ist eine Datei, auch eine VPN Config?
+            if (fileInfo.suffix() == QLatin1String("ovpn")){                
+                if (!this->isConfigInList(sDir.replace("\\", "/") + QLatin1String ("/") + fileInfo.fileName())) {
+                    int _id (this->id++);
                     OpenVpn* myObj = new OpenVpn();
-                    myObj->connectionStable = false;
-                    myObj->isLinked = false;
-                    myObj->configName = fileInfo.fileName().replace(QString(".ovpn"), QString(""));
-                    myObj->configPath = sDir;
-                    UserControll::getInstance()->setConfigDirectory(sDir);
-                    bool isCDAvail = UserControll::getInstance()->isConfigUserDataAvailable();
-                    myObj->setIsCryptFileAvailable(isCDAvail);
-                    this->myList.append(myObj);
+                    myObj->setConfigStable(false);
+                    myObj->setConfigLinked(false);
+                    myObj->setConfigName(fileInfo.fileName().replace(QLatin1String(".ovpn"), QLatin1String("")));
+                    myObj->setConfigPath(sDir);
+                    myObj->setId(_id);
+
+                    this->myList.append(qMakePair(_id, myObj));
                 }
             }
         }
     }
 }
 
-void Configs::appendConfigToList(OpenVpn *obj) {
-    this->myList.append(obj);
-}
-
-void Configs::swap(int i, int j) {
-    //this->myList.swap(i,j);
+void Configs::appendConfigToList(OpenVpn *obj)
+{    
+    int _id (this->id++);
+    obj->setId(_id);
+    this->myList.append(qMakePair(_id, obj));
 }

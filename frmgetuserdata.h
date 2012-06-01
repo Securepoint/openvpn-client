@@ -1,11 +1,25 @@
 #ifndef FRMGETUSERDATA_H
 #define FRMGETUSERDATA_H
 
-#include <QDialog>
 #include <QtCore>
-#include <QShowEvent>
-#include <QDesktopServices>
-#include <QDesktopWidget>
+#include <QtGui>
+
+// 0 - Username
+// 1 - Pwd
+// 2 - OTP
+// 3 - PKCS12
+// 4 - Private Key für Crypted User Data
+namespace InputType {
+    enum UserInputType {
+        Username,
+        Password,
+        Otp,
+        Pkcs12,
+        PrivateKey,
+        HttpUsername,
+        HttpPassword
+    };
+}
 
 namespace Ui {
     class FrmGetUserData;
@@ -13,33 +27,36 @@ namespace Ui {
 
 class FrmGetUserData : public QDialog {
     Q_OBJECT
-public:
-    static FrmGetUserData *getInstance ();
-    ~FrmGetUserData();
-    bool isDataAvailable ();
-    void setFrmType (int type);
-    QString getDataField ();
-    bool isSaveChecked ();
-    void closeMe ();
+
+public:    
+    FrmGetUserData(InputType::UserInputType type, int id = -1);
+    ~FrmGetUserData();    
+    void setFrmType ();
+
+public slots:
+    void receivedCloseMe ();
 
 protected:
     void changeEvent(QEvent *e);
     void showEvent (QShowEvent *e);
+    void closeEvent(QCloseEvent *e);
 
 private:
-    Ui::FrmGetUserData *ui;
-    FrmGetUserData();
-    static FrmGetUserData *mInst;
+    Ui::FrmGetUserData *ui;        
     bool dataAvail;
-    int frmType;
-    QString dataField;
+    InputType::UserInputType frmType;
+    int vpnId;
+    bool force;
 
 private slots:
     void on_cmdOK_clicked();
     void on_cmdClose_clicked();
 
 signals:
-    void dataIsAvailable ();
+    void writeUserData (QString data);
+    void saveUserData (int id, int type, QString value, bool save);
+    void cryptKey (QString key);
+
 };
 
 #endif // FRMGETUSERDATA_H

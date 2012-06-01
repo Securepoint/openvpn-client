@@ -1,6 +1,9 @@
 #include "renameconfig.h"
 #include "ui_renameconfig.h"
 
+#include "preferences.h"
+#include "message.h"
+
 RenameConfig *RenameConfig::mInst = NULL;
 
 RenameConfig *RenameConfig::getInstance() {
@@ -11,10 +14,11 @@ RenameConfig *RenameConfig::getInstance() {
 
 RenameConfig::RenameConfig() :
     QDialog(),
-    m_ui(new Ui::RenameConfig)
+    m_ui(new Ui::RenameConfig),
+    fullPath ("")
 {
     m_ui->setupUi(this);
-    this->setWindowFlags(Qt::WindowCloseButtonHint | Qt::WindowStaysOnTopHint);
+    this->setWindowFlags(Qt::WindowCloseButtonHint);
 }
 
 void RenameConfig::changeEvent(QEvent *e)
@@ -31,13 +35,15 @@ void RenameConfig::changeEvent(QEvent *e)
 
 void RenameConfig::showEvent(QShowEvent *e) {
     m_ui->txtNewName->setText("");
-    // Mittig ausrichten
-    int screenH = qApp->desktop()->height();
-    int screenW = qApp->desktop()->width();
-    int winH = 120;
-    int winW = 280;
+    // Mittig ausrichten    
+    int winW = this->width();
+    int winH = this->height();
+
+    int left = Preferences::instance()->geometry().x();
+    left = left + (Preferences::instance()->geometry().width() - winW) / 2;
+
     // Nun die neuen setzen
-    this->setGeometry((screenW / 2) - (winW / 2), (screenH / 2) - (winH / 2), winW, winH);
+    this->setGeometry(left, (qApp->desktop()->height() / 2) - (winH / 2), winW, winH);
     // Öffnen
     e->accept();
     this->setWindowState(Qt::WindowActive);
@@ -50,64 +56,54 @@ void RenameConfig::on_cmdClose_clicked()
 
 void RenameConfig::on_cmdRename_clicked()
 {
-    bool isLinked = false;
-    bool fError = false;
-    QString errMes = "";
+    bool isLinked (false);
+    bool fError (false);
+    QString errMes ("");
 
-    if (m_ui->txtNewName->text().trimmed() != "") {
+    if (!m_ui->txtNewName->text().trimmed().isEmpty()) {
         QFile renFile (this->fullPath);
         QString oldPath (this->fullPath);
                 oldPath = oldPath.replace("\\","/");
-        if (Configs::getInstance()->isConfigLinked(oldPath))
+        if (Configs::getInstance()->isConfigLinked(oldPath)) {
             isLinked = true;
+        }
+
         if (renFile.exists()) {
             // rename
             QString renPath (this->fullPath.left(this->fullPath.lastIndexOf("/")));
-            if (!renFile.rename(renPath + QString("/") + m_ui->txtNewName->text().trimmed() + QString(".ovpn"))) {
+            if (!renFile.rename(renPath + QLatin1String("/") + m_ui->txtNewName->text().trimmed() + QLatin1String(".ovpn"))) {
                 fError = true;
-                errMes = QString (tr("Rename failed!"));
+                errMes = QObject::tr("Rename failed!");
             }
         }
-        if(!fError)
+
+        if(!fError) {
             if (isLinked) {
-                Configs::getInstance()->changeConfigNameInLinkedList(oldPath, oldPath.left(oldPath.lastIndexOf("/")) + QString("/") + m_ui->txtNewName->text().trimmed() + QString(".ovpn"));
+                Configs::getInstance()->changeConfigNameInLinkedList(oldPath, oldPath.left(oldPath.lastIndexOf("/")) + QLatin1String("/") + m_ui->txtNewName->text().trimmed() + QLatin1String(".ovpn"));
             }
+        }
     } else {
         fError = true;
-        errMes = QString (tr("New name is empty!"));
+        errMes = QObject::tr("New name is empty!");
     }
 
     if (fError) {
-        QMessageBox msgBox;
-        msgBox.setWindowTitle(tr("Securepoint SSL VPN"));
-        msgBox.setText(tr("An error has occurred!"));
-        msgBox.setWindowIcon(QIcon(":/images/logo.png"));
-        msgBox.setInformativeText(errMes);
-        msgBox.setStandardButtons(QMessageBox::Ok);
-        msgBox.setDefaultButton(QMessageBox::Ok);
-        msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
-        msgBox.exec();
+        Message::error(errMes, QObject::tr("Rename Configuration"));
     } else {
-        QMessageBox msgBox;
-        msgBox.setWindowTitle(tr("Securepoint SSL VPN"));
-        msgBox.setText(tr("Rename Configuration"));
-        msgBox.setWindowIcon(QIcon(":/images/logo.png"));
-        msgBox.setInformativeText(tr("Rename was successfully!"));
-        msgBox.setStandardButtons(QMessageBox::Ok);
-        msgBox.setDefaultButton(QMessageBox::Ok);
-        msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
-        msgBox.exec();
-        MainWindowControll::getInstance()->refreshConfigs();
-        MainWindowControll::getInstance()->refreshDialog();
-        MainWindowControll::getInstance()->setConnectionStatus();
+        Message::information(QObject::tr("Rename was successfully!"), QObject::tr("Rename Configuration"));
+
+        Preferences::instance()->refreshConfigList();
+        Preferences::instance()->refreshDialog();
+        Preferences::instance()->setConnectionStatus();
+        Preferences::instance()->setIcon();
         this->close();
     }
 }
 
-void RenameConfig::setOldName(QString oldname) {
+void RenameConfig::setOldName(const QString &oldname) {
     m_ui->lblOldName->setText(oldname);
 }
 
-void RenameConfig::setFullPath(QString path) {
+void RenameConfig::setFullPath(const QString &path) {
     this->fullPath = path;
 }

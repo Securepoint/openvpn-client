@@ -10,15 +10,8 @@
 #include <QDate>
 
 #include "vpnlog.h"
-#include "mainwindowcontroll.h"
 #include "settings.h"
-#include "usercontroll.h"
-#include "editconfig.h"
-#include "configexport.h"
-
-// Prevent Circle References
-#include "frmgetuserdata.h"
-
+#include "qthreadexec.h"
 
 class OpenVpn : public QObject
 {
@@ -31,85 +24,93 @@ public:
     //Methoden
     QString getErrorString ();
     QString getConnectionIP ();
-    QString getScript (QString type);
+    QString getScript (const QString &type);
     QString getAdvName ();
 
-    void runScript (QString type);
+    void setId (int id);
+
+    bool hasCrediantials (int type = -1);
+    QString getSavedUserData (int type);
+
+    void runScript (const QString &type);
+    void runDelayStartScript ();
     void setObjectToConnected ();
     void connectToVpn (bool openLog=false);
-    void setConnectedIP (QString ip);
+    void setConnectedIP (const QString &ip);
     void setIsConnected (bool flag);
     void setIsError (bool flag);
-    void setErrorString (QString errMes);
+    void setErrorString (const QString &errMes);
     void setIsConnecting (bool flag);
-    void setAdvName (QString name);
-    void setIsCryptFileAvailable (bool flag);
-    void setConnectedSinceTime (QTime since);
-    void setConnectedSinceDate (QDate since);
+    void setAdvName (const QString &name);    
+    void setConnectedSinceTime (const QTime &since);
+    void setConnectedSinceDate (const QDate &since);
     void enableAllMenus ();
     void disableMenues ();
 
     bool isConnecting ();
     bool isError ();
     bool isConnectionStable ();
-    bool isOnConnect ();
-    bool getIsCryptFileAvailable ();
+    bool isOnConnect ();    
     void testCloseOpenVPN ();
+
+    QAction *menu;
+
+    int id() const;
 
     QTime getConnectedSinceTime ();
     QDate getConnectedSinceDate ();
 
+    QString getConfigFullPath () const;
+    QString getConfigPath () const;
+    QString getConfigName () const;
+    bool isConnectionStable () const;
+    bool isConfigLinked () const;
 
-    // Public Member
-    QString configName;
-    QString configPath;
-    QString configPwd;
-    QString configUser;
-    QAction *menu;
-    bool connectionStable;
-    bool isLinked;
-    bool runAsService;
+    void setConfigName (const QString &name);
+    void setConfigPath (const QString &path);
 
+    void setConfigLinked (const bool &flag);
+    void setConfigStable (const bool &flag);
+
+    QStringList makeProxyString ();
+
+    void setDelay (const bool &flag);
+    bool isDelayed () const;
 
 private slots:
     void showProcessError (QProcess::ProcessError error);
     void showProcessScriptError (QProcess::ProcessError error);
     void processFinished (int exitCode, QProcess::ExitStatus exitStatus);
     void readProcessData ();
-    void startAfterConnectDelayed ();
-    void userDataIsAvailable ();
+    void startAfterConnectDelayed ();    
+    void getCryptKey (QString key);
 
 public slots:
     void openConnect ();
     void disconnectVpn ();
-    void openVpnLog ();
-    void configIsChanged ();
+    void openVpnLog ();    
     void openEditConfig ();
     void openExport ();
+    void openManageConnection ();
+    void writeUserData (QString data);
+    void saveUserData (int id, int type, QString value, bool save);
+    void removeCredentials (bool refresh = true);
 
-private:
-    // Enum für die Icons
-    enum Icons {
-        Inaktiv,
-        Connected,
-        Error,
-        Connecting
-    };
+private:    
     // Methoden
+    int _id;
 
     void setDisconnected ();
-    void showTrayMessage (QString message);
-    void setIcon(int index);
+    void showTrayMessage (const QString &message);    
 
     bool onDisconnect;
     bool onConnect;
     bool errorHasOccurred;
 
     QString errMessage;
-    QStringList makeProxyString ();
 
     // Member
-    QProcess *proc;
+    QProcess proc;
     QProcess *procScripts;
 
     QList<QString> openVpnLogData;
@@ -119,18 +120,28 @@ private:
     QList<QAction*> menuChildList;
 
     QString connectionIP;
-    QString advName;
-
-    bool isCryptFileAvailable;
-    bool isUserDataAvailable;
+    QString advName;    
 
     QDate connectedSinceDate;
     QTime connectedSinceTime;
 
+    // Public Member
+    QString configName;
+    QString configPath;
+    QString configPwd;
+    QString configUser;
+    bool connectionStable;
+    bool isLinked;
+    bool runAsService;
 
+    volatile bool waitForCryptKey;
 
     // Forms
     VpnLog mLog;
+
+    void userDataIsNeeded (int type);
+
+    bool delayed;
 
 signals:
     void configSignalIsChanged ();
@@ -138,6 +149,8 @@ signals:
     void connectionIsStableSig (QString ip);
     void connectionIsDisconnectedSig ();
     void connectionReconnectFromOpenVPNSig ();
+    void needUserInput (int id, int type);
+    void closeDialog ();
 };
 
 #endif // OPENVPN_H

@@ -1,23 +1,21 @@
 #include "servicelog.h"
 #include "ui_servicelog.h"
 
-ServiceLog *ServiceLog::mInst = NULL;
+#include "message.h"
+#include "servicelogdata.h"
+#include "preferences.h"
 
-ServiceLog *ServiceLog::getInstance() {
-    if (!mInst)
-        mInst = new ServiceLog ();
-    return mInst;
-}
-
-ServiceLog::ServiceLog() :
+ServiceLog::ServiceLog(int id) :
     QDialog(),
-    m_ui(new Ui::ServiceLog)
+    m_ui(new Ui::ServiceLog),
+    openvpnId(id)
 {
     m_ui->setupUi(this);
-    this->setWindowFlags(Qt::Tool | Qt::WindowStaysOnTopHint);
+    this->setWindowFlags(Qt::Tool);
     // Timer für die Aktualisierung aktualisieren
-    timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), this, SLOT(refreshData()));
+    this->timer = new QTimer(this);
+    this->timer->setInterval(1000);
+    QObject::connect(this->timer, SIGNAL(timeout()), this, SLOT(refreshData()));
 }
 
 ServiceLog::~ServiceLog()
@@ -39,44 +37,60 @@ void ServiceLog::changeEvent(QEvent *e)
 
 void ServiceLog::on_cmdStopLog_clicked()
 {
-    if (timer->isActive()) {
-        timer->stop();
-        m_ui->cmdStopLog->setText(tr("Start Log"));
+    if (this->timer->isActive()) {
+        this->timer->stop();
+        m_ui->cmdStopLog->setText(QObject::tr("Start Log"));
     } else {
-        timer->start(1000);
-        m_ui->cmdStopLog->setText(tr("Stop Log"));
+        this->timer->start();
+        m_ui->cmdStopLog->setText(QObject::tr("Stop Log"));
     }
 }
 
-void ServiceLog::closeEvent(QCloseEvent *event) {
-    timer->stop();
+void ServiceLog::closeEvent(QCloseEvent *event)
+{
+    this->timer->stop();
     event->accept();
 }
 
-void ServiceLog::showEvent(QShowEvent *e) {
+void ServiceLog::showEvent(QShowEvent *e)
+{
     this->refreshData();
-    timer->start(1000);
-    m_ui->cmdStopLog->setText(tr("Stop Log"));
-    // Mittig ausrichten
-    int screenH = qApp->desktop()->height();
-    int screenW = qApp->desktop()->width();
-    int winH = 430;
-    int winW = 600;
+    this->timer->start();
+
+    m_ui->cmdStopLog->setText(QObject::tr("Stop Log"));
+
+    int winW = this->width();
+    int winH = this->height();
+
+    int left (0);
+    if (Preferences::instance()->isVisible()) {
+        // Wenn das Hauptfenster offen ist mittig über diesem plazieren
+        left = Preferences::instance()->geometry().x();
+        left = left + (Preferences::instance()->geometry().width() - winW) / 2;
+    } else {
+        // Desktop auswerten
+        left = qApp->desktop()->width();
+        // Die Breite bei virtuellen Desktops vierteln
+        if (left > 2000 && qApp->desktop()->isVirtualDesktop()) {
+            left /= 4;
+        }
+    }
+
     // Nun die neuen setzen
-    this->setGeometry((screenW / 2) - (winW / 2), (screenH / 2) - (winH / 2), winW, winH);
+    this->setGeometry(left, (qApp->desktop()->height() / 2) - (winH / 2), winW, winH);
+
     e->accept();
 }
 
 void ServiceLog::on_cmdSave_clicked()
 {
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save Log"),
-                            QApplication::applicationDirPath(),
-                            tr("Log files (*.log *.txt)"));
-    if (fileName != "") {
+    QString fileName = QFileDialog::getSaveFileName(this, QObject::tr("Save Log"), QApplication::applicationDirPath(), QObject::tr("Log files (*.log *.txt)"));
+
+    if (!fileName.isEmpty()) {
         // open and write
         QFile wFile (fileName);
         if (!wFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
-            QMessageBox::critical(0,QString (tr("Securepoint SSL VPN")), QString(tr("Can't open file to write!")));
+            Message::error(QObject::tr("Can't open file to write!"));
             return;
         }
         QTextStream out (&wFile);
@@ -85,11 +99,17 @@ void ServiceLog::on_cmdSave_clicked()
     }
 }
 
-void ServiceLog::refreshData() {
-    this->m_ui->memLog->clear();
-    for (int x = 0; x < this->srvLog.size(); x++) {
-        this->m_ui->memLog->appendPlainText(this->srvLog.at(x) + "\n");
-    }
+void ServiceLog::refreshData()
+{
+    this->timer->stop();
+
+    m_ui->memLog->clear();
+    m_ui->memLog->appendPlainText(ServiceLogData::instance()->logs(this->openvpnId).join(""));
+    // Da das TextEdit readonly ist, nehmen wir die scrollbar für den auto scroll. ansonsten ist der cursor besser
+    QScrollBar *sb = m_ui->memLog->verticalScrollBar();
+    sb->setValue(sb->maximum());
+
+    this->timer->start();
 }
 
 void ServiceLog::on_cmdClose_clicked()
@@ -98,10 +118,3 @@ void ServiceLog::on_cmdClose_clicked()
     this->close();
 }
 
-void ServiceLog::appendToLog(QString message) {
-    this->srvLog.append(message);
-}
-
-void ServiceLog::clearLog() {
-    this->srvLog.clear();
-}

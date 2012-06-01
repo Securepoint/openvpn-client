@@ -1,8 +1,8 @@
 /********************************************************************************
 ** Form generated from reading UI file 'frmgetuserdata.ui'
 **
-** Created: Tue 16. Nov 12:52:14 2010
-**      by: Qt User Interface Compiler version 4.7.0
+** Created: Thu 12. Jan 13:39:28 2012
+**      by: Qt User Interface Compiler version 4.7.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -123,6 +123,9 @@ public:
 ":hover {background-color: rgb(195, 195, 195);}"));
         cmdOK->setDefault(true);
         cmdOK->setFlat(true);
+        QWidget::setTabOrder(txtDataField, cbSaveData);
+        QWidget::setTabOrder(cbSaveData, cmdOK);
+        QWidget::setTabOrder(cmdOK, cmdClose);
 
         retranslateUi(FrmGetUserData);
 
@@ -134,7 +137,7 @@ public:
         FrmGetUserData->setWindowTitle(QApplication::translate("FrmGetUserData", "User data requested", 0, QApplication::UnicodeUTF8));
         groupBox->setTitle(QApplication::translate("FrmGetUserData", "Please insert:", 0, QApplication::UnicodeUTF8));
         lblDescription->setText(QApplication::translate("FrmGetUserData", "Username:", 0, QApplication::UnicodeUTF8));
-        cbSaveData->setText(QApplication::translate("FrmGetUserData", "Save data [only possible with -useCryptedData ]", 0, QApplication::UnicodeUTF8));
+        cbSaveData->setText(QApplication::translate("FrmGetUserData", "Save data", 0, QApplication::UnicodeUTF8));
         cmdClose->setText(QApplication::translate("FrmGetUserData", "Cancel", 0, QApplication::UnicodeUTF8));
         cmdOK->setText(QApplication::translate("FrmGetUserData", "OK", 0, QApplication::UnicodeUTF8));
     } // retranslateUi

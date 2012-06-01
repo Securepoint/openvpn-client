@@ -1,8 +1,8 @@
 /********************************************************************************
 ** Form generated from reading UI file 'wiz_endpage.ui'
 **
-** Created: Tue 16. Nov 12:52:14 2010
-**      by: Qt User Interface Compiler version 4.7.0
+** Created: Thu 12. Jan 13:39:28 2012
+**      by: Qt User Interface Compiler version 4.7.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -59,6 +59,8 @@ public:
     QLabel *lblNobind;
     QLabel *lblFloat;
     QLabel *lblCompLzo;
+    QLabel *label_12;
+    QLabel *lblWindir;
     QLabel *lblInfo;
 
     void setupUi(QWizardPage *EndPage)
@@ -92,33 +94,33 @@ public:
         lblRemoteProtocol->setStyleSheet(QString::fromUtf8("color: rgb(0, 0, 255);"));
         label_4 = new QLabel(gbEndPage);
         label_4->setObjectName(QString::fromUtf8("label_4"));
-        label_4->setGeometry(QRect(10, 70, 61, 16));
+        label_4->setGeometry(QRect(10, 58, 61, 16));
         txtPathToCA = new QLineEdit(gbEndPage);
         txtPathToCA->setObjectName(QString::fromUtf8("txtPathToCA"));
         txtPathToCA->setEnabled(false);
-        txtPathToCA->setGeometry(QRect(70, 68, 301, 20));
+        txtPathToCA->setGeometry(QRect(70, 56, 301, 20));
         txtPathToCA->setContextMenuPolicy(Qt::NoContextMenu);
         txtPathToCA->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black;background-color: rgb(195, 195, 195);color: rgb(0, 0, 255);}\n"
 ":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);color: rgb(0, 0, 255);}"));
         txtPathToCA->setReadOnly(true);
         label_5 = new QLabel(gbEndPage);
         label_5->setObjectName(QString::fromUtf8("label_5"));
-        label_5->setGeometry(QRect(10, 92, 61, 16));
+        label_5->setGeometry(QRect(10, 80, 61, 16));
         txtPathToCert = new QLineEdit(gbEndPage);
         txtPathToCert->setObjectName(QString::fromUtf8("txtPathToCert"));
         txtPathToCert->setEnabled(false);
-        txtPathToCert->setGeometry(QRect(70, 90, 301, 20));
+        txtPathToCert->setGeometry(QRect(70, 78, 301, 20));
         txtPathToCert->setContextMenuPolicy(Qt::NoContextMenu);
         txtPathToCert->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black;background-color: rgb(195, 195, 195);color: rgb(0, 0, 255);}\n"
 ":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);color: rgb(0, 0, 255);}"));
         txtPathToCert->setReadOnly(true);
         label_6 = new QLabel(gbEndPage);
         label_6->setObjectName(QString::fromUtf8("label_6"));
-        label_6->setGeometry(QRect(10, 114, 61, 16));
+        label_6->setGeometry(QRect(10, 102, 61, 16));
         txtPathToKey = new QLineEdit(gbEndPage);
         txtPathToKey->setObjectName(QString::fromUtf8("txtPathToKey"));
         txtPathToKey->setEnabled(false);
-        txtPathToKey->setGeometry(QRect(70, 112, 301, 20));
+        txtPathToKey->setGeometry(QRect(70, 100, 301, 20));
         txtPathToKey->setContextMenuPolicy(Qt::NoContextMenu);
         txtPathToKey->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black;background-color: rgb(195, 195, 195);color: rgb(0, 0, 255);}\n"
 ":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);color: rgb(0, 0, 255);}\n"
@@ -126,77 +128,84 @@ public:
         txtPathToKey->setReadOnly(true);
         label_7 = new QLabel(gbEndPage);
         label_7->setObjectName(QString::fromUtf8("label_7"));
-        label_7->setGeometry(QRect(10, 137, 81, 16));
+        label_7->setGeometry(QRect(10, 122, 81, 16));
         lblCerttype = new QLabel(gbEndPage);
         lblCerttype->setObjectName(QString::fromUtf8("lblCerttype"));
-        lblCerttype->setGeometry(QRect(100, 137, 101, 16));
+        lblCerttype->setGeometry(QRect(100, 122, 101, 16));
         lblCerttype->setStyleSheet(QString::fromUtf8("color: rgb(0, 0, 255);"));
         groupBox = new QGroupBox(gbEndPage);
         groupBox->setObjectName(QString::fromUtf8("groupBox"));
-        groupBox->setGeometry(QRect(10, 158, 361, 101));
+        groupBox->setGeometry(QRect(10, 138, 361, 121));
         label_8 = new QLabel(groupBox);
         label_8->setObjectName(QString::fromUtf8("label_8"));
-        label_8->setGeometry(QRect(10, 19, 46, 14));
+        label_8->setGeometry(QRect(10, 39, 46, 14));
         lblMssfix = new QLabel(groupBox);
         lblMssfix->setObjectName(QString::fromUtf8("lblMssfix"));
-        lblMssfix->setGeometry(QRect(80, 20, 31, 16));
+        lblMssfix->setGeometry(QRect(80, 40, 31, 16));
         lblMssfix->setStyleSheet(QString::fromUtf8("color: rgb(0, 0, 255);"));
         label_9 = new QLabel(groupBox);
         label_9->setObjectName(QString::fromUtf8("label_9"));
-        label_9->setGeometry(QRect(140, 18, 81, 16));
+        label_9->setGeometry(QRect(140, 38, 81, 16));
         lblRouteMethod = new QLabel(groupBox);
         lblRouteMethod->setObjectName(QString::fromUtf8("lblRouteMethod"));
-        lblRouteMethod->setGeometry(QRect(220, 18, 101, 16));
+        lblRouteMethod->setGeometry(QRect(220, 38, 101, 16));
         lblRouteMethod->setStyleSheet(QString::fromUtf8("color: rgb(0, 0, 255);"));
         label_18 = new QLabel(groupBox);
         label_18->setObjectName(QString::fromUtf8("label_18"));
-        label_18->setGeometry(QRect(10, 76, 61, 20));
+        label_18->setGeometry(QRect(10, 96, 61, 20));
         label_17 = new QLabel(groupBox);
         label_17->setObjectName(QString::fromUtf8("label_17"));
-        label_17->setGeometry(QRect(10, 40, 61, 16));
+        label_17->setGeometry(QRect(10, 60, 61, 16));
         label_22 = new QLabel(groupBox);
         label_22->setObjectName(QString::fromUtf8("label_22"));
-        label_22->setGeometry(QRect(10, 57, 71, 20));
+        label_22->setGeometry(QRect(10, 77, 71, 20));
         lblRouteDelay = new QLabel(groupBox);
         lblRouteDelay->setObjectName(QString::fromUtf8("lblRouteDelay"));
-        lblRouteDelay->setGeometry(QRect(80, 58, 51, 20));
+        lblRouteDelay->setGeometry(QRect(80, 78, 51, 20));
         lblRouteDelay->setStyleSheet(QString::fromUtf8("color: rgb(0, 0, 255);"));
         lblMute = new QLabel(groupBox);
         lblMute->setObjectName(QString::fromUtf8("lblMute"));
-        lblMute->setGeometry(QRect(80, 80, 46, 14));
+        lblMute->setGeometry(QRect(80, 100, 46, 14));
         lblMute->setStyleSheet(QString::fromUtf8("color: rgb(0, 0, 255);"));
         lblVerbose = new QLabel(groupBox);
         lblVerbose->setObjectName(QString::fromUtf8("lblVerbose"));
-        lblVerbose->setGeometry(QRect(80, 41, 46, 16));
+        lblVerbose->setGeometry(QRect(80, 61, 46, 16));
         lblVerbose->setStyleSheet(QString::fromUtf8("color: rgb(0, 0, 255);"));
         label_20 = new QLabel(groupBox);
         label_20->setObjectName(QString::fromUtf8("label_20"));
-        label_20->setGeometry(QRect(240, 38, 81, 20));
+        label_20->setGeometry(QRect(240, 58, 81, 20));
         label_16 = new QLabel(groupBox);
         label_16->setObjectName(QString::fromUtf8("label_16"));
-        label_16->setGeometry(QRect(240, 60, 61, 16));
+        label_16->setGeometry(QRect(240, 80, 61, 16));
         label_10 = new QLabel(groupBox);
         label_10->setObjectName(QString::fromUtf8("label_10"));
-        label_10->setGeometry(QRect(140, 41, 61, 16));
+        label_10->setGeometry(QRect(140, 61, 61, 16));
         label_11 = new QLabel(groupBox);
         label_11->setObjectName(QString::fromUtf8("label_11"));
-        label_11->setGeometry(QRect(140, 60, 61, 16));
+        label_11->setGeometry(QRect(140, 80, 61, 16));
         lblUserPass = new QLabel(groupBox);
         lblUserPass->setObjectName(QString::fromUtf8("lblUserPass"));
-        lblUserPass->setGeometry(QRect(320, 40, 31, 16));
+        lblUserPass->setGeometry(QRect(320, 60, 31, 16));
         lblUserPass->setStyleSheet(QString::fromUtf8("color: rgb(0, 0, 255);"));
         lblNobind = new QLabel(groupBox);
         lblNobind->setObjectName(QString::fromUtf8("lblNobind"));
-        lblNobind->setGeometry(QRect(188, 60, 31, 16));
+        lblNobind->setGeometry(QRect(188, 80, 31, 16));
         lblNobind->setStyleSheet(QString::fromUtf8("color: rgb(0, 0, 255);"));
         lblFloat = new QLabel(groupBox);
         lblFloat->setObjectName(QString::fromUtf8("lblFloat"));
-        lblFloat->setGeometry(QRect(187, 41, 31, 16));
+        lblFloat->setGeometry(QRect(187, 61, 31, 16));
         lblFloat->setStyleSheet(QString::fromUtf8("color: rgb(0, 0, 255);"));
         lblCompLzo = new QLabel(groupBox);
         lblCompLzo->setObjectName(QString::fromUtf8("lblCompLzo"));
-        lblCompLzo->setGeometry(QRect(320, 61, 31, 16));
+        lblCompLzo->setGeometry(QRect(320, 81, 31, 16));
         lblCompLzo->setStyleSheet(QString::fromUtf8("color: rgb(0, 0, 255);"));
+        label_12 = new QLabel(groupBox);
+        label_12->setObjectName(QString::fromUtf8("label_12"));
+        label_12->setGeometry(QRect(10, 20, 61, 16));
+        lblWindir = new QLabel(groupBox);
+        lblWindir->setObjectName(QString::fromUtf8("lblWindir"));
+        lblWindir->setGeometry(QRect(80, 20, 251, 16));
+        lblWindir->setStyleSheet(QString::fromUtf8("color: rgb(0, 0, 255);"));
         lblInfo = new QLabel(gbEndPage);
         lblInfo->setObjectName(QString::fromUtf8("lblInfo"));
         lblInfo->setGeometry(QRect(9, 265, 370, 20));
@@ -242,6 +251,8 @@ public:
         lblNobind->setText(QApplication::translate("EndPage", "TextLabel", 0, QApplication::UnicodeUTF8));
         lblFloat->setText(QApplication::translate("EndPage", "TextLabel", 0, QApplication::UnicodeUTF8));
         lblCompLzo->setText(QApplication::translate("EndPage", "TextLabel", 0, QApplication::UnicodeUTF8));
+        label_12->setText(QApplication::translate("EndPage", "Windir:", 0, QApplication::UnicodeUTF8));
+        lblWindir->setText(QApplication::translate("EndPage", "default", 0, QApplication::UnicodeUTF8));
         lblInfo->setText(QApplication::translate("EndPage", "MTU [1500], dev tun, persist key and persist tun will be added automatically.", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 

@@ -1,8 +1,8 @@
 /********************************************************************************
 ** Form generated from reading UI file 'appinfo.ui'
 **
-** Created: Tue 16. Nov 12:52:13 2010
-**      by: Qt User Interface Compiler version 4.7.0
+** Created: Thu 12. Jan 13:39:27 2012
+**      by: Qt User Interface Compiler version 4.7.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -42,6 +42,7 @@ public:
     {
         if (appInfo->objectName().isEmpty())
             appInfo->setObjectName(QString::fromUtf8("appInfo"));
+        appInfo->setWindowModality(Qt::ApplicationModal);
         appInfo->resize(400, 300);
         appInfo->setMinimumSize(QSize(400, 300));
         appInfo->setMaximumSize(QSize(400, 300));
@@ -126,7 +127,7 @@ public:
         appInfo->setWindowTitle(QApplication::translate("appInfo", "Information", 0, QApplication::UnicodeUTF8));
         label->setText(QString());
         label_2->setText(QString());
-        label_3->setText(QApplication::translate("appInfo", "SSL VPN Client v.0.9.6 RC3", 0, QApplication::UnicodeUTF8));
+        label_3->setText(QApplication::translate("appInfo", "SSL VPN Client v.0.9.7 RC4", 0, QApplication::UnicodeUTF8));
         label_4->setText(QApplication::translate("appInfo", "_____________________________________________________________________", 0, QApplication::UnicodeUTF8));
         label_5->setText(QApplication::translate("appInfo", "Concept and Development:", 0, QApplication::UnicodeUTF8));
         label_6->setText(QApplication::translate("appInfo", "Securepoint GmbH", 0, QApplication::UnicodeUTF8));

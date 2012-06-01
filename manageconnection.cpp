@@ -1,21 +1,17 @@
 #include "manageconnection.h"
 #include "ui_manageconnection.h"
 
-ManageConnection *ManageConnection::mInst = NULL;
+#include "preferences.h"
+#include "appfunc.h"
+#include "message.h"
 
-ManageConnection *ManageConnection::getInstance() {
-    if (!mInst)
-        mInst = new ManageConnection ();
-    return mInst;
-}
-
-ManageConnection::ManageConnection() :
+ManageConnection::ManageConnection(OpenVpn *obj) :
     QDialog(),
-    ui(new Ui::ManageConnection)
+    ui(new Ui::ManageConnection),
+    configObj (obj)
 {
-    ui->setupUi(this);
-    this->configObj = NULL;
-    this->setWindowFlags(Qt::WindowCloseButtonHint | Qt::WindowStaysOnTopHint);
+    ui->setupUi(this);    
+    this->setWindowFlags(Qt::WindowCloseButtonHint);
 }
 
 void ManageConnection::changeEvent(QEvent *e)
@@ -32,50 +28,55 @@ void ManageConnection::changeEvent(QEvent *e)
 
 void ManageConnection::showEvent(QShowEvent *e) {
     // Fenster init
-    this->setWindowTitle(tr("Edit Connection - ") + this->configObj->configName);
+    this->setWindowTitle(QObject::tr("Edit Connection - ") + this->configObj->getConfigName());
     // Init Widgets
     ui->cmbChiper->clear();
     ui->cmbDev->clear();
     ui->cmbProto->clear();
     ui->cmbRouteMethod->clear();
 
-    ui->cmbDev->insertItem(0, tr("Not defined"));
-    ui->cmbDev->insertItem(1, "tun");
-    ui->cmbDev->insertItem(2, "tap");
+    ui->cmbDev->insertItem(0, QObject::tr("Not defined"));
+    ui->cmbDev->insertItem(1, QLatin1String("tun"));
+    ui->cmbDev->insertItem(2, QLatin1String("tap"));
 
-    ui->cmbProto->insertItem(0, tr("Not defined"));
-    ui->cmbProto->insertItem(1, "TCP");
-    ui->cmbProto->insertItem(2, "UDP");
+    ui->cmbProto->insertItem(0, QObject::tr("Not defined"));
+    ui->cmbProto->insertItem(1, QLatin1String("TCP"));
+    ui->cmbProto->insertItem(2, QLatin1String("UDP"));
 
-    ui->cmbRouteMethod->insertItem(0, "Not defined");
-    ui->cmbRouteMethod->insertItem(1, "Exe");
-    ui->cmbRouteMethod->insertItem(2, "IPAPI");
+    ui->cmbRouteMethod->insertItem(0, QObject::tr("Not defined"));
+    ui->cmbRouteMethod->insertItem(1, QLatin1String("Exe"));
+    ui->cmbRouteMethod->insertItem(2, QLatin1String("IPAPI"));
+
+    ui->cbWinDirUseDefault_2->setChecked(true);
+    ui->cbWinDirEnvironment_2->setChecked(true);
+    ui->cbWinDirEnvironment_2->setEnabled(false);
+    ui->cbWinDirPath_2->setEnabled(false);
+    ui->txtPath_2->setText("");
+    ui->txtPath_2->setEnabled(false);
 
     this->fillCipherCombo();
 
-    this->lastDir = AppFunc::getInstance()->getAppSavePath();
+    this->lastDir = AppFunc::getAppSavePath();
 
     this->resetFields();
 
     // Fenster füllen
-    ui->tbSettings->setCurrentIndex(0);
+    ui->tabWidget->setCurrentIndex(0);
     this->fillFieldFromConfig();
 
 
     // Mittig ausrichten
-    int screenH = qApp->desktop()->height();
-    int screenW = qApp->desktop()->width();
-    int winH = 670;
-    int winW = 440;
+    int winW = this->width();
+    int winH = this->height();
+
+    int left = Preferences::instance()->geometry().x();
+    left = left + (Preferences::instance()->geometry().width() - winW) / 2;
+
     // Nun die neuen setzen
-    this->setGeometry((screenW / 2) - (winW / 2), (screenH / 2) - (winH / 2), winW, winH);
+    this->setGeometry(left, (qApp->desktop()->height() / 2) - (winH / 2), winW, winH);
     // Öffnen
     e->accept();
     this->setWindowState(Qt::WindowActive);
-}
-
-void ManageConnection::setOpenVpnObject(OpenVpn *obj) {
-        this->configObj = obj;
 }
 
 void ManageConnection::on_cmdClose_clicked()
@@ -84,123 +85,123 @@ void ManageConnection::on_cmdClose_clicked()
 }
 
 void ManageConnection::fillCipherCombo() {
-    ui->cmbChiper->insertItem(0, "Standard");
-    ui->cmbChiper->insertItem(1, "DES-CFB");
-    ui->cmbChiper->insertItem(2, "DES-CBC");
-    ui->cmbChiper->insertItem(3, "RC2-CBC");
-    ui->cmbChiper->insertItem(4, "RC2-CFB");
-    ui->cmbChiper->insertItem(5, "RC2-OFB");
-    ui->cmbChiper->insertItem(6, "DES-EDE-CBC");
-    ui->cmbChiper->insertItem(7, "DES-EDE3-CBC");
-    ui->cmbChiper->insertItem(8, "DES-OFB");
-    ui->cmbChiper->insertItem(9, "DES-EDE-CFB");
-    ui->cmbChiper->insertItem(10, "DES-EDE3-CFB");
-    ui->cmbChiper->insertItem(11, "DES-EDE-OFB");
-    ui->cmbChiper->insertItem(12, "DES-EDE3-OFB");
-    ui->cmbChiper->insertItem(13, "DESX-CBC");
-    ui->cmbChiper->insertItem(14, "BF-CBC");
-    ui->cmbChiper->insertItem(15, "BF-CFB");
-    ui->cmbChiper->insertItem(16, "BF-OFB");
-    ui->cmbChiper->insertItem(17, "RC2-40-CBC");
-    ui->cmbChiper->insertItem(18, "CAST5-CBC");
-    ui->cmbChiper->insertItem(19, "CAST5-CFB");
-    ui->cmbChiper->insertItem(20, "CAST5-OFB");
-    ui->cmbChiper->insertItem(21, "RC2-64-CBC");
-    ui->cmbChiper->insertItem(22, "AES-128-CBC");
-    ui->cmbChiper->insertItem(23, "AES-128-OFB");
-    ui->cmbChiper->insertItem(24, "AES-128-CFB");
-    ui->cmbChiper->insertItem(25, "AES-192-CBC");
-    ui->cmbChiper->insertItem(26, "AES-192-OFB");
-    ui->cmbChiper->insertItem(27, "AES-192-CFB");
-    ui->cmbChiper->insertItem(28, "AES-256-CBC");
-    ui->cmbChiper->insertItem(29, "AES-256-OFB");
-    ui->cmbChiper->insertItem(30, "AES-256-CFB");
-    ui->cmbChiper->insertItem(31, "AES-128-CFB1");
-    ui->cmbChiper->insertItem(32, "AES-192-CFB1");
-    ui->cmbChiper->insertItem(33, "AES-256-CFB1");
-    ui->cmbChiper->insertItem(34, "AES-128-CFB8");
-    ui->cmbChiper->insertItem(35, "AES-192-CFB8");
-    ui->cmbChiper->insertItem(36, "AES-256-CFB8");
-    ui->cmbChiper->insertItem(37, "DES-CFB1");
-    ui->cmbChiper->insertItem(38, "DES-CFB8");
+    ui->cmbChiper->insertItem(0, QLatin1String("Standard"));
+    ui->cmbChiper->insertItem(1, QLatin1String("DES-CFB"));
+    ui->cmbChiper->insertItem(2, QLatin1String("DES-CBC"));
+    ui->cmbChiper->insertItem(3, QLatin1String("RC2-CBC"));
+    ui->cmbChiper->insertItem(4, QLatin1String("RC2-CFB"));
+    ui->cmbChiper->insertItem(5, QLatin1String("RC2-OFB"));
+    ui->cmbChiper->insertItem(6, QLatin1String("DES-EDE-CBC"));
+    ui->cmbChiper->insertItem(7, QLatin1String("DES-EDE3-CBC"));
+    ui->cmbChiper->insertItem(8, QLatin1String("DES-OFB"));
+    ui->cmbChiper->insertItem(9, QLatin1String("DES-EDE-CFB"));
+    ui->cmbChiper->insertItem(10, QLatin1String("DES-EDE3-CFB"));
+    ui->cmbChiper->insertItem(11, QLatin1String("DES-EDE-OFB"));
+    ui->cmbChiper->insertItem(12, QLatin1String("DES-EDE3-OFB"));
+    ui->cmbChiper->insertItem(13, QLatin1String("DESX-CBC"));
+    ui->cmbChiper->insertItem(14, QLatin1String("BF-CBC"));
+    ui->cmbChiper->insertItem(15, QLatin1String("BF-CFB"));
+    ui->cmbChiper->insertItem(16, QLatin1String("BF-OFB"));
+    ui->cmbChiper->insertItem(17, QLatin1String("RC2-40-CBC"));
+    ui->cmbChiper->insertItem(18, QLatin1String("CAST5-CBC"));
+    ui->cmbChiper->insertItem(19, QLatin1String("CAST5-CFB"));
+    ui->cmbChiper->insertItem(20, QLatin1String("CAST5-OFB"));
+    ui->cmbChiper->insertItem(21, QLatin1String("RC2-64-CBC"));
+    ui->cmbChiper->insertItem(22, QLatin1String("AES-128-CBC"));
+    ui->cmbChiper->insertItem(23, QLatin1String("AES-128-OFB"));
+    ui->cmbChiper->insertItem(24, QLatin1String("AES-128-CFB"));
+    ui->cmbChiper->insertItem(25, QLatin1String("AES-192-CBC"));
+    ui->cmbChiper->insertItem(26, QLatin1String("AES-192-OFB"));
+    ui->cmbChiper->insertItem(27, QLatin1String("AES-192-CFB"));
+    ui->cmbChiper->insertItem(28, QLatin1String("AES-256-CBC"));
+    ui->cmbChiper->insertItem(29, QLatin1String("AES-256-OFB"));
+    ui->cmbChiper->insertItem(30, QLatin1String("AES-256-CFB"));
+    ui->cmbChiper->insertItem(31, QLatin1String("AES-128-CFB1"));
+    ui->cmbChiper->insertItem(32, QLatin1String("AES-192-CFB1"));
+    ui->cmbChiper->insertItem(33, QLatin1String("AES-256-CFB1"));
+    ui->cmbChiper->insertItem(34, QLatin1String("AES-128-CFB8"));
+    ui->cmbChiper->insertItem(35, QLatin1String("AES-192-CFB8"));
+    ui->cmbChiper->insertItem(36, QLatin1String("AES-256-CFB8"));
+    ui->cmbChiper->insertItem(37, QLatin1String("DES-CFB1"));
+    ui->cmbChiper->insertItem(38, QLatin1String("DES-CFB8"));
 }
 
 int ManageConnection::getIndexFromCipher(QString cipher) {
-    if ( cipher == "DES-CFB")
+    if (cipher == QLatin1String("DES-CFB"))
         return 1;
-    else if ( cipher == "DES-CBC")
+    else if (cipher == QLatin1String("DES-CBC"))
         return 2;
-    else if ( cipher == "RC2-CBC")
+    else if (cipher == QLatin1String("RC2-CBC"))
         return 3;
-    else if ( cipher == "RC2-CFB")
+    else if (cipher == QLatin1String("RC2-CFB"))
         return 4;
-    else if ( cipher == "RC2-OFB")
+    else if (cipher == QLatin1String("RC2-OFB"))
         return 5;
-    else if ( cipher == "DES-EDE-CBC")
+    else if (cipher == QLatin1String("DES-EDE-CBC"))
         return 6;
-    else if ( cipher == "DES-EDE3-CBC")
+    else if (cipher == QLatin1String("DES-EDE3-CBC"))
         return 7;
-    else if ( cipher == "DES-OFB")
+    else if (cipher == QLatin1String("DES-OFB"))
         return 8;
-    else if ( cipher == "DES-EDE-CFB")
+    else if (cipher == QLatin1String("DES-EDE-CFB"))
         return 9;
-    else if ( cipher == "DES-EDE3-CFB")
+    else if (cipher == QLatin1String("DES-EDE3-CFB"))
         return 10;
-    else if ( cipher == "DES-EDE-OFB")
+    else if (cipher == QLatin1String("DES-EDE-OFB"))
         return 11;
-    else if ( cipher == "DES-EDE3-OFB")
+    else if (cipher == QLatin1String("DES-EDE3-OFB"))
         return 12;
-    else if ( cipher == "DESX-CBC")
+    else if (cipher == QLatin1String("DESX-CBC"))
         return 13;
-    else if ( cipher == "BF-CBC")
+    else if (cipher == QLatin1String("BF-CBC"))
         return 14;
-    else if ( cipher == "BF-CFB")
+    else if (cipher == QLatin1String("BF-CFB"))
         return 15;
-    else if ( cipher == "BF-OFB")
+    else if (cipher == QLatin1String("BF-OFB"))
         return 16;
-    else if ( cipher == "RC2-40-CBC")
+    else if (cipher == QLatin1String("RC2-40-CBC"))
         return 17;
-    else if ( cipher == "CAST5-CBC")
+    else if (cipher == QLatin1String("CAST5-CBC"))
         return 18;
-    else if ( cipher == "CAST5-CFB")
+    else if (cipher == QLatin1String("CAST5-CFB"))
         return 19;
-    else if ( cipher == "CAST5-OFB")
+    else if (cipher == QLatin1String("CAST5-OFB"))
         return 20;
-    else if ( cipher == "RC2-64-CBC")
+    else if (cipher == QLatin1String("RC2-64-CBC"))
         return 21;
-    else if ( cipher == "AES-128-CBC")
+    else if (cipher == QLatin1String("AES-128-CBC"))
         return 22;
-    else if ( cipher == "AES-128-OFB")
+    else if (cipher == QLatin1String("AES-128-OFB"))
         return 23;
-    else if ( cipher == "AES-128-CFB")
+    else if (cipher == QLatin1String("AES-128-CFB"))
         return 24;
-    else if ( cipher == "AES-192-CBC")
+    else if (cipher == QLatin1String("AES-192-CBC"))
         return 25;
-    else if ( cipher == "AES-192-OFB")
+    else if (cipher == QLatin1String("AES-192-OFB"))
         return 26;
-    else if ( cipher == "AES-192-CFB")
+    else if (cipher == QLatin1String("AES-192-CFB"))
         return 27;
-    else if ( cipher == "AES-256-CBC")
+    else if (cipher == QLatin1String("AES-256-CBC"))
         return 28;
-    else if ( cipher == "AES-256-OFB")
+    else if (cipher == QLatin1String("AES-256-OFB"))
         return 29;
-    else if ( cipher == "AES-256-CFB")
+    else if (cipher == QLatin1String("AES-256-CFB"))
         return 30;
-    else if ( cipher == "AES-128-CFB1")
+    else if (cipher == QLatin1String("AES-128-CFB1"))
         return 31;
-    else if ( cipher == "AES-192-CFB1")
+    else if (cipher == QLatin1String("AES-192-CFB1"))
         return 32;
-    else if ( cipher == "AES-256-CFB1")
+    else if (cipher == QLatin1String("AES-256-CFB1"))
         return 33;
-    else if ( cipher == "AES-128-CFB8")
+    else if (cipher == QLatin1String("AES-128-CFB8"))
         return 34;
-    else if ( cipher == "AES-192-CFB8")
+    else if (cipher == QLatin1String("AES-192-CFB8"))
         return 35;
-    else if ( cipher == "AES-256-CFB8")
+    else if (cipher == QLatin1String("AES-256-CFB8"))
         return 36;
-    else if ( cipher == "DES-CFB1")
+    else if (cipher == QLatin1String("DES-CFB1"))
         return 37;
-    else if ( cipher == "DES-CFB8")
+    else if (cipher == QLatin1String("DES-CFB8"))
         return 38;
     else
         return 0;
@@ -252,6 +253,9 @@ void ManageConnection::resetFields() {
     ui->txtHTTPIP->setText("");
     ui->txtHTTPPort->setText("");
 
+    ui->cmbProxyAuth->setCurrentIndex(0);
+    ui->cmbAuthMethod->setCurrentIndex(0);
+
     ui->cbMuteWirelessWarning->setChecked(false);
 
     ui->cmbChiper->setCurrentIndex(0);
@@ -266,23 +270,12 @@ void ManageConnection::resetFields() {
 }
 
 void ManageConnection::fillFieldFromConfig() {
-    // Load Config Data
-    QString fileContent = QString("");
-    QString cFile;
-
-    cFile = this->configObj->configPath + QString("/") + this->configObj->configName + QString(".ovpn");
+    // Load Config Data    
+    QString cFile (this->configObj->getConfigPath() + QLatin1String("/") + this->configObj->getConfigName() + QLatin1String(".ovpn"));
     QFile cf (cFile);
 
     if (!cf.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        QMessageBox msgBox;
-        msgBox.setWindowTitle(tr("Securepoint SSL VPN"));
-        msgBox.setText(tr("Load Configuration"));
-        msgBox.setWindowIcon(QIcon(":/images/logo.png"));
-        msgBox.setInformativeText(tr("Unable to read file!"));
-        msgBox.setStandardButtons(QMessageBox::Ok);
-        msgBox.setDefaultButton(QMessageBox::Ok);
-        msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
-        msgBox.exec();        
+        Message::error(QObject::tr("Unable to read file!"), QObject::tr("Load Configuration"));
         return;
     }
     ui->txtCA->setText("");
@@ -322,6 +315,8 @@ void ManageConnection::fillFieldFromConfig() {
     bool isCipherChecked = false;
     bool isCertTyoeServerChecked = false;
     bool isRedirectGatewayChecked = false;
+    bool isWindirChecked = false;
+    bool isPkcs12Checked = false;
 
     while (!in.atEnd()) {
         QString line = in.readLine();
@@ -333,18 +328,33 @@ void ManageConnection::fillFieldFromConfig() {
                     ui->cbClient->setChecked(false);
                 }
         }
+
         if (!isCAChecked) {
-                if (line.left(2).toUpper().trimmed() == "CA") {
-                    isCAChecked = true;
-                    QStringList keyvalList = line.split(" ");
-                    if (keyvalList.size() != 2)
-                        ui->txtCA->setText("");
-                    else {
-                        QString val = keyvalList[1];
-                        ui->txtCA->setText(val.replace("\"",""));
-                    }
+            if (line.left(2).toUpper().trimmed() == "CA") {
+                isCAChecked = true;
+                QStringList keyvalList = line.split(" ");
+                if (keyvalList.size() != 2)
+                    ui->txtCA->setText("");
+                else {
+                    QString val = keyvalList[1];
+                    ui->txtCA->setText(val.replace("\"",""));
                 }
             }
+        }
+
+        if (!isPkcs12Checked) {
+            if (line.left(6).toUpper().trimmed() == "PKCS12") {
+                isPkcs12Checked = true;
+                QStringList keyvalList = line.split(" ");
+                if (keyvalList.size() != 2)
+                    ui->txtPkcs12Path->setText("");
+                else {
+                    QString val = keyvalList[1];
+                    ui->txtPkcs12Path->setText(val.replace("\"",""));
+                }
+            }
+        }
+
         if (!isDevChecked) {
                 if (line.left(3).toUpper().trimmed() == "DEV") {
                     isDevChecked = true;
@@ -629,15 +639,44 @@ void ManageConnection::fillFieldFromConfig() {
             if (line.trimmed().left(11).contains("HTTP-PROXY ", Qt::CaseInsensitive)) {
                     isHttpProxyChecked = true;
                     QStringList keyvalList = line.split(" ");
-                    if (keyvalList.size() != 3){
-                        ui->txtHTTPIP->setText("");
-                        ui->txtHTTPPort->setText("");
-                    } else {
-                        QString val = keyvalList[1];
-                        QString valport = keyvalList[2];
+                    ui->txtHTTPIP->setText("");
+                    ui->txtHTTPPort->setText("");
+                    ui->cmbAuthMethod->setCurrentIndex(0);
+                    ui->cmbProxyAuth->setCurrentIndex(0);
+
+                    if (keyvalList.size() > 1) {
+                        QString val (keyvalList.at(1));
                         ui->txtHTTPIP->setText(val.replace("\"",""));
-                        ui->txtHTTPPort->setText(valport.replace("\"",""));
                     }
+
+                    if (keyvalList.size() > 2) {
+                        QString val (keyvalList.at(2));
+                        ui->txtHTTPPort->setText(val.replace("\"",""));
+                    }
+
+                    if (keyvalList.size() > 3) {
+                        QString type (keyvalList.at(3));
+                        type = type.replace("\"","").toUpper();
+                        if (type == QLatin1String("STDIN")) {
+                            ui->cmbProxyAuth->setCurrentIndex(1);
+                        } else if (type == QLatin1String("AUTO")) {
+                            ui->cmbProxyAuth->setCurrentIndex(2);
+                        } else if (type == QLatin1String("AUTO-NCT")) {
+                            ui->cmbProxyAuth->setCurrentIndex(3);
+                        }
+                    }
+
+                    if (keyvalList.size() > 4) {
+                        QString type (keyvalList.at(4));
+                        type = type.replace("\"","").toUpper();
+                        if (type == QLatin1String("BASIC")) {
+                            ui->cmbAuthMethod->setCurrentIndex(1);
+                        } else if (type == QLatin1String("NTLM")) {
+                            ui->cmbAuthMethod->setCurrentIndex(2);
+                        }
+                    }
+
+
                 }
             }
         if (!isWirelessMuteWarningChecked){
@@ -669,6 +708,46 @@ void ManageConnection::fillFieldFromConfig() {
                 }
             }
 
+        if (!isWindirChecked) {
+            if (line.trimmed().left(7).toUpper() == QLatin1String("WIN-SYS")) {
+                isWindirChecked = true;
+                // Unterscheidung, ob der Path Leerzeichen hat
+                if (line.indexOf(" ", 9) > -1) {
+                    // Leerzeichen im Path
+                    QString path (line.right(line.size() - 8));
+                    path = path.replace("\"", "").trimmed();
+                    ui->cbWinDirOther_2->setChecked(true);
+                    ui->cbWinDirPath_2->setChecked(true);
+                    ui->cbWinDirEnvironment_2->setEnabled(true);
+                    ui->cbWinDirPath_2->setEnabled(true);
+                    ui->txtPath_2->setEnabled(true);
+                    ui->txtPath_2->setText(path);
+                } else {
+                    QStringList keyvalList = line.split(" ");
+                    // Das Windows verzeichnis finden
+                    if (keyvalList.size() == 2) {
+                        if (keyvalList.at(1).trimmed().toUpper() == QLatin1String("ENV")) {
+                            ui->cbWinDirOther_2->setChecked(true);
+                            ui->cbWinDirEnvironment_2->setChecked(true);
+                            ui->cbWinDirEnvironment_2->setEnabled(true);
+                            ui->cbWinDirPath_2->setEnabled(true);
+                            ui->txtPath_2->setEnabled(false);
+                            ui->txtPath_2->setText(QLatin1String(""));
+                        } else {
+                            // Muss ein Pfad sein
+                            ui->cbWinDirOther_2->setChecked(true);
+                            ui->cbWinDirPath_2->setChecked(true);
+                            ui->cbWinDirEnvironment_2->setEnabled(true);
+                            ui->cbWinDirPath_2->setEnabled(true);
+                            ui->txtPath_2->setEnabled(true);
+                            QString path (keyvalList.at(1));
+                            ui->txtPath_2->setText(path.replace("\"", ""));
+                        }
+                    }
+                }
+            }
+        }
+
     }
     cf.close();
    // Scripts einlesen
@@ -678,230 +757,263 @@ void ManageConnection::fillFieldFromConfig() {
    ui->txtBeforeDisconnect->setText(this->configObj->getScript ("BD").replace("\"", ""));
    ui->txtErrorConnect->setText(this->configObj->getScript ("EC").replace("\"", ""));
    ui->txtScriptACDelay->setText((this->configObj->getScript ("TO") == "" ? "5000" : this->configObj->getScript ("TO")));
+
+   // Pkcs 12 gefunden dann dies setzen
+   if (isPkcs12Checked) {
+       ui->rbPkcs->setChecked(true);
+       this->on_rbPkcs_toggled(true);
+   } else {
+       ui->rbNormal->setChecked(true);
+       this->on_rbNormal_toggled(true);
+   }
 }
 
 void ManageConnection::on_cmdSave_clicked()
 {
+    if (ui->cbWinDirOther_2->isChecked() && ui->cbWinDirPath_2->isChecked() && ui->txtPath_2->text().isEmpty()) {
+        Message::error(QObject::tr("Please select a windows path!"), QObject::tr("Save Configuration"));
+        return;
+    }
+
     QStringList oldFields = this->getAllFieldWhichNotIntoTheInterface();
     // GUI auslesen und config speichern
-    QFile cf (this->configObj->configPath + "/" + this->configObj->configName + ".ovpn");
+    QFile cf (this->configObj->getConfigPath() + QLatin1String("/") + this->configObj->getConfigName() + QLatin1String(".ovpn"));
 
     if (!cf.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
-        QMessageBox msgBox;
-        msgBox.setWindowTitle(tr("Securepoint SSL VPN"));
-        msgBox.setText(tr("Save Configuration"));
-        msgBox.setWindowIcon(QIcon(":/images/logo.png"));
-        msgBox.setInformativeText(tr("Unable to open file!"));
-        msgBox.setStandardButtons(QMessageBox::Ok);
-        msgBox.setDefaultButton(QMessageBox::Ok);
-        msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
-        msgBox.exec();
+        Message::error(QObject::tr("Unable to open file!"), QObject::tr("Save Configuration"));
         return;
     }
 
     QTextStream out(&cf);
     // Datei offen, fertig zum schreiben
-    out << "##############################################\n";
-    out << "### \n";
-    out << "### Configuration file created by Securepoint SSL VPN " + QDate::currentDate().toString() + " - " + QTime::currentTime().toString() +  "\n";
-    out << "### Project website: http://sourceforge.net/projects/securepoint/ \n";
-    out << "### Securepoint GmbH, Salzstrasse 1, Lueneburg, Germany; www.securepoint.de \n";
-    out << "### \n";
-    out << "### For further information about the configuration file, \n";
-    out << "### please visit: http://www.openvpn.net/index.php/open-source/documentation\n";
-    out << "### \n";
-    out << "##############################################\n\n";
+    out << QLatin1String("##############################################\n");
+    out << QLatin1String("### \n");
+    out << QLatin1String("### Configuration file created by Securepoint SSL VPN ") + QDate::currentDate().toString() + QLatin1String(" - ") + QTime::currentTime().toString() +  QLatin1String("\n");
+    out << QLatin1String("### Project website: http://sourceforge.net/projects/securepoint/ \n");
+    out << QLatin1String("### Securepoint GmbH, Salzstrasse 1, Lueneburg, Germany; www.securepoint.de \n");
+    out << QLatin1String("### \n");
+    out << QLatin1String("### For further information about the configuration file, \n");
+    out << QLatin1String("### please visit: http://www.openvpn.net/index.php/open-source/documentation\n");
+    out << QLatin1String("### \n");
+    out << QLatin1String("##############################################\n\n");
     if (ui->cbClient->isChecked())
-        out << "client\n";
+        out << QLatin1String("client\n");
+
     if (ui->cbFloat->isChecked())
-        out << "float\n";
+        out << QLatin1String("float\n");
+
     if (ui->cbCompLzo->isChecked())
-        out << "comp-lzo\n";
+        out << QLatin1String("comp-lzo\n");
+
     if (ui->cbFloat->isChecked())
-        out << "float\n";
+        out << QLatin1String("float\n");
+
     if (ui->cbNobind->isChecked())
-        out << "nobind\n";
+        out << QLatin1String("nobind\n");
+
     if (ui->cbPersistKey->isChecked())
-        out << "persist-key\n";
+        out << QLatin1String("persist-key\n");
+
     if (ui->cbPersistTun->isChecked())
-        out << "persist-tun\n";
+        out << QLatin1String("persist-tun\n");
+
     if (ui->cbNoCache->isChecked())
-        out << "auth-nocache\n";
+        out << QLatin1String("auth-nocache\n");
+
     if (ui->cbUserPass->isChecked())
-        out << "auth-user-pass\n";
+        out << QLatin1String("auth-user-pass\n");
 
     if (ui->cmbDev->currentIndex() != 0) {
         if (ui->cmbDev->currentIndex() == 1)
-            out << "dev tun\n";
+            out << QLatin1String("dev tun\n");
         else
-            out << "dev tap\n";
+            out << QLatin1String("dev tap\n");
     }
 
-    out << "tun-mtu " << ui->txtMtu->text() << "\n";
-    out << "remote " << ui->txtRemote->text() << " " + ui->txtRemotePort->text() << "\n";
+    if (!ui->txtMtu->text().isEmpty()) {
+        out << QLatin1String("tun-mtu ") << ui->txtMtu->text() << QLatin1String("\n");
+    }
+
+    out << QLatin1String("remote ") << ui->txtRemote->text() << QLatin1String(" ") + ui->txtRemotePort->text() << QLatin1String("\n");
 
     if (ui->cmbProto->currentIndex() != 0){
         if (ui->cmbProto->currentIndex() == 1)
-            out << "proto tcp\n";
+            out << QLatin1String("proto tcp\n");
         else
-            out << "proto udp\n";
+            out << QLatin1String("proto udp\n");
     }
 
-    if (ui->txtCA->text() != "")
-        out << "ca \"" << ui->txtCA->text().replace("/", "\\\\") << "\"\n";
-    if (ui->txtCert->text() != "")
-        out << "cert \"" << ui->txtCert->text().replace("/", "\\\\") << "\"\n";
-    if (ui->txtKey->text() != "")
-        out << "key \"" << ui->txtKey->text().replace("/", "\\\\") << "\"\n";
+    if (ui->rbNormal->isChecked() && !ui->txtCA->text().isEmpty())
+        out << QLatin1String("ca \"") << ui->txtCA->text().replace("/", "\\\\") << QLatin1String("\"\n");
 
-    if (ui->cbCertIsServer->isChecked())
-        out << "ns-cert-type server\n";
+    if (ui->rbNormal->isChecked() && !ui->txtCert->text().isEmpty())
+        out << QLatin1String("cert \"") << ui->txtCert->text().replace("/", "\\\\") << QLatin1String("\"\n");
 
-    if (ui->txtLinuxUser->text() != "")
-        out << "user " << ui->txtLinuxUser->text() << "\n";
-    if (ui->txtLinuxGroup->text() != "")
-        out << "group " << ui->txtLinuxGroup->text() << "\n";
+    if (ui->rbNormal->isChecked() && !ui->txtKey->text().isEmpty())
+        out << QLatin1String("key \"") << ui->txtKey->text().replace("/", "\\\\") << QLatin1String("\"\n");
+
+    if (ui->rbNormal->isChecked() && ui->cbCertIsServer->isChecked())
+        out << QLatin1String("ns-cert-type server\n");
+
+    if (!ui->txtLinuxUser->text().isEmpty())
+        out << QLatin1String("user ") << ui->txtLinuxUser->text() << QLatin1String("\n");
+
+    if (!ui->txtLinuxGroup->text().isEmpty())
+        out << QLatin1String("group ") << ui->txtLinuxGroup->text() << QLatin1String("\n");
 
     if (ui->cbMsfix->isChecked())
-        out << "mssfix\n";
+        out << QLatin1String("mssfix\n");
 
-    if (ui->txtFragment->text() != "")
-        out << "fragment " << ui->txtFragment->text() << "\n";
+    if (!ui->txtFragment->text().isEmpty())
+        out << QLatin1String("fragment ") << ui->txtFragment->text() << QLatin1String("\n");
 
     if (ui->cmbRouteMethod->currentIndex() != 0){
         if (ui->cmbRouteMethod->currentIndex() == 1)
-            out << "route-method exe\n";
+            out << QLatin1String("route-method exe\n");
         else
-            out << "route-method ipapi\n";
+            out << QLatin1String("route-method ipapi\n");
     }
 
-    if (ui->txtDevNode->text() != "")
-        out << "dev-node " << ui->txtDevNode->text() << "\n";
+    if (!ui->txtDevNode->text().isEmpty())
+        out << QLatin1String("dev-node ") << ui->txtDevNode->text() << QLatin1String("\n");
 
-    if (ui->txtVerbose->text() != "")
-        out << "verb " << ui->txtVerbose->text() << "\n";
+    if (!ui->txtVerbose->text().isEmpty())
+        out << QLatin1String("verb ") << ui->txtVerbose->text() << QLatin1String("\n");
 
-    if (ui->txtRouteDelay->text() != "")
-        out << "route-delay " << ui->txtRouteDelay->text() << "\n";
+    if (!ui->txtRouteDelay->text().isEmpty())
+        out << QLatin1String("route-delay ") << ui->txtRouteDelay->text() << QLatin1String("\n");
 
-    if (ui->txtMute->text() != "")
-        out << "mute " << ui->txtMute->text() << "\n";
+    if (!ui->txtMute->text().isEmpty())
+        out << QLatin1String("mute ") << ui->txtMute->text() << QLatin1String("\n");
 
     if (ui->cbRandomHost->isChecked())
-        out << "remote-random\n";
+        out << QLatin1String("remote-random\n");
 
     if (ui->cbResolveHostname->isChecked())
-        out << "resolve-retry infinite\n";
+        out << QLatin1String("resolve-retry infinite\n");
 
     if (ui->cbHTTPRetry->isChecked())
-        out << "http-proxy-retry\n";
+        out << QLatin1String("http-proxy-retry\n");
 
-    if (ui->txtHTTPIP->text() != "")
-        out << "http-proxy " << ui->txtHTTPIP->text() << " " << ui->txtHTTPPort->text() << "\n";
+    if (!ui->txtHTTPIP->text().isEmpty()) {
+        QString type;
+        if (ui->cmbProxyAuth->currentIndex() != 0) {
+            if (ui->cmbProxyAuth->currentIndex() == 1) {
+                type = QLatin1String("stdin");
+            } else if (ui->cmbProxyAuth->currentIndex() == 2) {
+                type = QLatin1String("auto");
+            } else if (ui->cmbProxyAuth->currentIndex() == 3) {
+                type = QLatin1String("auto-nct");
+            }
+        }
 
+        QString method;
+        if (ui->cmbAuthMethod->currentIndex() != 0) {
+            if (ui->cmbAuthMethod->currentIndex() == 1) {
+                method = QLatin1String("basic");
+            } else if (ui->cmbAuthMethod->currentIndex() == 2) {
+                method = QLatin1String("ntlm");
+            }
+        }
+        out << QLatin1String("http-proxy ") << ui->txtHTTPIP->text() << QLatin1String(" ") << ui->txtHTTPPort->text() << (!type.isEmpty() ? QLatin1String(" ") : QLatin1String("")) << type << (!method.isEmpty() ? QLatin1String(" ") : QLatin1String("")) << method << QLatin1String("\n");
+    }
 
     if (ui->cbMuteWirelessWarning->isChecked())
-        out << "mute-replay-warnings\n";
+        out << QLatin1String("mute-replay-warnings\n");
 
     if (ui->cmbChiper->currentIndex() != 0)
-        out << "cipher " << ui->cmbChiper->itemText(ui->cmbRouteMethod->currentIndex()) << "\n";
+        out << QLatin1String("cipher ") << ui->cmbChiper->currentText() << QLatin1String("\n");
 
     if (ui->cbRedirectGateway->isChecked())
-        out << "redirect-gateway\n";
+        out << QLatin1String("redirect-gateway\n");
+
+    if (ui->rbPkcs->isChecked() && !ui->txtPkcs12Path->text().isEmpty()) {
+        out << QLatin1String("pkcs12 ") << ui->txtPkcs12Path->text() << QLatin1String("\n");
+    }
+
+    // Das Windir auswerten
+    if (!ui->cbWinDirUseDefault_2->isChecked()) {
+        // Custom path oder Env
+        if (ui->cbWinDirEnvironment_2->isChecked()) {
+            out << QLatin1String("win-sys env") << QLatin1String("\n");
+        } else {
+            // Sind Leerzeichen im String
+            QString winDir (ui->txtPath_2->text());
+            winDir = winDir.trimmed();
+            if (winDir.indexOf(" ") > -1 ) {
+                winDir = QLatin1String("\"") + winDir + QLatin1String("\"");
+            }
+            out << QLatin1String("win-sys ") << winDir << QLatin1String("\n");
+        }
+    }
 
     if (oldFields.size() > 0) {
        // Alte Felder die nicht in der GUI sind vorhanden
-        out << "\n#Fields which could be not manage wih GUI \n\n";
+        out << QLatin1String("\n#Fields which could be not manage wih GUI \n\n");
         out << oldFields.join("\n");
     }
 
     // Datei schließen
     cf.close();
     // Scripts ablegen
-    bool scriptDataWrite = false;
-    QFileDialog certFileDialog;    
-    QFile sf (this->configObj->configPath + QString("/scripts.conf"));
+    bool scriptDataWrite(false);
+    QFile sf (this->configObj->getConfigPath() + QLatin1String("/scripts.conf"));
 
     if (!sf.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
-        QMessageBox msgBox;
-        msgBox.setWindowTitle(tr("Securepoint SSL VPN"));
-        msgBox.setText(tr("Save Scripts"));
-        msgBox.setWindowIcon(QIcon(":/images/logo.png"));
-        msgBox.setInformativeText(tr("Unable to open file!"));
-        msgBox.setStandardButtons(QMessageBox::Ok);
-        msgBox.setDefaultButton(QMessageBox::Ok);
-        msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
-        msgBox.exec();
+        Message::error(QObject::tr("Unable to open file!"), QObject::tr("Save scripts"));
         return;
     }
 
     QTextStream sout(&sf);
-    if (ui->txtAfterConnect->text() != "") {
-        sout << "AC:" << ui->txtAfterConnect->text() << "\n";
-        if (ui->txtScriptACDelay->text() != "")
-            sout << "TO:" << ui->txtScriptACDelay->text() << "\n";
+    if (!ui->txtAfterConnect->text().isEmpty()) {
+        sout << QLatin1String("AC:") << ui->txtAfterConnect->text() << QLatin1String("\n");
+        if (!ui->txtScriptACDelay->text().isEmpty()) {
+            sout << QLatin1String("TO:") << ui->txtScriptACDelay->text() << QLatin1String("\n");
+        }
 
         scriptDataWrite = true;
     }
 
-    if (ui->txtAfterDisconnect->text() != "") {
-        sout << "AD:" << ui->txtAfterDisconnect->text() << "\n";
+    if (!ui->txtAfterDisconnect->text().isEmpty()) {
+        sout << QLatin1String("AD:") << ui->txtAfterDisconnect->text() << QLatin1String("\n");
         scriptDataWrite = true;
     }
 
-    if (ui->txtBeforeConnect->text() != "") {
-        sout << "BC:" << ui->txtBeforeConnect->text() << "\n";
+    if (!ui->txtBeforeConnect->text().isEmpty()) {
+        sout << QLatin1String("BC:") << ui->txtBeforeConnect->text() << QLatin1String("\n");
         scriptDataWrite = true;
     }
 
-    if (ui->txtBeforeDisconnect->text() != "") {
-        sout << "BD:" << ui->txtBeforeDisconnect->text() << "\n";
+    if (!ui->txtBeforeDisconnect->text().isEmpty()) {
+        sout << QLatin1String("BD:") << ui->txtBeforeDisconnect->text() << QLatin1String("\n");
         scriptDataWrite = true;
     }
 
-    if (ui->txtErrorConnect->text() != "") {
-        sout << "EC:" << ui->txtErrorConnect->text() << "\n";
+    if (!ui->txtErrorConnect->text().isEmpty()) {
+        sout << QLatin1String("EC:") << ui->txtErrorConnect->text() << QLatin1String("\n");
         scriptDataWrite = true;
     }
 
     // Daten geschrieben?
     if (!scriptDataWrite) {
         if (!sf.remove()) {
-            QMessageBox msgBox;
-            msgBox.setWindowTitle(tr("Securepoint SSL VPN"));
-            msgBox.setText(tr("Save Scripts"));
-            msgBox.setWindowIcon(QIcon(":/images/logo.png"));
-            msgBox.setInformativeText(tr("Can't delete scriptfile!"));
-            msgBox.setStandardButtons(QMessageBox::Ok);
-            msgBox.setDefaultButton(QMessageBox::Ok);
-            msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
-            msgBox.exec();
+            Message::error(QObject::tr("Can't delete scriptfile!"), QObject::tr("Save scripts"));
             return;
         }
     }
-    sf.close();
-    /*
-    QMessageBox msgBox;
-    msgBox.setWindowTitle(tr("Securepoint SSL VPN"));
-    msgBox.setText(tr("Save configuration"));
-    msgBox.setWindowIcon(QIcon(":/images/logo.png"));
-    msgBox.setInformativeText(tr("Save successfully ended!"));
-    msgBox.setStandardButtons(QMessageBox::Ok);
-    msgBox.setDefaultButton(QMessageBox::Ok);
-    msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
-    msgBox.exec();*/
+    sf.close();    
     this->close();
 }
 
 void ManageConnection::on_cmdGetCAPath_clicked()
 {
     QFileDialog caFileDialog;
-    QString filename = caFileDialog.getOpenFileName(this, tr("Find root ca"), this->lastDir, tr("Certificates (*.cert *.pem)"));
-    if (filename != "") {
+    QString filename = caFileDialog.getOpenFileName(this, QObject::tr("Find root ca"), this->lastDir, QObject::tr("Certificates (*.cert *.pem)"));
+    if (!filename.isEmpty()) {
         int lastSlash = filename.lastIndexOf("/");
         QString filepath = filename.left(lastSlash);
         this->lastDir = filepath;
-        if (filepath.replace("\\", "/").toLower() == this->configObj->configPath.replace("\\", "/").toLower())
+        if (filepath.replace("\\", "/").toLower() == this->configObj->getConfigPath().replace("\\", "/").toLower())
             ui->txtCA->setText(filename.right(filename.size() - lastSlash -1));
         else
             ui->txtCA->setText(filename);
@@ -911,12 +1023,12 @@ void ManageConnection::on_cmdGetCAPath_clicked()
 void ManageConnection::on_cmdGetCertPath_clicked()
 {
     QFileDialog certFileDialog;
-    QString filename = certFileDialog.getOpenFileName(this, tr("Find certificates"), this->lastDir, tr("Certificates (*.cert *.pem)"));
-    if (filename != "") {
+    QString filename = certFileDialog.getOpenFileName(this, QObject::tr("Find certificates"), this->lastDir, QObject::tr("Certificates (*.cert *.pem)"));
+    if (!filename.isEmpty()) {
         int lastSlash = filename.lastIndexOf("/");
         QString filepath = filename.left(lastSlash);
         this->lastDir = filepath;
-        if (filepath.replace("\\", "/").toLower() == this->configObj->configPath.replace("\\", "/").toLower())
+        if (filepath.replace("\\", "/").toLower() == this->configObj->getConfigPath().replace("\\", "/").toLower())
             ui->txtCert->setText(filename.right(filename.size() - lastSlash -1));
         else
             ui->txtCert->setText(filename);
@@ -926,12 +1038,12 @@ void ManageConnection::on_cmdGetCertPath_clicked()
 void ManageConnection::on_cmdGetKeyPath_clicked()
 {
     QFileDialog keyFileDialog;
-    QString filename = keyFileDialog.getOpenFileName(this, tr("Find key files"), this->lastDir, tr("Key files (*.key *.pem)"));
-    if (filename != "") {
+    QString filename = keyFileDialog.getOpenFileName(this, QObject::tr("Find key files"), this->lastDir, QObject::tr("Key files (*.key *.pem)"));
+    if (!filename.isEmpty()) {
         int lastSlash = filename.lastIndexOf("/");
-        QString filepath = filename.left(lastSlash);
+        QString filepath (filename.left(lastSlash));
         this->lastDir = filepath;
-        if (filepath.replace("\\", "/").toLower() == this->configObj->configPath.replace("\\", "/").toLower())
+        if (filepath.replace("\\", "/").toLower() == this->configObj->getConfigPath().replace("\\", "/").toLower())
             ui->txtKey->setText(filename.right(filename.size() - lastSlash -1));
         else
             ui->txtKey->setText(filename);
@@ -941,8 +1053,8 @@ void ManageConnection::on_cmdGetKeyPath_clicked()
 void ManageConnection::on_cmdBeforeConnect_clicked()
 {
     QFileDialog keyFileDialog;
-    QString filename = keyFileDialog.getOpenFileName(this, tr("Find executeable files"), this->configObj->configPath, tr("All files (*.*)"));
-    if (filename != "") {
+    QString filename = keyFileDialog.getOpenFileName(this, QObject::tr("Find executeable files"), this->configObj->getConfigPath(), QObject::tr("All files (*.*)"));
+    if (!filename.isEmpty()) {
             ui->txtBeforeConnect->setText(filename);
     }
 }
@@ -950,8 +1062,8 @@ void ManageConnection::on_cmdBeforeConnect_clicked()
 void ManageConnection::on_cmdAfterConnect_clicked()
 {
     QFileDialog keyFileDialog;
-    QString filename = keyFileDialog.getOpenFileName(this, tr("Find executeable files"), this->configObj->configPath, tr("All files (*.*)"));
-    if (filename != "") {
+    QString filename = keyFileDialog.getOpenFileName(this, QObject::tr("Find executeable files"), this->configObj->getConfigPath(), QObject::tr("All files (*.*)"));
+    if (!filename.isEmpty()) {
             ui->txtAfterConnect->setText(filename);
     }
 }
@@ -959,8 +1071,8 @@ void ManageConnection::on_cmdAfterConnect_clicked()
 void ManageConnection::on_cmdBeforeDisconnect_clicked()
 {
     QFileDialog keyFileDialog;
-    QString filename = keyFileDialog.getOpenFileName(this, tr("Find executeable files"), this->configObj->configPath, tr("All files (*.*)"));
-    if (filename != "") {
+    QString filename = keyFileDialog.getOpenFileName(this, QObject::tr("Find executeable files"), this->configObj->getConfigPath(), QObject::tr("All files (*.*)"));
+    if (!filename.isEmpty()) {
             ui->txtBeforeDisconnect->setText(filename);
     }
 }
@@ -968,8 +1080,8 @@ void ManageConnection::on_cmdBeforeDisconnect_clicked()
 void ManageConnection::on_cmdAfterDisconnect_clicked()
 {
     QFileDialog keyFileDialog;
-    QString filename = keyFileDialog.getOpenFileName(this, tr("Find executeable files"), this->configObj->configPath, tr("All files (*.*)"));
-    if (filename != "") {
+    QString filename = keyFileDialog.getOpenFileName(this, QObject::tr("Find executeable files"), this->configObj->getConfigPath(), QObject::tr("All files (*.*)"));
+    if (!filename.isEmpty()) {
             ui->txtAfterDisconnect->setText(filename);
     }
 }
@@ -977,8 +1089,8 @@ void ManageConnection::on_cmdAfterDisconnect_clicked()
 void ManageConnection::on_cmdErrorConnect_clicked()
 {
     QFileDialog keyFileDialog;
-    QString filename = keyFileDialog.getOpenFileName(this, tr("Find executeable files"), this->configObj->configPath, tr("All files (*.*)"));
-    if (filename != "") {
+    QString filename = keyFileDialog.getOpenFileName(this, QObject::tr("Find executeable files"), this->configObj->getConfigPath(), QObject::tr("All files (*.*)"));
+    if (!filename.isEmpty()) {
             ui->txtErrorConnect->setText(filename);
     }
 }
@@ -988,19 +1100,11 @@ QStringList ManageConnection::getAllFieldWhichNotIntoTheInterface() {
     QStringList fieldsNotIncluded;
     QString cFile;
     fieldsNotIncluded.clear();
-    cFile = this->configObj->configPath + QString("/") + this->configObj->configName + QString(".ovpn");
+    cFile = this->configObj->getConfigPath() + QLatin1String("/") + this->configObj->getConfigName() + QLatin1String(".ovpn");
     QFile cf (cFile);
 
     if (!cf.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        QMessageBox msgBox;
-        msgBox.setWindowTitle(tr("Securepoint SSL VPN"));
-        msgBox.setText(tr("Load Configuration"));
-        msgBox.setWindowIcon(QIcon(":/images/logo.png"));
-        msgBox.setInformativeText(tr("Unable to read file!"));
-        msgBox.setStandardButtons(QMessageBox::Ok);
-        msgBox.setDefaultButton(QMessageBox::Ok);
-        msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
-        msgBox.exec();
+        Message::error(QObject::tr("Unable to read file!"), QObject::tr("Load Configuration"));
         return fieldsNotIncluded;
     }
 
@@ -1009,44 +1113,115 @@ QStringList ManageConnection::getAllFieldWhichNotIntoTheInterface() {
 
     while (!in.atEnd()) {
         QString line = in.readLine();
-        if (line.left(3).toUpper().trimmed() != "###"
+        if (line.trimmed().left(3).toUpper() != "###"
                     && line.trimmed().replace("\n", "") != ""
-                    && line.left(13).toUpper().trimmed() != "#FIELDS WHICH"
+                    && line.trimmed().left(13).toUpper() != "#FIELDS WHICH"
                     && line.toUpper().trimmed() != "CLIENT"
-                    && line.left(2).toUpper().trimmed() != "CA"
-                    && line.left(3).toUpper().trimmed() != "DEV"
-                    && line.left(7).toUpper().trimmed() != "TUN-MTU"
-                    && line.left(8).toUpper().trimmed() != "FRAGMENT"
+                    && line.trimmed().left(2).toUpper() != "CA"
+                    && line.trimmed().left(6).toUpper() != "PKCS12"
+                    && line.trimmed().left(3).toUpper() != "DEV"
+                    && line.trimmed().left(7).toUpper() != "TUN-MTU"
+                    && line.trimmed().left(8).toUpper() != "FRAGMENT"
                     && line.toUpper().trimmed() != "MSSFIX"
                     && line.toUpper().trimmed() != "REDIRECT-GATEWAY"
-                    && line.left(5).toUpper().trimmed() != "PROTO"
+                    && line.trimmed().left(5).toUpper() != "PROTO"
                     && line.toUpper().trimmed() != "FLOAT"
-                    && line.left(6).toUpper().trimmed() != "REMOTE"
+                    && line.trimmed().left(6).toUpper() != "REMOTE"
                     && line.toUpper().trimmed() != "NOBIND"
                     && line.toUpper().trimmed() != "PERSIST-KEY"
                     && line.toUpper().trimmed() != "PERSIST-TUN"
-                    && line.left(4).toUpper().trimmed() != "CERT"
-                    && line.left(3).toUpper().trimmed() != "KEY"
+                    && line.trimmed().left(4).toUpper() != "CERT"
+                    && line.trimmed().left(3).toUpper() != "KEY"
                     && line.toUpper().trimmed() != "COMP-LZO"
-                    && line.left(4).toUpper().trimmed() != "VERB"
-                    && line.left(4).toUpper().trimmed() != "MUTE"
+                    && line.trimmed().left(4).toUpper() != "VERB"
+                    && line.trimmed().left(4).toUpper() != "MUTE"
                     && line.toUpper().trimmed() != "AUTH-NOCACHE"
                     && line.toUpper().trimmed() != "AUTH-USER-PASS"
-                    && line.left(12).toUpper().trimmed() != "ROUTE-METHOD"
-                    && line.left(11).toUpper().trimmed() != "ROUTE-DELAY"
-                    && line.left(8).toUpper().trimmed() != "DEV-NODE"
-                    && line.toUpper().trimmed() != "REMOTE-RANDOM"
-                    && line.left(13).toUpper().trimmed() != "RESOLVE-RETRY"
-                    && line.left(4).toUpper().trimmed() != "USER"
-                    && line.left(5).toUpper().trimmed() != "GROUP"
+                    && line.trimmed().left(12).toUpper() != "ROUTE-METHOD"
+                    && line.trimmed().left(11).toUpper() != "ROUTE-DELAY"
+                    && line.trimmed().left(8).toUpper() != "DEV-NODE"
+                    && line.trimmed().toUpper() != "REMOTE-RANDOM"
+                    && line.trimmed().left(13).toUpper() != "RESOLVE-RETRY"
+                    && line.trimmed().left(4).toUpper() != "USER"
+                    && line.trimmed().left(5).toUpper() != "GROUP"
                     && !line.trimmed().left(16).contains("HTTP-PROXY-RETRY", Qt::CaseInsensitive)
                     && !line.trimmed().left(11).contains("HTTP-PROXY ", Qt::CaseInsensitive)
                     && line.toUpper().trimmed() != "MUTE-REPLAY-WARNINGS"
-                    && line.left(6).toUpper().trimmed() != "CIPHER"
-                    && line.toUpper().trimmed() != "NS-CERT-TYPE SERVER") {
+                    && line.trimmed().left(6).toUpper() != "CIPHER"
+                    && line.toUpper().trimmed() != "NS-CERT-TYPE SERVER"
+                    && line.trimmed().left(7).toUpper() != "WIN-SYS") {
                    fieldsNotIncluded.append(line);
                 }
     }
     cf.close();
     return fieldsNotIncluded;
+}
+
+void ManageConnection::on_cbWinDirOther_2_toggled(bool checked)
+{
+    ui->cbWinDirEnvironment_2->setEnabled(checked);
+    ui->cbWinDirPath_2->setEnabled(checked);
+
+    // Das Textfeld hat ein paar mehr Möglichkeiten
+    if (!checked) {
+        ui->txtPath_2->setEnabled(false);
+    }
+
+    if (checked && ui->cbWinDirPath_2->isChecked()) {
+        ui->txtPath_2->setEnabled(true);
+    }
+}
+
+void ManageConnection::on_cbWinDirPath_2_toggled(bool checked)
+{
+    ui->txtPath_2->setEnabled(checked);
+}
+
+void ManageConnection::on_rbPkcs_toggled(bool checked)
+{
+    if (checked) {
+        ui->txtPkcs12Path->setEnabled(true);
+        ui->cmdGetPkcs12Path->setEnabled(true);
+        // Die normalen deaktivieren
+        ui->txtKey->setEnabled(false);
+        ui->txtCA->setEnabled(false);
+        ui->txtCert->setEnabled(false);
+
+        ui->cbCertIsServer->setEnabled(false);
+        ui->cmdGetCAPath->setEnabled(false);
+        ui->cmdGetCertPath->setEnabled(false);
+        ui->cmdGetKeyPath->setEnabled(false);
+    }
+}
+
+void ManageConnection::on_cmdGetPkcs12Path_clicked()
+{
+    QFileDialog caFileDialog;
+    QString filename = caFileDialog.getOpenFileName(this, QObject::tr("Find pkcs12"), this->lastDir, QObject::tr("Pkcs12 (*.p12)"));
+    if (!filename.isEmpty()) {
+        int lastSlash = filename.lastIndexOf("/");
+        QString filepath = filename.left(lastSlash);
+        this->lastDir = filepath;
+        if (filepath.replace("\\", "/").toLower() == this->configObj->getConfigPath().replace("\\", "/").toLower())
+            ui->txtPkcs12Path->setText(filename.right(filename.size() - lastSlash -1));
+        else
+            ui->txtPkcs12Path->setText(filename);
+    }
+}
+
+void ManageConnection::on_rbNormal_toggled(bool checked)
+{
+    if (checked) {        
+        ui->txtPkcs12Path->setEnabled(false);
+        ui->cmdGetPkcs12Path->setEnabled(false);
+        // Die normalen deaktivieren
+        ui->txtKey->setEnabled(true);
+        ui->txtCA->setEnabled(true);
+        ui->txtCert->setEnabled(true);
+
+        ui->cbCertIsServer->setEnabled(true);
+        ui->cmdGetCAPath->setEnabled(true);
+        ui->cmdGetCertPath->setEnabled(true);
+        ui->cmdGetKeyPath->setEnabled(true);
+    }
 }

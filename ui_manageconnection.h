@@ -1,8 +1,8 @@
 /********************************************************************************
 ** Form generated from reading UI file 'manageconnection.ui'
 **
-** Created: Mon 22. Nov 15:04:36 2010
-**      by: Qt User Interface Compiler version 4.7.0
+** Created: Thu 12. Jan 13:39:29 2012
+**      by: Qt User Interface Compiler version 4.7.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -23,7 +23,9 @@
 #include <QtGui/QLabel>
 #include <QtGui/QLineEdit>
 #include <QtGui/QPushButton>
-#include <QtGui/QToolBox>
+#include <QtGui/QRadioButton>
+#include <QtGui/QTabWidget>
+#include <QtGui/QVBoxLayout>
 #include <QtGui/QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -32,8 +34,11 @@ class Ui_ManageConnection
 {
 public:
     QPushButton *cmdClose;
-    QToolBox *tbSettings;
-    QWidget *page;
+    QLabel *label_41;
+    QFrame *frame;
+    QPushButton *cmdSave;
+    QTabWidget *tabWidget;
+    QWidget *tabGeneral;
     QGroupBox *groupBox_3;
     QLabel *label;
     QCheckBox *cbClient;
@@ -77,7 +82,11 @@ public:
     QPushButton *cmdGetCAPath;
     QPushButton *cmdGetCertPath;
     QPushButton *cmdGetKeyPath;
-    QWidget *page_3;
+    QRadioButton *rbPkcs;
+    QRadioButton *rbNormal;
+    QLineEdit *txtPkcs12Path;
+    QPushButton *cmdGetPkcs12Path;
+    QWidget *tabLinux;
     QGroupBox *groupBox_10;
     QLabel *label_26;
     QLabel *label_27;
@@ -92,7 +101,17 @@ public:
     QLabel *label_21;
     QLabel *label_23;
     QLineEdit *txtDevNode;
-    QWidget *page_2;
+    QGroupBox *groupBox_2;
+    QWidget *verticalLayoutWidget_2;
+    QVBoxLayout *verticalLayout_2;
+    QRadioButton *cbWinDirUseDefault_2;
+    QRadioButton *cbWinDirOther_2;
+    QGroupBox *groupBox_19;
+    QRadioButton *cbWinDirEnvironment_2;
+    QRadioButton *cbWinDirPath_2;
+    QLineEdit *txtPath_2;
+    QLabel *label_44;
+    QWidget *tabScripts;
     QGroupBox *groupBox_15;
     QLabel *label_34;
     QLabel *label_35;
@@ -115,7 +134,7 @@ public:
     QLabel *label_36;
     QLineEdit *txtScriptACDelay;
     QLabel *label_37;
-    QWidget *page_4;
+    QWidget *tabAdv;
     QGroupBox *groupBox_8;
     QLineEdit *txtVerbose;
     QLineEdit *txtRouteDelay;
@@ -135,29 +154,32 @@ public:
     QLineEdit *txtHTTPIP;
     QLabel *label_30;
     QLineEdit *txtHTTPPort;
+    QComboBox *cmbProxyAuth;
+    QComboBox *cmbAuthMethod;
+    QLabel *label_43;
+    QLabel *label_45;
     QGroupBox *groupBox_12;
     QLabel *label_31;
     QCheckBox *cbMuteWirelessWarning;
     QGroupBox *groupBox_13;
     QLabel *label_32;
     QComboBox *cmbChiper;
-    QLabel *label_41;
-    QFrame *frame;
-    QPushButton *cmdSave;
 
     void setupUi(QDialog *ManageConnection)
     {
         if (ManageConnection->objectName().isEmpty())
             ManageConnection->setObjectName(QString::fromUtf8("ManageConnection"));
         ManageConnection->setWindowModality(Qt::ApplicationModal);
-        ManageConnection->resize(440, 670);
+        ManageConnection->resize(450, 565);
+        ManageConnection->setMinimumSize(QSize(450, 565));
+        ManageConnection->setMaximumSize(QSize(450, 565));
         QIcon icon;
         icon.addFile(QString::fromUtf8(":/images/logo.png"), QSize(), QIcon::Normal, QIcon::Off);
         ManageConnection->setWindowIcon(icon);
         ManageConnection->setModal(true);
         cmdClose = new QPushButton(ManageConnection);
         cmdClose->setObjectName(QString::fromUtf8("cmdClose"));
-        cmdClose->setGeometry(QRect(330, 626, 100, 33));
+        cmdClose->setGeometry(QRect(340, 527, 100, 33));
         cmdClose->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black}\n"
 ":disabled {border: 1px solid black}\n"
 ":hover {background-color: rgb(195, 195, 195);}\n"
@@ -171,22 +193,49 @@ public:
         cmdClose->setIconSize(QSize(22, 22));
         cmdClose->setDefault(true);
         cmdClose->setFlat(true);
-        tbSettings = new QToolBox(ManageConnection);
-        tbSettings->setObjectName(QString::fromUtf8("tbSettings"));
-        tbSettings->setGeometry(QRect(10, 80, 421, 531));
-        page = new QWidget();
-        page->setObjectName(QString::fromUtf8("page"));
-        page->setGeometry(QRect(0, 0, 421, 423));
-        groupBox_3 = new QGroupBox(page);
+        label_41 = new QLabel(ManageConnection);
+        label_41->setObjectName(QString::fromUtf8("label_41"));
+        label_41->setGeometry(QRect(0, 0, 451, 61));
+        label_41->setPixmap(QPixmap(QString::fromUtf8(":/images/banner_sml.png")));
+        label_41->setScaledContents(true);
+        frame = new QFrame(ManageConnection);
+        frame->setObjectName(QString::fromUtf8("frame"));
+        frame->setGeometry(QRect(0, 60, 451, 8));
+        frame->setMinimumSize(QSize(0, 8));
+        frame->setMaximumSize(QSize(16777215, 5));
+        frame->setStyleSheet(QString::fromUtf8("background-image: url(:/images/bg_toolbar.png);"));
+        frame->setFrameShape(QFrame::NoFrame);
+        frame->setFrameShadow(QFrame::Plain);
+        cmdSave = new QPushButton(ManageConnection);
+        cmdSave->setObjectName(QString::fromUtf8("cmdSave"));
+        cmdSave->setGeometry(QRect(230, 527, 100, 33));
+        cmdSave->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black}\n"
+":disabled {border: 1px solid black}\n"
+":hover {background-color: rgb(195, 195, 195);}\n"
+"QPushButton {height: 25px; width: 50px;text-align:left;\n"
+"	padding-left: 10px;\n"
+"	padding-top: 3px;\n"
+"	padding-bottom: 3px;}"));
+        QIcon icon2;
+        icon2.addFile(QString::fromUtf8(":/images/save.png"), QSize(), QIcon::Normal, QIcon::Off);
+        cmdSave->setIcon(icon2);
+        cmdSave->setIconSize(QSize(22, 22));
+        cmdSave->setFlat(true);
+        tabWidget = new QTabWidget(ManageConnection);
+        tabWidget->setObjectName(QString::fromUtf8("tabWidget"));
+        tabWidget->setGeometry(QRect(4, 71, 441, 451));
+        tabGeneral = new QWidget();
+        tabGeneral->setObjectName(QString::fromUtf8("tabGeneral"));
+        groupBox_3 = new QGroupBox(tabGeneral);
         groupBox_3->setObjectName(QString::fromUtf8("groupBox_3"));
-        groupBox_3->setGeometry(QRect(0, 3, 421, 81));
+        groupBox_3->setGeometry(QRect(9, 10, 421, 71));
         label = new QLabel(groupBox_3);
         label->setObjectName(QString::fromUtf8("label"));
-        label->setGeometry(QRect(11, 26, 61, 16));
+        label->setGeometry(QRect(12, 15, 61, 16));
         cbClient = new QCheckBox(groupBox_3);
         cbClient->setObjectName(QString::fromUtf8("cbClient"));
         cbClient->setEnabled(true);
-        cbClient->setGeometry(QRect(84, 25, 20, 20));
+        cbClient->setGeometry(QRect(85, 14, 20, 20));
         cbClient->setStyleSheet(QString::fromUtf8("QCheckBox { \n"
 "spacing: 5px;\n"
 "}\n"
@@ -222,11 +271,11 @@ public:
 ""));
         label_8 = new QLabel(groupBox_3);
         label_8->setObjectName(QString::fromUtf8("label_8"));
-        label_8->setGeometry(QRect(11, 42, 61, 16));
+        label_8->setGeometry(QRect(12, 31, 61, 16));
         cbFloat = new QCheckBox(groupBox_3);
         cbFloat->setObjectName(QString::fromUtf8("cbFloat"));
         cbFloat->setEnabled(true);
-        cbFloat->setGeometry(QRect(84, 41, 21, 19));
+        cbFloat->setGeometry(QRect(85, 30, 21, 19));
         cbFloat->setStyleSheet(QString::fromUtf8("QCheckBox { \n"
 "spacing: 5px;\n"
 "}\n"
@@ -262,11 +311,11 @@ public:
 ""));
         label_11 = new QLabel(groupBox_3);
         label_11->setObjectName(QString::fromUtf8("label_11"));
-        label_11->setGeometry(QRect(130, 26, 61, 16));
+        label_11->setGeometry(QRect(131, 15, 61, 16));
         cbNobind = new QCheckBox(groupBox_3);
         cbNobind->setObjectName(QString::fromUtf8("cbNobind"));
         cbNobind->setEnabled(true);
-        cbNobind->setGeometry(QRect(203, 25, 21, 19));
+        cbNobind->setGeometry(QRect(204, 14, 21, 19));
         cbNobind->setStyleSheet(QString::fromUtf8("QCheckBox { \n"
 "spacing: 5px;\n"
 "}\n"
@@ -302,14 +351,14 @@ public:
 ""));
         label_12 = new QLabel(groupBox_3);
         label_12->setObjectName(QString::fromUtf8("label_12"));
-        label_12->setGeometry(QRect(130, 41, 61, 16));
+        label_12->setGeometry(QRect(131, 30, 61, 16));
         label_13 = new QLabel(groupBox_3);
         label_13->setObjectName(QString::fromUtf8("label_13"));
-        label_13->setGeometry(QRect(130, 56, 61, 16));
+        label_13->setGeometry(QRect(131, 45, 61, 16));
         cbPersistKey = new QCheckBox(groupBox_3);
         cbPersistKey->setObjectName(QString::fromUtf8("cbPersistKey"));
         cbPersistKey->setEnabled(true);
-        cbPersistKey->setGeometry(QRect(203, 38, 20, 20));
+        cbPersistKey->setGeometry(QRect(204, 27, 20, 20));
         cbPersistKey->setStyleSheet(QString::fromUtf8("QCheckBox { \n"
 "spacing: 5px;\n"
 "}\n"
@@ -346,7 +395,7 @@ public:
         cbPersistTun = new QCheckBox(groupBox_3);
         cbPersistTun->setObjectName(QString::fromUtf8("cbPersistTun"));
         cbPersistTun->setEnabled(true);
-        cbPersistTun->setGeometry(QRect(203, 54, 21, 19));
+        cbPersistTun->setGeometry(QRect(204, 43, 21, 19));
         cbPersistTun->setStyleSheet(QString::fromUtf8("QCheckBox { \n"
 "spacing: 5px;\n"
 "}\n"
@@ -382,11 +431,11 @@ public:
 ""));
         label_16 = new QLabel(groupBox_3);
         label_16->setObjectName(QString::fromUtf8("label_16"));
-        label_16->setGeometry(QRect(11, 56, 61, 16));
+        label_16->setGeometry(QRect(12, 45, 61, 16));
         cbCompLzo = new QCheckBox(groupBox_3);
         cbCompLzo->setObjectName(QString::fromUtf8("cbCompLzo"));
         cbCompLzo->setEnabled(true);
-        cbCompLzo->setGeometry(QRect(84, 55, 21, 19));
+        cbCompLzo->setGeometry(QRect(85, 44, 21, 19));
         cbCompLzo->setStyleSheet(QString::fromUtf8("QCheckBox { \n"
 "spacing: 5px;\n"
 "}\n"
@@ -422,11 +471,11 @@ public:
 ""));
         label_19 = new QLabel(groupBox_3);
         label_19->setObjectName(QString::fromUtf8("label_19"));
-        label_19->setGeometry(QRect(229, 26, 81, 16));
+        label_19->setGeometry(QRect(230, 15, 81, 16));
         cbNoCache = new QCheckBox(groupBox_3);
         cbNoCache->setObjectName(QString::fromUtf8("cbNoCache"));
         cbNoCache->setEnabled(true);
-        cbNoCache->setGeometry(QRect(324, 26, 20, 20));
+        cbNoCache->setGeometry(QRect(325, 15, 20, 20));
         cbNoCache->setStyleSheet(QString::fromUtf8("QCheckBox { \n"
 "spacing: 5px;\n"
 "}\n"
@@ -462,11 +511,11 @@ public:
 ""));
         label_20 = new QLabel(groupBox_3);
         label_20->setObjectName(QString::fromUtf8("label_20"));
-        label_20->setGeometry(QRect(229, 40, 81, 20));
+        label_20->setGeometry(QRect(230, 29, 81, 20));
         cbUserPass = new QCheckBox(groupBox_3);
         cbUserPass->setObjectName(QString::fromUtf8("cbUserPass"));
         cbUserPass->setEnabled(true);
-        cbUserPass->setGeometry(QRect(324, 40, 20, 20));
+        cbUserPass->setGeometry(QRect(325, 29, 20, 20));
         cbUserPass->setStyleSheet(QString::fromUtf8("QCheckBox { \n"
 "spacing: 5px;\n"
 "}\n"
@@ -502,10 +551,10 @@ public:
 ""));
         label_42 = new QLabel(groupBox_3);
         label_42->setObjectName(QString::fromUtf8("label_42"));
-        label_42->setGeometry(QRect(229, 57, 91, 16));
+        label_42->setGeometry(QRect(230, 46, 91, 16));
         cbRedirectGateway = new QCheckBox(groupBox_3);
         cbRedirectGateway->setObjectName(QString::fromUtf8("cbRedirectGateway"));
-        cbRedirectGateway->setGeometry(QRect(324, 56, 16, 18));
+        cbRedirectGateway->setGeometry(QRect(325, 45, 16, 18));
         cbRedirectGateway->setStyleSheet(QString::fromUtf8("QCheckBox { \n"
 "spacing: 5px;\n"
 "}\n"
@@ -539,9 +588,9 @@ public:
 "image: url(:/images/styles/checkbox_checked_hover.png);\n"
 "}\n"
 ""));
-        groupBox_7 = new QGroupBox(page);
+        groupBox_7 = new QGroupBox(tabGeneral);
         groupBox_7->setObjectName(QString::fromUtf8("groupBox_7"));
-        groupBox_7->setGeometry(QRect(0, 87, 421, 81));
+        groupBox_7->setGeometry(QRect(9, 83, 421, 71));
         cmbDev = new QComboBox(groupBox_7);
         cmbDev->setObjectName(QString::fromUtf8("cmbDev"));
         cmbDev->setEnabled(true);
@@ -562,9 +611,9 @@ public:
         label_4 = new QLabel(groupBox_7);
         label_4->setObjectName(QString::fromUtf8("label_4"));
         label_4->setGeometry(QRect(12, 46, 51, 16));
-        groupBox_5 = new QGroupBox(page);
+        groupBox_5 = new QGroupBox(tabGeneral);
         groupBox_5->setObjectName(QString::fromUtf8("groupBox_5"));
-        groupBox_5->setGeometry(QRect(0, 172, 421, 101));
+        groupBox_5->setGeometry(QRect(9, 160, 421, 91));
         txtRemotePort = new QLineEdit(groupBox_5);
         txtRemotePort->setObjectName(QString::fromUtf8("txtRemotePort"));
         txtRemotePort->setEnabled(true);
@@ -595,24 +644,24 @@ public:
         label_7 = new QLabel(groupBox_5);
         label_7->setObjectName(QString::fromUtf8("label_7"));
         label_7->setGeometry(QRect(10, 65, 71, 16));
-        groupBox_4 = new QGroupBox(page);
+        groupBox_4 = new QGroupBox(tabGeneral);
         groupBox_4->setObjectName(QString::fromUtf8("groupBox_4"));
-        groupBox_4->setGeometry(QRect(0, 277, 421, 121));
+        groupBox_4->setGeometry(QRect(7, 257, 421, 161));
         txtCA = new QLineEdit(groupBox_4);
         txtCA->setObjectName(QString::fromUtf8("txtCA"));
         txtCA->setEnabled(true);
-        txtCA->setGeometry(QRect(105, 20, 271, 20));
+        txtCA->setGeometry(QRect(106, 66, 271, 20));
         txtCA->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}\n"
 ":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}\n"
 ":hover {border: 1px solid red; }"));
         txtCA->setReadOnly(true);
         label_2 = new QLabel(groupBox_4);
         label_2->setObjectName(QString::fromUtf8("label_2"));
-        label_2->setGeometry(QRect(10, 22, 61, 16));
+        label_2->setGeometry(QRect(11, 68, 61, 16));
         txtCert = new QLineEdit(groupBox_4);
         txtCert->setObjectName(QString::fromUtf8("txtCert"));
         txtCert->setEnabled(true);
-        txtCert->setGeometry(QRect(105, 44, 271, 20));
+        txtCert->setGeometry(QRect(106, 90, 271, 20));
         txtCert->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}\n"
 ":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}\n"
 ":hover {border: 1px solid red; }"));
@@ -620,24 +669,24 @@ public:
         txtKey = new QLineEdit(groupBox_4);
         txtKey->setObjectName(QString::fromUtf8("txtKey"));
         txtKey->setEnabled(true);
-        txtKey->setGeometry(QRect(105, 69, 271, 20));
+        txtKey->setGeometry(QRect(106, 115, 271, 20));
         txtKey->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}\n"
 ":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}\n"
 ":hover {border: 1px solid red; }"));
         txtKey->setReadOnly(true);
         label_15 = new QLabel(groupBox_4);
         label_15->setObjectName(QString::fromUtf8("label_15"));
-        label_15->setGeometry(QRect(10, 70, 81, 20));
+        label_15->setGeometry(QRect(11, 116, 81, 20));
         label_14 = new QLabel(groupBox_4);
         label_14->setObjectName(QString::fromUtf8("label_14"));
-        label_14->setGeometry(QRect(10, 45, 91, 21));
+        label_14->setGeometry(QRect(11, 91, 91, 21));
         label_33 = new QLabel(groupBox_4);
         label_33->setObjectName(QString::fromUtf8("label_33"));
-        label_33->setGeometry(QRect(10, 93, 91, 16));
+        label_33->setGeometry(QRect(11, 139, 91, 16));
         cbCertIsServer = new QCheckBox(groupBox_4);
         cbCertIsServer->setObjectName(QString::fromUtf8("cbCertIsServer"));
         cbCertIsServer->setEnabled(true);
-        cbCertIsServer->setGeometry(QRect(106, 92, 21, 19));
+        cbCertIsServer->setGeometry(QRect(107, 138, 21, 19));
         cbCertIsServer->setStyleSheet(QString::fromUtf8("QCheckBox { \n"
 "spacing: 5px;\n"
 "}\n"
@@ -674,7 +723,7 @@ public:
         cmdGetCAPath = new QPushButton(groupBox_4);
         cmdGetCAPath->setObjectName(QString::fromUtf8("cmdGetCAPath"));
         cmdGetCAPath->setEnabled(true);
-        cmdGetCAPath->setGeometry(QRect(380, 20, 20, 20));
+        cmdGetCAPath->setGeometry(QRect(381, 66, 20, 20));
         cmdGetCAPath->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black}\n"
 ":disabled {border: 1px solid black}\n"
 ":hover {background-color: rgb(195, 195, 195);}\n"
@@ -682,7 +731,7 @@ public:
         cmdGetCertPath = new QPushButton(groupBox_4);
         cmdGetCertPath->setObjectName(QString::fromUtf8("cmdGetCertPath"));
         cmdGetCertPath->setEnabled(true);
-        cmdGetCertPath->setGeometry(QRect(380, 44, 20, 20));
+        cmdGetCertPath->setGeometry(QRect(381, 90, 20, 20));
         cmdGetCertPath->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black}\n"
 ":disabled {border: 1px solid black}\n"
 ":hover {background-color: rgb(195, 195, 195);}\n"
@@ -690,17 +739,37 @@ public:
         cmdGetKeyPath = new QPushButton(groupBox_4);
         cmdGetKeyPath->setObjectName(QString::fromUtf8("cmdGetKeyPath"));
         cmdGetKeyPath->setEnabled(true);
-        cmdGetKeyPath->setGeometry(QRect(380, 69, 20, 20));
+        cmdGetKeyPath->setGeometry(QRect(381, 115, 20, 20));
         cmdGetKeyPath->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black}\n"
 ":disabled {border: 1px solid black}\n"
 ":hover {background-color: rgb(195, 195, 195);}"));
-        tbSettings->addItem(page, QString::fromUtf8("General"));
-        page_3 = new QWidget();
-        page_3->setObjectName(QString::fromUtf8("page_3"));
-        page_3->setGeometry(QRect(0, 0, 96, 26));
-        groupBox_10 = new QGroupBox(page_3);
+        rbPkcs = new QRadioButton(groupBox_4);
+        rbPkcs->setObjectName(QString::fromUtf8("rbPkcs"));
+        rbPkcs->setGeometry(QRect(10, 20, 71, 17));
+        rbNormal = new QRadioButton(groupBox_4);
+        rbNormal->setObjectName(QString::fromUtf8("rbNormal"));
+        rbNormal->setGeometry(QRect(10, 40, 82, 17));
+        rbNormal->setChecked(true);
+        txtPkcs12Path = new QLineEdit(groupBox_4);
+        txtPkcs12Path->setObjectName(QString::fromUtf8("txtPkcs12Path"));
+        txtPkcs12Path->setGeometry(QRect(107, 19, 271, 20));
+        txtPkcs12Path->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}\n"
+":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}\n"
+":hover {border: 1px solid red; }"));
+        cmdGetPkcs12Path = new QPushButton(groupBox_4);
+        cmdGetPkcs12Path->setObjectName(QString::fromUtf8("cmdGetPkcs12Path"));
+        cmdGetPkcs12Path->setGeometry(QRect(381, 19, 20, 20));
+        cmdGetPkcs12Path->setMaximumSize(QSize(20, 20));
+        cmdGetPkcs12Path->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black}\n"
+":disabled {border: 1px solid black}\n"
+":hover {background-color: rgb(195, 195, 195);}\n"
+""));
+        tabWidget->addTab(tabGeneral, QString());
+        tabLinux = new QWidget();
+        tabLinux->setObjectName(QString::fromUtf8("tabLinux"));
+        groupBox_10 = new QGroupBox(tabLinux);
         groupBox_10->setObjectName(QString::fromUtf8("groupBox_10"));
-        groupBox_10->setGeometry(QRect(0, 2, 421, 81));
+        groupBox_10->setGeometry(QRect(8, 10, 421, 81));
         label_26 = new QLabel(groupBox_10);
         label_26->setObjectName(QString::fromUtf8("label_26"));
         label_26->setGeometry(QRect(11, 22, 46, 14));
@@ -721,9 +790,9 @@ public:
         txtLinuxGroup->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}\n"
 ":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}\n"
 ":hover {border: 1px solid red; }"));
-        groupBox_6 = new QGroupBox(page_3);
+        groupBox_6 = new QGroupBox(tabLinux);
         groupBox_6->setObjectName(QString::fromUtf8("groupBox_6"));
-        groupBox_6->setGeometry(QRect(0, 90, 421, 131));
+        groupBox_6->setGeometry(QRect(8, 100, 421, 321));
         cbMsfix = new QCheckBox(groupBox_6);
         cbMsfix->setObjectName(QString::fromUtf8("cbMsfix"));
         cbMsfix->setEnabled(true);
@@ -794,13 +863,147 @@ public:
         txtDevNode->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}\n"
 ":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}\n"
 ":hover {border: 1px solid red; }"));
-        tbSettings->addItem(page_3, QString::fromUtf8("Linux / Windows"));
-        page_2 = new QWidget();
-        page_2->setObjectName(QString::fromUtf8("page_2"));
-        page_2->setGeometry(QRect(0, 0, 96, 26));
-        groupBox_15 = new QGroupBox(page_2);
+        groupBox_2 = new QGroupBox(groupBox_6);
+        groupBox_2->setObjectName(QString::fromUtf8("groupBox_2"));
+        groupBox_2->setGeometry(QRect(11, 118, 351, 121));
+        verticalLayoutWidget_2 = new QWidget(groupBox_2);
+        verticalLayoutWidget_2->setObjectName(QString::fromUtf8("verticalLayoutWidget_2"));
+        verticalLayoutWidget_2->setGeometry(QRect(9, 20, 271, 41));
+        verticalLayout_2 = new QVBoxLayout(verticalLayoutWidget_2);
+        verticalLayout_2->setObjectName(QString::fromUtf8("verticalLayout_2"));
+        verticalLayout_2->setContentsMargins(0, 0, 0, 0);
+        cbWinDirUseDefault_2 = new QRadioButton(verticalLayoutWidget_2);
+        cbWinDirUseDefault_2->setObjectName(QString::fromUtf8("cbWinDirUseDefault_2"));
+        cbWinDirUseDefault_2->setStyleSheet(QString::fromUtf8("QRadioButton { \n"
+"spacing: 5px;\n"
+"}\n"
+"\n"
+"QRadioButton::indicator {\n"
+"width: 13px;\n"
+"height: 13px;\n"
+"}\n"
+"\n"
+"QRadioButton::indicator::unchecked:enabled {\n"
+"image: url(:/images/styles/radiobutton_unchecked.png);\n"
+"}\n"
+"\n"
+"QRadioButton::indicator::checked:enabled {\n"
+"image: url(:/images/styles/radiobutton_checked.png);\n"
+"}\n"
+"\n"
+"QRadioButton::indicator::unchecked:disabled {\n"
+"image: url(:/images/styles/radiobutton_unchecked_dis.png);\n"
+"}\n"
+"\n"
+"QRadioButton::indicator::checked:disabled {\n"
+"image: url(:/images/styles/radiobutton_checked_dis.png);\n"
+"}"));
+        cbWinDirUseDefault_2->setChecked(true);
+
+        verticalLayout_2->addWidget(cbWinDirUseDefault_2);
+
+        cbWinDirOther_2 = new QRadioButton(verticalLayoutWidget_2);
+        cbWinDirOther_2->setObjectName(QString::fromUtf8("cbWinDirOther_2"));
+        cbWinDirOther_2->setStyleSheet(QString::fromUtf8("QRadioButton { \n"
+"spacing: 5px;\n"
+"}\n"
+"\n"
+"QRadioButton::indicator {\n"
+"width: 13px;\n"
+"height: 13px;\n"
+"}\n"
+"\n"
+"QRadioButton::indicator::unchecked:enabled {\n"
+"image: url(:/images/styles/radiobutton_unchecked.png);\n"
+"}\n"
+"\n"
+"QRadioButton::indicator::checked:enabled {\n"
+"image: url(:/images/styles/radiobutton_checked.png);\n"
+"}\n"
+"\n"
+"QRadioButton::indicator::unchecked:disabled {\n"
+"image: url(:/images/styles/radiobutton_unchecked_dis.png);\n"
+"}\n"
+"\n"
+"QRadioButton::indicator::checked:disabled {\n"
+"image: url(:/images/styles/radiobutton_checked_dis.png);\n"
+"}"));
+
+        verticalLayout_2->addWidget(cbWinDirOther_2);
+
+        groupBox_19 = new QGroupBox(groupBox_2);
+        groupBox_19->setObjectName(QString::fromUtf8("groupBox_19"));
+        groupBox_19->setGeometry(QRect(20, 60, 321, 51));
+        cbWinDirEnvironment_2 = new QRadioButton(groupBox_19);
+        cbWinDirEnvironment_2->setObjectName(QString::fromUtf8("cbWinDirEnvironment_2"));
+        cbWinDirEnvironment_2->setGeometry(QRect(13, 7, 151, 17));
+        cbWinDirEnvironment_2->setStyleSheet(QString::fromUtf8("QRadioButton { \n"
+"spacing: 5px;\n"
+"}\n"
+"\n"
+"QRadioButton::indicator {\n"
+"width: 13px;\n"
+"height: 13px;\n"
+"}\n"
+"\n"
+"QRadioButton::indicator::unchecked:enabled {\n"
+"image: url(:/images/styles/radiobutton_unchecked.png);\n"
+"}\n"
+"\n"
+"QRadioButton::indicator::checked:enabled {\n"
+"image: url(:/images/styles/radiobutton_checked.png);\n"
+"}\n"
+"\n"
+"QRadioButton::indicator::unchecked:disabled {\n"
+"image: url(:/images/styles/radiobutton_unchecked_dis.png);\n"
+"}\n"
+"\n"
+"QRadioButton::indicator::checked:disabled {\n"
+"image: url(:/images/styles/radiobutton_checked_dis.png);\n"
+"}"));
+        cbWinDirEnvironment_2->setChecked(true);
+        cbWinDirPath_2 = new QRadioButton(groupBox_19);
+        cbWinDirPath_2->setObjectName(QString::fromUtf8("cbWinDirPath_2"));
+        cbWinDirPath_2->setGeometry(QRect(14, 27, 51, 17));
+        cbWinDirPath_2->setStyleSheet(QString::fromUtf8("QRadioButton { \n"
+"spacing: 5px;\n"
+"}\n"
+"\n"
+"QRadioButton::indicator {\n"
+"width: 13px;\n"
+"height: 13px;\n"
+"}\n"
+"\n"
+"QRadioButton::indicator::unchecked:enabled {\n"
+"image: url(:/images/styles/radiobutton_unchecked.png);\n"
+"}\n"
+"\n"
+"QRadioButton::indicator::checked:enabled {\n"
+"image: url(:/images/styles/radiobutton_checked.png);\n"
+"}\n"
+"\n"
+"QRadioButton::indicator::unchecked:disabled {\n"
+"image: url(:/images/styles/radiobutton_unchecked_dis.png);\n"
+"}\n"
+"\n"
+"QRadioButton::indicator::checked:disabled {\n"
+"image: url(:/images/styles/radiobutton_checked_dis.png);\n"
+"}"));
+        txtPath_2 = new QLineEdit(groupBox_19);
+        txtPath_2->setObjectName(QString::fromUtf8("txtPath_2"));
+        txtPath_2->setGeometry(QRect(65, 25, 151, 20));
+        txtPath_2->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}\n"
+":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}\n"
+":hover {border: 1px solid red; }"));
+        label_44 = new QLabel(groupBox_19);
+        label_44->setObjectName(QString::fromUtf8("label_44"));
+        label_44->setGeometry(QRect(220, 25, 91, 20));
+        tabWidget->addTab(tabLinux, QString());
+        tabScripts = new QWidget();
+        tabScripts->setObjectName(QString::fromUtf8("tabScripts"));
+        groupBox_15 = new QGroupBox(tabScripts);
         groupBox_15->setObjectName(QString::fromUtf8("groupBox_15"));
-        groupBox_15->setGeometry(QRect(0, 0, 421, 91));
+        groupBox_15->setGeometry(QRect(7, 10, 421, 91));
         label_34 = new QLabel(groupBox_15);
         label_34->setObjectName(QString::fromUtf8("label_34"));
         label_34->setGeometry(QRect(10, 30, 121, 16));
@@ -833,9 +1036,9 @@ public:
         cmdAfterConnect->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black}\n"
 "::disabled {border: 1px solid black}\n"
 ":hover {background-color: rgb(195, 195, 195);}"));
-        groupBox_16 = new QGroupBox(page_2);
+        groupBox_16 = new QGroupBox(tabScripts);
         groupBox_16->setObjectName(QString::fromUtf8("groupBox_16"));
-        groupBox_16->setGeometry(QRect(0, 100, 421, 91));
+        groupBox_16->setGeometry(QRect(7, 110, 421, 91));
         label_38 = new QLabel(groupBox_16);
         label_38->setObjectName(QString::fromUtf8("label_38"));
         label_38->setGeometry(QRect(10, 30, 121, 16));
@@ -868,9 +1071,9 @@ public:
         cmdAfterDisconnect->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black}\n"
 ":disabled {border: 1px solid black}\n"
 ":hover {background-color: rgb(195, 195, 195);}"));
-        groupBox_14 = new QGroupBox(page_2);
+        groupBox_14 = new QGroupBox(tabScripts);
         groupBox_14->setObjectName(QString::fromUtf8("groupBox_14"));
-        groupBox_14->setGeometry(QRect(0, 200, 421, 61));
+        groupBox_14->setGeometry(QRect(7, 210, 421, 61));
         label_40 = new QLabel(groupBox_14);
         label_40->setObjectName(QString::fromUtf8("label_40"));
         label_40->setGeometry(QRect(10, 27, 121, 16));
@@ -887,9 +1090,9 @@ public:
 ":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}\n"
 ":hover {border: 1px solid red; }"));
         txtErrorConnect->setReadOnly(false);
-        groupBox_17 = new QGroupBox(page_2);
+        groupBox_17 = new QGroupBox(tabScripts);
         groupBox_17->setObjectName(QString::fromUtf8("groupBox_17"));
-        groupBox_17->setGeometry(QRect(0, 260, 421, 61));
+        groupBox_17->setGeometry(QRect(7, 280, 421, 61));
         label_36 = new QLabel(groupBox_17);
         label_36->setObjectName(QString::fromUtf8("label_36"));
         label_36->setGeometry(QRect(10, 30, 121, 20));
@@ -902,13 +1105,12 @@ public:
         label_37 = new QLabel(groupBox_17);
         label_37->setObjectName(QString::fromUtf8("label_37"));
         label_37->setGeometry(QRect(206, 32, 21, 16));
-        tbSettings->addItem(page_2, QString::fromUtf8("Scripts"));
-        page_4 = new QWidget();
-        page_4->setObjectName(QString::fromUtf8("page_4"));
-        page_4->setGeometry(QRect(0, 0, 96, 26));
-        groupBox_8 = new QGroupBox(page_4);
+        tabWidget->addTab(tabScripts, QString());
+        tabAdv = new QWidget();
+        tabAdv->setObjectName(QString::fromUtf8("tabAdv"));
+        groupBox_8 = new QGroupBox(tabAdv);
         groupBox_8->setObjectName(QString::fromUtf8("groupBox_8"));
-        groupBox_8->setGeometry(QRect(0, 1, 421, 101));
+        groupBox_8->setGeometry(QRect(7, 10, 421, 101));
         txtVerbose = new QLineEdit(groupBox_8);
         txtVerbose->setObjectName(QString::fromUtf8("txtVerbose"));
         txtVerbose->setEnabled(true);
@@ -939,9 +1141,9 @@ public:
         txtMute->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}\n"
 ":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}\n"
 ":hover {border: 1px solid red; }"));
-        groupBox_9 = new QGroupBox(page_4);
+        groupBox_9 = new QGroupBox(tabAdv);
         groupBox_9->setObjectName(QString::fromUtf8("groupBox_9"));
-        groupBox_9->setGeometry(QRect(0, 105, 421, 71));
+        groupBox_9->setGeometry(QRect(7, 119, 421, 71));
         cbRandomHost = new QCheckBox(groupBox_9);
         cbRandomHost->setObjectName(QString::fromUtf8("cbRandomHost"));
         cbRandomHost->setEnabled(true);
@@ -1022,9 +1224,9 @@ public:
 "image: url(:/images/styles/checkbox_checked_hover.png);\n"
 "}\n"
 ""));
-        groupBox_11 = new QGroupBox(page_4);
+        groupBox_11 = new QGroupBox(tabAdv);
         groupBox_11->setObjectName(QString::fromUtf8("groupBox_11"));
-        groupBox_11->setGeometry(QRect(0, 179, 421, 111));
+        groupBox_11->setGeometry(QRect(7, 199, 421, 101));
         label_28 = new QLabel(groupBox_11);
         label_28->setObjectName(QString::fromUtf8("label_28"));
         label_28->setGeometry(QRect(11, 20, 46, 14));
@@ -1071,23 +1273,41 @@ public:
         txtHTTPIP = new QLineEdit(groupBox_11);
         txtHTTPIP->setObjectName(QString::fromUtf8("txtHTTPIP"));
         txtHTTPIP->setEnabled(true);
-        txtHTTPIP->setGeometry(QRect(81, 40, 231, 20));
+        txtHTTPIP->setGeometry(QRect(81, 40, 141, 20));
         txtHTTPIP->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}\n"
 ":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}\n"
 ":hover {border: 1px solid red; }"));
         label_30 = new QLabel(groupBox_11);
         label_30->setObjectName(QString::fromUtf8("label_30"));
-        label_30->setGeometry(QRect(10, 67, 61, 16));
+        label_30->setGeometry(QRect(10, 68, 61, 16));
         txtHTTPPort = new QLineEdit(groupBox_11);
         txtHTTPPort->setObjectName(QString::fromUtf8("txtHTTPPort"));
         txtHTTPPort->setEnabled(true);
-        txtHTTPPort->setGeometry(QRect(81, 66, 81, 20));
+        txtHTTPPort->setGeometry(QRect(81, 66, 121, 20));
         txtHTTPPort->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}\n"
 ":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}\n"
 ":hover {border: 1px solid red; }"));
-        groupBox_12 = new QGroupBox(page_4);
+        cmbProxyAuth = new QComboBox(groupBox_11);
+        cmbProxyAuth->setObjectName(QString::fromUtf8("cmbProxyAuth"));
+        cmbProxyAuth->setGeometry(QRect(311, 40, 91, 22));
+        cmbProxyAuth->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}\n"
+":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}\n"
+":hover {border: 1px solid red; }"));
+        cmbAuthMethod = new QComboBox(groupBox_11);
+        cmbAuthMethod->setObjectName(QString::fromUtf8("cmbAuthMethod"));
+        cmbAuthMethod->setGeometry(QRect(311, 65, 91, 22));
+        cmbAuthMethod->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}\n"
+":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}\n"
+":hover {border: 1px solid red; }"));
+        label_43 = new QLabel(groupBox_11);
+        label_43->setObjectName(QString::fromUtf8("label_43"));
+        label_43->setGeometry(QRect(242, 44, 61, 16));
+        label_45 = new QLabel(groupBox_11);
+        label_45->setObjectName(QString::fromUtf8("label_45"));
+        label_45->setGeometry(QRect(243, 69, 61, 16));
+        groupBox_12 = new QGroupBox(tabAdv);
         groupBox_12->setObjectName(QString::fromUtf8("groupBox_12"));
-        groupBox_12->setGeometry(QRect(0, 293, 421, 51));
+        groupBox_12->setGeometry(QRect(7, 309, 421, 51));
         label_31 = new QLabel(groupBox_12);
         label_31->setObjectName(QString::fromUtf8("label_31"));
         label_31->setGeometry(QRect(12, 24, 111, 16));
@@ -1128,10 +1348,10 @@ public:
 "image: url(:/images/styles/checkbox_checked_hover.png);\n"
 "}\n"
 ""));
-        groupBox_13 = new QGroupBox(page_4);
+        groupBox_13 = new QGroupBox(tabAdv);
         groupBox_13->setObjectName(QString::fromUtf8("groupBox_13"));
         groupBox_13->setEnabled(true);
-        groupBox_13->setGeometry(QRect(0, 347, 421, 71));
+        groupBox_13->setGeometry(QRect(7, 367, 421, 51));
         label_32 = new QLabel(groupBox_13);
         label_32->setObjectName(QString::fromUtf8("label_32"));
         label_32->setGeometry(QRect(12, 25, 61, 16));
@@ -1142,38 +1362,11 @@ public:
         cmbChiper->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}\n"
 ":disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}\n"
 ":hover {border: 1px solid red; }"));
-        tbSettings->addItem(page_4, QString::fromUtf8("Advanced"));
-        label_41 = new QLabel(ManageConnection);
-        label_41->setObjectName(QString::fromUtf8("label_41"));
-        label_41->setGeometry(QRect(0, 0, 451, 61));
-        label_41->setPixmap(QPixmap(QString::fromUtf8(":/images/banner_sml.png")));
-        frame = new QFrame(ManageConnection);
-        frame->setObjectName(QString::fromUtf8("frame"));
-        frame->setGeometry(QRect(0, 60, 451, 8));
-        frame->setMinimumSize(QSize(0, 8));
-        frame->setMaximumSize(QSize(16777215, 5));
-        frame->setStyleSheet(QString::fromUtf8("background-image: url(:/images/bg_toolbar.png);"));
-        frame->setFrameShape(QFrame::NoFrame);
-        frame->setFrameShadow(QFrame::Plain);
-        cmdSave = new QPushButton(ManageConnection);
-        cmdSave->setObjectName(QString::fromUtf8("cmdSave"));
-        cmdSave->setGeometry(QRect(210, 626, 100, 33));
-        cmdSave->setStyleSheet(QString::fromUtf8(":enabled {border: 1px solid black}\n"
-":disabled {border: 1px solid black}\n"
-":hover {background-color: rgb(195, 195, 195);}\n"
-"QPushButton {height: 25px; width: 50px;text-align:left;\n"
-"	padding-left: 10px;\n"
-"	padding-top: 3px;\n"
-"	padding-bottom: 3px;}"));
-        QIcon icon2;
-        icon2.addFile(QString::fromUtf8(":/images/save.png"), QSize(), QIcon::Normal, QIcon::Off);
-        cmdSave->setIcon(icon2);
-        cmdSave->setIconSize(QSize(22, 22));
-        cmdSave->setFlat(true);
+        tabWidget->addTab(tabAdv, QString());
 
         retranslateUi(ManageConnection);
 
-        tbSettings->setCurrentIndex(0);
+        tabWidget->setCurrentIndex(3);
 
 
         QMetaObject::connectSlotsByName(ManageConnection);
@@ -1183,6 +1376,8 @@ public:
     {
         ManageConnection->setWindowTitle(QApplication::translate("ManageConnection", "Edit Connection", 0, QApplication::UnicodeUTF8));
         cmdClose->setText(QApplication::translate("ManageConnection", "     &Cancel", 0, QApplication::UnicodeUTF8));
+        label_41->setText(QString());
+        cmdSave->setText(QApplication::translate("ManageConnection", "     &OK", 0, QApplication::UnicodeUTF8));
         groupBox_3->setTitle(QApplication::translate("ManageConnection", "General:", 0, QApplication::UnicodeUTF8));
         label->setText(QApplication::translate("ManageConnection", "Client:", 0, QApplication::UnicodeUTF8));
         cbClient->setText(QString());
@@ -1218,7 +1413,10 @@ public:
         cmdGetCAPath->setText(QApplication::translate("ManageConnection", "...", 0, QApplication::UnicodeUTF8));
         cmdGetCertPath->setText(QApplication::translate("ManageConnection", "...", 0, QApplication::UnicodeUTF8));
         cmdGetKeyPath->setText(QApplication::translate("ManageConnection", "...", 0, QApplication::UnicodeUTF8));
-        tbSettings->setItemText(tbSettings->indexOf(page), QApplication::translate("ManageConnection", "General", 0, QApplication::UnicodeUTF8));
+        rbPkcs->setText(QApplication::translate("ManageConnection", "PKCS12", 0, QApplication::UnicodeUTF8));
+        rbNormal->setText(QApplication::translate("ManageConnection", "Normal", 0, QApplication::UnicodeUTF8));
+        cmdGetPkcs12Path->setText(QApplication::translate("ManageConnection", "...", 0, QApplication::UnicodeUTF8));
+        tabWidget->setTabText(tabWidget->indexOf(tabGeneral), QApplication::translate("ManageConnection", "General", 0, QApplication::UnicodeUTF8));
         groupBox_10->setTitle(QApplication::translate("ManageConnection", "Downgrade privileges of Linux process:", 0, QApplication::UnicodeUTF8));
         label_26->setText(QApplication::translate("ManageConnection", "User:", 0, QApplication::UnicodeUTF8));
         label_27->setText(QApplication::translate("ManageConnection", "Group:", 0, QApplication::UnicodeUTF8));
@@ -1228,7 +1426,14 @@ public:
         label_5->setText(QApplication::translate("ManageConnection", "Fragment:", 0, QApplication::UnicodeUTF8));
         label_21->setText(QApplication::translate("ManageConnection", "Route method:", 0, QApplication::UnicodeUTF8));
         label_23->setText(QApplication::translate("ManageConnection", "Dev Node:", 0, QApplication::UnicodeUTF8));
-        tbSettings->setItemText(tbSettings->indexOf(page_3), QApplication::translate("ManageConnection", "Linux / Windows", 0, QApplication::UnicodeUTF8));
+        groupBox_2->setTitle(QApplication::translate("ManageConnection", "Windows directory:", 0, QApplication::UnicodeUTF8));
+        cbWinDirUseDefault_2->setText(QApplication::translate("ManageConnection", "Use default(c:\\windows)", 0, QApplication::UnicodeUTF8));
+        cbWinDirOther_2->setText(QApplication::translate("ManageConnection", "Other", 0, QApplication::UnicodeUTF8));
+        groupBox_19->setTitle(QString());
+        cbWinDirEnvironment_2->setText(QApplication::translate("ManageConnection", "Use environment", 0, QApplication::UnicodeUTF8));
+        cbWinDirPath_2->setText(QApplication::translate("ManageConnection", "Path", 0, QApplication::UnicodeUTF8));
+        label_44->setText(QApplication::translate("ManageConnection", "use \\\\ instead of \\", 0, QApplication::UnicodeUTF8));
+        tabWidget->setTabText(tabWidget->indexOf(tabLinux), QApplication::translate("ManageConnection", "OS", 0, QApplication::UnicodeUTF8));
         groupBox_15->setTitle(QApplication::translate("ManageConnection", "Connect:", 0, QApplication::UnicodeUTF8));
         label_34->setText(QApplication::translate("ManageConnection", "Before connect:", 0, QApplication::UnicodeUTF8));
         label_35->setText(QApplication::translate("ManageConnection", "After connect:", 0, QApplication::UnicodeUTF8));
@@ -1257,7 +1462,7 @@ public:
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">At least 5000 ms delay is recommended. Otherwise the after connect skript maybe didn't has a working connection.</span></p></body></html>", 0, QApplication::UnicodeUTF8));
 #endif // QT_NO_TOOLTIP
         label_37->setText(QApplication::translate("ManageConnection", "ms", 0, QApplication::UnicodeUTF8));
-        tbSettings->setItemText(tbSettings->indexOf(page_2), QApplication::translate("ManageConnection", "Scripts", 0, QApplication::UnicodeUTF8));
+        tabWidget->setTabText(tabWidget->indexOf(tabScripts), QApplication::translate("ManageConnection", "Scripts", 0, QApplication::UnicodeUTF8));
         groupBox_8->setTitle(QApplication::translate("ManageConnection", "Advanced:", 0, QApplication::UnicodeUTF8));
         label_18->setText(QApplication::translate("ManageConnection", "Mute:", 0, QApplication::UnicodeUTF8));
         label_22->setText(QApplication::translate("ManageConnection", "Route delay:", 0, QApplication::UnicodeUTF8));
@@ -1272,14 +1477,27 @@ public:
         cbHTTPRetry->setText(QString());
         label_29->setText(QApplication::translate("ManageConnection", "Proxy IP:", 0, QApplication::UnicodeUTF8));
         label_30->setText(QApplication::translate("ManageConnection", "Proxy port:", 0, QApplication::UnicodeUTF8));
+        cmbProxyAuth->clear();
+        cmbProxyAuth->insertItems(0, QStringList()
+         << QApplication::translate("ManageConnection", "None", 0, QApplication::UnicodeUTF8)
+         << QApplication::translate("ManageConnection", "Stdin", 0, QApplication::UnicodeUTF8)
+         << QApplication::translate("ManageConnection", "Auto", 0, QApplication::UnicodeUTF8)
+         << QApplication::translate("ManageConnection", "Auto-nct", 0, QApplication::UnicodeUTF8)
+        );
+        cmbAuthMethod->clear();
+        cmbAuthMethod->insertItems(0, QStringList()
+         << QApplication::translate("ManageConnection", "None", 0, QApplication::UnicodeUTF8)
+         << QApplication::translate("ManageConnection", "Basic", 0, QApplication::UnicodeUTF8)
+         << QApplication::translate("ManageConnection", "Ntlm", 0, QApplication::UnicodeUTF8)
+        );
+        label_43->setText(QApplication::translate("ManageConnection", "Auth:", 0, QApplication::UnicodeUTF8));
+        label_45->setText(QApplication::translate("ManageConnection", "Method:", 0, QApplication::UnicodeUTF8));
         groupBox_12->setTitle(QApplication::translate("ManageConnection", "Wireless:", 0, QApplication::UnicodeUTF8));
         label_31->setText(QApplication::translate("ManageConnection", "Mute replay warnings:", 0, QApplication::UnicodeUTF8));
         cbMuteWirelessWarning->setText(QString());
         groupBox_13->setTitle(QApplication::translate("ManageConnection", "Ciphers:", 0, QApplication::UnicodeUTF8));
         label_32->setText(QApplication::translate("ManageConnection", "Chipher:", 0, QApplication::UnicodeUTF8));
-        tbSettings->setItemText(tbSettings->indexOf(page_4), QApplication::translate("ManageConnection", "Advanced", 0, QApplication::UnicodeUTF8));
-        label_41->setText(QString());
-        cmdSave->setText(QApplication::translate("ManageConnection", "     &OK", 0, QApplication::UnicodeUTF8));
+        tabWidget->setTabText(tabWidget->indexOf(tabAdv), QApplication::translate("ManageConnection", "Advanced", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
 };

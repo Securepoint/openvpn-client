@@ -1,21 +1,18 @@
 #ifndef APPFUNC_H
 #define APPFUNC_H
 
-#include <QObject>
 #include <QtCore>
 #include <QtGui>
 
 class AppFunc : public QObject
 {
-public:
-    static AppFunc *getInstance ();
-    bool isAppPortable ();
-    QString getOS ();
-    QString getAppSavePath ();
+public:    
+    static bool isAppPortable ();
+    static QString getOS ();
+    static QString getAppSavePath ();
 
 private:
-    AppFunc();
-    static AppFunc *mInst;
+    AppFunc();    
 };
 
 #endif // APPFUNC_H

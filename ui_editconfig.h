@@ -1,8 +1,8 @@
 /********************************************************************************
 ** Form generated from reading UI file 'editconfig.ui'
 **
-** Created: Mon 22. Nov 15:04:36 2010
-**      by: Qt User Interface Compiler version 4.7.0
+** Created: Thu 12. Jan 13:39:29 2012
+**      by: Qt User Interface Compiler version 4.7.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -35,6 +35,7 @@ public:
     {
         if (EditConfig->objectName().isEmpty())
             EditConfig->setObjectName(QString::fromUtf8("EditConfig"));
+        EditConfig->setWindowModality(Qt::ApplicationModal);
         EditConfig->resize(590, 420);
         EditConfig->setMaximumSize(QSize(590, 420));
         QIcon icon;

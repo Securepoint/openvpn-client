@@ -3,20 +3,19 @@
 
 #include <QtCore>
 
-// Singleton
-
 class Crypt
 {
-public:
-    static Crypt *getInstance ();
-    void setSecretKey (QString key);
-    QString cryptPlainText (const QString &plain);
-    QString cryptToPlainText (const QString &cyrpt);
-
-private:
-    static Crypt *mInst;
+public:    
     Crypt();
-    QString secretKey;
+    ~Crypt ();
+    void setSecretKey (const QString &key);    
+
+    QByteArray cryptPlainTextExt (const QByteArray &plain);
+    QByteArray cryptToPlainTextExt (const QByteArray &crypt);
+
+private:    
+    QString secretKey;        
+    QStringList magicsKey();
 };
 
 #endif // CRYPT_H

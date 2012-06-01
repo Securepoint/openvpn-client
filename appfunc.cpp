@@ -1,19 +1,11 @@
 #include "appfunc.h"
 #include "settings.h"
 
-AppFunc *AppFunc::mInst = NULL;
-
-AppFunc *AppFunc::getInstance() {
-    if (!mInst)
-        mInst = new AppFunc ();
-    return mInst;
-}
-
 AppFunc::AppFunc()
 {
 }
 
-bool AppFunc::isAppPortable() {    
+bool AppFunc::isAppPortable() {
     // Die Dienstanwendung darf nur als Setupversion sein.
     // Wegen dem Dienst, könnte eine Portabel Verwirrung
     // beim dem Benutzer stiften ;)
@@ -21,27 +13,27 @@ bool AppFunc::isAppPortable() {
 }
 
 QString AppFunc::getOS() {
-    #ifdef Q_OS_WIN32
-       return "WIN";
-    #elif Q_OS_Unix
+#ifdef Q_OS_WIN32
+    return QLatin1String("WIN");
+#elif Q_OS_Unix
        return "UNIX";
     #elif Q_OS_Mac
        return "MAC";
-    #endif
+#endif
 }
 
 QString AppFunc::getAppSavePath() {
     // Gibt das Configverzeichnis zurück
     // Dieses ist standardmäßig in User/Appdata/
-    QString retVal = QString(getenv("APPDATA")) + QString("/Securepoint SSL VPN");
-    #ifdef Q_OS_WIN32
-        if (this->isAppPortable())
+    QString retVal (QLatin1String(getenv("APPDATA")) + QLatin1String("/Securepoint SSL VPN"));
+#ifdef Q_OS_WIN32
+        if (isAppPortable())
             retVal = QApplication::applicationDirPath();
-    #elif Q_OS_Unix
+#elif Q_OS_Unix
          // Unix Code
     #elif Q_OS_Mac
        // Mac code
-    #endif
+#endif
 
     return retVal;
 }

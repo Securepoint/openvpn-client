@@ -10,18 +10,15 @@ namespace Ui {
 
 class EditConfig : public QDialog {
     Q_OBJECT
-public:
-    static EditConfig *getInstance ();
-    void setPath (QString path);
+public:    
+    EditConfig(const QString &path);
 
 protected:
     void changeEvent(QEvent *e);
     void showEvent (QShowEvent *e);
 
 private:
-    Ui::EditConfig *m_ui;
-    EditConfig();
-    static EditConfig *mInst;
+    Ui::EditConfig *m_ui;        
     QString path;
     QString getContent ();
 

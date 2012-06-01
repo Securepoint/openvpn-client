@@ -4,7 +4,7 @@
 #include <QtGui>
 #include <QShowEvent>
 
-#include "Configs.h"
+#include "configs.h"
 
 namespace Ui {
     class RenameConfig;
@@ -14,8 +14,8 @@ class RenameConfig : public QDialog {
     Q_OBJECT
 public:
     static RenameConfig *getInstance ();
-    void setOldName (QString oldname);
-    void setFullPath (QString path);
+    void setOldName (const QString &oldname);
+    void setFullPath (const QString &path);
 
 protected:
     void changeEvent(QEvent *e);

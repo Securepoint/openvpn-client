@@ -33,10 +33,6 @@
         <file>images/save.png</file>
         <file>images/logstartstop.png</file>
         <file>images/system-log-out.png</file>
-        <file>images/inaktiv.png</file>
-        <file>images/disconnected.png</file>
-        <file>images/connected.png</file>
-        <file>images/connecting.png</file>
         <file>images/view-fullscreen.png</file>
         <file>images/but_inaktiv.png</file>
         <file>images/banner_sml.png</file>
@@ -54,5 +50,18 @@
         <file>images/status.png</file>
         <file>images/delete.png</file>
         <file>images/crypted.png</file>
+        <file>images/releasestart.png</file>
+        <file>images/setstart.png</file>
+        <file>images/state/connect-connecting.png</file>
+        <file>images/state/connect-connecting-error.png</file>
+        <file>images/state/connected.png</file>
+        <file>images/state/connected-error.png</file>
+        <file>images/state/connecting.png</file>
+        <file>images/state/error.png</file>
+        <file>images/state/error-connecting.png</file>
+        <file>images/state/idle.png</file>
+        <file>images/list-remove.png</file>
+        <file>openvpncl.ico</file>
+        <file>images/banner_neu_sml.png</file>
     </qresource>
 </RCC>

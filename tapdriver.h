@@ -9,7 +9,7 @@ class TapDriver: public QObject
     Q_OBJECT
 
 public:
-    static TapDriver *getInstance ();
+    static TapDriver *instance ();
     bool isTapDriverInstalled ();
     bool installTapDriver ();
     bool removeTapDriver ();
@@ -17,9 +17,11 @@ public:
 private:
     static TapDriver *mInst;
     TapDriver();
-    QProcess *drvProc;
-    QProcess *drvInstallProc;
-    QProcess *drvRemoveProc;
+
+    QProcess drvProc;
+    QProcess drvInstallProc;
+    QProcess drvRemoveProc;
+
     void checkTapDriver ();
     bool tapDriverAvailable;
     bool tapDriverInstalledSuccess;
@@ -27,8 +29,6 @@ private:
 
 private slots:
     void readDriverData ();
-    void readDriverInstallData ();
-    void readDriverRemoveData ();
 };
 
 #endif // TAPDRIVER_H

@@ -1,9 +1,14 @@
 #include "proxysettings.h"
 #include "ui_proxysettings.h"
 
+#include "message.h"
+#include "preferences.h"
+#include "settings.h"
+
 ProxySettings *ProxySettings::mInst = NULL;
 
-ProxySettings *ProxySettings::getInstance() {
+ProxySettings *ProxySettings::getInstance()
+{
     if (!mInst)
         mInst = new ProxySettings ();
     return mInst;
@@ -14,29 +19,48 @@ ProxySettings::ProxySettings() :
     m_ui(new Ui::ProxySettings)
 {
     m_ui->setupUi(this);
-    this->setWindowFlags(Qt::WindowCloseButtonHint | Qt::WindowStaysOnTopHint);
+    this->setWindowFlags(Qt::WindowCloseButtonHint);
 }
 
-void ProxySettings::showEvent(QShowEvent *e) {
+void ProxySettings::showEvent(QShowEvent *e)
+{
+
+    int winW = this->width();
+    int winH = this->height();
+
+    int left (0);
+    if (Preferences::instance()->isVisible()) {
+        // Wenn das Hauptfenster offen ist mittig über diesem plazieren
+        left = Preferences::instance()->geometry().x();
+        left = left + (Preferences::instance()->geometry().width() - winW) / 2;
+    } else {
+        // Desktop auswerten
+        left = qApp->desktop()->width();
+        // Die Breite bei virtuellen Desktops vierteln
+        if (left > 2000 && qApp->desktop()->isVirtualDesktop()) {
+            left /= 4;
+        }
+    }
+    // Nun die neuen setzen
+    this->setGeometry(left, (qApp->desktop()->height() / 2) - (winH / 2), winW, winH);
+
     m_ui->rbHttpProxy->setEnabled(false);
     m_ui->rbSocksProxy->setEnabled(false);
     m_ui->txtProxyIP->setEnabled(false);
     m_ui->txtProxyPort->setEnabled(false);
 
-    QFile pINI (QApplication::applicationDirPath() + QString("/proxy.ini"));
+    QFile pINI (Settings::getInstance()->getProxyIniPath());
     if (!pINI.exists()) {
-        QMessageBox msgBox;
-        msgBox.setWindowTitle(tr("Securepoint SSL VPN"));
-        msgBox.setText(tr("Proxy Settings"));
-        msgBox.setWindowIcon(QIcon(":/images/logo.png"));
-        msgBox.setInformativeText(tr("No proxy config available!"));
-        msgBox.setStandardButtons(QMessageBox::Ok);
-        msgBox.setDefaultButton(QMessageBox::Ok);
-        msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
-        msgBox.exec();        
-        this->setEnabled(false);
+        //Message::error(QObject::tr("No proxy config available!"), QObject::tr("Proxy Settings"));
+        m_ui->rbUseConfig->setChecked(true);
+        m_ui->rbUseIE->setEnabled(true);
+        m_ui->rbUseManual->setEnabled(true);
+        m_ui->rbHttpProxy->setEnabled(false);
+        m_ui->rbSocksProxy->setEnabled(false);
+        m_ui->txtProxyIP->setEnabled(false);
+        m_ui->txtProxyPort->setEnabled(false);
     } else {
-        QSettings proxIni (QApplication::applicationDirPath() + QString("/proxy.ini"), QSettings::IniFormat);
+        QSettings proxIni (Settings::getInstance()->getProxyIniPath(), QSettings::IniFormat);
         if (proxIni.value("proxy-use","").toString() == "CONFIG") {
             m_ui->rbUseConfig->setChecked(true);
         } else if (proxIni.value("proxy-use","").toString() == "IE") {
@@ -59,13 +83,7 @@ void ProxySettings::showEvent(QShowEvent *e) {
         #ifdef Q_OS_WIN32
             m_ui->rbUseIE->setEnabled(true);
         #endif
-        // Mittig ausrichten
-        int screenH = qApp->desktop()->height();
-        int screenW = qApp->desktop()->width();
-        int winH = 350;
-        int winW = 300;
-        // Nun die neuen setzen
-        this->setGeometry((screenW / 2) - (winW / 2), (screenH / 2) - (winH / 2), winW, winH);
+
         // Öffnen
         e->accept();
         this->setWindowState(Qt::WindowActive);
@@ -95,21 +113,8 @@ void ProxySettings::on_cmdClose_clicked()
 }
 
 void ProxySettings::on_cmdSave_clicked()
-{
-    QFile pINI (QApplication::applicationDirPath() + QString("/proxy.ini"));
-    if (!pINI.exists()) {
-        QMessageBox msgBox;
-        msgBox.setWindowTitle(tr("Securepoint SSL VPN"));
-        msgBox.setText(tr("Proxy Settings"));
-        msgBox.setWindowIcon(QIcon(":/images/logo.png"));
-        msgBox.setInformativeText(tr("No proxy config available!"));
-        msgBox.setStandardButtons(QMessageBox::Ok);
-        msgBox.setDefaultButton(QMessageBox::Ok);
-        msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
-        msgBox.exec();
-        return;
-    }
-    QSettings proxIni (QApplication::applicationDirPath() + QString("/proxy.ini"), QSettings::IniFormat);
+{    
+    QSettings proxIni (Settings::getInstance()->getProxyIniPath(), QSettings::IniFormat);
     if (m_ui->rbUseConfig->isChecked()) {
         proxIni.setValue("proxy-use", "CONFIG");
     } else if (m_ui->rbUseIE->isChecked()) {

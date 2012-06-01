@@ -2,24 +2,27 @@
 <ui version="4.0">
  <class>ConfigExport</class>
  <widget class="QDialog" name="ConfigExport">
+  <property name="windowModality">
+   <enum>Qt::ApplicationModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>270</width>
-    <height>211</height>
+    <height>200</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>270</width>
-    <height>210</height>
+    <height>200</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>272</width>
-    <height>211</height>
+    <height>200</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -29,6 +32,9 @@
    <iconset resource="systray.qrc">
     <normaloff>:/images/logo.png</normaloff>:/images/logo.png</iconset>
   </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
   <property name="modal">
    <bool>true</bool>
   </property>
@@ -36,7 +42,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>0</y>
+     <y>4</y>
      <width>251</width>
      <height>81</height>
     </rect>
@@ -60,9 +66,9 @@
    <widget class="QLineEdit" name="txtExportPwd">
     <property name="geometry">
      <rect>
-      <x>66</x>
+      <x>76</x>
       <y>46</y>
-      <width>171</width>
+      <width>161</width>
       <height>20</height>
      </rect>
     </property>
@@ -76,9 +82,9 @@
     <property name="geometry">
      <rect>
       <x>12</x>
-      <y>24</y>
-      <width>46</width>
-      <height>14</height>
+      <y>22</y>
+      <width>61</width>
+      <height>16</height>
      </rect>
     </property>
     <property name="text">
@@ -88,16 +94,17 @@
    <widget class="QLineEdit" name="txtSaveTo">
     <property name="geometry">
      <rect>
-      <x>67</x>
+      <x>77</x>
       <y>19</y>
-      <width>151</width>
+      <width>141</width>
       <height>20</height>
      </rect>
     </property>
     <property name="styleSheet">
      <string notr="true">:enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}
 :disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}
-:hover {border: 1px solid red; }</string>
+:hover {border: 1px solid red; }
+QLineEdit {border-radius: 3px;}</string>
     </property>
    </widget>
    <widget class="QPushButton" name="cmdOpenDir">
@@ -112,7 +119,8 @@
     <property name="styleSheet">
      <string notr="true">:enabled {border: 1px solid black}
 :disabled {border: 1px solid black}
-:hover {background-color: rgb(195, 195, 195);}</string>
+:hover {background-color: rgb(195, 195, 195);}
+QPushButton {border-radius: 3px;}</string>
     </property>
     <property name="text">
      <string>...</string>
@@ -125,14 +133,15 @@
      <x>10</x>
      <y>90</y>
      <width>251</width>
-     <height>71</height>
+     <height>61</height>
     </rect>
    </property>
    <property name="contextMenuPolicy">
     <enum>Qt::NoContextMenu</enum>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: rgb(197, 197, 197);</string>
+    <string notr="true">
+background-color: rgb(255, 170, 0);</string>
    </property>
    <property name="frameShape">
     <enum>QFrame::Box</enum>
@@ -152,7 +161,7 @@
    <property name="geometry">
     <rect>
      <x>50</x>
-     <y>170</y>
+     <y>159</y>
      <width>100</width>
      <height>33</height>
     </rect>
@@ -162,9 +171,11 @@
 :disabled {border: 1px solid black}
 :hover {background-color: rgb(195, 195, 195);}
 QPushButton {height: 25px; width: 50px;text-align:left;
+border-radius: 3px;
 	padding-left: 10px;
 	padding-top: 3px;
-	padding-bottom: 3px;}</string>
+	padding-bottom: 3px;}
+</string>
    </property>
    <property name="text">
     <string>     E&amp;xport</string>
@@ -190,7 +201,7 @@ QPushButton {height: 25px; width: 50px;text-align:left;
    <property name="geometry">
     <rect>
      <x>160</x>
-     <y>170</y>
+     <y>159</y>
      <width>100</width>
      <height>33</height>
     </rect>
@@ -200,6 +211,7 @@ QPushButton {height: 25px; width: 50px;text-align:left;
 :disabled {border: 1px solid black}
 :hover {background-color: rgb(195, 195, 195);}
 QPushButton {height: 25px; width: 50px;text-align:left;
+border-radius: 3px;
 	padding-left: 10px;
 	padding-top: 3px;
 	padding-bottom: 3px;}</string>
