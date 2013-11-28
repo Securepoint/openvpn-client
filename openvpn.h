@@ -12,13 +12,14 @@
 #include "vpnlog.h"
 #include "settings.h"
 #include "qthreadexec.h"
+#include "database.h"
 
 class OpenVpn : public QObject
 {
     Q_OBJECT
 
 public:
-    OpenVpn();
+    OpenVpn(Database *database);
     virtual ~OpenVpn() {}
 
     //Methoden
@@ -37,11 +38,10 @@ public:
     void setObjectToConnected ();
     void connectToVpn (bool openLog=false);
     void setConnectedIP (const QString &ip);
-    void setIsConnected (bool flag);
+    void setIsConnected (bool flag);    
     void setIsError (bool flag);
     void setErrorString (const QString &errMes);
-    void setIsConnecting (bool flag);
-    void setAdvName (const QString &name);    
+    void setIsConnecting (bool flag);    
     void setConnectedSinceTime (const QTime &since);
     void setConnectedSinceDate (const QDate &since);
     void enableAllMenus ();
@@ -62,20 +62,21 @@ public:
 
     QString getConfigFullPath () const;
     QString getConfigPath () const;
+    QString getConfigDirectory () const;
     QString getConfigName () const;
     bool isConnectionStable () const;
-    bool isConfigLinked () const;
 
     void setConfigName (const QString &name);
     void setConfigPath (const QString &path);
 
-    void setConfigLinked (const bool &flag);
     void setConfigStable (const bool &flag);
 
-    QStringList makeProxyString ();
+    QStringList makeProxyString ();    
 
-    void setDelay (const bool &flag);
-    bool isDelayed () const;
+    bool isStartConfig () const;
+    void setStartConfig (bool flag);
+
+    Database *db;
 
 private slots:
     void showProcessError (QProcess::ProcessError error);
@@ -105,7 +106,7 @@ private:
 
     bool onDisconnect;
     bool onConnect;
-    bool errorHasOccurred;
+    bool errorHasOccurred;    
 
     QString errMessage;
 
@@ -119,8 +120,7 @@ private:
 
     QList<QAction*> menuChildList;
 
-    QString connectionIP;
-    QString advName;    
+    QString connectionIP;    
 
     QDate connectedSinceDate;
     QTime connectedSinceTime;
@@ -130,8 +130,7 @@ private:
     QString configPath;
     QString configPwd;
     QString configUser;
-    bool connectionStable;
-    bool isLinked;
+    bool connectionStable;    
     bool runAsService;
 
     volatile bool waitForCryptKey;
@@ -142,6 +141,7 @@ private:
     void userDataIsNeeded (int type);
 
     bool delayed;
+    bool isStartConfigValue;
 
 signals:
     void configSignalIsChanged ();

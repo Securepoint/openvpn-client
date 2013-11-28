@@ -9,7 +9,6 @@ INPUT(
 ./debug\service.o
 ./debug\srvcli.o
 ./debug\tapdriver.o
-./debug\check64.o
 ./debug\qtservice.o
 ./debug\qtservice_win.o
 ./debug\moc_openvpn.o

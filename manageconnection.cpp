@@ -69,11 +69,35 @@ void ManageConnection::showEvent(QShowEvent *e) {
     int winW = this->width();
     int winH = this->height();
 
-    int left = Preferences::instance()->geometry().x();
-    left = left + (Preferences::instance()->geometry().width() - winW) / 2;
-
+    int left (0);
+    int top (0);
+    if (Preferences::instance()->isVisible()) {
+        // Wenn das Hauptfenster offen ist mittig über diesem plazieren
+        left = Preferences::instance()->geometry().x();
+        top = Preferences::instance()->geometry().y();
+        left = left + (Preferences::instance()->geometry().width() - winW) / 2;
+        //
+        top  = top + (Preferences::instance()->geometry().height() - winH) / 2;
+    } else {
+        // Desktop auswerten
+        top = qApp->desktop()->height();
+        left = qApp->desktop()->width();
+        // Die Breite bei virtuellen Desktops vierteln
+        if (left > 2000 && qApp->desktop()->isVirtualDesktop()) {
+            left /= 4;
+        } else {
+            // Normaler Desktop
+            left = (left - winH) / 2;
+        }
+        // Height
+        if (top > 2000 && qApp->desktop()->isVirtualDesktop()) {
+            top /= 4;
+        } else {
+            top = (top - winH) / 2;
+        }
+    }
     // Nun die neuen setzen
-    this->setGeometry(left, (qApp->desktop()->height() / 2) - (winH / 2), winW, winH);
+    this->setGeometry(left, top, winW, winH);
     // Öffnen
     e->accept();
     this->setWindowState(Qt::WindowActive);
@@ -271,7 +295,7 @@ void ManageConnection::resetFields() {
 
 void ManageConnection::fillFieldFromConfig() {
     // Load Config Data    
-    QString cFile (this->configObj->getConfigPath() + QLatin1String("/") + this->configObj->getConfigName() + QLatin1String(".ovpn"));
+    QString cFile (this->configObj->getConfigPath());
     QFile cf (cFile);
 
     if (!cf.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -777,7 +801,7 @@ void ManageConnection::on_cmdSave_clicked()
 
     QStringList oldFields = this->getAllFieldWhichNotIntoTheInterface();
     // GUI auslesen und config speichern
-    QFile cf (this->configObj->getConfigPath() + QLatin1String("/") + this->configObj->getConfigName() + QLatin1String(".ovpn"));
+    QFile cf (this->configObj->getConfigPath());
 
     if (!cf.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
         Message::error(QObject::tr("Unable to open file!"), QObject::tr("Save Configuration"));
@@ -957,7 +981,7 @@ void ManageConnection::on_cmdSave_clicked()
     cf.close();
     // Scripts ablegen
     bool scriptDataWrite(false);
-    QFile sf (this->configObj->getConfigPath() + QLatin1String("/scripts.conf"));
+    QFile sf (this->configObj->getConfigDirectory() + QLatin1String("/scripts.conf"));
 
     if (!sf.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
         Message::error(QObject::tr("Unable to open file!"), QObject::tr("Save scripts"));
@@ -1013,7 +1037,7 @@ void ManageConnection::on_cmdGetCAPath_clicked()
         int lastSlash = filename.lastIndexOf("/");
         QString filepath = filename.left(lastSlash);
         this->lastDir = filepath;
-        if (filepath.replace("\\", "/").toLower() == this->configObj->getConfigPath().replace("\\", "/").toLower())
+        if (filepath.replace("\\", "/").toLower() == this->configObj->getConfigDirectory().replace("\\", "/").toLower())
             ui->txtCA->setText(filename.right(filename.size() - lastSlash -1));
         else
             ui->txtCA->setText(filename);
@@ -1028,7 +1052,7 @@ void ManageConnection::on_cmdGetCertPath_clicked()
         int lastSlash = filename.lastIndexOf("/");
         QString filepath = filename.left(lastSlash);
         this->lastDir = filepath;
-        if (filepath.replace("\\", "/").toLower() == this->configObj->getConfigPath().replace("\\", "/").toLower())
+        if (filepath.replace("\\", "/").toLower() == this->configObj->getConfigDirectory().replace("\\", "/").toLower())
             ui->txtCert->setText(filename.right(filename.size() - lastSlash -1));
         else
             ui->txtCert->setText(filename);
@@ -1043,7 +1067,7 @@ void ManageConnection::on_cmdGetKeyPath_clicked()
         int lastSlash = filename.lastIndexOf("/");
         QString filepath (filename.left(lastSlash));
         this->lastDir = filepath;
-        if (filepath.replace("\\", "/").toLower() == this->configObj->getConfigPath().replace("\\", "/").toLower())
+        if (filepath.replace("\\", "/").toLower() == this->configObj->getConfigDirectory().replace("\\", "/").toLower())
             ui->txtKey->setText(filename.right(filename.size() - lastSlash -1));
         else
             ui->txtKey->setText(filename);
@@ -1053,7 +1077,7 @@ void ManageConnection::on_cmdGetKeyPath_clicked()
 void ManageConnection::on_cmdBeforeConnect_clicked()
 {
     QFileDialog keyFileDialog;
-    QString filename = keyFileDialog.getOpenFileName(this, QObject::tr("Find executeable files"), this->configObj->getConfigPath(), QObject::tr("All files (*.*)"));
+    QString filename = keyFileDialog.getOpenFileName(this, QObject::tr("Find executeable files"), this->configObj->getConfigDirectory(), QObject::tr("All files (*.*)"));
     if (!filename.isEmpty()) {
             ui->txtBeforeConnect->setText(filename);
     }
@@ -1062,7 +1086,7 @@ void ManageConnection::on_cmdBeforeConnect_clicked()
 void ManageConnection::on_cmdAfterConnect_clicked()
 {
     QFileDialog keyFileDialog;
-    QString filename = keyFileDialog.getOpenFileName(this, QObject::tr("Find executeable files"), this->configObj->getConfigPath(), QObject::tr("All files (*.*)"));
+    QString filename = keyFileDialog.getOpenFileName(this, QObject::tr("Find executeable files"), this->configObj->getConfigDirectory(), QObject::tr("All files (*.*)"));
     if (!filename.isEmpty()) {
             ui->txtAfterConnect->setText(filename);
     }
@@ -1071,7 +1095,7 @@ void ManageConnection::on_cmdAfterConnect_clicked()
 void ManageConnection::on_cmdBeforeDisconnect_clicked()
 {
     QFileDialog keyFileDialog;
-    QString filename = keyFileDialog.getOpenFileName(this, QObject::tr("Find executeable files"), this->configObj->getConfigPath(), QObject::tr("All files (*.*)"));
+    QString filename = keyFileDialog.getOpenFileName(this, QObject::tr("Find executeable files"), this->configObj->getConfigDirectory(), QObject::tr("All files (*.*)"));
     if (!filename.isEmpty()) {
             ui->txtBeforeDisconnect->setText(filename);
     }
@@ -1080,7 +1104,7 @@ void ManageConnection::on_cmdBeforeDisconnect_clicked()
 void ManageConnection::on_cmdAfterDisconnect_clicked()
 {
     QFileDialog keyFileDialog;
-    QString filename = keyFileDialog.getOpenFileName(this, QObject::tr("Find executeable files"), this->configObj->getConfigPath(), QObject::tr("All files (*.*)"));
+    QString filename = keyFileDialog.getOpenFileName(this, QObject::tr("Find executeable files"), this->configObj->getConfigDirectory(), QObject::tr("All files (*.*)"));
     if (!filename.isEmpty()) {
             ui->txtAfterDisconnect->setText(filename);
     }
@@ -1089,7 +1113,7 @@ void ManageConnection::on_cmdAfterDisconnect_clicked()
 void ManageConnection::on_cmdErrorConnect_clicked()
 {
     QFileDialog keyFileDialog;
-    QString filename = keyFileDialog.getOpenFileName(this, QObject::tr("Find executeable files"), this->configObj->getConfigPath(), QObject::tr("All files (*.*)"));
+    QString filename = keyFileDialog.getOpenFileName(this, QObject::tr("Find executeable files"), this->configObj->getConfigDirectory(), QObject::tr("All files (*.*)"));
     if (!filename.isEmpty()) {
             ui->txtErrorConnect->setText(filename);
     }
@@ -1100,7 +1124,7 @@ QStringList ManageConnection::getAllFieldWhichNotIntoTheInterface() {
     QStringList fieldsNotIncluded;
     QString cFile;
     fieldsNotIncluded.clear();
-    cFile = this->configObj->getConfigPath() + QLatin1String("/") + this->configObj->getConfigName() + QLatin1String(".ovpn");
+    cFile = this->configObj->getConfigPath();
     QFile cf (cFile);
 
     if (!cf.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -1202,7 +1226,7 @@ void ManageConnection::on_cmdGetPkcs12Path_clicked()
         int lastSlash = filename.lastIndexOf("/");
         QString filepath = filename.left(lastSlash);
         this->lastDir = filepath;
-        if (filepath.replace("\\", "/").toLower() == this->configObj->getConfigPath().replace("\\", "/").toLower())
+        if (filepath.replace("\\", "/").toLower() == this->configObj->getConfigDirectory().replace("\\", "/").toLower())
             ui->txtPkcs12Path->setText(filename.right(filename.size() - lastSlash -1));
         else
             ui->txtPkcs12Path->setText(filename);

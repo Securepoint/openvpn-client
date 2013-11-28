@@ -8,7 +8,7 @@
 
 #include "network/srvcli.h"
 
-FrmGetUserData::FrmGetUserData(InputType::UserInputType type, int id)
+FrmGetUserData::FrmGetUserData(InputType::UserInputType type, const QString &name, int id)
     : QDialog(),
       ui(new Ui::FrmGetUserData),
       dataAvail(false),
@@ -23,6 +23,8 @@ FrmGetUserData::FrmGetUserData(InputType::UserInputType type, int id)
     // 2 - OTP
     // 3 - PKCS12
     // 4 - Private Key für Crypted User Data
+
+    this->setWindowTitle(name + QLatin1String(": ") + this->windowTitle());
 
     ui->cbSaveData->setChecked(false);
     this->setWindowFlags(Qt::WindowCloseButtonHint);
@@ -52,7 +54,7 @@ void FrmGetUserData::receivedCloseMe()
 }
 
 void FrmGetUserData::closeEvent(QCloseEvent *e)
-{        
+{
     if (!force && !this->dataAvail) {
         // Default senden
         if (frmType == InputType::PrivateKey) {
@@ -101,7 +103,7 @@ void FrmGetUserData::closeEvent(QCloseEvent *e)
     e->accept();
 }
 
-void FrmGetUserData::showEvent(QShowEvent *e) {        
+void FrmGetUserData::showEvent(QShowEvent *e) {
     ui->txtDataField->setText("");
     if (this->frmType == InputType::Username) {
         ui->lblDescription->setText(QObject::tr("Username:"));
@@ -109,15 +111,15 @@ void FrmGetUserData::showEvent(QShowEvent *e) {
         ui->cbSaveData->setEnabled(true);
     } else if (this->frmType == InputType::Password) {
         ui->lblDescription->setText(QObject::tr("Password:"));
-        ui->txtDataField->setEchoMode(QLineEdit::Password);        
+        ui->txtDataField->setEchoMode(QLineEdit::Password);
         ui->cbSaveData->setEnabled(true);
     } else if (this->frmType == InputType::Otp) {
         ui->lblDescription->setText(QObject::tr("One Time Pad:"));
-        ui->txtDataField->setEchoMode(QLineEdit::Password);        
+        ui->txtDataField->setEchoMode(QLineEdit::Password);
         ui->cbSaveData->setEnabled(false);
     } else if (this->frmType == InputType::PrivateKey) {
         ui->lblDescription->setText(QObject::tr("Crypt Key:"));
-        ui->txtDataField->setEchoMode(QLineEdit::Password);        
+        ui->txtDataField->setEchoMode(QLineEdit::Password);
         ui->cbSaveData->setEnabled(false);
     } else if (this->frmType == InputType::HttpUsername) {
         ui->lblDescription->setText(QObject::tr("Http user:"));
@@ -129,7 +131,7 @@ void FrmGetUserData::showEvent(QShowEvent *e) {
         ui->cbSaveData->setEnabled(true);
     } else {
         ui->lblDescription->setText(QObject::tr("PKCS12:"));
-        ui->txtDataField->setEchoMode(QLineEdit::Password);        
+        ui->txtDataField->setEchoMode(QLineEdit::Password);
         ui->cbSaveData->setEnabled(true);
     }
 
@@ -137,20 +139,40 @@ void FrmGetUserData::showEvent(QShowEvent *e) {
     int winH = this->height();
 
     int left (0);
+    int top (0);
     if (Preferences::instance()->isVisible()) {
         // Wenn das Hauptfenster offen ist mittig über diesem plazieren
         left = Preferences::instance()->geometry().x();
+        top = Preferences::instance()->geometry().y();
         left = left + (Preferences::instance()->geometry().width() - winW) / 2;
+        //
+        top  = top + (Preferences::instance()->geometry().height() - winH) / 2;
     } else {
         // Desktop auswerten
+        top = qApp->desktop()->height();
         left = qApp->desktop()->width();
         // Die Breite bei virtuellen Desktops vierteln
         if (left > 2000 && qApp->desktop()->isVirtualDesktop()) {
             left /= 4;
+        } else {
+            // Normaler Desktop
+            left = (left - winH) / 2;
+        }
+        // Height
+        if (top > 2000 && qApp->desktop()->isVirtualDesktop()) {
+            top /= 4;
+        } else {
+            top = (top - winH) / 2;
         }
     }
     // Nun die neuen setzen
-    this->setGeometry(left, (qApp->desktop()->height() / 2) - (winH / 2), winW, winH);
+    this->setGeometry(left, top, winW, winH);
+
+    // Save data erlaubt?
+    if (Settings::getInstance()->disableSaveData()) {
+        ui->cbSaveData->setChecked(false);
+        ui->cbSaveData->setEnabled(false);
+    }
 
     // Öffnen
     e->accept();
@@ -159,12 +181,12 @@ void FrmGetUserData::showEvent(QShowEvent *e) {
 }
 
 void FrmGetUserData::on_cmdClose_clicked()
-{        
+{
     this->close();
 }
 
 void FrmGetUserData::on_cmdOK_clicked()
-{    
+{
     if (frmType == InputType::PrivateKey) {
         if (ui->txtDataField->text().isEmpty()) {
             Message::error(QObject::tr("It is not possible to use an empty private key!"), QObject::tr("Private Key"));

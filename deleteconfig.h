@@ -31,6 +31,9 @@ private:
     QString getKeyFromConfig ();
     QString explorerPath;
 
+    void removeDatabaseEntry ();
+    void removeFiles ();
+
 private slots:
     void on_cmdDelete_clicked();
     void on_cmdCancel_clicked();

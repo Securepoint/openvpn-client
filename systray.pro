@@ -1,3 +1,5 @@
+TARGET = Spvpncl
+
 HEADERS = configs.h \
     openvpn.h \
     preferences.h \
@@ -10,7 +12,7 @@ HEADERS = configs.h \
     servicelog.h \
     treebutton.h \
     treeconitem.h \
-    frmgetuserdata.h \    
+    frmgetuserdata.h \
     settings.h \
     proxysettings.h \
     wizard/wiz_startpage.h \
@@ -42,7 +44,13 @@ HEADERS = configs.h \
     qthreadexec.h \
     zip.h \
     crypt.h \
-    frmsaveddata.h
+    frmsaveddata.h \
+    database.h \
+    update/parsexml.h \
+    update/checkupdate.h \
+    update/checkinfo.h \
+    frmupdatesettings.h \
+    netmanager.h
 SOURCES = main.cpp \
     configs.cpp \
     openvpn.cpp \
@@ -52,11 +60,11 @@ SOURCES = main.cpp \
     appinfo.cpp \
     tapdriver.cpp \
     single_application.cpp \
-    vpnlog.cpp \    
+    vpnlog.cpp \
     servicelog.cpp \
     treeconitem.cpp \
     treebutton.cpp \
-    frmgetuserdata.cpp \    
+    frmgetuserdata.cpp \
     settings.cpp \
     proxysettings.cpp \
     wizard/wiz_vpnwizard.cpp \
@@ -85,7 +93,13 @@ SOURCES = main.cpp \
     network/srvcli.cpp \
     zip.cpp \
     crypt.cpp \
-    frmsaveddata.cpp
+    frmsaveddata.cpp \
+    database.cpp \
+    update/parsexml.cpp \
+    update/checkupdate.cpp \
+    update/checkinfo.cpp \
+    frmupdatesettings.cpp \
+    netmanager.cpp
 
 win32::INCLUDEPATH += "quazip/zlib-1.2.5" \
                       "qca/include/QtCrypto"
@@ -96,9 +110,7 @@ win32::LIBS += "quazip/libquazip.a" \
 include("qca/crypto.prf")
 
 RESOURCES = systray.qrc
-QT += xml \
-    svg \
-    network
+QT += xml svg network sql
 
 # install
 target.path = $$[QT_INSTALL_EXAMPLES]/desktop/systray
@@ -112,12 +124,7 @@ sources.files = $$SOURCES \
 sources.path = $$[QT_INSTALL_EXAMPLES]/desktop/systray
 INSTALLS += target \
     sources
-wince* { 
-    CONFIG(debug, release|debug):addPlugins.sources = $$QT_BUILD_TREE/plugins/imageformats/qsvgd4.dll
-    CONFIG(release, release|debug):addPlugins.sources = $$QT_BUILD_TREE/plugins/imageformats/qsvg4.dll
-    addPlugins.path = imageformats
-    DEPLOYMENT += addPlugins
-}
+
 FORMS += preferences.ui \
     appinfo.ui \
     vpnlog.ui \
@@ -136,9 +143,24 @@ FORMS += preferences.ui \
     configexport.ui \
     importconfig.ui \
     manageconnection.ui \
-    frmsaveddata.ui
+    frmsaveddata.ui \
+    frmupdatesettings.ui
+
 RC_FILE = myapp.rc
 TRANSLATIONS = SpSSLVpn_ger.ts
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

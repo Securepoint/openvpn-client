@@ -184,6 +184,21 @@ void SslServerConnection::slotStartRead()
             QString cType (fields.at(1));            
             emit needUserInput(cId.toInt(), cType.toInt());
         }
+    } else if (command == QLatin1String("STATUS")) {
+        // Verbindungstatus wurde gesendet
+        // Aufbau Param: id;connected[0,1];connecting[0,1]
+        QStringList fields (params.split(";"));
+        if (fields.size() == 5) {
+            // Genug Felder da
+            int cId (fields.at(0).toInt());
+            bool cConnected ((fields.at(1) == QLatin1String("1") ? true : false));
+            bool cConnecting ((fields.at(2) == QLatin1String("1") ? true : false));
+            int cLastAction (fields.at(3).toInt());
+            QString cIp (fields.at(4));
+
+            emit receivedStatus(cId, cConnected, cConnecting, cLastAction, cIp);
+
+        }
     } else if (command == QLatin1String("DUMMY")) {
         // Test Kommando für die Service abfrage
         emit receivedDummy();

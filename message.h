@@ -6,8 +6,8 @@
 
 class Message
 {
-public:    
-    static bool confirm (const QString &message, const QString &title = QObject::tr("Please confirm"));
+public:
+    static bool confirm (const QString &message, const QString &title = QObject::tr("Please confirm"), bool onTop = false);
     static void error (const QString &message, const QString &title = QObject::tr("An error occurred"));
     static void warning (const QString &message, const QString &tile = QObject::tr("User information"));
     static void information (const QString &message, const QString &tile = QObject::tr("User information"));

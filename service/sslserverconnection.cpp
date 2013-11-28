@@ -7,7 +7,7 @@
 #include "srvcli.h"
 #include "tapdriver.h"
 
-// We need in the next 10000 year no new one ;D
+// We need in the next 10000 years no new one ;D
 quint64 SslServerConnection::internalId = 0;
 
 // OpenVPN alive list
@@ -149,7 +149,6 @@ void SslServerConnection::slotStartRead()
 
     //
     Debug::log(QLatin1String("Command: ") + command);
-    Debug::log(QLatin1String("Params: ") + params);
     //
 
     command = command.trimmed().toUpper();
@@ -171,12 +170,21 @@ void SslServerConnection::slotStartRead()
                 Debug::log(QLatin1String("Open: No valid item. Build new one"));
             } else {
                 // Objekt ist schon in der Liste, nicht gut = Fehler
-                this->removeItemFromList(fields.at(0).toInt());
                 Debug::error(QLatin1String("Open: Object is already in list. Id: ") + fields.at(0));
-                //SrvCLI::instance()->send(fields.at(0) + QLatin1String(";") + QLatin1String("Object is already in list."), QLatin1String("ERROR"));
-                Debug::log(QLatin1String("Remove item from list: Id: ") + fields.at(0));
-                Sleep(150);
+                // Wenn es nicht connected oder connting status hat, löschen und ein neues anlegen
+                if (item->isConnectionStable() || item->isConnecting()) {
+                    Debug::log(QLatin1String("Connecting or Connection is stable"));
+                    // Nur den Status an den Client senden
+                    item->sendStatus();
+                    return;
+                }
+
+                // Item ist nicht verbunden oder verbindet sich gerade auch nicht
+                // Deswegen wird das Objekt geklöscht und ein neues angelegt
+                this->removeItemFromList(item->id());
             }
+
+            Debug::log(QLatin1String("Build new object"));
 
             // Alls ok, wir bauen us ein neues Objekt
             OpenVpn *sslVpn = new OpenVpn ();
@@ -185,7 +193,7 @@ void SslServerConnection::slotStartRead()
             QString configName = fields.at(1).right(fields.at(1).size() - fields.at(1).lastIndexOf("/") - 1);
             configName = configName.left(configName.size() - 5);
             sslVpn->setConfigPath(configPath);
-            sslVpn->setConfigName(configName);            
+            sslVpn->setConfigName(configName);
             sslVpn->setUseInteract(fields.at(2));
             sslVpn->setProxyString(fields.at(3));
             sslVpn->setId(configId);
@@ -207,7 +215,7 @@ void SslServerConnection::slotStartRead()
             // Nun das OpenVpn verbinden
             Debug::log(QLatin1String("Start connection"));
 
-            SrvCLI::instance()->send(QString("%2;Try to start OpenVPN connection %1").arg(configName).arg(configId), QLatin1String("LOG"));
+            SrvCLI::instance()->send(QString("%2;Try to start OpenVPN connection %1 \n").arg(configName).arg(configId), QLatin1String("LOG"));
             // Ohne Verzögerung den connect aufrufen
             sslVpn->connectToVpn();
             //
@@ -232,7 +240,7 @@ void SslServerConnection::slotStartRead()
         // Disconnect triggern
         item->disconnectVpn();
 
-    } else if (command == QLatin1String("GETSTATUS")) {
+    } else if (command == QLatin1String("STATUS")) {
 
         if (params.isEmpty()) {
             return;
@@ -242,7 +250,6 @@ void SslServerConnection::slotStartRead()
         Q_ASSERT(item);
 
         if (!item) {
-            Debug::error(QLatin1String("GET STATUS: No valid item."));
             return;
         }
 

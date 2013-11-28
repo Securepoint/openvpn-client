@@ -27,7 +27,7 @@ void EndPage::changeEvent(QEvent *e)
 
 void EndPage::initializePage()
 {
-    m_ui->gbEndPage->setTitle(QString(QObject::tr("Data of new config: ")).append(field(QLatin1String("txtConfigName")).toString()));
+    m_ui->gbEndPage->setTitle(QString(QObject::tr("Data of new config:") + QLatin1String(" ")).append(field(QLatin1String("txtConfigName")).toString()));
     m_ui->lblRemoteIP->setText(field(QLatin1String("txtRemoteIP")).toString());
     m_ui->lblRemotePort->setText(field(QLatin1String("txtRemotePort")).toString());
     if (field(QLatin1String("txtRemoteProtocol")).toInt() == 0) {

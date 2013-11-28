@@ -8,6 +8,10 @@
 // Settings Singleton
 #include "settings.h"
 #include "message.h"
+#include <debug.h>
+#include <appfunc.h>
+
+#include <QtSql>
 
 int main(int argc, char *argv[])
 {
@@ -28,20 +32,16 @@ int main(int argc, char *argv[])
 
 
     // Plugins laden
-    app.addLibraryPath(app.applicationDirPath() + QDir::separator() + QLatin1String("plugins"));
+    app.addLibraryPath(app.applicationDirPath() + QLatin1String("/plugins"));
 
     // RC 4: Einstellungen werden aus einer config gelesen
     //
     Settings::getInstance();
     Settings::getInstance()->refresh();
-
+    Debug::enableDebugging(false);
     // Commandline Parameter übergeben
     for (int x = 0; x < argc; x++) {
-        if (0 == strcmp (argv[x], "-start") && x + 1 < argc) {
-            // Config starten
-            Settings::getInstance()->setIsStartCommandConfig(true);
-            Settings::getInstance()->setCommandConfigPath(argv[x + 1]);
-        } else if (0 == strcmp(argv[x], "-noService")) {
+        if (0 == strcmp(argv[x], "-noService")) {
             // Es soll kein Dienst verwendet werden
             Settings::getInstance()->setIsRunAsService(false);
         } else if (0 == strcmp(argv[x], "-reconnect")) {
@@ -62,31 +62,35 @@ int main(int argc, char *argv[])
         } else if (0 == strcmp(argv[x], "-servicePort") && x + 1 < argc) {
             // Der Port für den Service
             Settings::getInstance()->setServerPort(static_cast<quint16>(QString(argv[x + 1]).toInt()));
-        } else if (0 == strcmp(argv[x], "-searchDir") && x + 1 < argc) {
-            // Ein Verzeichnis welches beim Starten durchsucht werden soll
-            Settings::getInstance()->setIsStartConfigDir(true);
-            Settings::getInstance()->setStartConfigDirPath(argv[x + 1]);
         } else if (0 == strcmp(argv[x], "-useEnglish")) {
             // Client st in Englisch
             Settings::getInstance()->setIsLanguageGerman(false);
-        } else if (0 == strcmp(argv[x], "-useNoInteract")) {
-            // Für OTP
-            Settings::getInstance()->setUseNoInteract(true);
         } else if (0 == strcmp(argv[x], "-portable")) {
             // CLient installiert TAP
             Settings::getInstance()->setIsPortableClient(true);
+        } else if (0 == strcmp(argv[x], "-disableSaveData")) {
+            // CLient darf user daten nicht speichern
+            Settings::getInstance()->setDisableSaveData(true);
         } else if (0 == strcmp(argv[x], "-manage")) {
             // Benutzer kann Einstellungen ändern
             Settings::getInstance()->setIsManageClient(true);
+        } else if (0 == strcmp(argv[x], "-debug")) {
+            // Benutzer kann Einstellungen ändern
+            Debug::enableDebugging(true);
         }
     }
+
     // Portabel bauen
     //Settings::getInstance()->setIsManageClient(true);
-    //Settings::getInstance()->setIsPortableClient(true);
+    Settings::getInstance()->setIsPortableClient(true);
     // Wenn Portable ist, immer mit lokalen VPN verbinden
     if (Settings::getInstance()->getIsPortableClient()) {
         Settings::getInstance()->setIsRunAsService(false);
     }
+
+    Debug::setDebugPath(AppFunc::getAppSavePath());
+    Debug::setDebugLevel(DebugLevel::All);
+    Debug::enableMSecs(true);
 
     // Die Übersetzungsdatei laden
     QString trans_file ("SpSSLVpn_eng.qm");
@@ -110,10 +114,22 @@ int main(int argc, char *argv[])
 
     // Die Anwendung soll nicht geschlossen werden, weil das Hauptfenster geschlossen wird
     // Appende ist nicht mit close sondern mit exit zu machen.
-    QApplication::setQuitOnLastWindowClosed(false);    
+    QApplication::setQuitOnLastWindowClosed(false);
 
     // Splashscreen öffnen
-    QPixmap pixmap(":/images/startscreen.jpg");
+    QPixmap pixmap(":/images/startscreen.png");
+    // Wenn im Anwendungsverzeichnis eine splash.png ist, diese als Startbildschirm laden
+    QString splashPath(QCoreApplication::applicationDirPath() + QLatin1String("/splash.png"));
+    //
+    if (QFile::exists(splashPath)) {
+        // Datei laden
+        QPixmap tempSplash (splashPath);
+        // Nun die Bild größe überprüfen es muss 480x320 sein
+        if (tempSplash.height() == 320 && tempSplash.width() == 480) {
+            // Alles Ok, das Bild setzen
+            pixmap = tempSplash;
+        }
+    }
     QSplashScreen splash(pixmap);
     if (Settings::getInstance()->showSplashScreen()) {
         splash.show();
@@ -121,8 +137,8 @@ int main(int argc, char *argv[])
         // Splash nach 3 Sekunden schließen
         QTimer::singleShot(3000, &splash, SLOT(close()));
     }
-    
-    // Main Window    
+
+    // Main Window
     // Die Verbindung soll über den Dienst hergestellt werden
     // Es muss der Daemon gestartet werden, der versucht eine Verbindung zum
     // Dienst herzustellen. Bei einem Fehler erscheint eine Ballonmeldung
@@ -131,20 +147,11 @@ int main(int argc, char *argv[])
             Message::error(QObject::tr("Can't connect to the ssl vpn service. Application is shuting down!"));
             return 1;
         }
-    }   
+    }
 
     // Konfigurationen suchen
     Preferences::instance()->searchStartConfigDir();
-
-    // In der RefreshDialog befinden sich die Aktualisierung der Oberfläche
-    Preferences::instance()->refreshDialog();
-
     QObject::connect(&app, SIGNAL(messageAvailable(QString)), &app, SLOT(receiveMessage(QString)));
-
-    if (Settings::getInstance()->getIsStartCommandConfig()) {
-        // Wenn eine Config angeben ist, immer das Fenster öffenen
-        Preferences::instance()->openDialog(Settings::getInstance()->getIsStartCommandConfig(), Settings::getInstance()->getCommandConfigPath().replace("\\", "/"));
-    }
 
     // Anwendung ohne Dialog starten
     return app.exec();

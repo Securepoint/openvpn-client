@@ -14,15 +14,11 @@ public:
     bool getIsAutoReconnect () const;
     bool getIsShowNoBallonMessage () const;
     bool getIsRunAsSevice () const;
-    bool getIsStartCommandConfig () const;
-    bool getIsStartConfigDir () const;        
     bool getIsLanguageGerman () const;
     bool getUseNoInteract () const;
     bool getIsPortableClient () const;
     bool getIsManageClient () const;
 
-    QString getCommandConfigPath () const;
-    QString getStartConfigDirPath () const;
     QString getStartWithPwdPwd () const;
     QString getStartWithUser () const;
 
@@ -36,25 +32,32 @@ public:
     bool showSplashScreen () const;
 
     bool autoStartOnWindowsStartup ();
+    bool checkWindowsShutdown () const;
 
-    QString delayConfig () const;
+    bool isAutoUpdate () const;
+    QString updateSource () const;
+    bool updateUseProxy () const;
+    QString updateProxyIp () const;
+    QString updateProxyPort () const;
+    QString updateProxyUser () const;
+    QString updateProxyPassword () const;
+    bool disableSaveData () const;
+    bool useSourceForge () const;
+
+    QPoint windowTop () const;
 
     // Setter
     void setIsAutoReconnect (const bool &flag);
     void setIsShowNoBallonMessage (const bool &flag);
 
     void setIsRunAsService (const bool &flag);
-    void setIsStartCommandConfig (const bool &flag, bool save = false);
-    void setIsStartConfigDir (const bool &flag);
 
-    void setIsNoPopUp (const bool &flag);    
+    void setIsNoPopUp (const bool &flag);
     void setIsLanguageGerman (const bool &flag);
     void setUseNoInteract (const bool &flag);
     void setIsPortableClient (const bool &flag);
     void setIsManageClient (const bool &flag);
 
-    void setCommandConfigPath (const QString &path, bool save = false);
-    void setStartConfigDirPath (const QString &path);
     void setStartWithPwdPwd (const QString &pwd);
     void setStartWithUserName (const QString &user);
 
@@ -67,7 +70,18 @@ public:
     void setShowSplashScreen (const bool &flag);
 
     void setAutoStartOnWindowsStartup (const bool &flag);
-    void setDelayStartConfig (const QString &value);
+    void setCheckWindowsShutdown (bool flag);
+    void setAutoUpdate (bool flag);
+    void setUpdateSource (const QString source);
+
+    void setUpdateUseProxy (bool flag);
+    void setUpdateProxyPort (const QString &port);
+    void setUpdateProxyIp (const QString &ip);
+    void setUpdateProxyUser (const QString &user);
+    void setUpdateProxyPassword (const QString &password);
+    void setDisableSaveData (bool flag);
+    void setUseSourceForge (bool flag);
+    void setWindowTop (const QPoint &top);
 
 private:
     static Settings *mInst;
@@ -78,8 +92,6 @@ private:
     bool noBallonMessage;
 
     bool runAsService;
-    bool startCommandConfig;
-    bool startConfigDir;
 
     bool isLangGerman;
     bool useNoInteract;
@@ -89,8 +101,14 @@ private:
     bool popUpDialogValue;
     bool showSplashScreenValue;
 
-    QString commandConfigPath;
-    QString startConfigDirPath;    
+    bool checkWindowsShutdownValue;
+    bool autoUpdateValue;
+    QString updateSourceValue;
+    bool updateUseProxyValue;
+    QString updateProxyIpValue;
+    QString updateProxyPortValue;
+    QString updateProxyUserValue;
+    QString updateProxyPasswordValue;
 
     // Client und Serverport
     quint16 listenPort;
@@ -98,7 +116,11 @@ private:
     QString iniPath;
 
     QString cryptKey;
-    QString delayConfigVal;
+    bool disableSaveDataValue;
+
+    bool useSourceforgeValue;
+
+    QPoint windowTopValue;
 };
 
 #endif // SETTINGS_H

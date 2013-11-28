@@ -13,22 +13,27 @@ Settings *Settings::getInstance() {
 
 Settings::Settings()
     : autoReconnect (false),
-      noBallonMessage (false),      
+      noBallonMessage (false),
       runAsService (true),
-      startCommandConfig (false),
-      startConfigDir (false),                
       isLangGerman (true),
       useNoInteract (true),
       isPortableClient (false),
       manageClient (false),
       popUpDialogValue (true),
       showSplashScreenValue (true),
-      commandConfigPath (""),
-      startConfigDirPath (""),
+      checkWindowsShutdownValue (true),
+      autoUpdateValue(true),
+      updateSourceValue ("http://updatevpnc.securepoint.de/vpn-changelog.xml"),
+      updateUseProxyValue(false),
+      updateProxyIpValue(""),
+      updateProxyPortValue("8080"),
+      updateProxyUserValue(""),
+      updateProxyPasswordValue(""),
       listenPort (3655),
       servicePort (3656),
       cryptKey (""),
-      delayConfigVal ("0")
+      disableSaveDataValue(false),
+      useSourceforgeValue(false)
 {
 }
 
@@ -42,29 +47,34 @@ QString Settings::getProxyIniPath()
 }
 
 void Settings::refresh()
-{        
-    // Read ini file    
+{
+    // Read ini file
     this->iniPath = AppFunc::getAppSavePath() + QLatin1String("/vpn.ini");
 
     QSettings sett (this->iniPath, QSettings::IniFormat);
 
-    // Die Settings einlesen    
+    // Die Settings einlesen
     this->noBallonMessage = (sett.value(QLatin1String("connect/noballon"), QLatin1String("0")).toString() == QLatin1String("1") ? true : false);
     this->popUpDialogValue = (sett.value(QLatin1String("connect/popup"), QLatin1String("1")).toString() == QLatin1String("1") ? true : false);
     this->showSplashScreenValue = (sett.value(QLatin1String("connect/splash"), QLatin1String("1")).toString() == QLatin1String("1") ? true : false);
     this->autoReconnect = (sett.value(QLatin1String("connect/autoreconnect"), QLatin1String("0")).toString() == QLatin1String("1") ? true : false);
     this->useNoInteract = (sett.value(QLatin1String("connect/nointeract"), QLatin1String("0")).toString() == QLatin1String("1") ? true : false);
+    this->autoUpdateValue = (sett.value(QLatin1String("update/auto"), QLatin1String("1")).toString() == QLatin1String("1") ? true : false);
 
-    // Start config
-    this->startCommandConfig = (sett.value(QLatin1String("start/auto"), QLatin1String("0")).toString() == QLatin1String("1") ? true : false);
-    this->commandConfigPath = sett.value(QLatin1String("start/path"), QLatin1String("")).toString();
+    this->updateSourceValue = sett.value(QLatin1String("update/source"), QLatin1String("http://updatevpnc.securepoint.de/vpn-changelog.xml")).toString();
 
-    this->delayConfigVal = sett.value(QLatin1String("start/delay"), QLatin1String("0")).toString();
+    this->updateUseProxyValue = (sett.value(QLatin1String("update/useproxy"), QLatin1String("0")).toString() == QLatin1String("1") ? true : false);
+    this->updateProxyIpValue = sett.value(QLatin1String("update/proxyip"), QLatin1String("")).toString();
+    this->updateProxyPortValue = sett.value(QLatin1String("update/proxyport"), QLatin1String("8080")).toString();
 
+
+    this->useSourceforgeValue = (sett.value(QLatin1String("update/useSF"), QLatin1String("0")).toString() == QLatin1String("1") ? true : false);
+
+    this->checkWindowsShutdownValue = (sett.value(QLatin1String("exit/checkWinEvent"), QLatin1String("1")).toString() == QLatin1String("1") ? true : false);
     this->cryptKey = sett.value(QLatin1String("self/key"), QLatin1String("")).toString();
-    if (!this->cryptKey.isEmpty()) {        
+    if (!this->cryptKey.isEmpty()) {
         Crypt crypt;
-        this->cryptKey = QString(crypt.cryptToPlainTextExt(this->cryptKey.toAscii()));        
+        this->cryptKey = QString(crypt.cryptToPlainTextExt(this->cryptKey.toAscii()));
     } else {
         // Neuen Key erzeugen
         qsrand(QDateTime::currentDateTime().toTime_t());
@@ -78,6 +88,16 @@ void Settings::refresh()
         sett.setValue(QLatin1String("self/key"), key);
         this->cryptKey = key;
     }
+
+    //
+    this->updateProxyUserValue = sett.value(QLatin1String("update/proxyuser"), QLatin1String("")).toString();
+    this->updateProxyPasswordValue = sett.value(QLatin1String("update/proxypassword"), QLatin1String("")).toString();
+    if (!this->updateProxyPasswordValue.isEmpty()) {
+        Crypt crypt;
+        this->updateProxyPasswordValue = QString(crypt.cryptToPlainTextExt(this->updateProxyPasswordValue.toAscii()));
+    }
+
+    this->windowTopValue = sett.value(QLatin1String("window/top")).toPoint();
 }
 
 // GETTER
@@ -95,16 +115,6 @@ bool Settings::getIsShowNoBallonMessage() const
 bool Settings::getIsRunAsSevice() const
 {
     return this->runAsService;
-}
-
-bool Settings::getIsStartCommandConfig() const
-{
-    return this->startCommandConfig;
-}
-
-bool Settings::getIsStartConfigDir() const
-{
-    return this->startConfigDir;
 }
 
 bool Settings::getIsLanguageGerman() const
@@ -125,16 +135,6 @@ bool Settings::getIsPortableClient() const
 bool Settings::getIsManageClient() const
 {
     return this->manageClient;
-}
-
-QString Settings::getCommandConfigPath() const
-{
-    return this->commandConfigPath;
-}
-
-QString Settings::getStartConfigDirPath() const
-{
-    return this->startConfigDirPath;
 }
 
 quint16 Settings::getListenPort() const
@@ -174,12 +174,6 @@ bool Settings::autoStartOnWindowsStartup()
     return false;
 }
 
-QString Settings::delayConfig() const
-{
-    return this->delayConfigVal;
-}
-
-
 // SETTER
 void Settings::setAutoStartOnWindowsStartup(const bool &flag)
 {
@@ -194,10 +188,19 @@ void Settings::setAutoStartOnWindowsStartup(const bool &flag)
 
         if (!this->isLangGerman) {
 
-            path += QLatin1String(" -useEnglish");            
+            path += QLatin1String(" -useEnglish");
         }
 
-        path = path.replace("/", "\\");        
+        if (this->manageClient) {
+            // Add manage param
+            path += QLatin1String(" -manage");
+        }
+
+        if (this->disableSaveDataValue) {
+            path += QLatin1String(" -disableSaveData");
+        }
+
+        path = path.replace("/", "\\");
         regRun.setValue(QLatin1String("SpSSLVPN"), path);
     } else {
         if (this->autoStartOnWindowsStartup()) {
@@ -223,21 +226,6 @@ void Settings::setIsShowNoBallonMessage(const bool &flag)
 void Settings::setIsRunAsService(const bool &flag)
 {
     this->runAsService = flag;
-}
-
-void Settings::setIsStartCommandConfig(const bool &flag, bool save)
-{
-    this->startCommandConfig = flag;
-
-    if (save) {
-        QSettings sett (this->iniPath, QSettings::IniFormat);
-        sett.setValue(QLatin1String("start/auto"), flag ? QLatin1String("1") : QLatin1String("0"));
-    }
-}
-
-void Settings::setIsStartConfigDir(const bool &flag)
-{
-    this->startConfigDir = flag;
 }
 
 void Settings::setIsLanguageGerman(const bool &flag)
@@ -276,22 +264,6 @@ void Settings::setIsManageClient(const bool &flag)
     this->manageClient = flag;
 }
 
-void Settings::setCommandConfigPath(const QString &path, bool save)
-{
-    this->commandConfigPath = path;
-    this->commandConfigPath = this->commandConfigPath.replace("\\", "/").trimmed();
-
-    if (save) {
-        QSettings sett (this->iniPath, QSettings::IniFormat);
-        sett.setValue(QLatin1String("start/path"), this->commandConfigPath);
-    }
-}
-
-void Settings::setStartConfigDirPath(const QString &path)
-{
-    this->startConfigDirPath = path;
-}
-
 void Settings::setServerPort(quint16 port)
 {
     this->servicePort = port;
@@ -307,9 +279,138 @@ void Settings::setCryptKey(const QString &key)
     this->cryptKey = key;
 }
 
-void Settings::setDelayStartConfig(const QString &value)
+bool Settings::checkWindowsShutdown() const
 {
-    this->delayConfigVal = value;
+    return this->checkWindowsShutdownValue;
+}
+
+void Settings::setCheckWindowsShutdown(bool flag)
+{
+    this->checkWindowsShutdownValue = flag;
     QSettings sett (this->iniPath, QSettings::IniFormat);
-    sett.setValue(QLatin1String("start/delay"), this->delayConfigVal);
+    sett.setValue(QLatin1String("exit/checkWinEvent"), (this->checkWindowsShutdownValue ? QLatin1String("1") : QLatin1String("0")));
+}
+
+bool Settings::isAutoUpdate() const
+{
+    return this->autoUpdateValue;
+}
+
+void Settings::setAutoUpdate(bool flag)
+{
+    this->autoUpdateValue = flag;
+    QSettings sett (this->iniPath, QSettings::IniFormat);
+    sett.setValue(QLatin1String("update/auto"), (this->autoUpdateValue ? QLatin1String("1") : QLatin1String("0")));
+}
+
+QString Settings::updateSource() const
+{
+    return this->updateSourceValue;
+}
+
+void Settings::setUpdateSource(const QString source)
+{
+    this->updateSourceValue = source;
+    QSettings sett (this->iniPath, QSettings::IniFormat);
+    sett.setValue(QLatin1String("update/source"), this->updateSourceValue);
+}
+
+bool Settings::updateUseProxy() const
+{
+    return this->updateUseProxyValue;
+}
+
+QString Settings::updateProxyIp() const
+{
+    return this->updateProxyIpValue;
+}
+
+QString Settings::updateProxyPort() const
+{
+    return this->updateProxyPortValue;
+}
+
+void Settings::setUpdateUseProxy(bool flag)
+{
+    this->updateUseProxyValue = flag;
+    QSettings sett (this->iniPath, QSettings::IniFormat);
+    sett.setValue(QLatin1String("update/useproxy"), (this->updateUseProxyValue ? QLatin1String("1") : QLatin1String("0")));
+}
+
+void Settings::setUpdateProxyPort(const QString &port)
+{
+    this->updateProxyPortValue = port;
+    QSettings sett (this->iniPath, QSettings::IniFormat);
+    sett.setValue(QLatin1String("update/proxyport"), this->updateProxyPortValue);
+}
+
+void Settings::setUpdateProxyIp(const QString &ip)
+{
+    this->updateProxyIpValue = ip;
+    QSettings sett (this->iniPath, QSettings::IniFormat);
+    sett.setValue(QLatin1String("update/proxyip"), this->updateProxyIpValue);
+}
+
+QString Settings::updateProxyUser() const
+{
+    return this->updateProxyUserValue;
+}
+
+QString Settings::updateProxyPassword() const
+{
+    return this->updateProxyPasswordValue;
+}
+
+bool Settings::disableSaveData() const
+{
+    return this->disableSaveDataValue;
+}
+
+bool Settings::useSourceForge() const
+{
+    return this->useSourceforgeValue;
+}
+
+QPoint Settings::windowTop() const
+{
+    return this->windowTopValue;
+}
+
+void Settings::setUpdateProxyUser(const QString &user)
+{
+    this->updateProxyUserValue = user;
+    QSettings sett (this->iniPath, QSettings::IniFormat);
+    sett.setValue(QLatin1String("update/proxyuser"), this->updateProxyUserValue);
+}
+
+void Settings::setUpdateProxyPassword(const QString &password)
+{
+    this->updateProxyPasswordValue = password;
+    QString data (password);
+    if (!password.isEmpty()) {
+        Crypt crypt;
+        data = QString(crypt.cryptPlainTextExt(data.toAscii()));
+    }
+    //
+    QSettings sett (this->iniPath, QSettings::IniFormat);
+    sett.setValue(QLatin1String("update/proxypassword"), data);
+}
+
+void Settings::setDisableSaveData(bool flag)
+{
+    this->disableSaveDataValue = flag;
+}
+
+void Settings::setUseSourceForge(bool flag)
+{
+    this->useSourceforgeValue = flag;
+    QSettings sett (this->iniPath, QSettings::IniFormat);
+    sett.setValue(QLatin1String("update/useSF"), (this->useSourceforgeValue ? QLatin1String("1") : QLatin1String("0")));
+}
+
+void Settings::setWindowTop(const QPoint &top)
+{
+    this->windowTopValue = top;
+    QSettings sett (this->iniPath, QSettings::IniFormat);
+    sett.setValue(QLatin1String("window/top"), this->windowTopValue);
 }

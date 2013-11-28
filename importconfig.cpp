@@ -39,11 +39,35 @@ void ImportConfig::showEvent(QShowEvent *e) {
     int winW = this->width();
     int winH = this->height();
 
-    int left = Preferences::instance()->geometry().x();
-    left = left + (Preferences::instance()->geometry().width() - winW) / 2;
-
+    int left (0);
+    int top (0);
+    if (Preferences::instance()->isVisible()) {
+        // Wenn das Hauptfenster offen ist mittig über diesem plazieren
+        left = Preferences::instance()->geometry().x();
+        top = Preferences::instance()->geometry().y();
+        left = left + (Preferences::instance()->geometry().width() - winW) / 2;
+        //
+        top  = top + (Preferences::instance()->geometry().height() - winH) / 2;
+    } else {
+        // Desktop auswerten
+        top = qApp->desktop()->height();
+        left = qApp->desktop()->width();
+        // Die Breite bei virtuellen Desktops vierteln
+        if (left > 2000 && qApp->desktop()->isVirtualDesktop()) {
+            left /= 4;
+        } else {
+            // Normaler Desktop
+            left = (left - winH) / 2;
+        }
+        // Height
+        if (top > 2000 && qApp->desktop()->isVirtualDesktop()) {
+            top /= 4;
+        } else {
+            top = (top - winH) / 2;
+        }
+    }
     // Nun die neuen setzen
-    this->setGeometry(left, (qApp->desktop()->height() / 2) - (winH / 2), winW, winH);
+    this->setGeometry(left, top, winW, winH);
     // Öffnen
     e->accept();
     this->setWindowState(Qt::WindowActive);
@@ -76,18 +100,18 @@ void ImportConfig::on_rbSaveAsName_toggled(bool checked)
 void ImportConfig::on_cmdImport_clicked()
 {
     if (!m_ui->txtExistingOvpn->text().isEmpty()) {
-        // Import existing file
-        QFile linkOvpn (AppFunc::getAppSavePath() + QString ("/configs.txt"));
-        if (!linkOvpn.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append)) {
-            Message::error(QObject::tr("Unable to open configs.txt!"), QObject::tr("Import Configuration"));
-            return;
-        }
-        // Datei offen, Config schreiben
-        QTextStream out (&linkOvpn);
-        out << m_ui->txtExistingOvpn->text() + QString ("\n");
-        // Liste aktualisieren
-        linkOvpn.close();
+        // Import existing file       
+        QString configName (m_ui->txtExistingOvpn->text().replace(".ovpn", ""));
+        configName = configName.right(configName.size() - configName.lastIndexOf("/") - 1);
 
+        // Anderer name als Dateiname
+        if (m_ui->rbSaveAsName->isChecked()) {
+            if (!m_ui->txtNewName->text().isEmpty()) {
+                configName = m_ui->txtNewName->text();
+            }
+        }
+
+        Preferences::instance()->addNewConfigToDatabase(configName, m_ui->txtExistingOvpn->text());
         Preferences::instance()->refreshConfigList();
         Preferences::instance()->setConnectionStatus();
         Preferences::instance()->setIcon();
@@ -183,22 +207,30 @@ void ImportConfig::on_cmdImport_clicked()
                 Message::error(configZip.errorString(), QObject::tr("Import Configuration"));
             }
 
+            QString saveName;
+            QString savePath;
+            QString ovpnFilePath = m_ui->txtImportPath->text().right(m_ui->txtImportPath->text().size() - m_ui->txtImportPath->text().lastIndexOf("/") -1);
+
+            saveName = ovpnFilePath.left(ovpnFilePath.size()-6);
+            savePath = dirPath + QString("/") + ovpnFilePath.left(ovpnFilePath.size()-6) + QString(".ovpn");
+
             if (m_ui->rbSaveAsName->isChecked()) {
-                // ovpn umbennen
-                QString ovpnFilePath = m_ui->txtImportPath->text().right(m_ui->txtImportPath->text().size() - m_ui->txtImportPath->text().lastIndexOf("/") -1);
-                        ovpnFilePath = dirPath + QString("/") + ovpnFilePath.left(ovpnFilePath.size()-6) + QString(".ovpn");
-                QFile ovpnFile (ovpnFilePath);
+                // ovpn umbennen                
+                QFile ovpnFile (savePath);
                 if (ovpnFile.exists()) {
                     // umbenennen
                     ovpnFile.rename(dirPath + QString("/") + configName + QString(".ovpn"));
-                }
+                    saveName = configName;
+                }                
             }
+            savePath = dirPath + QString("/") + saveName + QString(".ovpn");
 
             QFile ovpnFile (dirPath + QString("/") + configName + QString(".ovpn"));
             if (!ovpnFile.exists()) {
                 Message::error(QObject::tr("Import failed! Removing empty directory."), QObject::tr("Import Configuration"));
                 dirobj.rmdir(dirPath);
             } else {
+                Preferences::instance()->addNewConfigToDatabase(saveName, savePath.replace("\\", "/"));
                 Preferences::instance()->refreshConfigList();
                 Preferences::instance()->setConnectionStatus();
                 Message::information(QObject::tr("Import successfully ended!"), QObject::tr("Import Configuration"));

@@ -9,19 +9,19 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>230</width>
-    <height>250</height>
+    <width>300</width>
+    <height>152</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>230</width>
-    <height>250</height>
+    <width>300</width>
+    <height>0</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>230</width>
+    <width>300</width>
     <height>250</height>
    </size>
   </property>
@@ -38,418 +38,50 @@
   <widget class="QGroupBox" name="groupBox">
    <property name="geometry">
     <rect>
-     <x>7</x>
+     <x>11</x>
      <y>7</y>
-     <width>207</width>
-     <height>191</height>
+     <width>281</width>
+     <height>91</height>
     </rect>
    </property>
    <property name="title">
     <string>Delete settings:</string>
    </property>
-   <widget class="QLabel" name="label">
+   <widget class="QWidget" name="verticalLayoutWidget">
     <property name="geometry">
      <rect>
       <x>10</x>
       <y>20</y>
-      <width>41</width>
-      <height>16</height>
+      <width>261</width>
+      <height>61</height>
      </rect>
     </property>
-    <property name="text">
-     <string>Delete:</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="cbConfigFile">
-    <property name="geometry">
-     <rect>
-      <x>38</x>
-      <y>37</y>
-      <width>161</width>
-      <height>19</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">QCheckBox { 
-spacing: 5px;
-}
-
-QCheckBox::indicator {
-width: 13px;
-height: 13px;
-}
-
-QCheckBox::indicator:unchecked:disabled {
-image: url(:/images/styles/checkbox_unchecked_dis.png);
-}
-
-QCheckBox::indicator:checked:disabled {
-image: url(:/images/styles/checkbox_checked_dis.png);
-}
-
-QCheckBox::indicator:unchecked:enabled {
-image: url(:/images/styles/checkbox_unchecked.png);
-}
-
-QCheckBox::indicator:checked:enabled {
-image: url(:/images/styles/checkbox_checked.png);
-}
-
-QCheckBox::indicator:unchecked:enabled:hover {
-image: url(:/images/styles/checkbox_unchecked_hover.png);
-}
-
-QCheckBox::indicator:checked:enabled:hover {
-image: url(:/images/styles/checkbox_checked_hover.png);
-}
-</string>
-    </property>
-    <property name="text">
-     <string>Config</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="cbCA">
-    <property name="geometry">
-     <rect>
-      <x>38</x>
-      <y>55</y>
-      <width>161</width>
-      <height>19</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">QCheckBox { 
-spacing: 5px;
-}
-
-QCheckBox::indicator {
-width: 13px;
-height: 13px;
-}
-
-QCheckBox::indicator:unchecked:disabled {
-image: url(:/images/styles/checkbox_unchecked_dis.png);
-}
-
-QCheckBox::indicator:checked:disabled {
-image: url(:/images/styles/checkbox_checked_dis.png);
-}
-
-QCheckBox::indicator:unchecked:enabled {
-image: url(:/images/styles/checkbox_unchecked.png);
-}
-
-QCheckBox::indicator:checked:enabled {
-image: url(:/images/styles/checkbox_checked.png);
-}
-
-QCheckBox::indicator:unchecked:enabled:hover {
-image: url(:/images/styles/checkbox_unchecked_hover.png);
-}
-
-QCheckBox::indicator:checked:enabled:hover {
-image: url(:/images/styles/checkbox_checked_hover.png);
-}
-</string>
-    </property>
-    <property name="text">
-     <string>CA [.pem]</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="cbCert">
-    <property name="geometry">
-     <rect>
-      <x>38</x>
-      <y>75</y>
-      <width>161</width>
-      <height>19</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">QCheckBox { 
-spacing: 5px;
-}
-
-QCheckBox::indicator {
-width: 13px;
-height: 13px;
-}
-
-QCheckBox::indicator:unchecked:disabled {
-image: url(:/images/styles/checkbox_unchecked_dis.png);
-}
-
-QCheckBox::indicator:checked:disabled {
-image: url(:/images/styles/checkbox_checked_dis.png);
-}
-
-QCheckBox::indicator:unchecked:enabled {
-image: url(:/images/styles/checkbox_unchecked.png);
-}
-
-QCheckBox::indicator:checked:enabled {
-image: url(:/images/styles/checkbox_checked.png);
-}
-
-QCheckBox::indicator:unchecked:enabled:hover {
-image: url(:/images/styles/checkbox_unchecked_hover.png);
-}
-
-QCheckBox::indicator:checked:enabled:hover {
-image: url(:/images/styles/checkbox_checked_hover.png);
-}
-</string>
-    </property>
-    <property name="text">
-     <string>Certificate [.pem]</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="cbKey">
-    <property name="geometry">
-     <rect>
-      <x>38</x>
-      <y>93</y>
-      <width>151</width>
-      <height>19</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">QCheckBox { 
-spacing: 5px;
-}
-
-QCheckBox::indicator {
-width: 13px;
-height: 13px;
-}
-
-QCheckBox::indicator:unchecked:disabled {
-image: url(:/images/styles/checkbox_unchecked_dis.png);
-}
-
-QCheckBox::indicator:checked:disabled {
-image: url(:/images/styles/checkbox_checked_dis.png);
-}
-
-QCheckBox::indicator:unchecked:enabled {
-image: url(:/images/styles/checkbox_unchecked.png);
-}
-
-QCheckBox::indicator:checked:enabled {
-image: url(:/images/styles/checkbox_checked.png);
-}
-
-QCheckBox::indicator:unchecked:enabled:hover {
-image: url(:/images/styles/checkbox_unchecked_hover.png);
-}
-
-QCheckBox::indicator:checked:enabled:hover {
-image: url(:/images/styles/checkbox_checked_hover.png);
-}
-</string>
-    </property>
-    <property name="text">
-     <string>Key [.key]</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="cbUserdata">
-    <property name="geometry">
-     <rect>
-      <x>38</x>
-      <y>131</y>
-      <width>161</width>
-      <height>19</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">QCheckBox { 
-spacing: 5px;
-}
-
-QCheckBox::indicator {
-width: 13px;
-height: 13px;
-}
-
-QCheckBox::indicator:unchecked:disabled {
-image: url(:/images/styles/checkbox_unchecked_dis.png);
-}
-
-QCheckBox::indicator:checked:disabled {
-image: url(:/images/styles/checkbox_checked_dis.png);
-}
-
-QCheckBox::indicator:unchecked:enabled {
-image: url(:/images/styles/checkbox_unchecked.png);
-}
-
-QCheckBox::indicator:checked:enabled {
-image: url(:/images/styles/checkbox_checked.png);
-}
-
-QCheckBox::indicator:unchecked:enabled:hover {
-image: url(:/images/styles/checkbox_unchecked_hover.png);
-}
-
-QCheckBox::indicator:checked:enabled:hover {
-image: url(:/images/styles/checkbox_checked_hover.png);
-}
-</string>
-    </property>
-    <property name="text">
-     <string>Userdata [.dat]</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="cbScript">
-    <property name="geometry">
-     <rect>
-      <x>38</x>
-      <y>151</y>
-      <width>161</width>
-      <height>19</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">QCheckBox { 
-spacing: 5px;
-}
-
-QCheckBox::indicator {
-width: 13px;
-height: 13px;
-}
-
-QCheckBox::indicator:unchecked:disabled {
-image: url(:/images/styles/checkbox_unchecked_dis.png);
-}
-
-QCheckBox::indicator:checked:disabled {
-image: url(:/images/styles/checkbox_checked_dis.png);
-}
-
-QCheckBox::indicator:unchecked:enabled {
-image: url(:/images/styles/checkbox_unchecked.png);
-}
-
-QCheckBox::indicator:checked:enabled {
-image: url(:/images/styles/checkbox_checked.png);
-}
-
-QCheckBox::indicator:unchecked:enabled:hover {
-image: url(:/images/styles/checkbox_unchecked_hover.png);
-}
-
-QCheckBox::indicator:checked:enabled:hover {
-image: url(:/images/styles/checkbox_checked_hover.png);
-}
-</string>
-    </property>
-    <property name="text">
-     <string>Scripts [scripts.conf]</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="cbDir">
-    <property name="geometry">
-     <rect>
-      <x>38</x>
-      <y>169</y>
-      <width>161</width>
-      <height>19</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">QCheckBox { 
-spacing: 5px;
-}
-
-QCheckBox::indicator {
-width: 13px;
-height: 13px;
-}
-
-QCheckBox::indicator:unchecked:disabled {
-image: url(:/images/styles/checkbox_unchecked_dis.png);
-}
-
-QCheckBox::indicator:checked:disabled {
-image: url(:/images/styles/checkbox_checked_dis.png);
-}
-
-QCheckBox::indicator:unchecked:enabled {
-image: url(:/images/styles/checkbox_unchecked.png);
-}
-
-QCheckBox::indicator:checked:enabled {
-image: url(:/images/styles/checkbox_checked.png);
-}
-
-QCheckBox::indicator:unchecked:enabled:hover {
-image: url(:/images/styles/checkbox_unchecked_hover.png);
-}
-
-QCheckBox::indicator:checked:enabled:hover {
-image: url(:/images/styles/checkbox_checked_hover.png);
-}
-</string>
-    </property>
-    <property name="text">
-     <string>Directory if empty</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="cbRemovePkcs12">
-    <property name="geometry">
-     <rect>
-      <x>38</x>
-      <y>113</y>
-      <width>131</width>
-      <height>17</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">QCheckBox { 
-spacing: 5px;
-}
-
-QCheckBox::indicator {
-width: 13px;
-height: 13px;
-}
-
-QCheckBox::indicator:unchecked:disabled {
-image: url(:/images/styles/checkbox_unchecked_dis.png);
-}
-
-QCheckBox::indicator:checked:disabled {
-image: url(:/images/styles/checkbox_checked_dis.png);
-}
-
-QCheckBox::indicator:unchecked:enabled {
-image: url(:/images/styles/checkbox_unchecked.png);
-}
-
-QCheckBox::indicator:checked:enabled {
-image: url(:/images/styles/checkbox_checked.png);
-}
-
-QCheckBox::indicator:unchecked:enabled:hover {
-image: url(:/images/styles/checkbox_unchecked_hover.png);
-}
-
-QCheckBox::indicator:checked:enabled:hover {
-image: url(:/images/styles/checkbox_checked_hover.png);
-}
-</string>
-    </property>
-    <property name="text">
-     <string>Pkcs12 [.p12]</string>
-    </property>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QRadioButton" name="rbAll">
+       <property name="text">
+        <string>Remove all data [Database and Files]</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="rbDatabase">
+       <property name="text">
+        <string>Remove only entry in database</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QPushButton" name="cmdDelete">
    <property name="geometry">
     <rect>
-     <x>7</x>
-     <y>208</y>
+     <x>80</x>
+     <y>110</y>
      <width>100</width>
      <height>33</height>
     </rect>
@@ -486,8 +118,8 @@ QPushButton {height: 25px; width: 50px;text-align:left;
   <widget class="QPushButton" name="cmdCancel">
    <property name="geometry">
     <rect>
-     <x>113</x>
-     <y>208</y>
+     <x>190</x>
+     <y>110</y>
      <width>100</width>
      <height>33</height>
     </rect>

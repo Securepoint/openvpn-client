@@ -25,13 +25,13 @@ public:
     void setPassword (const QString &pwd);
     void setPrivateKey (const QString &key);
     void setChallengeKey (const QString &key);
-
     void setUseInteract (const QString &interact);
-
     void setConfigName (const QString &name);
     void setConfigPath (const QString &path);
-
     void setProxyString (const QString &proxy);
+    bool isConnectionStable () const;
+    bool isConnecting () const;
+    int id () const;
 
 public slots:
     void setId (const int &ident);
@@ -41,12 +41,12 @@ private:
     volatile bool onDisconnect;
     bool useNoInteract;
     volatile bool connectionStable;
-    bool isConnectionStable () const;
-    int id () const;
+    volatile bool connecting;
 
     int _id;
+    int lastAction;
     QString configName;
-    QString configPath;    
+    QString configPath;
     QString configPrivKey;
     QString challengeKey;
 
@@ -57,6 +57,7 @@ private:
     QProcess *procScripts;
 
     QString proxyString;
+    QString challangeUserName;
 
 private slots:
     void showProcessError (QProcess::ProcessError error);
@@ -64,7 +65,7 @@ private slots:
     void processFinished (int exitCode, QProcess::ExitStatus exitStatus);
     void errorSocket (QAbstractSocket::SocketError err);
 
-signals:    
+signals:
     void removeItemFromList (int id);
     void foobar (int id);
 };

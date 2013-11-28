@@ -70,7 +70,7 @@
     <bool>false</bool>
    </property>
   </widget>
-  <widget class="QLabel" name="label_3">
+  <widget class="QLabel" name="lblVersionAndName">
    <property name="geometry">
     <rect>
      <x>-10</x>
@@ -88,7 +88,7 @@
     </font>
    </property>
    <property name="text">
-    <string>SSL VPN Client v.0.9.7 RC4</string>
+    <string>Set in code</string>
    </property>
    <property name="scaledContents">
     <bool>false</bool>

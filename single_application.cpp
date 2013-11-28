@@ -4,6 +4,7 @@
 #include "single_application.h"
 #include "preferences.h"
 #include "message.h"
+#include "settings.h"
 
 SingleApplication::SingleApplication(int &argc, char *argv[], const QString uniqueKey) : QApplication(argc, argv)
 {
@@ -37,13 +38,18 @@ SingleApplication::SingleApplication(int &argc, char *argv[], const QString uniq
 // public slots.
 bool SingleApplication::winEventFilter(MSG* msg, long* result) {
    if(msg->message == WM_QUERYENDSESSION) {
-       if (Preferences::instance()->isConnectionActive()) {
+       // When a connection is online and the user activated the check
+       if (Preferences::instance()->isConnectionActive() && Settings::getInstance()->checkWindowsShutdown()) {
            Message::warning(QObject::tr("You are still connected to a vpn network!\nPlease disconnect bevor you close your windows session.\nBy forcing the quit from windows malfunctions can occurred!"));
            *result = 0;
            return true;
        }
-
+   } else if (msg->message == WM_ENDSESSION) {
+       if (msg->wParam != 0) {
+           Preferences::instance()->closeAllOpenConnections();
+       }
    }
+
    return false;
 }
 
@@ -92,7 +98,7 @@ bool SingleApplication::sendMessage(const QString &message)
 
 void SingleApplication::receiveMessage(QString message) {
     Q_UNUSED (message)
-    Preferences::instance()->openDialog(false, QLatin1String(""));
+    Preferences::instance()->openDialog();
 }
 
 

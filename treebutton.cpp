@@ -49,15 +49,14 @@ void TreeButton::setReadyToConnect()
     this->getParentItem()->setBackgroundColor(2, bg);
     this->getParentItem()->setBackgroundColor(3, bg);
     OpenVpn *obj = this->getParentItemCast()->getOpenVPN();
-    this->getParentItem()->setText(1, (obj->isConfigLinked() ? QLatin1String("- ") : QLatin1String (""))+ obj->getConfigName() + obj->getAdvName());
+    this->getParentItem()->setText(1, obj->getConfigName() + obj->getAdvName());
 
     this->timer.stop();
 }
 
 void TreeButton::setConnecting()
 {    
-    this->setText(QObject::tr("Cancel"));
-    this->getParentItemCast()->getOpenVPN()->setDelay(false);
+    this->setText(QObject::tr("Cancel"));    
     this->setEnabled(true);
     this->getParentItem()->setText(4, QLatin1String ("1"));
     this->state = 1;
@@ -71,7 +70,7 @@ void TreeButton::setConnecting()
 }
 
 void TreeButton::setConnected(QString ip)
-{
+{    
     this->setText(QObject::tr("Disconnect"));
     this->getParentItem()->setText(4, QLatin1String ("2"));
     this->state = 2;

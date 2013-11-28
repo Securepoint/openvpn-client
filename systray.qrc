@@ -1,7 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>images/SecurepointUTM.png</file>
-        <file>images/startscreen.jpg</file>
         <file>images/appicon.png</file>
         <file>images/banner.png</file>
         <file>images/securepoint.png</file>
@@ -63,5 +62,8 @@
         <file>images/list-remove.png</file>
         <file>openvpncl.ico</file>
         <file>images/banner_neu_sml.png</file>
+        <file>images/tree_closed.png</file>
+        <file>images/loading.gif</file>
+        <file>images/startscreen.png</file>
     </qresource>
 </RCC>

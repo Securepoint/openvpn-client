@@ -15,7 +15,7 @@ class RenameConfig : public QDialog {
 public:
     static RenameConfig *getInstance ();
     void setOldName (const QString &oldname);
-    void setFullPath (const QString &path);
+    void setId (int id);
 
 protected:
     void changeEvent(QEvent *e);
@@ -25,7 +25,7 @@ private:
     static RenameConfig *mInst;
     RenameConfig();
     Ui::RenameConfig *m_ui;
-    QString fullPath;
+    int id;
 
 private slots:
     void on_cmdRename_clicked();

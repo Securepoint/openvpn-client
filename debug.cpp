@@ -217,7 +217,7 @@ void Debug::log(const QString &message, DebugLevel::Level level, const QString &
             }
 
             // Soll eine extra Datei erstellt werden?
-            QString fileName ("debug_vpn.txt");
+            QString fileName ("debug-vpn-client.txt");
             if (!filename.isEmpty()) {
                 fileName = filename;
             }
@@ -245,7 +245,7 @@ void Debug::log(const QString &message, DebugLevel::Level level, const QString &
                     break;
                 case DebugLevel::Comment:
                     levelName = QLatin1String("Comment");
-                    break;                
+                    break;
                 case DebugLevel::Database:
                     levelName = QLatin1String("Database");
                     break;

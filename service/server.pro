@@ -13,8 +13,7 @@ SOURCES = main.cpp \
     debug.cpp \
     service.cpp \
     srvcli.cpp \
-    tapdriver.cpp \
-    check64.cpp
+    tapdriver.cpp
 include(src/qtservice.pri)
 HEADERS += openvpn.h \
     sslserverconnection.h \
@@ -26,8 +25,7 @@ HEADERS += openvpn.h \
     service.h \
     qthreadexec.h \
     srvcli.h \
-    tapdriver.h \
-    check64.h
+    tapdriver.h
 FORMS += 
 
 

@@ -14,7 +14,7 @@ SrvCLI *SrvCLI::instance() {
 
 SrvCLI::SrvCLI()
     : connectionIsOnline (false)
-{    
+{
     QObject::connect (&this->sslSocket, SIGNAL(disconnected()), this, SLOT(connectionClosedByServer()));
     QObject::connect (&this->sslSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(error()));
     QObject::connect (&this->sslSocket, SIGNAL(sslErrors(QList<QSslError>)), this, SLOT(slot_sslErrors(QList<QSslError>)));
@@ -24,18 +24,19 @@ SrvCLI::SrvCLI()
 
 void SrvCLI::send(const QString &command, const QString &params, bool fastmode)
 {
-    if (!this->connectionIsOnline){        
-        if (!this->makeConnection(fastmode)) {    
+    if (!this->connectionIsOnline){
+        if (!this->makeConnection(fastmode)) {
             // Keine Verbindung
+            Debug::error("Srvcli: Make connection failed");
             return;
         }
-    }    
+    }
 
     this->sendRequest(command, params);
 }
 
 void SrvCLI::sendRequest (const QString &command, const QString &params)
-{    
+{
     // Neuen Block zum Senden erstellen
     QByteArray block;
     // Datasteam an den Block binden
@@ -86,7 +87,9 @@ void SrvCLI::slot_stateChanged(QAbstractSocket::SocketState state)
     } else if (state == QAbstractSocket::ListeningState) {
         stateMessage = "ListeningState: For internal use only.";
     }
-    QThreadExec::Sleep(100);    
+
+    Debug::log(QString("Srvcli: State changed: %1").arg(stateMessage));
+    QThreadExec::Sleep(100);
 }
 
 bool SrvCLI::isOnline() const
@@ -96,28 +99,31 @@ bool SrvCLI::isOnline() const
 
 void SrvCLI::stopRequest ()
 {
-    this->response = QString("--stop request");    
+    this->response = QString("--stop request");
     this->closeConnection();
 }
 
 void SrvCLI::connectionClosedByServer ()
 {
     if (this->nextBlockSize != 0xFFFF) {
+        Debug::log(QLatin1String("Srvcli: Connection closed by server"));
+        //
         this->response = QString("--error connection closed by server");
-    }    
+    }
     this->closeConnection();
 }
 
 void SrvCLI::error ()
 {
-    this->response = this->sslSocket.errorString();    
+    Debug::error(QString("Srvcli: %1").arg(this->sslSocket.errorString()));
+    this->response = this->sslSocket.errorString();
     this->closeConnection();
 }
 
 void SrvCLI::closeConnection()
 {
     this->sslSocket.close();
-    this->connectionIsOnline = false; // neu zum Testen        
+    this->connectionIsOnline = false; // neu zum Testen
 }
 
 void SrvCLI::resetConnection()
@@ -130,26 +136,30 @@ void SrvCLI::resetConnection()
 bool SrvCLI::makeConnection(bool fastmode)
 {
     static int requestErrorCount = 0;
-
-    this->sslSocket.connectToHostEncrypted(QLatin1String("127.0.0.1"), Settings::getInstance()->getServerPort());
+    Debug::log(QString("SrvCli: Try to connect to %1:%2")
+               .arg(QLatin1String("127.0.0.1"))
+               .arg(Settings::getInstance()->getServerPort()));
+    //
     this->sslSocket.ignoreSslErrors();
+    this->sslSocket.connectToHostEncrypted(QLatin1String("127.0.0.1"), Settings::getInstance()->getServerPort());
+    //
 
-    if (!this->sslSocket.waitForConnected(6000)) {        
+    if (!this->sslSocket.waitForConnected(6000)) {
         requestErrorCount++;
         if (fastmode || requestErrorCount == 3) {
-            requestErrorCount = 0;            
-            Debug::error(QLatin1String("Connection Timeout"));
+            requestErrorCount = 0;
+            Debug::error(QLatin1String("SrvCli: Connection Timeout"));
             return false;
         } else {
             return this->makeConnection(fastmode);
         }
     }
 
-    if (!this->sslSocket.waitForEncrypted(6000)) {        
+    if (!this->sslSocket.waitForEncrypted(6000)) {
         requestErrorCount++;
         if (fastmode || requestErrorCount == 7) {
-            requestErrorCount = 0;            
-            Debug::error(QLatin1String("Encryption error"));
+            requestErrorCount = 0;
+            Debug::error(QLatin1String("SrvCli: Encryption error"));
             return false;
         } else {
             return this->makeConnection(fastmode);

@@ -195,7 +195,7 @@
         <translation type="obsolete">Export erfolgreich beendet!</translation>
     </message>
     <message>
-        <location filename="configexport.cpp" line="276"/>
+        <location filename="configexport.cpp" line="300"/>
         <source>Open Directory</source>
         <translation>Verzeichnis finden</translation>
     </message>
@@ -309,7 +309,7 @@
 <context>
     <name>DeleteConfig</name>
     <message>
-        <location filename="deleteconfig.cpp" line="188"/>
+        <location filename="deleteconfig.cpp" line="326"/>
         <source>Directory is not empty! Please delete it by hand!</source>
         <translation>Verzeichnis ist nicht leer! Bitte löschen Sie es per Hand!</translation>
     </message>
@@ -334,58 +334,51 @@ Andernfalls kann es zu Fehlfunktionen [z.B. beim Import] kommen.</translation>
         <translation>Löschen Einstellungen:</translation>
     </message>
     <message>
-        <location filename="deleteconfig.ui" line="60"/>
+        <location filename="deleteconfig.ui" line="63"/>
+        <source>Remove all data [Database and Files]</source>
+        <translation>Alle Daten entfernen [Datenbank und Dateien]</translation>
+    </message>
+    <message>
+        <location filename="deleteconfig.ui" line="73"/>
+        <source>Remove only entry in database</source>
+        <translation>Nur Datenbankeintrag entfernen</translation>
+    </message>
+    <message>
         <source>Delete:</source>
-        <translation>Lösche:</translation>
+        <translation type="obsolete">Lösche:</translation>
     </message>
     <message>
-        <location filename="deleteconfig.ui" line="108"/>
         <source>Config</source>
-        <translation>Konfiguration</translation>
+        <translation type="obsolete">Konfiguration</translation>
     </message>
     <message>
-        <location filename="deleteconfig.ui" line="156"/>
-        <source>CA [.pem]</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="deleteconfig.ui" line="204"/>
         <source>Certificate [.pem]</source>
-        <translation>Zertifikat [.pem]</translation>
+        <translation type="obsolete">Zertifikat [.pem]</translation>
     </message>
     <message>
-        <location filename="deleteconfig.ui" line="252"/>
         <source>Key [.key]</source>
-        <translation>Schlüssel [.key]</translation>
+        <translation type="obsolete">Schlüssel [.key]</translation>
     </message>
     <message>
-        <location filename="deleteconfig.ui" line="300"/>
         <source>Userdata [.dat]</source>
         <oldsource>Userdata [auth.dat]</oldsource>
-        <translation>Benutzerdaten [.dat]</translation>
+        <translation type="obsolete">Benutzerdaten [.dat]</translation>
     </message>
     <message>
-        <location filename="deleteconfig.ui" line="348"/>
         <source>Scripts [scripts.conf]</source>
-        <translation>Skripte [scripts.conf]</translation>
+        <translation type="obsolete">Skripte [scripts.conf]</translation>
     </message>
     <message>
-        <location filename="deleteconfig.ui" line="396"/>
         <source>Directory if empty</source>
-        <translation>Verzeichnis, wenn leer</translation>
+        <translation type="obsolete">Verzeichnis, wenn leer</translation>
     </message>
     <message>
-        <location filename="deleteconfig.ui" line="444"/>
-        <source>Pkcs12 [.p12]</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="deleteconfig.ui" line="467"/>
+        <location filename="deleteconfig.ui" line="99"/>
         <source>     &amp;Delete</source>
         <translation>  &amp;Löschen</translation>
     </message>
     <message>
-        <location filename="deleteconfig.ui" line="505"/>
+        <location filename="deleteconfig.ui" line="137"/>
         <source>     &amp;Close</source>
         <translation>  &amp;Schließen</translation>
     </message>
@@ -438,123 +431,123 @@ Andernfalls kann es zu Fehlfunktionen [z.B. beim Import] kommen.</translation>
         <translation>Übersicht:</translation>
     </message>
     <message>
-        <location filename="wizard/wiz_endpage.ui" line="44"/>
+        <location filename="wizard/wiz_endpage.ui" line="50"/>
         <source>Remote IP:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="wizard/wiz_endpage.ui" line="60"/>
-        <location filename="wizard/wiz_endpage.ui" line="89"/>
-        <location filename="wizard/wiz_endpage.ui" line="118"/>
-        <location filename="wizard/wiz_endpage.ui" line="297"/>
-        <location filename="wizard/wiz_endpage.ui" line="326"/>
-        <location filename="wizard/wiz_endpage.ui" line="381"/>
-        <location filename="wizard/wiz_endpage.ui" line="397"/>
-        <location filename="wizard/wiz_endpage.ui" line="413"/>
-        <location filename="wizard/wiz_endpage.ui" line="481"/>
-        <location filename="wizard/wiz_endpage.ui" line="497"/>
-        <location filename="wizard/wiz_endpage.ui" line="513"/>
-        <location filename="wizard/wiz_endpage.ui" line="529"/>
+        <location filename="wizard/wiz_endpage.ui" line="67"/>
+        <location filename="wizard/wiz_endpage.ui" line="175"/>
+        <location filename="wizard/wiz_endpage.ui" line="192"/>
+        <location filename="wizard/wiz_endpage.ui" line="269"/>
+        <location filename="wizard/wiz_endpage.ui" line="292"/>
+        <location filename="wizard/wiz_endpage.ui" line="315"/>
+        <location filename="wizard/wiz_endpage.ui" line="338"/>
+        <location filename="wizard/wiz_endpage.ui" line="355"/>
+        <location filename="wizard/wiz_endpage.ui" line="372"/>
+        <location filename="wizard/wiz_endpage.ui" line="389"/>
+        <location filename="wizard/wiz_endpage.ui" line="406"/>
+        <location filename="wizard/wiz_endpage.ui" line="423"/>
         <source>TextLabel</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="wizard/wiz_endpage.ui" line="73"/>
+        <location filename="wizard/wiz_endpage.ui" line="182"/>
         <source>Port:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="wizard/wiz_endpage.ui" line="102"/>
+        <location filename="wizard/wiz_endpage.ui" line="57"/>
         <source>Protocol:</source>
         <translation>Protokoll:</translation>
     </message>
     <message>
-        <location filename="wizard/wiz_endpage.ui" line="131"/>
+        <location filename="wizard/wiz_endpage.ui" line="74"/>
         <source>CA:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="wizard/wiz_endpage.ui" line="167"/>
+        <location filename="wizard/wiz_endpage.ui" line="98"/>
         <source>Certificate:</source>
         <translation>Zertifikat:</translation>
     </message>
     <message>
-        <location filename="wizard/wiz_endpage.ui" line="203"/>
+        <location filename="wizard/wiz_endpage.ui" line="122"/>
         <source>Key</source>
         <translation>Schlüssel</translation>
     </message>
     <message>
-        <location filename="wizard/wiz_endpage.ui" line="240"/>
+        <location filename="wizard/wiz_endpage.ui" line="147"/>
         <source>Certificate type:</source>
         <translation>Zertifikat Typ:</translation>
     </message>
     <message>
-        <location filename="wizard/wiz_endpage.ui" line="256"/>
+        <location filename="wizard/wiz_endpage.ui" line="157"/>
         <source>Text</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="wizard/wiz_endpage.ui" line="269"/>
+        <location filename="wizard/wiz_endpage.ui" line="203"/>
         <source>Advanced:</source>
         <translation>Erweitert:</translation>
     </message>
     <message>
-        <location filename="wizard/wiz_endpage.ui" line="281"/>
+        <location filename="wizard/wiz_endpage.ui" line="253"/>
         <source>MSSFIX:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="wizard/wiz_endpage.ui" line="310"/>
+        <location filename="wizard/wiz_endpage.ui" line="345"/>
         <source>Route method:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="wizard/wiz_endpage.ui" line="339"/>
+        <location filename="wizard/wiz_endpage.ui" line="322"/>
         <source>Mute:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="wizard/wiz_endpage.ui" line="352"/>
+        <location filename="wizard/wiz_endpage.ui" line="276"/>
         <source>Verbosity:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="wizard/wiz_endpage.ui" line="365"/>
+        <location filename="wizard/wiz_endpage.ui" line="299"/>
         <source>Route delay:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="wizard/wiz_endpage.ui" line="426"/>
+        <location filename="wizard/wiz_endpage.ui" line="379"/>
         <source>Auth user/pass:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="wizard/wiz_endpage.ui" line="439"/>
+        <location filename="wizard/wiz_endpage.ui" line="413"/>
         <source>Comp-LZO:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="wizard/wiz_endpage.ui" line="452"/>
+        <location filename="wizard/wiz_endpage.ui" line="362"/>
         <source>Float:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="wizard/wiz_endpage.ui" line="465"/>
+        <location filename="wizard/wiz_endpage.ui" line="396"/>
         <source>No bind:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="wizard/wiz_endpage.ui" line="542"/>
+        <location filename="wizard/wiz_endpage.ui" line="224"/>
         <source>Windir:</source>
         <translation>Win-Verz:</translation>
     </message>
     <message>
-        <location filename="wizard/wiz_endpage.ui" line="558"/>
+        <location filename="wizard/wiz_endpage.ui" line="246"/>
         <source>default</source>
         <translation>Standard</translation>
     </message>
     <message>
-        <location filename="wizard/wiz_endpage.ui" line="572"/>
+        <location filename="wizard/wiz_endpage.ui" line="440"/>
         <source>MTU [1500], dev tun, persist key and persist tun will be added automatically.</source>
         <translation>MTU [1500], dev tun, persist key und persist tun werden automatisch erstellt.</translation>
     </message>
@@ -639,6 +632,119 @@ Andernfalls kann es zu Fehlfunktionen [z.B. beim Import] kommen.</translation>
     </message>
 </context>
 <context>
+    <name>FrmUpdateSettings</name>
+    <message>
+        <location filename="frmupdatesettings.ui" line="14"/>
+        <source>Update settings</source>
+        <translation>Aktualisierungs-Einstellungen</translation>
+    </message>
+    <message>
+        <location filename="frmupdatesettings.ui" line="26"/>
+        <source>General:</source>
+        <translation>Allgemein:</translation>
+    </message>
+    <message>
+        <location filename="frmupdatesettings.ui" line="73"/>
+        <source>Enable auto update</source>
+        <translation>Automatische Aktualisierung aktivieren</translation>
+    </message>
+    <message>
+        <location filename="frmupdatesettings.ui" line="87"/>
+        <source>Source:</source>
+        <translation>Quelle:</translation>
+    </message>
+    <message>
+        <location filename="frmupdatesettings.ui" line="102"/>
+        <source>Url:</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="frmupdatesettings.ui" line="121"/>
+        <source>Change</source>
+        <translation>Ändern</translation>
+    </message>
+    <message>
+        <location filename="frmupdatesettings.ui" line="138"/>
+        <source>Proxy:</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="frmupdatesettings.ui" line="179"/>
+        <source>Direct connection</source>
+        <translation>Direkte Verbindung</translation>
+    </message>
+    <message>
+        <location filename="frmupdatesettings.ui" line="215"/>
+        <source>Use HTTP proxy</source>
+        <translation>HTTP Proxy benutzen</translation>
+    </message>
+    <message>
+        <location filename="frmupdatesettings.ui" line="230"/>
+        <source>IP:</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="frmupdatesettings.ui" line="245"/>
+        <source>Please enter the proxy ip</source>
+        <translation>Bitte geben Sie eine Proxy IP ein</translation>
+    </message>
+    <message>
+        <location filename="frmupdatesettings.ui" line="252"/>
+        <source>Port:</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="frmupdatesettings.ui" line="273"/>
+        <source>8080</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="frmupdatesettings.ui" line="280"/>
+        <source>User:</source>
+        <translation>Benutzer:</translation>
+    </message>
+    <message>
+        <location filename="frmupdatesettings.ui" line="287"/>
+        <source>Password:</source>
+        <translation>Kennwort:</translation>
+    </message>
+    <message>
+        <location filename="frmupdatesettings.ui" line="302"/>
+        <source>Please enter the username</source>
+        <translation>Bitte geben Sie einen Benutzernamen ein</translation>
+    </message>
+    <message>
+        <location filename="frmupdatesettings.ui" line="320"/>
+        <source>Please enter a password</source>
+        <translation>Bitte geben Sie ein Kennwort ein</translation>
+    </message>
+    <message>
+        <location filename="frmupdatesettings.ui" line="344"/>
+        <source>Cancel</source>
+        <translation>Abbrechen</translation>
+    </message>
+    <message>
+        <location filename="frmupdatesettings.ui" line="366"/>
+        <source>Save</source>
+        <translation>Speichern</translation>
+    </message>
+    <message>
+        <location filename="frmupdatesettings.ui" line="383"/>
+        <source>Download source:</source>
+        <translation>Download-Quelle:</translation>
+    </message>
+    <message>
+        <location filename="frmupdatesettings.ui" line="398"/>
+        <source>Securepoint</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="frmupdatesettings.ui" line="408"/>
+        <source>SourceForge</source>
+        <translation></translation>
+    </message>
+</context>
+<context>
     <name>GeneralPage</name>
     <message>
         <location filename="wizard/wiz_generalpage.ui" line="14"/>
@@ -669,12 +775,12 @@ Andernfalls kann es zu Fehlfunktionen [z.B. beim Import] kommen.</translation>
 <context>
     <name>ImportConfig</name>
     <message>
-        <location filename="importconfig.cpp" line="55"/>
+        <location filename="importconfig.cpp" line="79"/>
         <source>Find import file</source>
         <translation>Import Datei finden</translation>
     </message>
     <message>
-        <location filename="importconfig.cpp" line="55"/>
+        <location filename="importconfig.cpp" line="79"/>
         <source>Import files (*.crypt)</source>
         <translation>Importdateien (*.crypt)</translation>
     </message>
@@ -1497,17 +1603,17 @@ Bitte setzen Sie sich mit Ihrem Systemadministrator in Verbindung.</translation>
         <translation type="obsolete">- Start Konfiguration</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="758"/>
+        <location filename="preferences.cpp" line="688"/>
         <source>Connect</source>
         <translation>Verbinden</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="771"/>
+        <location filename="preferences.cpp" line="701"/>
         <source>Show log</source>
         <translation>Log zeigen</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="776"/>
+        <location filename="preferences.cpp" line="706"/>
         <source>Quick edit</source>
         <translation>Quick Edit</translation>
     </message>
@@ -1520,12 +1626,12 @@ Bitte setzen Sie sich mit Ihrem Systemadministrator in Verbindung.</translation>
         <translation type="obsolete">&amp;Proxy Einstellungen</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="811"/>
+        <location filename="preferences.cpp" line="741"/>
         <source>&amp;Information</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="815"/>
+        <location filename="preferences.cpp" line="745"/>
         <source>&amp;Quit</source>
         <translation>&amp;Beenden</translation>
     </message>
@@ -1628,7 +1734,7 @@ Bitte setzen Sie sich mit Ihrem Systemadministrator in Verbindung.</translation>
         <translation type="obsolete">Verschlüsselte Benutzerdaten wurden erfolgreich entfernt!</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="763"/>
+        <location filename="preferences.cpp" line="693"/>
         <source>Disconnect</source>
         <translation>Trennen</translation>
     </message>
@@ -1646,7 +1752,7 @@ Bitte setzen Sie sich mit Ihrem Systemadministrator in Verbindung.</translation>
         <translation></translation>
     </message>
     <message>
-        <location filename="preferences.ui" line="123"/>
+        <location filename="preferences.ui" line="126"/>
         <source>     &amp;Close</source>
         <translation>&amp;Schließen</translation>
     </message>
@@ -1659,12 +1765,12 @@ Bitte setzen Sie sich mit Ihrem Systemadministrator in Verbindung.</translation>
         <translation type="obsolete">Verbindung:</translation>
     </message>
     <message>
-        <location filename="preferences.ui" line="552"/>
+        <location filename="preferences.ui" line="490"/>
         <source>Show Ballon:</source>
         <translation>Ballon anzeigen:</translation>
     </message>
     <message>
-        <location filename="preferences.ui" line="288"/>
+        <location filename="preferences.ui" line="251"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -1703,20 +1809,64 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;-noService&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="preferences.ui" line="246"/>
-        <location filename="preferences.ui" line="274"/>
-        <location filename="preferences.ui" line="308"/>
-        <location filename="preferences.ui" line="375"/>
-        <location filename="preferences.ui" line="443"/>
-        <location filename="preferences.ui" line="573"/>
-        <location filename="preferences.ui" line="603"/>
-        <location filename="preferences.ui" line="633"/>
-        <location filename="preferences.ui" line="780"/>
+        <location filename="preferences.ui" line="114"/>
+        <source>Close window</source>
+        <translation>Fenster schließen</translation>
+    </message>
+    <message>
+        <location filename="preferences.ui" line="237"/>
+        <location filename="preferences.ui" line="271"/>
+        <location filename="preferences.ui" line="321"/>
+        <location filename="preferences.ui" line="389"/>
+        <location filename="preferences.ui" line="440"/>
+        <location filename="preferences.ui" line="511"/>
+        <location filename="preferences.ui" line="541"/>
+        <location filename="preferences.ui" line="571"/>
+        <location filename="preferences.ui" line="718"/>
         <source>TextLabel</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preferences.ui" line="559"/>
+        <location filename="preferences.ui" line="311"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt; font-weight:600; text-decoration: underline;&quot;&gt;Description:&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;If this option is yes, the client will be automatically do a reconnect, if the client exit with an error.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;This option is necessary to connect with an OTP(Two-factor authentication with One Time Password) conncetion.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt; font-weight:600; text-decoration: underline;&quot;&gt;Beschreibung:&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Bei gesetzter Option verbindet sich der Client bei einem Fehler neu.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Bei einer OTP (Zwei-Faktor-Authentifzierung - One Time Password) Verbindung muss diese Option gesetzt sein.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location filename="preferences.ui" line="425"/>
+        <source>Check on shutdown:</source>
+        <translation>Beim Herunterfahren überprüfen:</translation>
+    </message>
+    <message>
+        <location filename="preferences.ui" line="432"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt; font-weight:600; text-decoration: underline;&quot;&gt;Description:&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;If this option is yes, the client will be prevent the windows shutdown if a connection is online.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt; font-weight:600; text-decoration: underline;&quot;&gt;Beschreibung:&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Wenn diese Option gesetzt ist, wird das Herunterfahren von Windows bei aktiver Verbindung verhindert.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location filename="preferences.ui" line="497"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -1779,12 +1929,12 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Diese Einstellung hat keine Auswirkung auf den Privaten Schlüüsel Dialog!&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="preferences.ui" line="610"/>
+        <location filename="preferences.ui" line="548"/>
         <source>Auto reconnect:</source>
         <translation>Auto Neustart:</translation>
     </message>
     <message>
-        <location filename="preferences.ui" line="617"/>
+        <location filename="preferences.ui" line="555"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -1895,7 +2045,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Kein PopUp:</translation>
     </message>
     <message>
-        <location filename="preferences.ui" line="587"/>
+        <location filename="preferences.ui" line="525"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -2050,12 +2200,10 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Bei gesetzter Option wird immer nach dem privaten Schlüssel gefragt.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="preferences.ui" line="253"/>
         <source>Search Directory:</source>
-        <translation>Suchverzeichnis:</translation>
+        <translation type="obsolete">Suchverzeichnis:</translation>
     </message>
     <message>
-        <location filename="preferences.ui" line="260"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -2068,7 +2216,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt; font-weight:600; text-decoration: underline;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt; font-weight:600; text-decoration: underline;&quot;&gt;Example:&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;-searchDir &amp;quot;c:\example\example2&amp;quot;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
@@ -2082,7 +2230,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;-searchDir &amp;quot;c:\example\example2&amp;quot;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="preferences.ui" line="222"/>
+        <location filename="preferences.ui" line="213"/>
         <source>Language:</source>
         <translation>Sprache:</translation>
     </message>
@@ -2092,22 +2240,21 @@ p, li { white-space: pre-wrap; }
         <translation>Erweiterte Einstellungen anzeigen</translation>
     </message>
     <message>
-        <location filename="preferences.ui" line="176"/>
+        <location filename="preferences.ui" line="179"/>
         <source>Advanced:</source>
         <translation>Erweitert:</translation>
     </message>
     <message>
-        <location filename="preferences.ui" line="192"/>
+        <location filename="preferences.ui" line="195"/>
         <source>General</source>
         <translation>Allgemein</translation>
     </message>
     <message>
-        <location filename="preferences.ui" line="204"/>
         <source>General:</source>
-        <translation>Allgemein:</translation>
+        <translation type="obsolete">Allgemein:</translation>
     </message>
     <message>
-        <location filename="preferences.ui" line="229"/>
+        <location filename="preferences.ui" line="220"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -2140,17 +2287,17 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt; font-style:italic;&quot;&gt;Diese Einstellung hat keinen Effekt auf Nachrichten vom Dienst.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="preferences.ui" line="281"/>
+        <location filename="preferences.ui" line="244"/>
         <source>Mode:</source>
         <translation>Modus:</translation>
     </message>
     <message>
-        <location filename="preferences.ui" line="354"/>
-        <source>No Interact:</source>
-        <translation>Kein Interact:</translation>
+        <location filename="preferences.ui" line="304"/>
+        <source>Interact:</source>
+        <oldsource>No Interact:</oldsource>
+        <translation>Interact:</translation>
     </message>
     <message>
-        <location filename="preferences.ui" line="361"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -2163,7 +2310,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt; font-weight:600; text-decoration: underline;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt; font-weight:600; text-decoration: underline;&quot;&gt;Example:&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;-noInteract&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
@@ -2177,7 +2324,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;-noInteract&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="preferences.ui" line="401"/>
+        <location filename="preferences.ui" line="347"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -2186,12 +2333,12 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="preferences.ui" line="428"/>
+        <location filename="preferences.ui" line="374"/>
         <source>Startup on windows:</source>
         <translation>Starten beim Windows-Start:</translation>
     </message>
     <message>
-        <location filename="preferences.ui" line="435"/>
+        <location filename="preferences.ui" line="381"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -2206,57 +2353,26 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Bei gesetzter Option startet der Client automatisch beim Windows-Start.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="preferences.ui" line="478"/>
-        <source>Delay start config:</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="preferences.ui" line="492"/>
-        <source>No delay</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="preferences.ui" line="497"/>
-        <source>30 sec.</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="preferences.ui" line="502"/>
-        <source>60 sec.</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="preferences.ui" line="507"/>
-        <source>90 sec.</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="preferences.ui" line="512"/>
-        <source>120 sec.</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="preferences.ui" line="525"/>
+        <location filename="preferences.ui" line="475"/>
         <source>View</source>
         <translation>Ansicht</translation>
     </message>
     <message>
-        <location filename="preferences.ui" line="537"/>
         <source>View:</source>
-        <translation>Ansicht:</translation>
+        <translation type="obsolete">Ansicht:</translation>
     </message>
     <message>
-        <location filename="preferences.ui" line="580"/>
+        <location filename="preferences.ui" line="518"/>
         <source>PopUp with start config:</source>
         <translation>PopUp mit Startkonfiguration:</translation>
     </message>
     <message>
-        <location filename="preferences.ui" line="757"/>
+        <location filename="preferences.ui" line="695"/>
         <source>Show Splashscreen:</source>
         <translation>Splashscreen zeigen:</translation>
     </message>
     <message>
-        <location filename="preferences.ui" line="764"/>
+        <location filename="preferences.ui" line="702"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -2287,78 +2403,135 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;- start &amp;quot;c:\example.ovpn&amp;quot; -noSplash&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="preferences.ui" line="829"/>
+        <location filename="preferences.ui" line="766"/>
         <source>Saved Data</source>
         <translation>Gespeicherte Daten</translation>
     </message>
     <message>
-        <location filename="preferences.ui" line="841"/>
+        <location filename="preferences.ui" line="778"/>
         <source>Saved credentials:</source>
         <translation>Gespeicherte Benutzerdaten:</translation>
     </message>
     <message>
-        <location filename="preferences.ui" line="862"/>
+        <location filename="preferences.ui" line="799"/>
         <source>Show</source>
         <translation>Anzeigen</translation>
     </message>
     <message>
-        <location filename="preferences.ui" line="879"/>
+        <location filename="preferences.ui" line="816"/>
         <source>Show a dialog with the saved data</source>
         <translation>Öffnet ein Fenster mit den Benutzerdaten</translation>
     </message>
     <message>
-        <location filename="preferences.ui" line="893"/>
+        <location filename="preferences.ui" line="830"/>
         <source>Remove all data:</source>
         <translation>Alle Daten löschen:</translation>
     </message>
     <message>
-        <location filename="preferences.ui" line="914"/>
-        <location filename="preferences.ui" line="971"/>
+        <location filename="preferences.ui" line="851"/>
+        <location filename="preferences.ui" line="908"/>
         <source>Remove</source>
         <translation>Löschen</translation>
     </message>
     <message>
-        <location filename="preferences.ui" line="931"/>
+        <location filename="preferences.ui" line="868"/>
         <source>Remove all saved data</source>
         <translation>Alle Daten löschen</translation>
     </message>
     <message>
-        <location filename="preferences.ui" line="938"/>
+        <location filename="preferences.ui" line="875"/>
         <source>Tap</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preferences.ui" line="950"/>
+        <location filename="preferences.ui" line="887"/>
         <source>Remove all tap devices:</source>
         <translation>Alle Tap-Adapter entfernen:</translation>
     </message>
     <message>
-        <location filename="preferences.ui" line="994"/>
+        <location filename="preferences.ui" line="931"/>
         <source>This removes all tap devices on the system.</source>
         <translation>Diese Aktion entfernt alle Tap-Adapter vom System.</translation>
     </message>
     <message>
-        <location filename="preferences.ui" line="1008"/>
+        <location filename="preferences.ui" line="945"/>
         <source>Add a new tap device:</source>
         <translation>Ein neuen Tap-Adapter hinzufügen:</translation>
     </message>
     <message>
-        <location filename="preferences.ui" line="1029"/>
+        <location filename="preferences.ui" line="966"/>
         <source>Add</source>
         <translation>Hinzufügen</translation>
     </message>
     <message>
-        <location filename="preferences.ui" line="1052"/>
+        <location filename="preferences.ui" line="989"/>
         <source>This add a new tap device on the system.</source>
         <translation>Ein neuen Tap-Adapter im System hinzufügen.</translation>
     </message>
     <message>
-        <location filename="preferences.ui" line="1202"/>
+        <location filename="preferences.ui" line="1006"/>
+        <source>Installed TAP device count:</source>
+        <translation>Anzahl installierter TAP Geräte: </translation>
+    </message>
+    <message>
+        <location filename="preferences.ui" line="1013"/>
+        <location filename="preferences.ui" line="1069"/>
+        <source>n/a</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="preferences.ui" line="1035"/>
+        <location filename="preferences.ui" line="1164"/>
+        <source>Update</source>
+        <translation>Aktualisierung</translation>
+    </message>
+    <message>
+        <location filename="preferences.ui" line="1047"/>
+        <source>Update:</source>
+        <translation>Aktualisierung:</translation>
+    </message>
+    <message>
+        <location filename="preferences.ui" line="1062"/>
+        <source>State:</source>
+        <translation>Status:</translation>
+    </message>
+    <message>
+        <location filename="preferences.ui" line="1100"/>
+        <source>Check for updates</source>
+        <translation>Auf Akutalisierungen überprüfen</translation>
+    </message>
+    <message>
+        <location filename="preferences.ui" line="1112"/>
+        <source>Check</source>
+        <translation>Überprüfen</translation>
+    </message>
+    <message>
+        <location filename="preferences.ui" line="1138"/>
+        <source>Settings</source>
+        <translation>Einstellungen</translation>
+    </message>
+    <message>
+        <location filename="preferences.ui" line="1279"/>
+        <source>Create a new vpn connection</source>
+        <translation>Eine neue VPN-Verbindung erstellen</translation>
+    </message>
+    <message>
+        <location filename="preferences.ui" line="1291"/>
         <source>     New</source>
         <translation>  Neu</translation>
     </message>
     <message>
-        <location filename="preferences.ui" line="1272"/>
+        <location filename="preferences.ui" line="1317"/>
+        <source>Refresh connection list</source>
+        <translation>Verbindungsliste aktualisieren</translation>
+    </message>
+    <message>
+        <location filename="preferences.ui" line="1355"/>
+        <source>Import an existing connection</source>
+        <translation>Eine bestehende Konfiguration importieren</translation>
+    </message>
+    <message>
+        <location filename="preferences.ui" line="1367"/>
         <source>     Import</source>
         <translation> Importieren</translation>
     </message>
@@ -2453,294 +2626,295 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QObject</name>
     <message>
-        <location filename="main.cpp" line="107"/>
-        <location filename="preferences.cpp" line="62"/>
-        <location filename="preferences.cpp" line="848"/>
-        <location filename="preferences.cpp" line="927"/>
-        <location filename="preferences.cpp" line="934"/>
-        <location filename="preferences.cpp" line="1183"/>
-        <location filename="preferences.cpp" line="1201"/>
-        <location filename="preferences.cpp" line="1225"/>
+        <location filename="main.cpp" line="101"/>
+        <location filename="preferences.cpp" line="60"/>
+        <location filename="preferences.cpp" line="778"/>
+        <location filename="preferences.cpp" line="857"/>
+        <location filename="preferences.cpp" line="864"/>
+        <location filename="preferences.cpp" line="1101"/>
+        <location filename="preferences.cpp" line="1121"/>
+        <location filename="preferences.cpp" line="1147"/>
         <source>Securepoint SSL VPN</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="main.cpp" line="107"/>
+        <location filename="main.cpp" line="101"/>
         <source>No systray found on this system.</source>
         <translation>Es wurde kein Systray gefunden.</translation>
     </message>
     <message>
-        <location filename="main.cpp" line="131"/>
+        <location filename="main.cpp" line="125"/>
         <source>Can&apos;t connect to the ssl vpn service. Application is shuting down!</source>
         <translation>Es kann keine Verbindung zum SSL-Dienst hergestellt werden. Die Anwendung wird beendet!</translation>
     </message>
     <message>
-        <location filename="configexport.cpp" line="62"/>
+        <location filename="configexport.cpp" line="86"/>
         <source>Invalid path specify[empty]!</source>
         <translation>Ungültiger Pfad [leer]!</translation>
     </message>
     <message>
-        <location filename="configexport.cpp" line="68"/>
+        <location filename="configexport.cpp" line="92"/>
         <source>Invalid password specify[empty]!</source>
         <translation>Ungültiges Kennwort [leer]!</translation>
     </message>
     <message>
-        <location filename="configexport.cpp" line="79"/>
+        <location filename="configexport.cpp" line="103"/>
         <source>Can&apos;t open config!</source>
         <translation>Konfiguration kann nicht geöffnet werden!</translation>
     </message>
     <message>
-        <location filename="configexport.cpp" line="79"/>
-        <location filename="configexport.cpp" line="170"/>
-        <location filename="configexport.cpp" line="180"/>
-        <location filename="configexport.cpp" line="213"/>
-        <location filename="configexport.cpp" line="242"/>
-        <location filename="configexport.cpp" line="245"/>
-        <location filename="configexport.cpp" line="260"/>
-        <location filename="configexport.cpp" line="265"/>
-        <location filename="configexport.cpp" line="268"/>
+        <location filename="configexport.cpp" line="103"/>
+        <location filename="configexport.cpp" line="194"/>
+        <location filename="configexport.cpp" line="204"/>
+        <location filename="configexport.cpp" line="237"/>
+        <location filename="configexport.cpp" line="266"/>
+        <location filename="configexport.cpp" line="269"/>
+        <location filename="configexport.cpp" line="284"/>
+        <location filename="configexport.cpp" line="289"/>
+        <location filename="configexport.cpp" line="292"/>
         <source>Export Configuration</source>
         <translation>Konfiguration exportieren</translation>
     </message>
     <message>
-        <location filename="configexport.cpp" line="170"/>
-        <location filename="importconfig.cpp" line="131"/>
+        <location filename="configexport.cpp" line="194"/>
+        <location filename="importconfig.cpp" line="155"/>
         <location filename="wizard/wiz_vpnwizard.cpp" line="57"/>
         <source>Unable to create directory!</source>
         <translation>Verzeichnis kann nicht erstellt werden!</translation>
     </message>
     <message>
-        <location filename="configexport.cpp" line="213"/>
+        <location filename="configexport.cpp" line="237"/>
         <source>Can&apos;t zip the data.</source>
         <translation>Daten können nicht entpackt werden.</translation>
     </message>
     <message>
-        <location filename="configexport.cpp" line="242"/>
+        <location filename="configexport.cpp" line="266"/>
         <source>Can&apos;t open crypt file.</source>
         <translation>Kryptdatei kann nicht geöffnet werden.</translation>
     </message>
     <message>
-        <location filename="configexport.cpp" line="245"/>
+        <location filename="configexport.cpp" line="269"/>
         <source>Can&apos;t read zip data.</source>
         <translation>Gepackte Daten können nicht gelesen werden.</translation>
     </message>
     <message>
-        <location filename="configexport.cpp" line="260"/>
+        <location filename="configexport.cpp" line="284"/>
         <source>No configuration</source>
         <translation>Keine Konfiguration</translation>
     </message>
     <message>
-        <location filename="configexport.cpp" line="268"/>
+        <location filename="configexport.cpp" line="292"/>
         <source>Export successfully ended!</source>
         <translation>Export erfolgreich beendet!</translation>
     </message>
     <message>
-        <location filename="deleteconfig.cpp" line="69"/>
         <source>Can&apos;t remove a start config. Please release it first.</source>
-        <translation>Startkonfiguration kann nicht entfernt werden, bitte lösen Sie sie zuerst.</translation>
+        <translation type="obsolete">Startkonfiguration kann nicht entfernt werden, bitte lösen Sie sie zuerst.</translation>
     </message>
     <message>
-        <location filename="deleteconfig.cpp" line="193"/>
+        <location filename="deleteconfig.cpp" line="331"/>
         <source>Do you want to open the explorer to check the files?
 Otherwise maybe malfunctions can be occurred.</source>
         <translation>Möchten Sie den Windows Explorer öffnen um die Dateien zu überprüfen?
 Andernfalls kann es zu Fehlfunktionen [z.B. beim Import] kommen.</translation>
     </message>
     <message>
-        <location filename="frmgetuserdata.cpp" line="59"/>
+        <location filename="frmgetuserdata.cpp" line="61"/>
         <source>The private key will be set to default &lt;insecure&gt;!</source>
         <translation>Der private Schlüssel wird auf &lt;insecure&gt; gesetzt [Standard]!</translation>
     </message>
     <message>
-        <location filename="frmgetuserdata.cpp" line="107"/>
+        <location filename="frmgetuserdata.cpp" line="109"/>
         <source>Username:</source>
         <translation>Benutzername:</translation>
     </message>
     <message>
-        <location filename="frmgetuserdata.cpp" line="111"/>
+        <location filename="frmgetuserdata.cpp" line="113"/>
         <source>Password:</source>
         <translation>Kennwort:</translation>
     </message>
     <message>
-        <location filename="frmgetuserdata.cpp" line="115"/>
+        <location filename="frmgetuserdata.cpp" line="117"/>
         <source>One Time Pad:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="frmgetuserdata.cpp" line="119"/>
+        <location filename="frmgetuserdata.cpp" line="121"/>
         <source>Crypt Key:</source>
         <translation>Privater Schlüssel:</translation>
     </message>
     <message>
-        <location filename="frmgetuserdata.cpp" line="123"/>
+        <location filename="frmgetuserdata.cpp" line="125"/>
         <source>Http user:</source>
         <translation>HTTP Benutzer:</translation>
     </message>
     <message>
-        <location filename="frmgetuserdata.cpp" line="127"/>
+        <location filename="frmgetuserdata.cpp" line="129"/>
         <source>Http password:</source>
         <translation>HTTP Kennwort:</translation>
     </message>
     <message>
-        <location filename="frmgetuserdata.cpp" line="131"/>
+        <location filename="frmgetuserdata.cpp" line="133"/>
         <source>PKCS12:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="frmgetuserdata.cpp" line="170"/>
+        <location filename="frmgetuserdata.cpp" line="192"/>
         <source>It is not possible to use an empty private key!</source>
         <translation>Es darf kein leerer privater Schlüssel benutzt werden!</translation>
     </message>
     <message>
-        <location filename="frmgetuserdata.cpp" line="170"/>
+        <location filename="frmgetuserdata.cpp" line="192"/>
         <source>Private Key</source>
         <translation>Privater Schlüssel</translation>
     </message>
     <message>
-        <location filename="frmsaveddata.cpp" line="44"/>
+        <location filename="frmsaveddata.cpp" line="74"/>
         <source>ID</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="frmsaveddata.cpp" line="44"/>
+        <location filename="frmsaveddata.cpp" line="74"/>
         <source>Name</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="frmsaveddata.cpp" line="44"/>
+        <location filename="frmsaveddata.cpp" line="74"/>
         <source>User</source>
         <translation>Benutzer</translation>
     </message>
     <message>
-        <location filename="frmsaveddata.cpp" line="44"/>
+        <location filename="frmsaveddata.cpp" line="74"/>
         <source>Password</source>
         <translation>Kennwort</translation>
     </message>
     <message>
-        <location filename="frmsaveddata.cpp" line="44"/>
+        <location filename="frmsaveddata.cpp" line="74"/>
         <source>Pkcs12</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="frmsaveddata.cpp" line="44"/>
+        <location filename="frmsaveddata.cpp" line="74"/>
         <source>HTTP User</source>
         <translation>HTTP-Benutzer</translation>
     </message>
     <message>
-        <location filename="frmsaveddata.cpp" line="44"/>
+        <location filename="frmsaveddata.cpp" line="74"/>
         <source>HTTP Password</source>
         <translation>HTTP-Kennwort</translation>
     </message>
     <message>
-        <location filename="frmsaveddata.cpp" line="60"/>
-        <location filename="frmsaveddata.cpp" line="61"/>
-        <location filename="frmsaveddata.cpp" line="62"/>
-        <location filename="frmsaveddata.cpp" line="64"/>
-        <location filename="frmsaveddata.cpp" line="65"/>
-        <location filename="preferences.cpp" line="399"/>
-        <location filename="preferences.cpp" line="400"/>
-        <location filename="preferences.cpp" line="401"/>
-        <location filename="preferences.cpp" line="402"/>
-        <location filename="preferences.cpp" line="403"/>
-        <location filename="preferences.cpp" line="405"/>
-        <location filename="preferences.cpp" line="1152"/>
+        <location filename="frmsaveddata.cpp" line="90"/>
+        <location filename="frmsaveddata.cpp" line="91"/>
+        <location filename="frmsaveddata.cpp" line="92"/>
+        <location filename="frmsaveddata.cpp" line="94"/>
+        <location filename="frmsaveddata.cpp" line="95"/>
+        <location filename="preferences.cpp" line="415"/>
+        <location filename="preferences.cpp" line="416"/>
+        <location filename="preferences.cpp" line="417"/>
+        <location filename="preferences.cpp" line="418"/>
+        <location filename="preferences.cpp" line="419"/>
+        <location filename="preferences.cpp" line="420"/>
+        <location filename="preferences.cpp" line="421"/>
+        <location filename="preferences.cpp" line="1070"/>
+        <location filename="preferences.cpp" line="1076"/>
+        <location filename="preferences.cpp" line="1082"/>
         <location filename="preferences.cpp" line="1158"/>
-        <location filename="preferences.cpp" line="1164"/>
-        <location filename="preferences.cpp" line="1235"/>
-        <location filename="preferences.cpp" line="1279"/>
-        <location filename="preferences.cpp" line="1285"/>
+        <location filename="preferences.cpp" line="1202"/>
+        <location filename="preferences.cpp" line="1208"/>
+        <location filename="preferences.cpp" line="1214"/>
         <source>yes</source>
         <translation>ja</translation>
     </message>
     <message>
-        <location filename="frmsaveddata.cpp" line="60"/>
-        <location filename="frmsaveddata.cpp" line="61"/>
-        <location filename="frmsaveddata.cpp" line="62"/>
-        <location filename="frmsaveddata.cpp" line="64"/>
-        <location filename="frmsaveddata.cpp" line="65"/>
-        <location filename="preferences.cpp" line="399"/>
-        <location filename="preferences.cpp" line="400"/>
-        <location filename="preferences.cpp" line="401"/>
-        <location filename="preferences.cpp" line="402"/>
-        <location filename="preferences.cpp" line="403"/>
-        <location filename="preferences.cpp" line="405"/>
-        <location filename="preferences.cpp" line="1152"/>
+        <location filename="frmsaveddata.cpp" line="90"/>
+        <location filename="frmsaveddata.cpp" line="91"/>
+        <location filename="frmsaveddata.cpp" line="92"/>
+        <location filename="frmsaveddata.cpp" line="94"/>
+        <location filename="frmsaveddata.cpp" line="95"/>
+        <location filename="preferences.cpp" line="415"/>
+        <location filename="preferences.cpp" line="416"/>
+        <location filename="preferences.cpp" line="417"/>
+        <location filename="preferences.cpp" line="418"/>
+        <location filename="preferences.cpp" line="419"/>
+        <location filename="preferences.cpp" line="420"/>
+        <location filename="preferences.cpp" line="421"/>
+        <location filename="preferences.cpp" line="1070"/>
+        <location filename="preferences.cpp" line="1076"/>
+        <location filename="preferences.cpp" line="1082"/>
         <location filename="preferences.cpp" line="1158"/>
-        <location filename="preferences.cpp" line="1164"/>
-        <location filename="preferences.cpp" line="1235"/>
-        <location filename="preferences.cpp" line="1279"/>
-        <location filename="preferences.cpp" line="1285"/>
+        <location filename="preferences.cpp" line="1202"/>
+        <location filename="preferences.cpp" line="1208"/>
+        <location filename="preferences.cpp" line="1214"/>
         <source>no</source>
         <translation>nein</translation>
     </message>
     <message>
-        <location filename="importconfig.cpp" line="82"/>
         <source>Unable to open configs.txt!</source>
-        <translation>Configs.txt kann nicht geöffnet werden!</translation>
+        <translation type="obsolete">Configs.txt kann nicht geöffnet werden!</translation>
     </message>
     <message>
-        <location filename="importconfig.cpp" line="82"/>
-        <location filename="importconfig.cpp" line="96"/>
-        <location filename="importconfig.cpp" line="102"/>
-        <location filename="importconfig.cpp" line="107"/>
+        <location filename="importconfig.cpp" line="120"/>
+        <location filename="importconfig.cpp" line="126"/>
         <location filename="importconfig.cpp" line="131"/>
-        <location filename="importconfig.cpp" line="136"/>
-        <location filename="importconfig.cpp" line="183"/>
-        <location filename="importconfig.cpp" line="199"/>
-        <location filename="importconfig.cpp" line="204"/>
-        <location filename="importconfig.cpp" line="210"/>
+        <location filename="importconfig.cpp" line="155"/>
+        <location filename="importconfig.cpp" line="160"/>
+        <location filename="importconfig.cpp" line="207"/>
+        <location filename="importconfig.cpp" line="230"/>
+        <location filename="importconfig.cpp" line="236"/>
         <location filename="importconfig.cpp" line="242"/>
+        <location filename="importconfig.cpp" line="274"/>
         <source>Import Configuration</source>
         <translation>Konfiguration importieren</translation>
     </message>
     <message>
-        <location filename="importconfig.cpp" line="96"/>
-        <location filename="importconfig.cpp" line="204"/>
+        <location filename="importconfig.cpp" line="120"/>
+        <location filename="importconfig.cpp" line="236"/>
         <source>Import successfully ended!</source>
         <translation>Import war erfolgreich!</translation>
     </message>
     <message>
-        <location filename="importconfig.cpp" line="102"/>
+        <location filename="importconfig.cpp" line="126"/>
         <source>No password specified!</source>
         <translation>Kein Kennwort angegeben!</translation>
     </message>
     <message>
-        <location filename="importconfig.cpp" line="107"/>
+        <location filename="importconfig.cpp" line="131"/>
         <source>No import name specified!</source>
         <translation>Kein Importname angegeben!</translation>
     </message>
     <message>
-        <location filename="importconfig.cpp" line="136"/>
+        <location filename="importconfig.cpp" line="160"/>
         <source>A diretory with this name already exists!</source>
         <translation>Ein Verzeichnis mit diesem Namen existiert bereits!</translation>
     </message>
     <message>
-        <location filename="importconfig.cpp" line="169"/>
+        <location filename="importconfig.cpp" line="193"/>
         <source>Can&apos;t open crypted file</source>
         <translation>Kryptdatei kann nicht geöffnet werden</translation>
     </message>
     <message>
-        <location filename="importconfig.cpp" line="176"/>
+        <location filename="importconfig.cpp" line="200"/>
         <source>Can&apos;t open zip file</source>
         <translation>Zip-Datei kann nicht geöffnet werden</translation>
     </message>
     <message>
-        <location filename="importconfig.cpp" line="199"/>
+        <location filename="importconfig.cpp" line="230"/>
         <source>Import failed! Removing empty directory.</source>
         <translation>Das Importieren ist fehlgeschlagen! Tempverzeichnis wird entfernt.</translation>
     </message>
     <message>
-        <location filename="importconfig.cpp" line="210"/>
+        <location filename="importconfig.cpp" line="242"/>
         <source>No import file selected!</source>
         <translation>Keine Importdatei selektiert!</translation>
     </message>
     <message>
-        <location filename="importconfig.cpp" line="249"/>
+        <location filename="importconfig.cpp" line="281"/>
         <source>Find ovpn file</source>
         <translation>Finde ovpn Datei</translation>
     </message>
     <message>
-        <location filename="importconfig.cpp" line="249"/>
+        <location filename="importconfig.cpp" line="281"/>
         <source>OpenVPN configs (*.ovpn)</source>
         <translation>OpenVPN Konfigurationen (*.ovpn)</translation>
     </message>
@@ -2757,99 +2931,99 @@ Andernfalls kann es zu Fehlfunktionen [z.B. beim Import] kommen.</translation>
         <translation>Nicht definiert</translation>
     </message>
     <message>
-        <location filename="manageconnection.cpp" line="278"/>
-        <location filename="manageconnection.cpp" line="1107"/>
+        <location filename="manageconnection.cpp" line="302"/>
+        <location filename="manageconnection.cpp" line="1131"/>
         <source>Unable to read file!</source>
         <translation>Datei kann nicht gelsen werden!</translation>
     </message>
     <message>
-        <location filename="manageconnection.cpp" line="278"/>
-        <location filename="manageconnection.cpp" line="1107"/>
+        <location filename="manageconnection.cpp" line="302"/>
+        <location filename="manageconnection.cpp" line="1131"/>
         <source>Load Configuration</source>
         <translation>Konfiguration laden</translation>
     </message>
     <message>
-        <location filename="manageconnection.cpp" line="774"/>
+        <location filename="manageconnection.cpp" line="798"/>
         <source>Please select a windows path!</source>
         <translation>Bitte geben Sie einen Windows-Pfad an!</translation>
     </message>
     <message>
-        <location filename="manageconnection.cpp" line="774"/>
-        <location filename="manageconnection.cpp" line="783"/>
+        <location filename="manageconnection.cpp" line="798"/>
+        <location filename="manageconnection.cpp" line="807"/>
         <source>Save Configuration</source>
         <translation>Konfiguration speichern</translation>
     </message>
     <message>
-        <location filename="manageconnection.cpp" line="783"/>
-        <location filename="manageconnection.cpp" line="963"/>
+        <location filename="manageconnection.cpp" line="807"/>
+        <location filename="manageconnection.cpp" line="987"/>
         <source>Unable to open file!</source>
         <translation>Datei kann nicht geöffnet werden!</translation>
     </message>
     <message>
-        <location filename="manageconnection.cpp" line="963"/>
-        <location filename="manageconnection.cpp" line="1000"/>
+        <location filename="manageconnection.cpp" line="987"/>
+        <location filename="manageconnection.cpp" line="1024"/>
         <source>Save scripts</source>
         <translation>Skript speichern</translation>
     </message>
     <message>
-        <location filename="manageconnection.cpp" line="1000"/>
+        <location filename="manageconnection.cpp" line="1024"/>
         <source>Can&apos;t delete scriptfile!</source>
         <translation>Skriptdatei kann nicht gelöscht werden!</translation>
     </message>
     <message>
-        <location filename="manageconnection.cpp" line="1011"/>
+        <location filename="manageconnection.cpp" line="1035"/>
         <location filename="wizard/wiz_certpage.cpp" line="42"/>
         <source>Find root ca</source>
         <translation>Finde root CA</translation>
     </message>
     <message>
-        <location filename="manageconnection.cpp" line="1011"/>
-        <location filename="manageconnection.cpp" line="1026"/>
+        <location filename="manageconnection.cpp" line="1035"/>
+        <location filename="manageconnection.cpp" line="1050"/>
         <source>Certificates (*.cert *.pem)</source>
         <translation>Zertifikate (*.cert *.pem)</translation>
     </message>
     <message>
-        <location filename="manageconnection.cpp" line="1026"/>
+        <location filename="manageconnection.cpp" line="1050"/>
         <location filename="wizard/wiz_certpage.cpp" line="57"/>
         <source>Find certificates</source>
         <translation>Finde Zertifikate</translation>
     </message>
     <message>
-        <location filename="manageconnection.cpp" line="1041"/>
+        <location filename="manageconnection.cpp" line="1065"/>
         <location filename="wizard/wiz_certpage.cpp" line="72"/>
         <source>Find key files</source>
         <translation>Finde Schlüssel Dateien</translation>
     </message>
     <message>
-        <location filename="manageconnection.cpp" line="1041"/>
+        <location filename="manageconnection.cpp" line="1065"/>
         <source>Key files (*.key *.pem)</source>
         <translation>Schlüssel Dateien (*.key *.pem)</translation>
     </message>
     <message>
-        <location filename="manageconnection.cpp" line="1056"/>
-        <location filename="manageconnection.cpp" line="1065"/>
-        <location filename="manageconnection.cpp" line="1074"/>
-        <location filename="manageconnection.cpp" line="1083"/>
-        <location filename="manageconnection.cpp" line="1092"/>
+        <location filename="manageconnection.cpp" line="1080"/>
+        <location filename="manageconnection.cpp" line="1089"/>
+        <location filename="manageconnection.cpp" line="1098"/>
+        <location filename="manageconnection.cpp" line="1107"/>
+        <location filename="manageconnection.cpp" line="1116"/>
         <source>Find executeable files</source>
         <translation>Finde ausführbare Datei</translation>
     </message>
     <message>
-        <location filename="manageconnection.cpp" line="1056"/>
-        <location filename="manageconnection.cpp" line="1065"/>
-        <location filename="manageconnection.cpp" line="1074"/>
-        <location filename="manageconnection.cpp" line="1083"/>
-        <location filename="manageconnection.cpp" line="1092"/>
+        <location filename="manageconnection.cpp" line="1080"/>
+        <location filename="manageconnection.cpp" line="1089"/>
+        <location filename="manageconnection.cpp" line="1098"/>
+        <location filename="manageconnection.cpp" line="1107"/>
+        <location filename="manageconnection.cpp" line="1116"/>
         <source>All files (*.*)</source>
         <translation>Alle Dateien (*.*)</translation>
     </message>
     <message>
-        <location filename="manageconnection.cpp" line="1200"/>
+        <location filename="manageconnection.cpp" line="1224"/>
         <source>Find pkcs12</source>
         <translation>PKCS12 finden</translation>
     </message>
     <message>
-        <location filename="manageconnection.cpp" line="1200"/>
+        <location filename="manageconnection.cpp" line="1224"/>
         <source>Pkcs12 (*.p12)</source>
         <translation></translation>
     </message>
@@ -2870,193 +3044,193 @@ Andernfalls kann es zu Fehlfunktionen [z.B. beim Import] kommen.</translation>
         <translation>Benutzerinformation</translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="102"/>
+        <location filename="openvpn.cpp" line="101"/>
         <source>Can&apos;t read scriptconfig file!</source>
         <translation>Scriptconfig Datei kann nicht gelesen werden!</translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="164"/>
+        <location filename="openvpn.cpp" line="153"/>
         <source>Starting : </source>
         <translation>Starte : </translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="186"/>
+        <location filename="openvpn.cpp" line="175"/>
         <source>Run Script:
 The process failed to start. Either the invoked program is missing, or you may have insufficient permissions to invoke the program.</source>
         <translation>Run Skript:
 Fehler: Der Prozess kann nicht gestartet werden. Entweder fehlt das Programm oder Sie besitzen nicht die nötigen Rechte.</translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="189"/>
+        <location filename="openvpn.cpp" line="178"/>
         <source>Run Script:
 The process crashed some time after starting successfully.</source>
         <translation>Run Skript:
 Fehler: Der Prozess beendete sich nachdem er erfolgreich gestartet wurde.</translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="192"/>
+        <location filename="openvpn.cpp" line="181"/>
         <source>Run Script:
 The last waitFor...() function timed out. The state of QProcess is unchanged, and you can try calling waitFor...() again.</source>
         <translation>Run Skript:
 Fehler: The last waitFor...() function timed out.</translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="195"/>
+        <location filename="openvpn.cpp" line="184"/>
         <source>Run Script:
 An error occurred when attempting to write to the process. For example, the process may not be running, or it may have closed its input channel.</source>
         <translation>Run Skript:
 Fehler: Vielleicht hat der Prozess einen geschlossenen &quot;Input channel&quot;.</translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="198"/>
+        <location filename="openvpn.cpp" line="187"/>
         <source>Run Script:
 An error occurred when attempting to read from the process. For example, the process may not be running.</source>
         <translation>Run Skript:
 Fehler: Vielleicht läuft der Prozess nicht.</translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="201"/>
+        <location filename="openvpn.cpp" line="190"/>
         <source>Run Script:
 An unknown error occurred. This is the default return value of error().</source>
         <translation>Run Skript:
 Fehler: Unbekannter Fehlercode ist aufgetreten.</translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="204"/>
+        <location filename="openvpn.cpp" line="193"/>
         <source>Run Script:
 No valid error code!</source>
         <translation>Run Skript:
 Fehler:Kein gültiger Fehlercode!</translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="346"/>
+        <location filename="openvpn.cpp" line="335"/>
         <source>The process failed to start. Either the invoked program is missing, or you may have insufficient permissions to invoke the program.</source>
         <translation> Der Prozess kann nicht gestartet werden. Entweder fehlt das Programm oder Sie besitzen nicht die nötigen Rechte.</translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="349"/>
+        <location filename="openvpn.cpp" line="338"/>
         <source>The process crashed some time after starting successfully.</source>
         <translation>Der Prozess beendete sich nachdem er erfolgreich gestartet wurde.</translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="352"/>
+        <location filename="openvpn.cpp" line="341"/>
         <source>The last waitFor...() function timed out. The state of QProcess is unchanged, and you can try calling waitFor...() again.</source>
         <translation>The last waitFor...() function timed out.</translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="355"/>
+        <location filename="openvpn.cpp" line="344"/>
         <source>An error occurred when attempting to write to the process. For example, the process may not be running, or it may have closed its input channel.</source>
         <translation>Fehler: Prozess hat eventuell einen geschlossenen &quot;Input channel&quot;.</translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="358"/>
+        <location filename="openvpn.cpp" line="347"/>
         <source>An error occurred when attempting to read from the process. For example, the process may not be running.</source>
         <translation>Fehler: Prozess läuft eventuell nicht.</translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="361"/>
+        <location filename="openvpn.cpp" line="350"/>
         <source>An unknown error occurred. This is the default return value of error().</source>
         <translation>Es ist ein unbekannter Fehler aufgetreten.</translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="364"/>
+        <location filename="openvpn.cpp" line="353"/>
         <source>No valid error code!</source>
         <translation>Kein gültiger Fehlercode!</translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="415"/>
+        <location filename="openvpn.cpp" line="404"/>
         <source>Disconnected from VPN.
 Name: </source>
         <translation>Getrennt von VPN.
 Name: </translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="604"/>
+        <location filename="openvpn.cpp" line="593"/>
         <source>All TAP-Win32 adapters on this system are currently in use</source>
         <translation>Alle TAP Win32 Adapter auf diesem System sind in momentan in Benutzung</translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="615"/>
+        <location filename="openvpn.cpp" line="604"/>
         <source>TLS Error: Need PEM pass phrase for private key</source>
         <translation>TLS Error: Need PEM pass phrase for private key</translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="618"/>
+        <location filename="openvpn.cpp" line="607"/>
         <source>TLS error! See log for details</source>
         <translation>TLS Fehler! Siehe Log für Details</translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="622"/>
+        <location filename="openvpn.cpp" line="611"/>
         <source>EVP_DecryptFinal:bad decrypt</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="625"/>
+        <location filename="openvpn.cpp" line="614"/>
         <source>Connection error! See log for details</source>
         <translation>Verbindungsfehler! Siehe Log für Details</translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="629"/>
+        <location filename="openvpn.cpp" line="618"/>
         <source>PKCS12_parse:mac verify failure</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="632"/>
+        <location filename="openvpn.cpp" line="621"/>
         <source>Received AUTH_FAILED control message</source>
         <translation>Anmeldung ist fehlgeschlagen</translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="635"/>
+        <location filename="openvpn.cpp" line="624"/>
         <source>Auth username is empty</source>
         <translation>Benutzername ist leer</translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="638"/>
+        <location filename="openvpn.cpp" line="627"/>
         <source>error=certificate has expired</source>
         <translation>Zertifikate sind abgelaufen</translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="641"/>
+        <location filename="openvpn.cpp" line="630"/>
         <source>error=certificate is not yet valid</source>
         <translation>Zertifikate nicht gültig</translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="644"/>
+        <location filename="openvpn.cpp" line="633"/>
         <source>Cannot load certificate file</source>
         <translation>Zertifikate können nicht geladen werden</translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="648"/>
+        <location filename="openvpn.cpp" line="637"/>
         <source>Application Exiting!</source>
         <translation>Anwendung wird geschlossen!</translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="651"/>
+        <location filename="openvpn.cpp" line="640"/>
         <source>OpenVPN parameter error! See log for details</source>
         <translation>OpenVPN Parameterfehler! Siehe Log für Details</translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="654"/>
+        <location filename="openvpn.cpp" line="643"/>
         <source>OpenVPN connection error! See log for details</source>
         <translation>OpenVPN Parameterfehler! Siehe Log für Details</translation>
     </message>
     <message>
-        <location filename="openvpn.cpp" line="659"/>
-        <location filename="preferences.cpp" line="216"/>
+        <location filename="openvpn.cpp" line="648"/>
+        <location filename="preferences.cpp" line="241"/>
         <source>A Tap device ist needed. Do you want to install a device?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="62"/>
-        <location filename="preferences.cpp" line="1183"/>
+        <location filename="preferences.cpp" line="60"/>
+        <location filename="preferences.cpp" line="1101"/>
         <source>Install the driver?
 For this action you need administrator permissions!</source>
         <translation>Soll der Tap Treiber installiert werden?
 Für diese Aktion benötigen Sie Administratorrechte!</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="64"/>
-        <location filename="preferences.cpp" line="1187"/>
+        <location filename="preferences.cpp" line="62"/>
+        <location filename="preferences.cpp" line="1105"/>
         <source>Unable to install Tap-Win32 driver!
 Maybe you have no permissions.
 Please contact your system administrator.</source>
@@ -3065,117 +3239,112 @@ Eventuell haben Sie nicht die benötigten Rechte.
 Bitte setzen Sie sich mit Ihrem Systemadministrator in Verbindung.</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="64"/>
-        <location filename="preferences.cpp" line="1187"/>
+        <location filename="preferences.cpp" line="62"/>
+        <location filename="preferences.cpp" line="1105"/>
         <source>Install Tap Device</source>
         <translation>Tap Treiber Installation</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="88"/>
+        <location filename="preferences.cpp" line="92"/>
         <source> - portable</source>
         <translation> - Portabel</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="91"/>
+        <location filename="preferences.cpp" line="90"/>
         <source> - manage</source>
         <translation> - Manage</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="94"/>
-        <source>Securepoint SSL VPN RC4</source>
+        <location filename="preferences.cpp" line="95"/>
+        <source>Securepoint SSL VPN v1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="237"/>
+        <location filename="preferences.cpp" line="262"/>
         <source>Connnected to VPN.
 </source>
         <translation>Mit VPN verbinden.
 </translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="240"/>
+        <location filename="preferences.cpp" line="265"/>
         <source>Name: </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="398"/>
+        <location filename="preferences.cpp" line="414"/>
         <source>Service</source>
         <translation>Dienst</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="398"/>
+        <location filename="preferences.cpp" line="414"/>
         <source>OpenVPN</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="404"/>
         <source>none</source>
-        <translation>keine</translation>
+        <translation type="obsolete">keine</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="407"/>
+        <location filename="preferences.cpp" line="423"/>
         <source>German</source>
         <translation>Deutsch</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="407"/>
+        <location filename="preferences.cpp" line="423"/>
         <source>English</source>
         <translation>Englisch</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="624"/>
-        <location filename="preferences.cpp" line="625"/>
-        <location filename="preferences.cpp" line="655"/>
-        <location filename="preferences.cpp" line="666"/>
-        <location filename="preferences.cpp" line="1098"/>
+        <location filename="openvpn.cpp" line="767"/>
         <source>- Start config</source>
         <translation>- Start Konfiguration</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="803"/>
+        <location filename="preferences.cpp" line="733"/>
         <source>&amp;Show profiles</source>
         <translation>&amp;Profile anzeigen</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="808"/>
+        <location filename="preferences.cpp" line="738"/>
         <source>&amp;Proxy Settings</source>
         <translation>&amp;Proxy Einstellungen</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="828"/>
+        <location filename="preferences.cpp" line="758"/>
         <source>You are still connected. Please disconnect first.</source>
         <translation>Momentan ist eine Verbindung aktiv, bitte trennen Sie die Verbindung zuerst.</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="828"/>
-        <location filename="preferences.cpp" line="836"/>
+        <location filename="preferences.cpp" line="758"/>
+        <location filename="preferences.cpp" line="766"/>
         <source>A connection is still connected!</source>
         <translation>Eine Verbindung ist gerade verbunden!</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="836"/>
-        <location filename="treebutton.cpp" line="217"/>
+        <location filename="preferences.cpp" line="766"/>
+        <location filename="treebutton.cpp" line="216"/>
         <source>Do you want to disconnect the connection?</source>
         <translation>Wollen Sie die Verbindung trennen?</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="846"/>
-        <location filename="preferences.cpp" line="1221"/>
+        <location filename="preferences.cpp" line="776"/>
+        <location filename="preferences.cpp" line="1143"/>
         <source>Uninstall the driver?
 For this action you need administrator permissions!</source>
         <translation>Soll der Tap Treiber deinstalliert werden?
 Für diese Aktion benötigen Sie Administratorrechte!</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="846"/>
-        <location filename="preferences.cpp" line="1221"/>
+        <location filename="preferences.cpp" line="776"/>
+        <location filename="preferences.cpp" line="1143"/>
         <source>Remove Tap-Win32 driver</source>
         <translation>Tap Win32 Treiber entfernen</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="848"/>
-        <location filename="preferences.cpp" line="1201"/>
-        <location filename="preferences.cpp" line="1225"/>
+        <location filename="preferences.cpp" line="778"/>
+        <location filename="preferences.cpp" line="1121"/>
+        <location filename="preferences.cpp" line="1147"/>
         <source>Unable to uninstall Tap-Win32 driver!
 Maybe you have no permissions.
 Please contact your system administrator.</source>
@@ -3184,93 +3353,130 @@ Eventuell haben Sie nicht die benötigten Rechte.
 Bitte setzen Sie sich mit Ihrem Systemadministrator in Verbindung.</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="1019"/>
+        <location filename="preferences.cpp" line="915"/>
+        <source>Hide advanced settings</source>
+        <translation>Erweiterte Einstellungen ausblenden</translation>
+    </message>
+    <message>
+        <location filename="preferences.cpp" line="919"/>
+        <source>Show advanced settings</source>
+        <translation>Erweiterte Einstellungen anzeigen</translation>
+    </message>
+    <message>
+        <location filename="preferences.cpp" line="958"/>
         <source>&amp;Disconnect</source>
         <translation>&amp;Trennen</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="1021"/>
+        <location filename="preferences.cpp" line="960"/>
         <source>Con&amp;nect</source>
         <translation>&amp;Verbinden</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="1032"/>
-        <location filename="preferences.cpp" line="1034"/>
+        <location filename="preferences.cpp" line="978"/>
         <source>&amp;Delete</source>
         <translation>&amp;Löschen</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="1040"/>
+        <location filename="preferences.cpp" line="985"/>
         <source>&amp;Release</source>
         <translation>&amp;Lösen</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="1042"/>
+        <location filename="preferences.cpp" line="987"/>
         <source>&amp;Start configuration</source>
         <translation>&amp;Start Konfiguration</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="1047"/>
+        <location filename="preferences.cpp" line="992"/>
         <source>&amp;Clear error</source>
         <translation>&amp;Fehler löschen</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="1052"/>
+        <location filename="preferences.cpp" line="997"/>
         <source>&amp;Clear saved data</source>
         <translation>&amp;Gespeicherte Daten löschen</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="1056"/>
+        <location filename="preferences.cpp" line="1001"/>
         <source>&amp;Rename</source>
         <translation>&amp;Umbennen</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="1058"/>
+        <location filename="preferences.cpp" line="1003"/>
         <source>&amp;Edit</source>
         <translation>&amp;Editieren</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="1059"/>
+        <location filename="preferences.cpp" line="1004"/>
         <source>&amp;Quick edit</source>
         <translation>&amp;Quick Edit</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="1061"/>
+        <location filename="preferences.cpp" line="1006"/>
         <source>&amp;Export</source>
         <translation>E&amp;xportieren</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="1063"/>
+        <location filename="preferences.cpp" line="1008"/>
         <source>&amp;Import</source>
         <translation>&amp;Importieren</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="1121"/>
+        <location filename="preferences.cpp" line="1290"/>
+        <source>Error</source>
+        <translation>Fehler</translation>
+    </message>
+    <message>
+        <location filename="preferences.cpp" line="1295"/>
+        <source>Up to date.</source>
+        <translation>Keine Aktualisierungen verfügbar.</translation>
+    </message>
+    <message>
+        <location filename="preferences.cpp" line="1297"/>
+        <location filename="preferences.cpp" line="1301"/>
+        <source>It is a newer version available.</source>
+        <translation>Es ist eine neue Version verfügbar.</translation>
+    </message>
+    <message>
+        <location filename="preferences.cpp" line="1301"/>
+        <source>Do you want to update the vpn client?</source>
+        <translation>Möchten Sie den VPN Client aktualisieren?</translation>
+    </message>
+    <message>
+        <location filename="preferences.cpp" line="1338"/>
+        <source>Can&apos;t start update process with an active connection!</source>
+        <translation>Aktualisierung kann nicht bei einer aktiven Verbindung gestartet werden!</translation>
+    </message>
+    <message>
         <source>Can&apos;t delete a start config. Please release it first.</source>
-        <translation>Startkonfiguration kann nicht gelöscht werden, bitte lösen Sie sie zuerst.</translation>
+        <translation type="obsolete">Startkonfiguration kann nicht gelöscht werden, bitte lösen Sie sie zuerst.</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="1125"/>
         <source>Remove the linked configuration from list?</source>
-        <translation>Gelinkte Konfiguration löschen?</translation>
+        <translation type="obsolete">Gelinkte Konfiguration löschen?</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="1125"/>
         <source>Delete linked configuration</source>
-        <translation>Gelinkte Konfiguration löschen</translation>
+        <translation type="obsolete">Gelinkte Konfiguration löschen</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="1171"/>
+        <location filename="preferences.cpp" line="1089"/>
         <source>A connection is online. While installing all connection will be disconnected! Do you wish to continue?</source>
         <translation>Eine Verbindung ist aktiv. Während der Installation werden alle Verbindungen getrennt! Möchten Sie fortfahren?</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="1209"/>
+        <location filename="preferences.cpp" line="1128"/>
         <source>A connection is online. While removing tap devices all connection will be disconnected! Do you wish to continue?</source>
         <translation>Eine Verbindung ist aktiv. Während der Deinstallation werden alle Verbindungen getrennt! Möchten Sie fortfahren?</translation>
     </message>
     <message>
-        <location filename="preferences.cpp" line="1240"/>
+        <location filename="preferences.cpp" line="1136"/>
+        <source>Do you realy want to remove all TAP device?</source>
+        <translation>Möchten Sie wirklich alle TAP Geräte entfernen?</translation>
+    </message>
+    <message>
+        <location filename="preferences.cpp" line="1163"/>
         <source>Do you really want to remove all saved credentials?</source>
         <translation>Möchten Sie alle gespeicherten Benutzeranmeldungen löschen?</translation>
     </message>
@@ -3283,59 +3489,54 @@ Bitte setzen Sie sich mit Ihrem Systemadministrator in Verbindung.</translation>
         <translation type="obsolete">Proxy Einstllungen</translation>
     </message>
     <message>
-        <location filename="renameconfig.cpp" line="76"/>
         <source>Rename failed!</source>
-        <translation>Umbennen ist fehlgeschlagen!</translation>
+        <translation type="obsolete">Umbennen ist fehlgeschlagen!</translation>
     </message>
     <message>
-        <location filename="renameconfig.cpp" line="87"/>
         <source>New name is empty!</source>
-        <translation>Neuer Name ist leer!</translation>
+        <translation type="obsolete">Neuer Name ist leer!</translation>
     </message>
     <message>
-        <location filename="renameconfig.cpp" line="91"/>
-        <location filename="renameconfig.cpp" line="93"/>
         <source>Rename Configuration</source>
-        <translation>Konfiguration umbenennen</translation>
+        <translation type="obsolete">Konfiguration umbenennen</translation>
     </message>
     <message>
-        <location filename="renameconfig.cpp" line="93"/>
         <source>Rename was successfully!</source>
-        <translation>Umbennen war erfolgreich!</translation>
+        <translation type="obsolete">Umbennen war erfolgreich!</translation>
     </message>
     <message>
         <location filename="servicelog.cpp" line="42"/>
-        <location filename="vpnlog.cpp" line="113"/>
+        <location filename="vpnlog.cpp" line="130"/>
         <source>Start Log</source>
         <translation>Log starten</translation>
     </message>
     <message>
         <location filename="servicelog.cpp" line="45"/>
         <location filename="servicelog.cpp" line="60"/>
-        <location filename="vpnlog.cpp" line="67"/>
-        <location filename="vpnlog.cpp" line="116"/>
+        <location filename="vpnlog.cpp" line="81"/>
+        <location filename="vpnlog.cpp" line="133"/>
         <source>Stop Log</source>
         <translation>Log stoppen</translation>
     </message>
     <message>
-        <location filename="servicelog.cpp" line="87"/>
+        <location filename="servicelog.cpp" line="100"/>
         <source>Save Log</source>
         <translation>Log speichern</translation>
     </message>
     <message>
-        <location filename="servicelog.cpp" line="87"/>
-        <location filename="vpnlog.cpp" line="92"/>
+        <location filename="servicelog.cpp" line="100"/>
+        <location filename="vpnlog.cpp" line="109"/>
         <source>Log files (*.log *.txt)</source>
         <translation>Log Dateien (*.log *.txt)</translation>
     </message>
     <message>
-        <location filename="servicelog.cpp" line="93"/>
-        <location filename="vpnlog.cpp" line="98"/>
+        <location filename="servicelog.cpp" line="106"/>
+        <location filename="vpnlog.cpp" line="115"/>
         <source>Can&apos;t open file to write!</source>
         <translation>Datei kann nicht zum schreiben geöffnet werden!</translation>
     </message>
     <message>
-        <location filename="single_application.cpp" line="41"/>
+        <location filename="single_application.cpp" line="43"/>
         <source>You are still connected to a vpn network!
 Please disconnect bevor you close your windows session.
 By forcing the quit from windows malfunctions can occurred!</source>
@@ -3344,23 +3545,23 @@ Bitte trennen Sie zuerst die Verbindung bevor Sie sich abmelden.
 Wenn Sie das Beenden von Windows aus erzwingen, kann es zu Fehlfunktionen kommen!</translation>
     </message>
     <message>
-        <location filename="tapdriver.cpp" line="48"/>
+        <location filename="tapdriver.cpp" line="50"/>
         <source>TAP driver check process failed!</source>
         <translation>TAP Treiber Überprüfung ist fehlgeschlagen!</translation>
     </message>
     <message>
-        <location filename="tapdriver.cpp" line="79"/>
+        <location filename="tapdriver.cpp" line="81"/>
         <source>TAP driver install process failed!</source>
         <translation>TAP Treiber Installation ist fehlgeschlagen!</translation>
     </message>
     <message>
-        <location filename="tapdriver.cpp" line="113"/>
+        <location filename="tapdriver.cpp" line="115"/>
         <source>TAP driver remove process failed!</source>
         <translation>TAP Treiber entfernen ist fehlgeschlagen!</translation>
     </message>
     <message>
         <location filename="treebutton.cpp" line="40"/>
-        <location filename="treebutton.cpp" line="95"/>
+        <location filename="treebutton.cpp" line="94"/>
         <source>Connect</source>
         <translation>Verbinden</translation>
     </message>
@@ -3375,48 +3576,49 @@ Wenn Sie das Beenden von Windows aus erzwingen, kann es zu Fehlfunktionen kommen
         <translation>Abbrechen</translation>
     </message>
     <message>
+        <location filename="treebutton.cpp" line="63"/>
         <location filename="treebutton.cpp" line="64"/>
-        <location filename="treebutton.cpp" line="65"/>
         <source>Connecting ...</source>
         <translation>Verbinde ...</translation>
     </message>
     <message>
-        <location filename="treebutton.cpp" line="75"/>
-        <location filename="treebutton.cpp" line="217"/>
+        <location filename="treebutton.cpp" line="74"/>
+        <location filename="treebutton.cpp" line="216"/>
         <source>Disconnect</source>
         <translation>Trennen</translation>
     </message>
     <message>
+        <location filename="treebutton.cpp" line="77"/>
         <location filename="treebutton.cpp" line="78"/>
-        <location filename="treebutton.cpp" line="79"/>
         <source>Connection established.</source>
         <translation>Verbindung hergestellt.</translation>
     </message>
     <message>
+        <location filename="treebutton.cpp" line="77"/>
         <location filename="treebutton.cpp" line="78"/>
-        <location filename="treebutton.cpp" line="79"/>
         <source>IP:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="treebutton.cpp" line="105"/>
+        <location filename="treebutton.cpp" line="104"/>
         <source>Process unexpected closed! Reconnect!</source>
         <translation>Process wurde unerwartet geschlossen. Neustart!</translation>
     </message>
     <message>
+        <location filename="treebutton.cpp" line="110"/>
         <location filename="treebutton.cpp" line="111"/>
-        <location filename="treebutton.cpp" line="112"/>
         <source>An error has occurred.</source>
         <translation>Es ist ein Fehler aufgetreten.</translation>
     </message>
     <message>
-        <location filename="vpnlog.cpp" line="92"/>
+        <location filename="vpnlog.cpp" line="109"/>
         <source>Save log</source>
         <translation>Log speichern</translation>
     </message>
     <message>
         <location filename="wizard/wiz_endpage.cpp" line="30"/>
-        <source>Data of new config: </source>
+        <source>Data of new config:</source>
+        <oldsource>Data of new config: </oldsource>
         <translation>Konfigurationsdaten von:</translation>
     </message>
     <message>
@@ -3442,7 +3644,7 @@ Wenn Sie das Beenden von Windows aus erzwingen, kann es zu Fehlfunktionen kommen
         <location filename="wizard/wiz_vpnwizard.cpp" line="167"/>
         <location filename="wizard/wiz_vpnwizard.cpp" line="175"/>
         <location filename="wizard/wiz_vpnwizard.cpp" line="184"/>
-        <location filename="wizard/wiz_vpnwizard.cpp" line="199"/>
+        <location filename="wizard/wiz_vpnwizard.cpp" line="200"/>
         <source>Create a new SSL VPN connection</source>
         <translation>Eine neue SSL VPN Verbindung erstellen</translation>
     </message>
@@ -3472,9 +3674,25 @@ Wenn Sie das Beenden von Windows aus erzwingen, kann es zu Fehlfunktionen kommen
         <translation>Schlüssel kann nicht kopiert werden!</translation>
     </message>
     <message>
-        <location filename="wizard/wiz_vpnwizard.cpp" line="199"/>
+        <location filename="wizard/wiz_vpnwizard.cpp" line="200"/>
         <source>Config is successfully created!</source>
         <translation>Konfiguration wurde erfolgreich erstellt!</translation>
+    </message>
+    <message>
+        <location filename="appinfo.cpp" line="85"/>
+        <source>SSL VPN Client v1</source>
+        <oldsource>SSL VPN Client 2012</oldsource>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="frmupdatesettings.cpp" line="115"/>
+        <source>Proxy IP or port is empty!</source>
+        <translation>Proxy IP oder Port ist leer!</translation>
+    </message>
+    <message>
+        <location filename="update/parsexml.cpp" line="55"/>
+        <source>n/a</source>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -3601,17 +3819,17 @@ Wenn Sie das Beenden von Windows aus erzwingen, kann es zu Fehlfunktionen kommen
         <translation>Securepoint SSL VPN Dienst Log</translation>
     </message>
     <message>
-        <location filename="servicelog.ui" line="73"/>
+        <location filename="servicelog.ui" line="76"/>
         <source>     &amp;Close</source>
         <translation>  &amp;Schließen</translation>
     </message>
     <message>
-        <location filename="servicelog.ui" line="111"/>
+        <location filename="servicelog.ui" line="114"/>
         <source>     &amp;Save</source>
         <translation>  &amp;Speichern</translation>
     </message>
     <message>
-        <location filename="servicelog.ui" line="146"/>
+        <location filename="servicelog.ui" line="149"/>
         <source>     Stop &amp;Log</source>
         <translation>  &amp;Log stoppen</translation>
     </message>
@@ -3806,7 +4024,7 @@ Wenn Sie eine neue Konfiguration im portablen Modus erstellen wird die Konfigura
     </message>
     <message>
         <location filename="appinfo.ui" line="91"/>
-        <source>SSL VPN Client v.0.9.7 RC4</source>
+        <source>Set in code</source>
         <translation></translation>
     </message>
     <message>

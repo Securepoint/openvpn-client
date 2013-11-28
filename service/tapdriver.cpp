@@ -8,7 +8,7 @@ TapDriver::TapDriver()
 {
 }
 
-bool TapDriver::isTapDriverInstalled() {    
+bool TapDriver::isTapDriverInstalled() {
     this->tapDriverAvailable = false;
     this->checkTapDriver();
     return this->tapDriverAvailable;
@@ -19,12 +19,7 @@ void TapDriver::checkTapDriver() {
     // Tapinstall.exe starten zum auslesen der verfügbaren TAP-Devices
     //
 
-    QString drvInstallApp (QCoreApplication::applicationDirPath() + QLatin1String("/app/bin/tapinstall.exe"));
-
-    // Bei 64bit müssen wir die passende exe setzen
-    if (Check64::isRunning64Bit()) {
-        drvInstallApp = QCoreApplication::applicationDirPath() + QLatin1String("/app/bin/tapinstall64.exe");
-    }
+    QString drvInstallApp (QCoreApplication::applicationDirPath() + QLatin1String("/bin/tapinstall.exe"));
 
     // Argumentliste bauen
     QStringList argIsDrvInstalled;
@@ -53,14 +48,8 @@ bool TapDriver::installTapDriver() {
     this->tapDriverInstalledSuccess = false;
 
     // Pfade für die Exe und die Treiber inf
-    QString drvInstallApp (QCoreApplication::applicationDirPath() + QLatin1String("/app/bin/tapinstall.exe"));
-    QString drvPath (QCoreApplication::applicationDirPath() + QLatin1String("/app/bin/driver/OemWin2k.inf"));
-
-    // Unter 64bit die Pfade für die 64bit Versionen setzen
-    if (Check64::isRunning64Bit()) {
-        drvInstallApp = QCoreApplication::applicationDirPath() + QLatin1String("/app/bin/tapinstall64.exe");
-        drvPath = QCoreApplication::applicationDirPath() + QLatin1String("/app/bin/driver/64bit/OemWin2k.inf");
-    }
+    QString drvInstallApp (QCoreApplication::applicationDirPath() + QLatin1String("/bin/tapinstall.exe"));
+    QString drvPath (QCoreApplication::applicationDirPath() + QLatin1String("/bin/driver/OemWin2k.inf"));
 
     // Argumente bauen
     QStringList argDrvInstall;
@@ -97,12 +86,7 @@ bool TapDriver::removeTapDriver() {
 
     this->tapDriverRemovedSuccess = false;
 
-    QString drvInstallApp (QCoreApplication::applicationDirPath() + QLatin1String("/app/bin/tapinstall.exe"));
-
-    // 64bit Versionen anpassen
-    if (Check64::isRunning64Bit()) {
-        drvInstallApp = QCoreApplication::applicationDirPath() + QLatin1String("/app/bin/tapinstall64.exe");
-    }
+    QString drvInstallApp (QCoreApplication::applicationDirPath() + QLatin1String("/bin/tapinstall.exe"));
 
     // Argumente
     QStringList argDrvRemove;

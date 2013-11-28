@@ -2,7 +2,6 @@
 #define TAPDRIVER_H
 
 #include <QtCore>
-#include "check64.h"
 
 class TapDriver: public QObject
 {
@@ -23,10 +22,10 @@ private:
     QProcess drvInstallProc;
     QProcess drvRemoveProc;
 
-    void checkTapDriver ();    
+    void checkTapDriver ();
 
 private slots:
-    void readDriverData ();    
+    void readDriverData ();
 };
 
 #endif // TAPDRIVER_H

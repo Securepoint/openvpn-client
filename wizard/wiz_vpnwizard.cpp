@@ -193,6 +193,7 @@ void VpnWizard::accept()
     // Generieren eines neuen Openvpn Objektes
     // Das Objekt wird dann an die ObjList angehängt
     // Dann muss nur noch der Dialog aktualisiert werden
+    Preferences::instance()->addNewConfigToDatabase(field("txtConfigName").toString(), configFilePath);
     Preferences::instance()->refreshConfigList();
     Preferences::instance()->setConnectionStatus();
 

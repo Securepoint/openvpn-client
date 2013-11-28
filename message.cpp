@@ -6,10 +6,24 @@ Message::Message()
 }
 
 
-bool Message::confirm(const QString &message, const QString &title)
+bool Message::confirm(const QString &message, const QString &title, bool onTop)
 {
     bool ret (false);
-    switch (QMessageBox::question(0, title, message, QMessageBox::Ok | QMessageBox::No)) {
+
+    QMessageBox box;
+    // Init box
+    box.setStandardButtons(QMessageBox::Ok | QMessageBox::No);
+    box.setDefaultButton(QMessageBox::No);
+    //
+    if (onTop) {
+        // MessageBox is on Top
+        box.setWindowFlags(Qt::WindowStaysOnTopHint);
+    }
+    // Set data
+    box.setWindowTitle(title);
+    box.setText(message);
+    //
+    switch (box.exec()) {
         case QMessageBox::Ok:
             ret = true;
             break;

@@ -1,7 +1,6 @@
 #include "openvpn.h"
 #include <windows.h>
 
-#include "frmgetuserdata.h"
 #include "preferences.h"
 
 #include "editconfig.h"
@@ -15,23 +14,24 @@
 
 #include "tapdriver.h"
 #include "crypt.h"
+#include "debug.h"
 
-OpenVpn::OpenVpn ()
+OpenVpn::OpenVpn (Database *database)
 {
     this->connectionStable = false;
     this->onDisconnect = false;
-    this->isLinked = false;
     this->errorHasOccurred = false;
     this->errMessage = "";
     this->onConnect = false;
-    this->runAsService = false;    
-    this->advName = "";
+    this->runAsService = false;
     this->connectedSinceDate = QDate::currentDate();
-    this->connectedSinceTime = QTime::currentTime();    
+    this->connectedSinceTime = QTime::currentTime();
     this->menu = NULL;
-    this->_id = -1;    
+    this->_id = -1;
     this->waitForCryptKey = false;
-    this->delayed = false;
+    this->isStartConfigValue = false;
+
+    this->db = database;
 }
 
 int OpenVpn::id() const
@@ -45,9 +45,9 @@ void OpenVpn::setId(int id)
 }
 
 void OpenVpn::openConnect()
-{        
-    this->disableMenues();    
-    this->connectToVpn(false);    
+{
+    this->disableMenues();
+    this->connectToVpn(false);
     if (Settings::getInstance()->getIsPortableClient()) {
         emit connectionReconnectFromOpenVPNSig();
     }
@@ -94,7 +94,7 @@ QStringList OpenVpn::makeProxyString()
 
 QString OpenVpn::getScript(const QString &type)
 {
-    QFile scrtiptFile (this->configPath + QLatin1String("/scripts.conf"));
+    QFile scrtiptFile (this->getConfigDirectory() + QLatin1String("/scripts.conf"));
 
     if (scrtiptFile.exists()) {
         // Öffnen und auslesen
@@ -108,7 +108,7 @@ QString OpenVpn::getScript(const QString &type)
         while (!sin.atEnd()){
             QString line (sin.readLine());
             if (line.trimmed().left(3).toUpper() == type.toUpper() + QLatin1String(":")) {
-                scrtiptFile.close();                
+                scrtiptFile.close();
                 return line.right(line.size() - 3);
             }
         }
@@ -131,16 +131,6 @@ QString OpenVpn::getConfigName() const
 bool OpenVpn::isConnectionStable() const
 {
     return this->connectionStable;
-}
-
-bool OpenVpn::isConfigLinked() const
-{
-    return this->isLinked;
-}
-
-void OpenVpn::setConfigLinked(const bool &flag)
-{
-    this->isLinked = flag;
 }
 
 void OpenVpn::setConfigStable(const bool &flag)
@@ -167,7 +157,7 @@ void OpenVpn::runScript(const QString &type)
         } else {
             // Sind im Dienst modus
             ServiceLogData::instance()->append(this->id(), logMessage);
-        }        
+        }
 
         procScripts = new QProcess(this);
         QObject::connect(this->procScripts, SIGNAL(error(QProcess::ProcessError)), this, SLOT(showProcessScriptError(QProcess::ProcessError)));
@@ -216,7 +206,7 @@ void OpenVpn::showProcessScriptError(QProcess::ProcessError error)
 
 QString OpenVpn::getConfigFullPath() const
 {
-    return this->configPath + QLatin1String("/") + this->configName + QLatin1String(".ovpn");
+    return this->configPath;
 }
 
 void OpenVpn::connectToVpn(bool openLog)
@@ -247,7 +237,7 @@ void OpenVpn::connectToVpn(bool openLog)
     Preferences::instance()->setIcon();
 
     // Pfad für die Config bauen
-    QString cFile (this->configPath + QLatin1String("/") + this->configName + QLatin1String(".ovpn"));
+    QString cFile (this->configPath);
 
     // Die Parameter für OpenVpn bauen
     QStringList arguments;
@@ -288,21 +278,30 @@ void OpenVpn::connectToVpn(bool openLog)
     }
 
     // Programm starten im Config Verzeichnis, sonst findet OpenVPN keine Zertifikate
-    this->proc.setWorkingDirectory(this->configPath + QLatin1String("/"));
+    this->proc.setWorkingDirectory(this->getConfigDirectory());
 
-    QString program (QCoreApplication::applicationDirPath() + QLatin1String("/app/bin/openvpn.exe"));
+    QString arch ("x32");
+    if (Check64::isRunning64Bit()) {
+        arch = QLatin1String("x64");
+    }
+
+    QString program (QCoreApplication::applicationDirPath() + QString("/bin/%1/openvpn.exe").arg(arch));
 
     // Ist die exe da
     if (!QFile::exists(program)) {
         return;
     }
 
+    Debug::log(QString("OpenVpn: Open Connection. \nFile path: %1 \nParams: %2")
+               .arg(program)
+               .arg(arguments.join(" ")));
+
     // Programm starten
     this->proc.start(program, arguments);
     //
     if (!this->proc.waitForStarted()) {
         qDebug() << this->proc.errorString();
-    }  
+    }
 }
 
 void OpenVpn::processFinished(int exitCode, QProcess::ExitStatus exitStatus)
@@ -311,9 +310,9 @@ void OpenVpn::processFinished(int exitCode, QProcess::ExitStatus exitStatus)
     Q_UNUSED(exitStatus)
 
     if (!this->onDisconnect) {
-        this->connectionStable = false;        
-        this->enableAllMenus();        
-        emit errorOccuredSig("1025");        
+        this->connectionStable = false;
+        this->enableAllMenus();
+        emit errorOccuredSig("1025");
     }
     Preferences::instance()->setIcon();
 }
@@ -491,7 +490,7 @@ void OpenVpn::userDataIsNeeded (int type) {
         return;
     }
 
-    FrmGetUserData dialog (ntype, this->id());
+    FrmGetUserData dialog (ntype, this->configName, this->id());
     QObject::connect(&dialog, SIGNAL(writeUserData(QString)), this, SLOT(writeUserData(QString)));
     // Sollen die Daten gespeichert werden
     QObject::connect(&dialog, SIGNAL(saveUserData(int,int,QString,bool)), this, SLOT(saveUserData(int,int,QString,bool)));
@@ -503,10 +502,10 @@ void OpenVpn::userDataIsNeeded (int type) {
 }
 
 void OpenVpn::readProcessData()
-{    
+{
     QByteArray line;
     QString output;
-    bool showLine (true);    
+    bool showLine (true);
 
     line = this->proc.readAllStandardError();
     if (line == "") {
@@ -538,7 +537,7 @@ void OpenVpn::readProcessData()
             showLine = false;
         }
         // Enter Challenge Password
-        if (line == "Enter Challenge Password:") {
+        if (line == "Enter Challenge Password:" || line.contains("CHALLENGE: Please enter token PIN")) {
             this->userDataIsNeeded(2);
             showLine = false;
         }
@@ -555,43 +554,45 @@ void OpenVpn::readProcessData()
             showLine = false;
         }
 
-
         // QByteArray in QString
         QString lineOut(line);
-        // Verbindung da?
-        if (lineOut.contains("Notified TAP-Win32 driver to set a DHCP IP", Qt::CaseInsensitive)) {
-            // IP Suchen und speichern
-            QString connIP = lineOut.mid(lineOut.indexOf("Notified TAP-Win32 driver to set a DHCP IP")+54,15);
-            // IP durchlaufen und / und spaces entfernen
-            int indexOfChar = 0;
-            indexOfChar = connIP.indexOf("/",0);
-            if (indexOfChar != 0) {
-                // Maskeabschneiden
-                connIP = connIP.left(indexOfChar);
-            } else {
-                // Lerrzeichen da?
-                indexOfChar = connIP.indexOf(" ",0);
+        QStringList singleLines (lineOut.split("\n"));
+        foreach(QString singleLine, singleLines) {
+            // Verbindung da?
+            if (singleLine.indexOf("Notified TAP-Windows driver") > -1) {
+                // IP Suchen und speichern
+                QString connIP = singleLine.mid(singleLine.indexOf("Notified TAP-Windows driver") + 56, 15);
+                // IP durchlaufen und / und spaces entfernen
+                int indexOfChar = 0;
+                indexOfChar = connIP.indexOf("/",0);
                 if (indexOfChar != 0) {
-                    // Leerzeichen abschneiden
+                    // Maskeabschneiden
                     connIP = connIP.left(indexOfChar);
+                } else {
+                    // Lerrzeichen da?
+                    indexOfChar = connIP.indexOf(" ",0);
+                    if (indexOfChar != 0) {
+                        // Leerzeichen abschneiden
+                        connIP = connIP.left(indexOfChar);
+                    }
                 }
-            }
 
-            // Meldung zeigen connected
-            this->connectionIP = connIP;
-            Preferences::instance()->showBallonMessage();
-            // Status speichern und Tray Icon setzen
-            this->connectedSinceDate = QDate::currentDate();
-            this->connectedSinceTime = QTime::currentTime();
-            this->onConnect = false;
-            this->connectionStable = true;
-            emit connectionIsStableSig(this->connectionIP);            
-            QString timeOut = this->getScript("TO");
-            int scriptDelay = 0;
-            if (timeOut != "") {
-                scriptDelay = timeOut.trimmed().toInt();
+                // Meldung zeigen connected
+                this->connectionIP = connIP;
+                Preferences::instance()->showBallonMessage();
+                // Status speichern und Tray Icon setzen
+                this->connectedSinceDate = QDate::currentDate();
+                this->connectedSinceTime = QTime::currentTime();
+                this->onConnect = false;
+                this->connectionStable = true;
+                emit connectionIsStableSig(this->connectionIP);
+                QString timeOut = this->getScript("TO");
+                int scriptDelay = 0;
+                if (timeOut != "") {
+                    scriptDelay = timeOut.trimmed().toInt();
+                }
+                QTimer::singleShot(scriptDelay, this, SLOT(startAfterConnectDelayed()));
             }
-            QTimer::singleShot(scriptDelay, this, SLOT(startAfterConnectDelayed()));
         }
 
         // Fehler abfangen
@@ -680,7 +681,7 @@ void OpenVpn::readProcessData()
         if (errorOcurred) {
             this->runScript("EC");
             this->showTrayMessage(errorMessage);
-            this->connectionStable = false;            
+            this->connectionStable = false;
             this->setDisconnected();
             this->errorHasOccurred = true;
             this->errMessage = errorMessage;
@@ -691,9 +692,9 @@ void OpenVpn::readProcessData()
 
         if (lineOut.contains("Restart pause", Qt::CaseInsensitive)) {
             // Bei Restart Pause befinden wir uns immer noch im Connect auch wenn vorher ein Fehler aufgetreten ist!
-            if (!_tlsHandshakeFailed) {                
+            if (!_tlsHandshakeFailed) {
                 this->disableMenues();
-                emit connectionReconnectFromOpenVPNSig ();                
+                emit connectionReconnectFromOpenVPNSig ();
             }
         }
         //Initialization Sequence Completed
@@ -707,7 +708,7 @@ void OpenVpn::readProcessData()
 
         Preferences::instance()->setIcon();
 
-        // Output ins Log?        
+        // Output ins Log?
         if (showLine) {
             output = QString::fromLatin1(line);
             this->openVpnLogData.append(output);
@@ -772,13 +773,10 @@ bool OpenVpn::isOnConnect()
     return this->onConnect;
 }
 
-void OpenVpn::setAdvName(const QString &name)
+QString OpenVpn::getAdvName()
 {
-    this->advName = name;
-}
-
-QString OpenVpn::getAdvName() {
-    return this->advName;
+    //
+    return (this->isStartConfigValue ? QLatin1String("\n") + QObject::tr("- Start config") : QLatin1String(""));
 }
 
 void OpenVpn::setConnectedSinceDate(const QDate &since)
@@ -817,7 +815,7 @@ void OpenVpn::enableAllMenus()
                 }
                 act->menu()->setEnabled(true);
             }
-        }        
+        }
     }
 }
 
@@ -842,13 +840,13 @@ void OpenVpn::disableMenues()
 
 void OpenVpn::openEditConfig()
 {
-    EditConfig editDialog (this->configPath + QLatin1String("/") + this->configName + QLatin1String(".ovpn"));
+    EditConfig editDialog (this->configPath);
     editDialog.exec();
 }
 
 void OpenVpn::openExport()
 {
-    ConfigExport exportDialog (this->configPath + QLatin1String("/") + this->configName + QLatin1String(".ovpn"));
+    ConfigExport exportDialog (this->configPath);
     exportDialog.exec();
 }
 
@@ -882,41 +880,41 @@ bool OpenVpn::hasCrediantials(int type)
     // 2 - OTP
     // 3 - PKCS12
     // 4 - Private Key für Crypted User Data
-    QString key;
+    QString field;
     if (type == 0) {
-        key = QLatin1String ("data/user");
+        field = QLatin1String("[vpn-user]");
     } else if (type == 1) {
-        key = QLatin1String ("data/pass");
+        field = QLatin1String("[vpn-password]");
     } else if (type == 3) {
-        key = QLatin1String ("data/pkcs12");
+        field = QLatin1String("[vpn-pkcs12]");
     } else if (type == 5) {
-        key = QLatin1String ("data/httpu");
+        field = QLatin1String("[vpn-http-user]");
     } else if (type == 6) {
-        key = QLatin1String ("data/httpp");
+        field = QLatin1String("[vpn-http-password]");
     }
 
-    if (key.isEmpty()) {
+    if (field.isEmpty()) {
         // Für den typ kann man keine Daten speichern
         return false;
     }
 
-    // Ini-öffnen
-    QSettings sett (this->configPath + QLatin1String("/") + this->configName + QLatin1String(".data"), QSettings::IniFormat);
-    QString data (sett.value(key, QLatin1String("")).toString());
+    QString sql;
+    sql = QLatin1String("SELECT ") + field + QLatin1String(" FROM vpn WHERE [vpn-id] = ") + QString::number(this->id());
 
-    if (data.isEmpty()) {
-        // Keine gespeicherten Daten da
-        return false;
+    // Sind daten für die Verbindung hinterlegt
+    QScopedPointer<QSqlQuery> query (this->db->openQuery(sql));
+    if (query->first() && !query->value(0).toString().isEmpty()) {
+        return true;
     }
 
-    return true;
+    // Kein Daten da
+    return false;
 }
 
 void OpenVpn::removeCredentials(bool refresh)
 {
-    if (QFile::exists(this->configPath + QLatin1String("/") + this->configName + QLatin1String(".data"))) {
-        QFile::remove(this->configPath + QLatin1String("/") + this->configName + QLatin1String(".data"));
-    }
+    QString sql (QLatin1String("UPDATE vpn SET [vpn-user] = '', [vpn-password] = '', [vpn-pkcs12] = '', [vpn-http-user] = '', [vpn-http-password] = '' WHERE [vpn-id] = ") + QString::number(this->id()));
+    this->db->execute(sql);
 
     if (refresh) {
         Preferences::instance()->removeSavedDataIcon(this->id());
@@ -927,43 +925,47 @@ void OpenVpn::saveUserData(int id, int type, QString value, bool save)
 {
     Q_UNUSED(id)
 
-    QString _value(value);
     // Wenn save false ist den Wert überschreiben
     if (!save) {
-        _value.clear();
+        return;
     }
     // Welcher type wurde übergeben
-    QString key;
     // 0 - Username
     // 1 - Pwd
     // 2 - OTP
     // 3 - PKCS12
     // 4 - Private Key für Crypted User Data
+    QString field;
     if (type == 0) {
-        key = QLatin1String ("data/user");
+        field = QLatin1String("[vpn-user]");
     } else if (type == 1) {
-        key = QLatin1String ("data/pass");
+        field = QLatin1String("[vpn-password]");
     } else if (type == 3) {
-        key = QLatin1String ("data/pkcs12");
+        field = QLatin1String("[vpn-pkcs12]");
     } else if (type == 5) {
-        key = QLatin1String ("data/httpu");
+        field = QLatin1String("[vpn-http-user]");
     } else if (type == 6) {
-        key = QLatin1String ("data/httpp");
+        field = QLatin1String("[vpn-http-password]");
     }
 
-    // Den Wert verschlüsseln
-    if (!_value.isEmpty()) {
-        Crypt crypt;
-        crypt.setSecretKey(Settings::getInstance()->getCryptKey());
-        _value = QString (crypt.cryptPlainTextExt(_value.toAscii()));
-    }
 
-    if (!key.isEmpty()) {
-        QSettings sett (this->configPath + QLatin1String("/") + this->configName + QLatin1String(".data"), QSettings::IniFormat);        
-        sett.setValue(key, _value);
-        if (!value.isEmpty() && save) {
-            Preferences::instance()->setSavedDataIcon(id);
+    if (!value.isEmpty()) {
+        if (!Settings::getInstance()->getCryptKey().isEmpty()) {
+            Crypt crypt;
+            crypt.setSecretKey(Settings::getInstance()->getCryptKey());
+            value = crypt.cryptPlainTextExt(value.toAscii());
         }
+    }
+
+    QString sql;
+    sql = QString("UPDATE vpn SET %1 = '%2' WHERE [vpn-id] = %3")
+            .arg(field)
+            .arg(value)
+            .arg(this->id());
+    this->db->execute(sql);
+
+    if (!value.isEmpty() && save) {
+        Preferences::instance()->setSavedDataIcon(id);
     }
 }
 
@@ -974,48 +976,61 @@ void OpenVpn::getCryptKey(QString key) {
 
 QString OpenVpn::getSavedUserData(int type)
 {
-    QString key;
     // 0 - Username
     // 1 - Pwd
     // 2 - OTP
     // 3 - PKCS12
     // 4 - Private Key für Crypted User Data
+    QString field;
     if (type == 0) {
-        key = QLatin1String ("data/user");
+        field = QLatin1String("[vpn-user]");
     } else if (type == 1) {
-        key = QLatin1String ("data/pass");
+        field = QLatin1String("[vpn-password]");
     } else if (type == 3) {
-        key = QLatin1String ("data/pkcs12");
+        field = QLatin1String("[vpn-pkcs12]");
     } else if (type == 5) {
-        key = QLatin1String ("data/httpu");
+        field = QLatin1String("[vpn-http-user]");
     } else if (type == 6) {
-        key = QLatin1String ("data/httpp");
+        field = QLatin1String("[vpn-http-password]");
     }
 
-    if (key.isEmpty()) {
+    if (field.isEmpty()) {
         return QString ();
     }
 
-    QSettings sett (this->configPath + QLatin1String("/") + this->configName + QLatin1String(".data"), QSettings::IniFormat);
-    QString value (sett.value(key, QLatin1String("")).toString());
+    QString sql;
+    sql = QString ("SELECT %1 FROM vpn WHERE [vpn-id] = %2")
+            .arg(field)
+            .arg(this->id());
 
-    if (!value.isEmpty()) {
-        if (!Settings::getInstance()->getCryptKey().isEmpty()) {
-            Crypt crypt;
-            crypt.setSecretKey(Settings::getInstance()->getCryptKey());
-            value = QString (crypt.cryptToPlainTextExt(value.toAscii()));
-        }
+    QScopedPointer<QSqlQuery> query (this->db->openQuery(sql));
+
+    QString value;
+    if (query->first()) {
+        value = query->value(0).toString();
+        value = value.trimmed();
+    }
+
+    if (!Settings::getInstance()->getCryptKey().isEmpty()) {
+        Crypt crypt;
+        crypt.setSecretKey(Settings::getInstance()->getCryptKey());
+        value = crypt.cryptToPlainTextExt(value.toAscii());
     }
 
     return value;
 }
 
-void OpenVpn::setDelay(const bool &flag)
+bool OpenVpn::isStartConfig() const
 {
-    this->delayed = flag;
+    return this->isStartConfigValue;
 }
 
-bool OpenVpn::isDelayed() const
+void OpenVpn::setStartConfig(bool flag)
 {
-    return this->delayed;
+    this->isStartConfigValue = flag;
+}
+
+QString OpenVpn::getConfigDirectory() const
+{
+    return this->configPath.left(this->configPath.lastIndexOf("/"));
 }

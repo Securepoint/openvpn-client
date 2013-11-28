@@ -86,7 +86,7 @@ QPushButton {height: 25px; width: 50px;text-align:left;
     <string/>
    </property>
    <property name="pixmap">
-    <pixmap resource="systray.qrc">:/images/banner_sml.png</pixmap>
+    <pixmap resource="systray.qrc">:/images/banner_neu_sml.png</pixmap>
    </property>
    <property name="scaledContents">
     <bool>true</bool>
@@ -168,7 +168,7 @@ QPushButton {height: 25px; width: 50px;text-align:left;
     </rect>
    </property>
    <property name="currentIndex">
-    <number>3</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="tabGeneral">
     <attribute name="title">

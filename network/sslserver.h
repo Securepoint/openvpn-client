@@ -39,6 +39,7 @@ signals:
     void receivedReconnect (int id);
     void receivedTapControl (int type);
     void receivedRemoveTap (QString state);
+    void receivedStatus (int id, bool isConnected, bool isConnecting, int lastAction, QString ip);
 };
 
 #endif // SSLSERVER_H

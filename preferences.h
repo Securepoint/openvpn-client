@@ -5,6 +5,8 @@
 #include <QtCore>
 #include <QtGui>
 
+#include "database.h"
+#include "update/parsexml.h"
 
 class OpenVpn;
 class TreeButton;
@@ -31,25 +33,30 @@ typedef QPair <int, OpenVpn*> ListObject;
 
 class Preferences : public QDialog {
     Q_OBJECT
-public:    
+public:
     static Preferences *instance ();
     ~Preferences();
-    void openDialog (bool configFromCommandLine, QString commandLineConfig);
+    void openDialog ();
     void setVisible(bool visible);
     void refreshConfigList ();
     void setIcon ();
     void showTrayMessage(const QString &message, QSystemTrayIcon::MessageIcon messageType, int duration=3000);
     void showTrayMessageChecked(const QString &message, QSystemTrayIcon::MessageIcon messageType, int duration=3000);
     QStringList vpnLog;
-    QSystemTrayIcon *getSystrayIcon () const;        
+    QSystemTrayIcon *getSystrayIcon () const;
     bool startDaemon ();
     void searchStartConfigDir ();
-    void refreshDialog ();    
+    void refreshDialog ();
     void setConnectionStatus ();
     bool isConnectionActive () const;
+    void closeAllOpenConnections ();
     void showBallonMessage ();
     void setSavedDataIcon (int id);
     void removeSavedDataIcon (int id);
+    void renameConfig (int id, const QString &newName);
+    void removeConfigInDatabase (int id);
+    void addNewConfigToDatabase (const QString &name, const QString &path);
+    QString internalBuild () const;
 
 public slots:
     void setDisconnected (int id);
@@ -60,9 +67,11 @@ public slots:
     void receivedTapControl(int type);
     void receivedRemoveTap (QString state);
     void saveUserData (int id, int type, QString value, bool save);
+    void receivedStatus (int id, bool isConnected, bool isConnecting, int lastAction, QString ip);
 
 protected:
     void closeEvent(QCloseEvent *event);
+    void showEvent(QShowEvent *event);
 
 private:
     Preferences();
@@ -98,21 +107,30 @@ private:
 
     // Neues Netzwerk-Handling
     SslServer *server;
+    //
+    Database db;
+
+    void refreshTapDeviceCount ();
+
+    ParseXML *update;
+    QString internalBuildValue;
+
+    void centerMidle ();
 
 
-private slots:    
+private slots:
     void on_cmdImportConfig_clicked();
     void on_cmdRefreshData_clicked();
     void on_trvConnections_customContextMenuRequested(QPoint pos);
-    void on_cmdNewConfig_clicked();    
+    void on_cmdNewConfig_clicked();
     void on_cmdToggleExtensions_clicked();
-    void on_trvConnections_itemDoubleClicked(QTreeWidgetItem* item, int column);    
-    void on_cmdOpenInfo_clicked();    
+    void on_trvConnections_itemDoubleClicked(QTreeWidgetItem* item, int column);
+    void on_cmdOpenInfo_clicked();
     void manageConnections ();
     void trayActivated(QSystemTrayIcon::ActivationReason reason);
     void openInfo ();
     void on_cmdClose_clicked();
-    void closeApp ();    
+    void closeApp ();
 
     void setStartConfig ();
     void removeStartConfig ();
@@ -120,10 +138,9 @@ private slots:
 
     void openProxySettings ();
     void openAppInfo ();
-    void deleteLinkedConfig ();    
     void on_cmdToogleBallon_clicked();
     void on_cmdTooglePopup_clicked();
-    void on_cmdToogleReconnect_clicked();    
+    void on_cmdToogleReconnect_clicked();
     void on_cmdAddNewTap_clicked();
     void on_cmdRemoveAllTap_clicked();
     void on_cmdToogleUseInteract_clicked();
@@ -131,7 +148,11 @@ private slots:
     void on_cmdShowCredentials_clicked();
     void on_cmdToogleSpalshScreen_clicked();
     void on_cmdToogleStartup_clicked();
-    void on_cmbDelay_currentIndexChanged(int index);
+    void on_cmdToogleWinEvent_clicked();
+    void on_cmdCheckUpdate_clicked();
+    void updateCheckIsReady (bool success, QString errMessage);
+    void on_cmdUpdateSetting_clicked();
+    void on_cmdOpenUpdate_clicked();
 };
 
 #endif // PREFERENCES_H

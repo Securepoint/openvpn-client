@@ -34,20 +34,34 @@ void EditConfig::showEvent(QShowEvent *e) {
     int winH = this->height();
 
     int left (0);
+    int top (0);
     if (Preferences::instance()->isVisible()) {
         // Wenn das Hauptfenster offen ist mittig über diesem plazieren
         left = Preferences::instance()->geometry().x();
+        top = Preferences::instance()->geometry().y();
         left = left + (Preferences::instance()->geometry().width() - winW) / 2;
+        //
+        top  = top + (Preferences::instance()->geometry().height() - winH) / 2;
     } else {
         // Desktop auswerten
+        top = qApp->desktop()->height();
         left = qApp->desktop()->width();
         // Die Breite bei virtuellen Desktops vierteln
         if (left > 2000 && qApp->desktop()->isVirtualDesktop()) {
             left /= 4;
+        } else {
+            // Normaler Desktop
+            left = (left - winH) / 2;
+        }
+        // Height
+        if (top > 2000 && qApp->desktop()->isVirtualDesktop()) {
+            top /= 4;
+        } else {
+            top = (top - winH) / 2;
         }
     }
     // Nun die neuen setzen
-    this->setGeometry(left, (qApp->desktop()->height() / 2) - (winH / 2), winW, winH);
+    this->setGeometry(left, top, winW, winH);
 
     // Öffnen
     e->accept();

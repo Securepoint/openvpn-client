@@ -56,6 +56,8 @@ void SslServer::incomingConnection(int socketDescriptor)
     QObject::connect(newIncommingConnection, SIGNAL(receivedTapControl(int)), this, SIGNAL(receivedTapControl(int)));
     // Tap remove controll
     QObject::connect(newIncommingConnection, SIGNAL(receivedRemoveTap(QString)), this, SIGNAL(receivedRemoveTap(QString)));
+    // Received a status
+    QObject::connect(newIncommingConnection, SIGNAL(receivedStatus(int,bool,bool,int,QString)), this, SIGNAL(receivedStatus(int,bool,bool,int,QString)));
 
     // Start thread now
     newIncommingConnection->start(QThread::NormalPriority);

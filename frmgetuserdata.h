@@ -29,7 +29,7 @@ class FrmGetUserData : public QDialog {
     Q_OBJECT
 
 public:    
-    FrmGetUserData(InputType::UserInputType type, int id = -1);
+    FrmGetUserData(InputType::UserInputType type, const QString &name, int id = -1);
     ~FrmGetUserData();    
     void setFrmType ();
 

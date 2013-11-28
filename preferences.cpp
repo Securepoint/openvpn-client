@@ -22,6 +22,7 @@
 #include "renameconfig.h"
 #include "frmgetuserdata.h"
 #include "frmsaveddata.h"
+#include "frmupdatesettings.h"
 
 #include "message.h"
 
@@ -49,12 +50,9 @@ Preferences::Preferences() :
 {
     m_ui->setupUi(this);
 
-    // Delay ausblenden
-    m_ui->lblDelay->setVisible(false);
-    m_ui->cmbDelay->setVisible(false);
-
     // Kontrollieren ob in der Portable Version
     // das TAP Device installiert ist.
+
     if (Settings::getInstance()->getIsPortableClient()) {
         #ifdef Q_OS_WIN32
            // Windows
@@ -75,33 +73,73 @@ Preferences::Preferences() :
            // mac
         #endif
     }
+
     // Ende Tap Install
     m_ui->extensionWidget->setVisible(false);
 
     // Startgröße setzen
-    this->setMinimumHeight(390);
-    this->setMaximumHeight(390);
+    this->setMinimumHeight(380);
+    this->setMaximumHeight(380);
 
     this->setWindowFlags(Qt::WindowCloseButtonHint);
 
+    // Banner setzen
+    // Wenn eine Banner png da ist das Banner neu setzen
+    QString bannerPath(QCoreApplication::applicationDirPath() + QLatin1String("/banner.png"));
+    //
+    if (QFile::exists(bannerPath)) {
+        // Datei laden
+        QPixmap tempBanner (bannerPath);
+        // Nun die Bild größe überprüfen es muss 480x320 sein
+        if (tempBanner.height() == 63 && tempBanner.width() == 445) {
+            // Alles Ok, das Bild setzen
+            m_ui->cmdOpenInfo->setIcon(QIcon(tempBanner));
+        }
+    }
+
     // Set window title
-    QString titleAdd (QObject::tr(" - portable"));
+    QString titleAdd;
     // Ist der Client mit manage aufgerufen?
     if (Settings::getInstance()->getIsManageClient()) {
         titleAdd = QObject::tr(" - manage");
+    } else if (Settings::getInstance()->getIsPortableClient()) {
+        titleAdd = QObject::tr(" - portable");
     }
 
-    this->setWindowTitle(QObject::tr("Securepoint SSL VPN RC4") + titleAdd);
+    this->setWindowTitle(QObject::tr("Securepoint OpenVPN v1") + titleAdd);
+
+    // Set DB
+    Configs::getInstance()->setDatabase(&this->db);
+
+    // Set Build
+    this->internalBuildValue = QLatin1String("1.0.1");
+
+    // Update
+    m_ui->cmdOpenUpdate->setEnabled(false);
+    if (Settings::getInstance()->isAutoUpdate()) {
+        QTimer::singleShot(3000, this, SLOT(on_cmdCheckUpdate_clicked()));
+    }
+
+    //
+    this->refreshTapDeviceCount();
 }
 
 void Preferences::searchStartConfigDir()
 {
     this->refreshConfigList();
     createActions();
-    createTrayIcon();    
+    createTrayIcon();
     trayIcon->show();
 
     this->refreshDialog();
+
+    // Auto connect?
+    for (int x = 0; x < m_ui->trvConnections->invisibleRootItem()->childCount(); x++) {
+        TreeConItem *item = dynamic_cast<TreeConItem*>(m_ui->trvConnections->invisibleRootItem()->child(x));
+        if (item->getOpenVPN()->isStartConfig()) {
+            QTimer::singleShot(250, item->getTreeButton(), SLOT(click()));
+        }
+    }
 }
 
 QSystemTrayIcon *Preferences::getSystrayIcon() const
@@ -120,7 +158,7 @@ void Preferences::setDisconnected(int id)
         // stimmt die Id
         if (vpn->id() == id) {
             // Objekt gefunden
-            // Wieder den normalen Zustand herstellen            
+            // Wieder den normalen Zustand herstellen
             but->setReadyToConnect();
             vpn->setConfigStable(false);
             vpn->setConnectedIP(QLatin1String(""));
@@ -142,7 +180,7 @@ void Preferences::setError(int id, QString message)
         OpenVpn *vpn = item->getOpenVPN();
         // stimmt die Id
         if (vpn->id() == id) {
-            // Objekt gefunden            
+            // Objekt gefunden
             but->setError(message);
             vpn->setConfigStable(false);
             vpn->setIsError(true);
@@ -151,8 +189,8 @@ void Preferences::setError(int id, QString message)
             vpn->runScript(QLatin1String("EC"));
             this->showTrayMessageChecked(message, QSystemTrayIcon::Critical);
             break;
-        }        
-    }    
+        }
+    }
     this->setIcon();
 }
 
@@ -191,7 +229,7 @@ void Preferences::receivedReconnect(int id)
         OpenVpn *vpn = item->getOpenVPN();
         // stimmt die Id
         if (vpn->id() == id) {
-            // Objekt gefunden            
+            // Objekt gefunden
             but->setConnecting();
             vpn->setConfigStable(false);
             vpn->setConnectedIP(QLatin1String(""));
@@ -208,6 +246,7 @@ void Preferences::receivedTapControl(int type)
     if (type == 0) {
         QApplication::setOverrideCursor(Qt::ArrowCursor);
         Message::information(QObject::tr(("Tap device installed successfully.\nPlease reconnect the connection.")));
+        this->refreshTapDeviceCount();
     } else if (type == -1) {
         QApplication::setOverrideCursor(Qt::ArrowCursor);
         Message::error(QObject::tr(("Tap device installed failed!")));
@@ -252,9 +291,7 @@ bool Preferences::isConnectionActive() const
     foreach (ListObject i, Configs::getInstance()->getConfigsObjects()) {
         OpenVpn* obj = i.second;
 
-        if (obj->isConnectionStable()) {
-            return true;
-        } else if (obj->isConnecting()) {
+        if (obj->isConnectionStable() || obj->isConnecting()) {
             return true;
         }
     }
@@ -262,20 +299,46 @@ bool Preferences::isConnectionActive() const
     return false;
 }
 
+void Preferences::closeAllOpenConnections()
+{
+    // Ist eine Verbindung gerade beim verbinden oder schon verbunden?
+    // Dann die Verbindung trennen, da der Benutzer sich abmeldet bzw. neustartet/ herunterfährt
+    // Wird in der single_application im Event-Filter für die WM_QUERYENDSESSION
+    // gebraucht.
+
+    foreach (ListObject i, Configs::getInstance()->getConfigsObjects()) {
+        OpenVpn* obj = i.second;
+
+        if (obj->isConnectionStable() || obj->isConnecting()) {
+            //
+            // Script vor dem Disconnect ausführen
+            obj->runScript(QLatin1String("BD"));
+            //
+            // Nun den Disconnect senden
+            if (Settings::getInstance()->getIsRunAsSevice()) {
+                SrvCLI::instance()->send(QLatin1String("Close"), QString::number(obj->id()));
+            } else {
+                obj->disconnectVpn();
+            }
+        }
+    }
+}
+
 void Preferences::trayActivated(QSystemTrayIcon::ActivationReason reason)
 {
     if (reason == QSystemTrayIcon::DoubleClick) {
         if (!this->isMinimized()) {
-            this->refreshDialog();
-            this->setIcon();
+            if (!this->isVisible()) {
+                this->refreshDialog();
+                this->setIcon();
+            }
+            //
             if (Settings::getInstance()->getIsPortableClient() || Settings::getInstance()->getIsManageClient()) {
                 m_ui->cmdNewConfig->show();
                 m_ui->cmdImportConfig->show();
                 m_ui->cmdRefreshData->show();
             } else {
                 m_ui->cmdNewConfig->hide();
-                m_ui->cmdImportConfig->hide();
-                m_ui->cmdRefreshData->hide();
             }
             this->showNormal();
             this->setFocus();
@@ -286,15 +349,8 @@ void Preferences::trayActivated(QSystemTrayIcon::ActivationReason reason)
 
 void Preferences::refreshConfigList()
 {
-    // Listen löschen
-    Configs::getInstance()->clearConfigs();
     // Liste neu einlesen
-    Configs::getInstance()->searchConfigs(AppFunc::getAppSavePath());
-
-    if (Settings::getInstance()->getIsStartConfigDir())
-        Configs::getInstance()->searchConfigs(Settings::getInstance()->getStartConfigDirPath());
-
-    Configs::getInstance()->searchLinkedConfigs();    
+    Configs::getInstance()->refreshConfigs();
 }
 
 void Preferences::setConnectionStatus()
@@ -309,17 +365,15 @@ void Preferences::setConnectionStatus()
 
     // Das noch verbundene Element setzen
     foreach (ListObject i, Configs::getInstance()->getConfigsObjects()) {
-        OpenVpn* obj = i.second;        
-        if (obj->isConnectionStable()) {
-            obj->disableMenues();                            
-        } else if (obj->isConnecting()) {
-            obj->disableMenues();                        
+        OpenVpn* obj = i.second;
+        if (obj->isConnectionStable() || obj->isConnecting()) {
+            obj->disableMenues();
         }
-    }    
+    }
 }
 
 void Preferences::refreshDialog()
-{            
+{
     m_ui->trvConnections->clear();
     QStringList  header;
     header << QLatin1String("ID") << QLatin1String("Name") << QLatin1String("Action") << QLatin1String("State") << QLatin1String("Stateid");
@@ -343,13 +397,9 @@ void Preferences::refreshDialog()
         item->setOpenVPN(configObj);
 
         // Namen setzen
-        QString linkedText ("");
-        if (configObj->isConfigLinked()) {
-            linkedText = QLatin1String("- ");
-        }        
-        item->setText(1, linkedText + configObj->getConfigName() + configObj->getAdvName());        
+        item->setText(1, configObj->getConfigName() + configObj->getAdvName());
         item->setToolTip(1, configObj->getConfigPath().replace("/", "\\") + QLatin1String("\\") + configObj->getConfigName() + QLatin1String (".ovpn"));
-        // Grundstatus setzen        
+        // Grundstatus setzen
         if (configObj->hasCrediantials()) {
             item->setIcon(2, QIcon(":/images/crypted.png"));
         }
@@ -360,7 +410,7 @@ void Preferences::refreshDialog()
         button->setStyleSheet(QString("border: 2px solid black; background-color: white; height: 30px; width: 80px; max-height: 30px; max-width: 80px; margin-right: 10px;"));
         button->setFlat(true);
         // Item zum Button merken zwecks sender
-        button->setParentItem(item);        
+        button->setParentItem(item);
         // Signale des Objektes an den Button binden
         QObject::connect (configObj, SIGNAL(errorOccuredSig(QString)), button, SLOT(receivedError(QString)));
         QObject::connect (configObj, SIGNAL(connectionIsStableSig(QString)), button, SLOT(receivedConnctionIsStable(QString)));
@@ -370,22 +420,30 @@ void Preferences::refreshDialog()
         if (configObj->isConnectionStable()) {
             button->setConnected(configObj->getConnectionIP());
         } else {
-            if (configObj->isConnecting()) {                
+            if (configObj->isConnecting()) {
                 button->setConnecting();
             } else {
-                if (configObj->isError()) {                    
+                if (configObj->isError()) {
                     button->setError(configObj->getErrorString());
-                } else {                    
+                } else {
+                    SrvCLI::instance()->send(QLatin1String("STATUS"), QString("%1").arg(configObj->id()));
                     button->setReadyToConnect();
                 }
             }
-        }        
+        }
         m_ui->trvConnections->setItemWidget(item, 3, button);
         // Item merkt sich auch den Button
         item->setTreeButton(button);
 
         m_ui->trvConnections->addTopLevelItem(item);
-        // Neue Version Ende        
+        // Neue Version Ende
+    }
+
+
+    if (Configs::getInstance()->configCount() > 1) {
+        m_ui->trvConnections->setSelectionMode(QAbstractItemView::SingleSelection);
+    } else {
+        m_ui->trvConnections->setSelectionMode(QAbstractItemView::NoSelection);
     }
 
     // Neue Version
@@ -400,25 +458,11 @@ void Preferences::refreshDialog()
     m_ui->lblShowBallon->setText((Settings::getInstance()->getIsShowNoBallonMessage() ? QObject::tr("no") : QObject::tr("yes") ));
     m_ui->lblNoPopUp->setText((Settings::getInstance()->popUpDialog() ? QObject::tr("yes") : QObject::tr("no") ));
     m_ui->lblStartupWindows->setText((Settings::getInstance()->autoStartOnWindowsStartup() ? QObject::tr("yes") : QObject::tr("no")));
+    m_ui->lblWinEvent->setText((Settings::getInstance()->checkWindowsShutdown() ? QObject::tr("yes") : QObject::tr("no")));
     m_ui->lblShowSplash->setText((Settings::getInstance()->showSplashScreen() ? QObject::tr("yes") : QObject::tr("no")));
-    m_ui->lblSearchDir->setText((Settings::getInstance()->getIsStartConfigDir() ? Settings::getInstance()->getStartConfigDirPath() : QObject::tr("none")));    
     m_ui->lblUseInteract->setText((Settings::getInstance()->getUseNoInteract() ? QObject::tr("yes") : QObject::tr("no") ));
 
     m_ui->lblLanguage->setText((Settings::getInstance()->getIsLanguageGerman() ? QObject::tr ("German") : QObject::tr ("English")));
-
-    /*
-    if (Settings::getInstance()->delayConfig() == QLatin1String("30")) {
-        m_ui->cmbDelay->setCurrentIndex(1);
-    } else if (Settings::getInstance()->delayConfig() == QLatin1String("60")) {
-        m_ui->cmbDelay->setCurrentIndex(2);
-    } else if (Settings::getInstance()->delayConfig() == QLatin1String("90")) {
-        m_ui->cmbDelay->setCurrentIndex(3);
-    } else if (Settings::getInstance()->delayConfig() == QLatin1String("120")) {
-        m_ui->cmbDelay->setCurrentIndex(4);
-    } else {
-        m_ui->cmbDelay->setCurrentIndex(0);
-    }
-    */
 
     if (Settings::getInstance()->getIsPortableClient()) {
         m_ui->cmdToogleStartup->setEnabled(false);
@@ -438,10 +482,6 @@ Preferences::~Preferences()
 
 bool Preferences::startDaemon()
 {
-    //Debug::setDebugPath(QCoreApplication::applicationDirPath());
-    //Debug::enableDebugging(true);
-    //Debug::setDebugLevel(DebugLevel::All);
-    //Debug::enableMSecs(true);
     this->server = new SslServer (Settings::getInstance()->getListenPort(), this);
     // Disconnect vom Service
     QObject::connect(this->server, SIGNAL(setDisconnected(int)), this, SLOT(setDisconnected(int)));
@@ -456,33 +496,84 @@ bool Preferences::startDaemon()
     // Tap Steuerung
     QObject::connect(this->server, SIGNAL(receivedTapControl(int)), this, SLOT(receivedTapControl(int)));
     QObject::connect(this->server, SIGNAL(receivedRemoveTap(QString)), this, SLOT(receivedRemoveTap(QString)));
+    // Status
+    QObject::connect(this->server, SIGNAL(receivedStatus(int,bool,bool,int,QString)), this, SLOT(receivedStatus(int,bool,bool,int,QString)));
 
     // Nun die Verbindung testen
-    QTimer timeoutTimer (this);
-    timeoutTimer.setSingleShot(true);
-    timeoutTimer.setInterval(3000);
-    QEventLoop loop;
-    QObject::connect(&timeoutTimer, SIGNAL(timeout()), &loop, SLOT(quit()));
-    QObject::connect(this->server, SIGNAL(receivedDummy()), &loop, SLOT(quit()));
+    int tries (0);
+    bool success (false);
 
-    SrvCLI::instance()->send(QLatin1String("Dummy"));
-    timeoutTimer.start();
-    // Blocken
-    loop.exec();
+    do {
+        QTimer timeoutTimer (this);
+        timeoutTimer.setSingleShot(true);
+        timeoutTimer.setInterval(3000);
+        QEventLoop loop;
+        QObject::connect(&timeoutTimer, SIGNAL(timeout()), &loop, SLOT(quit()));
+        QObject::connect(this->server, SIGNAL(receivedDummy()), &loop, SLOT(quit()));
 
-    if (timeoutTimer.isActive()) {
-        // Alles Ok, Timer kann aus
-        timeoutTimer.stop();
-    } else {
-        // Timeout                    
-        return false;
+        SrvCLI::instance()->send(QLatin1String("Dummy"));
+        timeoutTimer.start();
+        // Blocken
+        loop.exec();
+
+        if (timeoutTimer.isActive()) {
+            // Alles Ok, Timer kann aus
+            timeoutTimer.stop();
+            success = true;
+        } else {
+            // Timeout
+            success = false;
+            ++tries;
+        }
+        // Disconnect dummy signal
+        QObject::disconnect(this->server, SIGNAL(receivedDummy()), 0, 0);
+        QObject::disconnect(&timeoutTimer, 0, 0, 0);
+        // Sleep 1000ms
+        if (qApp->hasPendingEvents()) {
+            qApp->processEvents();
+        }
+        QThreadExec::Sleep(1000);
+        //
+        Debug::log(QString(QString("Pref: Connect try: No.: %1 Success: %2")
+                           .arg(tries)
+                           .arg(success)));
+
+    } while ((!success) && (tries < 5));
+
+
+    return success;
+}
+
+void Preferences::receivedStatus(int id, bool isConnected, bool isConnecting, int lastAction, QString ip)
+{
+    for (int x = 0; x < m_ui->trvConnections->invisibleRootItem()->childCount(); x++) {
+        // Item und OpenVpn Objekt holen
+        TreeConItem *item = dynamic_cast<TreeConItem*>(m_ui->trvConnections->invisibleRootItem()->child(x));
+        OpenVpn *vpn = item->getOpenVPN();
+        // Nun die Daten speichern
+        if (vpn->id() == id) {
+            if (isConnecting) {
+                vpn->setIsConnected(false);
+                vpn->setIsConnecting(true);
+                item->getTreeButton()->setConnecting();
+            } else if (isConnected) {
+                vpn->setIsConnected(true);
+                vpn->setIsConnecting(false);
+                vpn->setConnectedIP(ip);
+                item->getTreeButton()->setConnected(ip);
+            }
+            if (lastAction > -1) {
+                // Eine benutzeraktion wird erwartet
+                this->userInputIsNeeded(vpn->id(), lastAction);
+            }
+            this->setIcon();
+            break;
+        }
     }
-
-    return true;
 }
 
 void Preferences::userInputIsNeeded(int id, int type)
-{    
+{
     InputType::UserInputType ntype;
     // 0 - Username
     // 1 - Pwd
@@ -518,13 +609,15 @@ void Preferences::userInputIsNeeded(int id, int type)
             ntype = InputType::Username;
     }
 
+    QString cName("n/a");
     for (int x = 0; x < m_ui->trvConnections->invisibleRootItem()->childCount(); x++) {
         // Item und OpenVpn Objekt holen
         TreeConItem *item = dynamic_cast<TreeConItem*>(m_ui->trvConnections->invisibleRootItem()->child(x));
         OpenVpn *vpn = item->getOpenVPN();
         // Nun die Daten speichern
         if (vpn->id() == id) {
-            if (vpn->hasCrediantials(type)) {                
+            cName = vpn->getConfigName();
+            if (vpn->hasCrediantials(type)) {
                 // Das ist ein bischen doof hier, geht aber nicht anderes ohne den client neu zu designen
                 QString value (vpn->getSavedUserData(type));
                 SrvCLI::instance()->send(command, QString("%1;%2").arg(id).arg(value));
@@ -534,7 +627,7 @@ void Preferences::userInputIsNeeded(int id, int type)
     }
 
     // Es sind keine Daten gespeichert, neue abfragen
-    FrmGetUserData dialog (ntype, id);
+    FrmGetUserData dialog (ntype, cName, id);
     QObject::connect(&dialog, SIGNAL(saveUserData(int,int,QString,bool)), this, SLOT(saveUserData(int,int,QString,bool)));
     dialog.exec();
 }
@@ -577,140 +670,14 @@ void Preferences::saveUserData(int id, int type, QString value, bool save)
     }
 }
 
-void Preferences::openDialog(bool configFromCommandLine, QString commandLineConfig)
+void Preferences::openDialog()
 {
-    bool showMe (false);
-    if (configFromCommandLine) {
-        QString commandConfigDir ("");
-        QString commandConfigName ("");
+    bool visibleState (Settings::getInstance()->getIsPortableClient() || Settings::getInstance()->getIsManageClient());
+    m_ui->cmdNewConfig->setVisible(visibleState);
+    m_ui->cmdImportConfig->setVisible(true);
+    m_ui->cmdRefreshData->setVisible(true);
 
-        // OpenVPN Objekt aus der übergebenen Config erzeugen
-        // Name und Pfad ermitteln
-        commandConfigName = commandLineConfig.right(commandLineConfig.size() - commandLineConfig.lastIndexOf("/") - 1);
-        commandConfigName = commandConfigName.left(commandConfigName.size() - 5);
-        // Pfad
-        commandConfigDir = commandLineConfig.left(commandLineConfig.lastIndexOf("/"));
-
-        // Zuerst schauen, ob die Config schon in der Liste ist.
-        TreeConItem *startItem = NULL;
-        int x;
-        for (x=0;x < m_ui->trvConnections->invisibleRootItem()->childCount();x++) {            
-            // Init
-            bool dirIsEqual = false;
-            bool nameIsEqual = false;
-
-            TreeConItem *item = dynamic_cast<TreeConItem*>(m_ui->trvConnections->invisibleRootItem()->child(x));
-            // Get OpenVpn Obj
-            QString configDirFormat = item->getOpenVPN()->getConfigPath().replace("\\", "/").trimmed().toLower();
-            QString commandDirFormat = commandConfigDir.replace("\\", "/").trimmed().toLower();
-            // Ist das Verzeichnis gleich?
-            if (configDirFormat == commandDirFormat)
-                dirIsEqual = true;
-            QString configNameFormat = item->getOpenVPN()->getConfigName().trimmed().toLower();
-            QString commandNameFormat = commandConfigName.trimmed().toLower();
-            // Ist der Name gleich
-            if (configNameFormat == commandNameFormat)
-                nameIsEqual = true;
-
-            // Config gefunden
-            if (dirIsEqual && nameIsEqual) {
-                startItem = item;
-                break;
-            }
-        }
-        // Ist Objekt dabei, dann starten
-        // Andernfalls ein neues erstellen
-        if (startItem) {
-            startItem->getOpenVPN()->setAdvName(QLatin1String ("\n") + QObject::tr("- Start config"));
-            startItem->setText(1, startItem->text(1) + QLatin1String ("\n") + QObject::tr("- Start config"));            
-            startItem->getTreeButton()->setParentItem(startItem);
-
-            QTimer::singleShot(250, startItem->getTreeButton(), SLOT(click()));
-
-            /*
-            if (Settings::getInstance()->delayConfig() == QLatin1String("0")) {
-                qDebug() << "no delay";
-                QTimer::singleShot(250, startItem->getTreeButton(), SLOT(click()));
-            } else {
-                int delay (Settings::getInstance()->delayConfig().toInt());
-                if (delay <= 0) {
-                    // Fehler, auf eine Sekunde setzen
-                    delay = 1;
-                }
-                // Delay in msecs
-                delay *= 1000;
-                qDebug() << "delay " << delay;
-                startItem->setText(2, QObject::tr("Mark to connect with delay"));
-                startItem->getOpenVPN()->setDelay(true);
-                QTimer::singleShot(delay, startItem->getTreeButton(), SLOT(click()));
-            }
-            */
-        } else {            
-            // Angegebene Config ist noch nicht vorhanden
-            // Objekt erzeugen
-            OpenVpn* myObj = new OpenVpn();
-            myObj->setConfigStable(false);
-            myObj->setConfigName(commandConfigName);
-            myObj->setConfigPath(commandConfigDir);
-            myObj->setAdvName(QLatin1String ("\n") + QObject::tr("- Start config"));
-
-            // Objekt der Liste anhängen
-            Configs::getInstance()->appendConfigToList(myObj);
-            // Objekt da, nun muss noch der Button und das Item erzeugt werden
-            TreeConItem *item = new TreeConItem (m_ui->trvConnections->invisibleRootItem());            
-
-            // OpenVpn Obj merken
-            item->setOpenVPN(myObj);
-
-            // Namen setzen
-            item->setText(1, myObj->getConfigName() + QLatin1String ("\n") + QObject::tr("- Start config"));
-            item->setToolTip(1, myObj->getConfigPath().replace("/", "\\") + QLatin1String ("\\") + myObj->getConfigName() + QLatin1String (".ovpn"));
-            // Grundstatus setzen
-
-            // Neune Button für die Verbindung generieren
-            TreeButton *button = new TreeButton ();
-
-            button->setStyleSheet(QLatin1String("border: 2px solid black; background-color: white;  max-height: 30px; max-width: 80px; height: 30px; width: 80px; margin-right: 10px;"));
-            button->setFlat(true);
-            // Item zum Button merken zwecks sender
-            button->setParentItem(item);            
-            // Signale des Objektes an den Button binden
-            QObject::connect (myObj, SIGNAL(errorOccuredSig(QString)), button, SLOT(receivedError(QString)));
-            QObject::connect (myObj, SIGNAL(connectionIsStableSig(QString)), button, SLOT(receivedConnctionIsStable(QString)));
-            QObject::connect (myObj, SIGNAL(connectionIsDisconnectedSig()), button, SLOT(receivedDisconnect()));
-
-            // Button in den Tree einfügen
-            m_ui->trvConnections->setItemWidget(item, 3, button);
-            // Item merkt sich auch den Button
-            item->setTreeButton(button);
-            // Item anzeigen
-            m_ui->trvConnections->addTopLevelItem(item);
-            // Objekt ist nicht verbunden
-            button->setReadyToConnect();
-            // Alles erzeugt, Click auslösen            
-            QTimer::singleShot(250, button, SLOT(click()));
-        }        
-
-        if(Settings::getInstance()->popUpDialog()) {
-            showMe = true;
-        }
-
-    } else {        
-        this->refreshDialog();
-        showMe = true;
-    }
-
-    if (Settings::getInstance()->getIsPortableClient() || Settings::getInstance()->getIsManageClient()) {
-        m_ui->cmdNewConfig->show();
-        m_ui->cmdImportConfig->show();
-        m_ui->cmdRefreshData->show();
-    } else {
-        m_ui->cmdNewConfig->hide();
-        m_ui->cmdImportConfig->hide();
-        m_ui->cmdRefreshData->hide();
-    }
-
-    if (showMe) {
+    if (Settings::getInstance()->popUpDialog()) {
         this->show();
     }
 
@@ -723,6 +690,32 @@ void Preferences::closeEvent(QCloseEvent *event)
         hide();
         event->ignore();
     }
+
+    // Save window position
+    Settings::getInstance()->setWindowTop(this->geometry().topLeft());
+}
+
+void Preferences::showEvent(QShowEvent *event)
+{
+    QPoint topLeft = Settings::getInstance()->windowTop();
+    if (!topLeft.isNull()) {
+        // Setzte Fenster Position
+        if (topLeft.x() <= 0 || topLeft.x() + 100 > qApp->desktop()->width()) {
+            this->centerMidle();
+            event->accept();
+            return;
+        }
+
+        if (topLeft.y() <= 0 || topLeft.y() + 100 > qApp->desktop()->height()) {
+            this->centerMidle();
+            event->accept();
+            return;
+        }
+
+        this->setGeometry(topLeft.x(), topLeft.y(), this->width(), this->height());
+    }
+
+    event->accept();
 }
 
 void Preferences::openInfo()
@@ -737,7 +730,7 @@ void Preferences::on_cmdClose_clicked()
 
 void Preferences::manageConnections ()
 {
-    this->openDialog(false, QString (""));
+    this->openDialog();
 }
 
 void Preferences::createTrayIcon()
@@ -846,14 +839,21 @@ void Preferences::closeApp()
             if (Message::confirm(QObject::tr("Uninstall the driver?\nFor this action you need administrator permissions!"), QObject::tr("Remove Tap-Win32 driver"))) {
                 if (!TapDriver::instance()->removeTapDriver()) {
                     Message::error(QObject::tr("Unable to uninstall Tap-Win32 driver!\nMaybe you have no permissions.\nPlease contact your system administrator."), QObject::tr("Securepoint SSL VPN"));
+                    this->trayIcon->hide();
+                    QCoreApplication::processEvents();
                     QCoreApplication::exit(1);
                 }
             } else {
+                this->trayIcon->hide();
+                QCoreApplication::processEvents();
                  QCoreApplication::exit(1);
             }
         }
 #endif
     }
+
+    this->trayIcon->hide();
+    QCoreApplication::processEvents();
     QCoreApplication::exit(0);
 }
 
@@ -928,9 +928,9 @@ void Preferences::showTrayMessage(const QString &message, QSystemTrayIcon::Messa
 }
 
 void Preferences::showTrayMessageChecked(const QString &message, QSystemTrayIcon::MessageIcon messageType, int duration)
-{    
-    if (!this->isVisible()) {        
-        if (!Settings::getInstance()->getIsShowNoBallonMessage()) {            
+{
+    if (!this->isVisible()) {
+        if (!Settings::getInstance()->getIsShowNoBallonMessage()) {
             this->trayIcon->showMessage(QObject::tr("Securepoint SSL VPN"), message, messageType, duration);
         }
     }
@@ -953,7 +953,7 @@ void Preferences::on_trvConnections_itemDoubleClicked(QTreeWidgetItem* item, int
     } else if (column == 2) {
         if (Settings::getInstance()->getIsRunAsSevice()) {
             TreeConItem *_item = dynamic_cast<TreeConItem*>(item);
-            if (_item) {                
+            if (_item) {
                 ServiceLog logDialog (_item->getOpenVPN()->id());
                 logDialog.exec();
             }
@@ -970,17 +970,25 @@ void Preferences::on_cmdToggleExtensions_clicked()
 {
     if (!Settings::getInstance()->getIsManageClient()) {
         m_ui->tab_4->setEnabled(false);
+
+        if (Settings::getInstance()->getIsPortableClient()) {
+            m_ui->tab_4->setEnabled(true);
+        }
     }
 
     if (!m_ui->extensionWidget->isVisible()) {
         m_ui->extensionWidget->setVisible(true);
         m_ui->tabWidget->setCurrentIndex(0);
-        this->setMaximumHeight(605);
-        this->setMinimumHeight(605);
+        this->setMaximumHeight(590);
+        this->setMinimumHeight(590);
+        m_ui->cmdToggleExtensions->setIcon(QIcon(":/images/tree_closed.png"));
+        m_ui->cmdToggleExtensions->setToolTip(QObject::tr("Hide advanced settings"));
     } else {
         m_ui->extensionWidget->setVisible(false);
-        this->setMinimumHeight(390);
-        this->setMaximumHeight(390);
+        m_ui->cmdToggleExtensions->setIcon(QIcon(":/images/tree_expand.png"));
+        m_ui->cmdToggleExtensions->setToolTip(QObject::tr("Show advanced settings"));
+        this->setMinimumHeight(380);
+        this->setMaximumHeight(380);
     }
 }
 
@@ -1003,99 +1011,98 @@ void Preferences::on_cmdNewConfig_clicked()
 void Preferences::on_trvConnections_customContextMenuRequested(QPoint pos)
 {
     // Nur anzeigen wenn Manage oder Portable ist
-    if (Settings::getInstance()->getIsPortableClient() || Settings::getInstance()->getIsManageClient()) {
-        TreeConItem *item = NULL;
-        item = dynamic_cast<TreeConItem*>(m_ui->trvConnections->itemAt(pos));
-        if (item) {
-            // Dialoge inititiieren
-            DeleteConfig::getInstance()->setOpenVpnObject(item->getOpenVPN());
-            RenameConfig::getInstance()->setOldName(item->getOpenVPN()->getConfigName());
-            RenameConfig::getInstance()->setFullPath(item->getOpenVPN()->getConfigPath() + QLatin1String("/") + item->getOpenVPN()->getConfigName() + QLatin1String(".ovpn"));
+    TreeConItem *item = NULL;
+    item = dynamic_cast<TreeConItem*>(m_ui->trvConnections->itemAt(pos));
+    if (item) {
+        // Dialoge inititiieren
+        DeleteConfig::getInstance()->setOpenVpnObject(item->getOpenVPN());
+        RenameConfig::getInstance()->setOldName(item->getOpenVPN()->getConfigName());
+        RenameConfig::getInstance()->setId(item->getOpenVPN()->id());
 
-            QMenu configPopUp (this);            
-            bool toggleMenues (true);
-            // Connect
-            if (item->getOpenVPN()->isConnecting() || item->getOpenVPN()->isConnectionStable()) {
-                configPopUp.addAction(QPixmap(":/images/disconnetdmen.png"), QObject::tr("&Disconnect"), item->getTreeButton(), SLOT(click()));
-            } else {
-                configPopUp.addAction(QPixmap(":/images/connectmen.png"), QObject::tr("Con&nect"), item->getTreeButton(), SLOT(click()));
-            }            
-            configPopUp.addSeparator();
-            // Delete
-            // Wenn die Verbindung hergestellt ist oder gerade beim connecten
-            // den Menupunkt deaktivieren
-            if (item->getOpenVPN()->isConnecting() || item->getOpenVPN()->isConnectionStable()) {
-                toggleMenues = false;
-            }            
-
-            if (item->getOpenVPN()->isConfigLinked()) {
-                configPopUp.addAction(QPixmap(":/images/delete.png"), QObject::tr("&Delete"), this, SLOT(deleteLinkedConfig()))->setEnabled(toggleMenues);
-            } else {
-                configPopUp.addAction(QPixmap(":/images/delete.png"), QObject::tr("&Delete"), DeleteConfig::getInstance(), SLOT(show()))->setEnabled(toggleMenues);
-            }
-
-            // Startconfig
-            configPopUp.addSeparator();
-            if (item->getOpenVPN()->getConfigFullPath() == Settings::getInstance()->getCommandConfigPath()) {
-                configPopUp.addAction(QPixmap(":/images/releasestart.png"), QObject::tr("&Release"), this, SLOT(removeStartConfig()))->setEnabled((item->getTreeButton()->getState() != 1));
-            } else {
-                configPopUp.addAction(QPixmap(":/images/setstart.png"), QObject::tr("&Start configuration"), this, SLOT(setStartConfig()));
-            }
-
-            if (item->getOpenVPN()->isError() && item->getTreeButton()->getState() == 4) {
-                configPopUp.addSeparator();
-                configPopUp.addAction(QPixmap(":/images/list-remove.png"), QObject::tr("&Clear error"), this, SLOT(removeErrorFromConfig()));
-            }
-
-            if (item->getOpenVPN()->hasCrediantials()) {
-                configPopUp.addSeparator();
-                configPopUp.addAction(QPixmap(":/images/list-remove.png"), QObject::tr("&Clear saved data"), item->getOpenVPN(), SLOT(removeCredentials()));
-            }
-
-            configPopUp.addSeparator();
-            configPopUp.addAction(QPixmap(":/images/rename.png"), QObject::tr("&Rename"), RenameConfig::getInstance(), SLOT(show()))->setEnabled(toggleMenues);
-            configPopUp.addSeparator();
-            configPopUp.addAction(QPixmap(":/images/manage.png"), QObject::tr("&Edit"), item->getOpenVPN(), SLOT(openManageConnection()))->setEnabled(toggleMenues);
-            configPopUp.addAction(QPixmap(":/images/edit.png"), QObject::tr("&Quick edit"), item->getOpenVPN(), SLOT(openEditConfig()))->setEnabled(toggleMenues);
-            configPopUp.addSeparator();
-            configPopUp.addAction(QPixmap(":/images/export.png"), QObject::tr("&Export"), item->getOpenVPN(), SLOT(openExport()));
-
-            configPopUp.addAction(QPixmap(":/images/import.png"), QObject::tr("&Import"), this, SLOT(on_cmdImportConfig_clicked()));
-            configPopUp.addSeparator();
-            configPopUp.exec(m_ui->trvConnections->mapToGlobal(pos));
+        QMenu configPopUp (this);
+        bool toggleMenues (true);
+        bool enableMenues (true);
+        bool enableDelete (true);
+        // Connect
+        if (item->getOpenVPN()->isConnecting() || item->getOpenVPN()->isConnectionStable()) {
+            configPopUp.addAction(QPixmap(":/images/disconnetdmen.png"), QObject::tr("&Disconnect"), item->getTreeButton(), SLOT(click()));
+        } else {
+            configPopUp.addAction(QPixmap(":/images/connectmen.png"), QObject::tr("Con&nect"), item->getTreeButton(), SLOT(click()));
         }
+        configPopUp.addSeparator();
+        // Delete
+        // Wenn die Verbindung hergestellt ist oder gerade beim connecten
+        // den Menupunkt deaktivieren
+        if (item->getOpenVPN()->isConnecting() || item->getOpenVPN()->isConnectionStable()) {
+            toggleMenues = false;
+            enableDelete = false;
+        }
+
+        if (!Settings::getInstance()->getIsManageClient()) {
+            toggleMenues = false;
+            enableMenues = false;
+        }
+
+
+        //
+        configPopUp.addAction(QPixmap(":/images/delete.png"), QObject::tr("&Delete"), DeleteConfig::getInstance(), SLOT(show()))->setEnabled(enableDelete);
+
+
+        // Startconfig
+        configPopUp.addSeparator();
+
+        if (item->getOpenVPN()->isStartConfig()) {
+            configPopUp.addAction(QPixmap(":/images/releasestart.png"), QObject::tr("&Release"), this, SLOT(removeStartConfig()))->setEnabled((item->getTreeButton()->getState() != 1));
+        } else {
+            configPopUp.addAction(QPixmap(":/images/setstart.png"), QObject::tr("&Start configuration"), this, SLOT(setStartConfig()));
+        }
+
+        if (item->getOpenVPN()->isError() && item->getTreeButton()->getState() == 4) {
+            configPopUp.addSeparator();
+            configPopUp.addAction(QPixmap(":/images/list-remove.png"), QObject::tr("&Clear error"), this, SLOT(removeErrorFromConfig()));
+        }
+
+        if (item->getOpenVPN()->hasCrediantials()) {
+            configPopUp.addSeparator();
+            configPopUp.addAction(QPixmap(":/images/list-remove.png"), QObject::tr("&Clear saved data"), item->getOpenVPN(), SLOT(removeCredentials()));
+        }
+
+        configPopUp.addSeparator();
+        configPopUp.addAction(QPixmap(":/images/rename.png"), QObject::tr("&Rename"), RenameConfig::getInstance(), SLOT(show()))->setEnabled(toggleMenues);
+        configPopUp.addSeparator();
+        configPopUp.addAction(QPixmap(":/images/manage.png"), QObject::tr("&Edit"), item->getOpenVPN(), SLOT(openManageConnection()))->setEnabled(toggleMenues);
+        configPopUp.addAction(QPixmap(":/images/edit.png"), QObject::tr("&Quick edit"), item->getOpenVPN(), SLOT(openEditConfig()))->setEnabled(toggleMenues);
+        configPopUp.addSeparator();
+        configPopUp.addAction(QPixmap(":/images/export.png"), QObject::tr("&Export"), item->getOpenVPN(), SLOT(openExport()))->setEnabled(enableMenues);
+
+        configPopUp.addAction(QPixmap(":/images/import.png"), QObject::tr("&Import"), this, SLOT(on_cmdImportConfig_clicked()))->setEnabled(enableMenues);
+        configPopUp.addSeparator();
+        configPopUp.exec(m_ui->trvConnections->mapToGlobal(pos));
     }
 }
 
 void Preferences::removeStartConfig()
 {
-    for (int x = 0; x < m_ui->trvConnections->invisibleRootItem()->childCount(); x++) {
-        // Item und OpenVpn Objekt holen
-        TreeConItem *item = dynamic_cast<TreeConItem*>(m_ui->trvConnections->invisibleRootItem()->child(x));
-        OpenVpn *vpn = item->getOpenVPN();
-        vpn->setAdvName(QLatin1String(""));
+    TreeConItem *item = NULL;
+    item = dynamic_cast<TreeConItem*>(m_ui->trvConnections->currentItem());
+    if (item) {
+        item->getOpenVPN()->setStartConfig(false);
+        QString sql (QString("UPDATE vpn SET [vpn-autostart] = 0 WHERE [vpn-id] = %1")
+                     .arg(item->getOpenVPN()->id()));
+        this->db.execute(sql);
+        this->refreshDialog();
     }
-    Settings::getInstance()->setIsStartCommandConfig (false, true);
-    Settings::getInstance()->setCommandConfigPath(QLatin1String(""), true);
-    this->refreshDialog();
 }
 
 void Preferences::setStartConfig()
 {
-    // Alle Startconfigs entfernen
-    for (int x = 0; x < m_ui->trvConnections->invisibleRootItem()->childCount(); x++) {
-        // Item und OpenVpn Objekt holen
-        TreeConItem *item = dynamic_cast<TreeConItem*>(m_ui->trvConnections->invisibleRootItem()->child(x));
-        OpenVpn *vpn = item->getOpenVPN();
-        vpn->setAdvName(QLatin1String(""));
-    }
-
     TreeConItem *item = NULL;
     item = dynamic_cast<TreeConItem*>(m_ui->trvConnections->currentItem());
     if (item) {
-        Settings::getInstance()->setIsStartCommandConfig (true, true);
-        Settings::getInstance()->setCommandConfigPath(item->getOpenVPN()->getConfigFullPath(), true);
-        item->getOpenVPN()->setAdvName(QLatin1String ("\n") + QObject::tr("- Start config"));
+        item->getOpenVPN()->setStartConfig(true);
+        QString sql (QString("UPDATE vpn SET [vpn-autostart] = 1 WHERE [vpn-id] = %1")
+                     .arg(item->getOpenVPN()->id()));
+        this->db.execute(sql);
         this->refreshDialog();
     }
 }
@@ -1109,25 +1116,6 @@ void Preferences::removeErrorFromConfig()
         item->getOpenVPN()->setErrorString(QLatin1String(""));
         this->refreshDialog();
         this->setIcon();
-    }
-}
-
-void Preferences::deleteLinkedConfig()
-{
-    TreeConItem *item = NULL;
-    item = dynamic_cast<TreeConItem*>(m_ui->trvConnections->currentItem());
-    if (item) {
-        if (item->getOpenVPN()->getConfigFullPath() == Settings::getInstance()->getCommandConfigPath()) {
-            Message::error(QObject::tr("Can't delete a start config. Please release it first."));
-            return;
-        }
-
-        if (Message::confirm(QObject::tr("Remove the linked configuration from list?"), QObject::tr("Delete linked configuration"))) {
-            Configs::getInstance()->removeConfigFromList(item->getOpenVPN()->getConfigPath() + QLatin1String("/") + item->getOpenVPN()->getConfigName() + QLatin1String(".ovpn"));
-            this->refreshConfigList();
-            this->setConnectionStatus();
-            this->refreshDialog();
-        }
     }
 }
 
@@ -1186,6 +1174,7 @@ void Preferences::on_cmdAddNewTap_clicked()
                 QApplication::setOverrideCursor(Qt::ArrowCursor);
                 Message::error(QObject::tr("Unable to install Tap-Win32 driver!\nMaybe you have no permissions.\nPlease contact your system administrator."), QObject::tr("Install Tap Device"));
             }
+            this->refreshTapDeviceCount();
             QApplication::setOverrideCursor(Qt::ArrowCursor);
         }
     }
@@ -1196,12 +1185,12 @@ void Preferences::receivedRemoveTap(QString state)
     if (state == QLatin1String("OK")) {
         QApplication::setOverrideCursor(Qt::ArrowCursor);
         Message::information(QObject::tr(("Tap devices remove successfully.")));
+        this->refreshTapDeviceCount();
     } else if (state == QLatin1String("ERROR")) {
         QApplication::setOverrideCursor(Qt::ArrowCursor);
         Message::error(QObject::tr("Unable to uninstall Tap-Win32 driver!\nMaybe you have no permissions.\nPlease contact your system administrator."), QObject::tr("Securepoint SSL VPN"));
     }
 }
-
 
 void Preferences::on_cmdRemoveAllTap_clicked()
 {
@@ -1213,9 +1202,12 @@ void Preferences::on_cmdRemoveAllTap_clicked()
 
     // Alle Tap devices löschen
     if(Settings::getInstance()->getIsRunAsSevice()) {
-        // Befehl an den Dienst senden
-        QApplication::setOverrideCursor(Qt::WaitCursor);
-        SrvCLI::instance()->send(QLatin1String("REMOVETAP"), QLatin1String(""));
+        //
+        if(Message::confirm(QObject::tr("Do you realy want to remove all TAP device?"))) {
+            // Befehl an den Dienst senden
+            QApplication::setOverrideCursor(Qt::WaitCursor);
+            SrvCLI::instance()->send(QLatin1String("REMOVETAP"), QLatin1String(""));
+        }
     } else {
         // Ohne Dienst
         if (Message::confirm(QObject::tr("Uninstall the driver?\nFor this action you need administrator permissions!"), QObject::tr("Remove Tap-Win32 driver"))) {
@@ -1224,6 +1216,7 @@ void Preferences::on_cmdRemoveAllTap_clicked()
                 QApplication::setOverrideCursor(Qt::ArrowCursor);
                 Message::error(QObject::tr("Unable to uninstall Tap-Win32 driver!\nMaybe you have no permissions.\nPlease contact your system administrator."), QObject::tr("Securepoint SSL VPN"));
             }
+            this->refreshTapDeviceCount();
             QApplication::setOverrideCursor(Qt::ArrowCursor);
         }
     }
@@ -1285,17 +1278,221 @@ void Preferences::on_cmdToogleStartup_clicked()
     m_ui->lblStartupWindows->setText((Settings::getInstance()->autoStartOnWindowsStartup() ? QObject::tr("yes") : QObject::tr("no")));
 }
 
-void Preferences::on_cmbDelay_currentIndexChanged(int index)
-{    
-    if (index == 0) {
-        Settings::getInstance()->setDelayStartConfig(QLatin1String("0"));
-    } else if (index == 1) {
-        Settings::getInstance()->setDelayStartConfig(QLatin1String("30"));
-    } else if (index == 2) {
-        Settings::getInstance()->setDelayStartConfig(QLatin1String("60"));
-    } else if (index == 3) {
-        Settings::getInstance()->setDelayStartConfig(QLatin1String("90"));
-    } else if (index == 4) {
-        Settings::getInstance()->setDelayStartConfig(QLatin1String("120"));
+void Preferences::on_cmdToogleWinEvent_clicked()
+{
+    Settings::getInstance()->setCheckWindowsShutdown(!Settings::getInstance()->checkWindowsShutdown());
+    m_ui->lblWinEvent->setText((Settings::getInstance()->checkWindowsShutdown() ? QObject::tr("yes") : QObject::tr("no")));
+}
+
+void Preferences::renameConfig(int id, const QString &newName)
+{
+    //
+    // Rename config in db
+    //
+
+    QString sql (QString("UPDATE vpn SET [vpn-name] = '%1' WHERE [vpn-id] = %2")
+                 .arg(this->db.makeCleanValue(newName))
+                 .arg(id));
+    this->db.execute(sql);
+}
+
+void Preferences::removeConfigInDatabase(int id)
+{
+    //
+    // Remove config in db
+    //
+
+    QString sql (QString("DELETE FROM vpn WHERE [vpn-id] = %1")
+                 .arg(id));
+    this->db.execute(sql);
+}
+
+void Preferences::addNewConfigToDatabase(const QString &name, const QString &path)
+{
+    //
+    // Add a new config into db
+    //
+
+    QString sql (QString("INSERT INTO vpn ([vpn-name], [vpn-config], [vpn-autostart]) VALUES ('%1', '%2', 0);")
+             .arg(this->db.makeCleanValue(name))
+             .arg(this->db.makeCleanValue(path)));
+    this->db.execute(sql);
+}
+
+void Preferences::refreshTapDeviceCount()
+{
+    qApp->setOverrideCursor(Qt::WaitCursor);
+    m_ui->lblTapCount->setText(QString::number(TapDriver::instance()->deviceCount()));
+    qApp->setOverrideCursor(Qt::ArrowCursor);
+}
+
+void Preferences::centerMidle()
+{
+    int winW = this->width();
+    int winH = this->height();
+
+    int left (0);
+    int top (0);
+
+    // Desktop auswerten
+    top = qApp->desktop()->height();
+    left = qApp->desktop()->width();
+    // Die Breite bei virtuellen Desktops vierteln
+    if (left > 2000 && qApp->desktop()->isVirtualDesktop()) {
+        left /= 4;
+    } else {
+        // Normaler Desktop
+        left = (left - winH) / 2;
     }
+    // Height
+    if (top > 2000 && qApp->desktop()->isVirtualDesktop()) {
+        top /= 4;
+    } else {
+        top = (top - winH) / 2;
+    }
+
+    // Nun die neuen setzen
+    this->setGeometry(left, top, winW, winH);
+}
+
+void Preferences::on_cmdCheckUpdate_clicked()
+{
+    //
+    // Check for update
+    //
+
+    ///delete this->update;
+    //this->update = 0;
+    //
+    this->update = new ParseXML;
+    QObject::connect(this->update, SIGNAL(finished(bool, QString)), this, SLOT(updateCheckIsReady(bool, QString)));
+
+    m_ui->cmdCheckUpdate->setEnabled(false);
+    m_ui->cmdOpenUpdate->setEnabled(false);
+    qApp->setOverrideCursor(Qt::WaitCursor);
+
+    // Set movie
+    QMovie *movie = new QMovie(":/images/loading.gif");
+    m_ui->lblUpdateState->setMovie(movie);
+    movie->start();
+
+    this->update->runParser();
+}
+
+void Preferences::updateCheckIsReady(bool success, QString errMessage)
+{
+    //
+    // Update is finished
+    //
+
+    if (!success) {
+        m_ui->lblUpdateState->setText(QObject::tr("Error") + QLatin1String(": ") + errMessage);
+        m_ui->lblUpdateState->setToolTip(errMessage);
+    } else {
+        QString uVersion (this->update->highestVersion());
+        if (this->internalBuild() == uVersion) {
+            m_ui->lblUpdateState->setText(QObject::tr("Up to date.") + QLatin1String(" [") + uVersion + QLatin1String("]"));
+        } else {
+            // Check if it is a newer version
+            QString thisVersion (this->internalBuild());
+            QString netVersion (uVersion);
+            // Remove dots
+            thisVersion = thisVersion.remove(".");
+            netVersion = netVersion.remove(".");
+            // To int
+            int dVersion = thisVersion.toInt();
+            int dNetVersion = netVersion.toInt();
+            //
+            if (dNetVersion > dVersion) {
+                m_ui->lblUpdateState->setText(QObject::tr("It is a newer version available.") + QLatin1String(" [") + uVersion + QLatin1String("]"));
+                m_ui->cmdOpenUpdate->setEnabled(true);
+                if (!m_ui->tab_5->isVisible()) {
+                    qApp->setOverrideCursor(Qt::ArrowCursor);
+                    if (Message::confirm(QObject::tr("It is a newer version available.") + QLatin1String(" [") + uVersion + QLatin1String("]\n") + QObject::tr("Do you want to update the vpn client?"), QObject::tr("Please confirm"), true)) {
+                        QTimer::singleShot(0, this, SLOT(on_cmdOpenUpdate_clicked()));
+                    }
+                }
+            } else {
+                m_ui->lblUpdateState->setText(QObject::tr("Up to date.") + QLatin1String(" [") + uVersion + QLatin1String("]"));
+            }
+        }
+    }
+
+    m_ui->cmdCheckUpdate->setEnabled(true);
+    qApp->setOverrideCursor(Qt::ArrowCursor);
+}
+
+QString Preferences::internalBuild() const
+{
+    //
+    // Return the version
+    //
+
+    return this->internalBuildValue;
+}
+
+void Preferences::on_cmdUpdateSetting_clicked()
+{
+    //
+    // Open Update settings
+    //
+
+    FrmUpdateSettings dialog;
+    dialog.exec();
+}
+
+void Preferences::on_cmdOpenUpdate_clicked()
+{
+    //
+    // Start update process
+    //
+
+    if (this->isConnectionActive()) {
+        Message::warning(QObject::tr("Can't start update process with an active connection!"));
+        return;
+    }
+
+
+    if (Settings::getInstance()->useSourceForge()) {
+        QDesktopServices::openUrl(QUrl("http://sourceforge.net/projects/securepoint/files"));
+    } else {
+        QDesktopServices::openUrl(QUrl("http://download.securepoint.de"));
+    }
+
+
+    /*
+    QStringList args;
+    args << "-target";
+    args << QString("http://updatevpnc.securepoint.de/%1.zip").arg(this->update->highestVersion());;
+    if (Settings::getInstance()->getIsLanguageGerman()) {
+        args << QLatin1String("-lang");
+        args << QLatin1String("de");
+    }
+
+    //
+    QSettings osset ("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", QSettings::NativeFormat);
+    QString winver = osset.value("ProductName").toString();
+    if (winver.contains("Windows 7", Qt::CaseInsensitive) || winver.contains("Vista", Qt::CaseInsensitive) || winver.contains("2008", Qt::CaseInsensitive)) {
+        QString arguments (args.join(QLatin1String(" ")));
+        wchar_t *apiParams = (wchar_t*) arguments.utf16();
+        wchar_t *filename = (wchar_t*) QString (qApp->applicationDirPath().replace("/", "\\") + QLatin1String("\\updater\\updater.exe")).utf16();
+
+        SHELLEXECUTEINFO ShellInfo = {0};
+        memset(&ShellInfo, 0, sizeof(ShellInfo));
+        ShellInfo.cbSize = sizeof(ShellInfo);
+        ShellInfo.hwnd = NULL;
+        ShellInfo.lpVerb =  L"runas";
+        ShellInfo.lpFile =  filename;
+        ShellInfo.lpParameters = apiParams;
+        ShellInfo.nShow = SW_SHOWNORMAL;
+        ShellInfo.fMask = SEE_MASK_NOCLOSEPROCESS;
+        bool exec = ShellExecuteEx(&ShellInfo);
+        Q_UNUSED(exec)
+    } else {
+        // Klassischer Aufruf
+        QProcess *updateProcess = new QProcess (this);
+        updateProcess->setWorkingDirectory(QCoreApplication::applicationDirPath());
+        updateProcess->start(QCoreApplication::applicationDirPath() + QLatin1String("/updater/updater.exe"), args);
+    }
+    */
 }

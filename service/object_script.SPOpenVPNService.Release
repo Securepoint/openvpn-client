@@ -9,7 +9,6 @@ INPUT(
 ./release\service.o
 ./release\srvcli.o
 ./release\tapdriver.o
-./release\check64.o
 ./release\qtservice.o
 ./release\qtservice_win.o
 ./release\moc_openvpn.o

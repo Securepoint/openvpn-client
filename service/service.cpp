@@ -11,7 +11,7 @@ Service::Service(int argc, char **argv)
 }
 
 void Service::start()
-{    
+{
     // Den Port einlesen und den SSL-Server starten
 
     // Ini-Datei öffenen
@@ -23,7 +23,7 @@ void Service::start()
 
     // Debug an/ ausschalten
     Debug::setDebugPath(QCoreApplication::applicationDirPath());
-    Debug::enableDebugging(serviceSettings.value(QLatin1String("debug/state"), 1).toBool());
+    Debug::enableDebugging(serviceSettings.value(QLatin1String("debug/state"), 0).toBool());
     int debLev (serviceSettings.value(QLatin1String("debug/level"), 9).toInt());
     switch (debLev) {
         case 1:
