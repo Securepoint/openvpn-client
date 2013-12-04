@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ImportConfig</class>
+ <widget class="QDialog" name="ImportConfig">
+  <property name="windowModality">
+   <enum>Qt::ApplicationModal</enum>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>370</width>
+    <height>350</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>370</width>
+    <height>350</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>370</width>
+    <height>350</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Import config file</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="systray.qrc">
+    <normaloff>:/images/logo.png</normaloff>:/images/logo.png</iconset>
+  </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
+  <property name="modal">
+   <bool>true</bool>
+  </property>
+  <widget class="QGroupBox" name="groupBox">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>4</y>
+     <width>351</width>
+     <height>81</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>File path:</string>
+   </property>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>20</y>
+      <width>191</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Path to the import file [*.crypt]:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="txtImportPath">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>40</y>
+      <width>310</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">:enabled {border: 1px solid black}
+:hover {border: 1px solid red; }</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="cmdOpenCryptFile">
+    <property name="geometry">
+     <rect>
+      <x>323</x>
+      <y>40</y>
+      <width>20</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">:enabled {border: 1px solid black}
+:disabled {border: 1px solid black}
+:hover {background-color: rgb(195, 195, 195);}</string>
+    </property>
+    <property name="text">
+     <string>...</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QGroupBox" name="groupBox_2">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>90</y>
+     <width>351</width>
+     <height>81</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Save as:</string>
+   </property>
+   <widget class="QRadioButton" name="rbSaveAsFile">
+    <property name="geometry">
+     <rect>
+      <x>11</x>
+      <y>22</y>
+      <width>151</width>
+      <height>19</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QRadioButton { 
+spacing: 5px;
+}
+
+QRadioButton::indicator {
+width: 13px;
+height: 13px;
+}
+
+QRadioButton::indicator::unchecked:enabled {
+image: url(:/images/styles/radiobutton_unchecked.png);
+}
+
+QRadioButton::indicator::checked:enabled {
+image: url(:/images/styles/radiobutton_checked.png);
+}
+
+QRadioButton::indicator::unchecked:disabled {
+image: url(:/images/styles/radiobutton_unchecked_dis.png);
+}
+
+QRadioButton::indicator::checked:disabled {
+image: url(:/images/styles/radiobutton_checked_dis.png);
+}</string>
+    </property>
+    <property name="text">
+     <string>as filename</string>
+    </property>
+    <property name="checked">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="rbSaveAsName">
+    <property name="geometry">
+     <rect>
+      <x>11</x>
+      <y>47</y>
+      <width>41</width>
+      <height>19</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QRadioButton { 
+spacing: 5px;
+}
+
+QRadioButton::indicator {
+width: 13px;
+height: 13px;
+}
+
+QRadioButton::indicator::unchecked:enabled {
+image: url(:/images/styles/radiobutton_unchecked.png);
+}
+
+QRadioButton::indicator::checked:enabled {
+image: url(:/images/styles/radiobutton_checked.png);
+}
+
+QRadioButton::indicator::unchecked:disabled {
+image: url(:/images/styles/radiobutton_unchecked_dis.png);
+}
+
+QRadioButton::indicator::checked:disabled {
+image: url(:/images/styles/radiobutton_checked_dis.png);
+}</string>
+    </property>
+    <property name="text">
+     <string>as:</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="txtNewName">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>47</y>
+      <width>151</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">:enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}
+:disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}
+:hover {border: 1px solid red; }
+</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QPushButton" name="cmdCancel">
+   <property name="geometry">
+    <rect>
+     <x>260</x>
+     <y>313</y>
+     <width>100</width>
+     <height>33</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">:enabled {border: 1px solid black}
+:disabled {border: 1px solid black}
+:hover {background-color: rgb(195, 195, 195);}
+QPushButton {height: 25px; width: 50px;text-align:left;
+	padding-left: 10px;
+	padding-top: 3px;
+	padding-bottom: 3px;}</string>
+   </property>
+   <property name="text">
+    <string>     &amp;Close</string>
+   </property>
+   <property name="icon">
+    <iconset resource="systray.qrc">
+     <normaloff>:/images/close_dialog.png</normaloff>:/images/close_dialog.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>22</width>
+     <height>22</height>
+    </size>
+   </property>
+   <property name="flat">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="cmdImport">
+   <property name="geometry">
+    <rect>
+     <x>150</x>
+     <y>313</y>
+     <width>100</width>
+     <height>33</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">:enabled {border: 1px solid black}
+:disabled {border: 1px solid black}
+:hover {background-color: rgb(195, 195, 195);}
+QPushButton {height: 25px; width: 50px;text-align:left;
+	padding-left: 10px;
+	padding-top: 3px;
+	padding-bottom: 3px;}</string>
+   </property>
+   <property name="text">
+    <string>     &amp;Import</string>
+   </property>
+   <property name="icon">
+    <iconset resource="systray.qrc">
+     <normaloff>:/images/import.png</normaloff>:/images/import.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>22</width>
+     <height>22</height>
+    </size>
+   </property>
+   <property name="flat">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QGroupBox" name="groupBox_3">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>173</y>
+     <width>351</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Password:</string>
+   </property>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>22</y>
+      <width>51</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Password:</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="txtPassword">
+    <property name="geometry">
+     <rect>
+      <x>65</x>
+      <y>21</y>
+      <width>201</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">:enabled {border: 1px solid black}
+:hover {border: 1px solid red; }</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QGroupBox" name="groupBox_4">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>230</y>
+     <width>351</width>
+     <height>80</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Import existing configuration:</string>
+   </property>
+   <widget class="QLabel" name="label_3">
+    <property name="geometry">
+     <rect>
+      <x>12</x>
+      <y>20</y>
+      <width>161</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Path to the *.ovpn file:</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="txtExistingOvpn">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>40</y>
+      <width>310</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">:enabled {border: 1px solid black}
+:hover {border: 1px solid red; }</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="cmdOpenOvpnFile">
+    <property name="geometry">
+     <rect>
+      <x>323</x>
+      <y>40</y>
+      <width>20</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">:enabled {border: 1px solid black}
+:disabled {border: 1px solid black}
+:hover {background-color: rgb(195, 195, 195);}</string>
+    </property>
+    <property name="text">
+     <string>...</string>
+    </property>
+   </widget>
+  </widget>
+ </widget>
+ <resources>
+  <include location="systray.qrc"/>
+ </resources>
+ <connections/>
+</ui>

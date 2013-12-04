@@ -1,0 +1,215 @@
+Securepoint SSL VPN Client
+============================
+
+Der Securepoint SSL VPN Client stellt eine einfache Möglichkeit zur Verfügung SSL VPN Verbindungen aufzubauen.
+Es bestehen zwei Möglichkeiten der Verbindung:
+1: Die Verbindung wird über den Securepoint VPN Dienst hergestellt.
+	- Der Securepoint VPN Dienst ist ein Wrapper für OpenVPN und bietet die Möglichkeit anzugeben,
+	  welche Konfiguration geladen werden soll, sowie auch die Eingabe der Benutzerauthentifizierung.
+	  Damit der Dienst ordnungsgemäß funktioniert, muss der Dienst mit ausreichenden Rechten gestartet werden.
+	  Die Rechte müssen das setzen von Routen ermöglichen, standardmäßig nach der Installaion ist dies der Benutzer 
+	  System. Im Active Directory muss der Benutzer in der Gruppe Administratoren oder Netzwerkkonfigurations-Operatoren sein.
+	  Es ist zu beachten, dass die Skripte vom Dienst gestartet werden und somit auch über dessen Rechte verfügen.
+
+2: Die Verbindung wird über die mitgelieferte OpenVPN.exe hergestellt.
+	- Die OpenVpn.exe ist das Konsolenprogramm um eine Verbindung zu einem SSL VPN herzustellen. Um eine ordnungsgemäße
+	  Funktion zu gewährleisten, muss der angemeldete Benutzer Über ausreichende Rechte zum setzen der Routen verfügen.
+	  Die gestarteten Skripte laufen im Userkontext ab. Wenn der angemeldete Benutzer nicht über ausreichende Rechte verfügt,
+	  ist es empfohlen den Dienst zu benutzen.
+
+
+Der Securepoint SSL VPN Client wird über Kommandozeilen Parameter gesteuert. Ohne Kommandozeilen Parameter sind folgende Einstellungen gesetzt:
+- Suche der Konfigurationsdateien im Verzeichnis: %Benutzer%Anwendungsdaten\Securepoint SSL VPN.
+- Herstellen der Verbindung über den Dienst.
+- Die eingestellte Sprache ist Deutsch.
+- Client Port 3655
+- Dienst Port 3656
+
+Es gibt folgende Kommandozeilen Parameter:
+* -start
+	Der Parameter -start bietet die Möglichkeit eine Konfiguration beim Anwendungsstart zu laden.
+	Ohne weitere Parameter wird der Statusdialg angezeigt sowie bei Bedarf die Dialoge für die
+	Benutzerauthentifizierung.
+
+* -noService
+	Der Parameter -noService gibt an, dass statt dem Dienst die mitgelieferte OpenVPN.exe zum
+	herstellen der Verbindung genutzt werden soll. Es ist zu beachten, dass der ausführende Benutzer
+	über ausreichende Rechte zum setzen der Routen besitzt.
+
+* -reconnect
+	Der Parameter -reconnect gibt an, dass bei einem Verbindungsabbruch die Verbindung neu aufgebaut wird.
+	Der Neuaufbau wird nach dem Beenden der OpenVPN.exe durchgeführt. Um bei Verbindungsverlusten, die kein
+	Schließen der OpenVPN.exe bewirken einen Neuaufbau durchzuführen, sind in der Konfiguration die entsprechenden
+	Parameter anzugeben, dass sich die OpenVPN.exe nach einem Timeout beendet.
+
+* -noUserAuth
+	Der Parameter -noUserAuth gibt an, dass die Benutzerauthentifizierungsfenster unterdrückt werden.
+	Dieses gilt nur für den Benutzernamen und für das Kennwort. Die PKCS12 Authentifizierung sowie die
+	Eingabe des privaten Schlüssel bei gesetzter Krypt Funktion werden immer angezeigt.
+
+* -noBallon
+	Der Client zeigt bei geschlossenden Statusdialog Meldungen in einer Systray Ballon Message (SBM) an.
+	Diese SBM kann mit dem Parameter -noBallon unterdrückt werden. Somit ist ein "Silence-Modus" möglich.
+
+* -user
+	Der Parameter -user gibt den Benutzer für die Verbindungen an. Der übergebene Benutzer wird für alle Verbindungen 
+	verwendet. Eventuelle Benutzer aus der Krypt Authentifizierung werden ignoriert.
+
+* -pwd 
+	Dieser Parameter ist im Ablauf dem Parameter -user gleich.
+
+* -servicePort
+	Über den Parameter -servicePort, kann der Port festgelegt werden auf dem der Dienst lauscht.
+	Dieser Parameter ändert nicht den Port beim Dienst!
+
+* -port 
+	Der Parameter -port gibt den Port an auf dem der Client auf Antworten vom Dienst wartet.
+
+* -searchDir 
+	Standardmäßig durchsucht der Client das Verzeichnis %Benutzer%Anwendungsdaten\Securepoint SSL VPN\ nach
+	Konfigurationen. Mit dem Parameter -searchDir kann ein zusätzliches Verzeichnis angegeben werden.
+	Das Verzeichnis wird inklusive aller Unterverzeichnissen durchsucht.
+
+* -useEnglish
+	Mit dem Parameter -useEnglish kann die Standardsprache Deutsch vom Client geändert werden.
+	Dialoge und Meldungen werden in Englisch angezeigt. Dieser Parameter hat keine Auswirkung auf
+	Meldungen vom Dienst! Diese werden immer in Englisch angezeigt.
+
+* -noStartPopUp
+	Wenn eine Startkonfiguration angeben wird, wird der Statusdialog angezeigt. Mit dem Parameter
+	-noStartPopUp wird der Statusdialog nicht dargestellt beim laden der Konfiguration.
+	
+* -manage
+	Bei gesetzer -manage Option, werden in der Setupversion einige Erweiterungen freigeschaltet.
+	Nun können die Proxy-Einstellungen bearbeitet werden, es können Konfigurationen importiert
+	und exportiert werden, es gibt einen Assistenten zum anlegen neuer Verbindungen und 
+	vorhandene Verbindungen können bearbeitet werden.
+	Zudem besteht weiterhin die Möglichkeit mit beiden Verbindungsarten eine Verbindung aufzubauen.
+
+* -useCryptedData
+	Bei Angabe des Parameters -useCryptedData besteht die Möglichkeit den Benutzernamen und das
+	Kennwort verschlüsselt zu speichern. Sofern die verschlüsselten Daten vorhanden sind, werden 
+	diese bei der Verbindung nach Eingabe des privaten Schlüssels gesendet. Die Parameter -user und
+	-pwd deaktivieren das jeweilige senden der Daten. Der private Schlüssel wird nach der ersten Eingabe
+	gecached und bei Bedarf automatisch gesetzt. Um die erneute Eingabe des privaten Schlüssels zu erzwingen,
+	kann in den Kommandozeilen Einstellungen im Statusdialog das Flag "Privaten Schlüssel erzwingen" gesetzt 
+	werden. Dadurch wird jedesmal, wenn der Schlüssel benötigt wird der Eingabedialog angezeigt.
+
+
+Alle Kommandozeilen Parameter funktionieren im Dienst- sowie im OpenVpn- Modus. Die Parameter sind case sensitiv!
+
+Beispiele:
+==========
+
+Eine Verbindung mit Benutzerdaten verdeckt mit dem Dienst starten und bei Verbindungsabbrüchen neu verbinden.
+Die Konfiguration ist c:\Config\Test.ovpn. Zusätzlich soll das Verzeichnis c:\Backup\ 
+nach Konfigurationen durchsucht werden. 
+
+SPvpncl.exe -start "c:\Config\Test.ovpn" -reconnect -noUserAuth -noStartPopUp -user Name -pwd insecure -noBallon -searchDir "c:/Backup/"
+
+---
+
+Aktivierung der Krypt Funktionen.
+
+SPvpncl.exe -useCryptedData
+
+---
+
+Benutzung der mitgelieferten OpenVPN.exe und Sprache Englisch.
+
+Spvpncl.exe -noService -useEnglish
+
+		 
+
+# Skripte
+#######################################################################
+
+Um Skripte auszuführen, muss im Konfigurationsverzeichnis die Datei scripts.conf vorhanden sein!
+
+Es gibt vier Angaben die für die Ausführung der Skripte zuständig sind. 
+Diese sind:
+	- AC [<command>] <file>  # Dieses Skript wird ausgeführt nach dem erfolgreichem  Verbindungsaufbau
+	- BD [<command>] <file>  # Dieses Skript wird ausgeführt bevor die Verbindung getrennt wird
+	- AD [<command>] <file>  # Dieses Skript wird ausgeführt nachdem die Verbindung getrennt ist
+	- TO <time ms> 		 # Die Verzögerung des AC Skriptes in Millisekunden
+	
+Der Parameter <command> ist optional. Pfade müssen immer mit / statt mit \ geschrieben werden.
+Pfade mit Leerzeichen müssen in "" gefasst werden.
+
+Beispiele: 
+
+- Angabe eines Pfades
+	"c:/meinPfad/datei.suffix"
+	
+- Ausführen einer vbs Datei bevor die Verbindung getrennt wird:
+	BD:wscript "C:/test.vbs"
+	
+- Ausführen einer bat Datei nachdem die Verbindung getrennt ist:
+	AD:cmd /C "C:/test.bat"
+	
+- Die Ausführung des AC Skriptes um 5 Sekunden verzögern
+	TO:5000
+	
+Der Aufruf eines Skriptes wird im Log vermerkt
+
+# Dienst
+#######################################################################
+
+Dienst installieren:
+	SPOpenVPNService.exe -install
+Dienst deinstallieren;
+	SPOpenVPNService.exe -u
+	
+Starten des Dienstes geht über: 
+	Systemsteuerung -> Verwaltung ->Dienste ->Securepoint VPN
+oder über die Konsole mit:
+	sc start "Securepoint VPN"
+
+Die Installation und starten des Dienstes wird vom Installationsprogramm automatisch erledigt.
+	
+Dem Dienst kann angeben werden, welche Ports benutzt werden sollen.
+Dafür muss im Dienstanwendungsverzeichnis die Datei settings.dat vorhanden sein!
+
+Port vom Dienst ändern:
+		PORT:Port
+Port vom Client ändern:
+		CPORT:Port
+		
+Beispiel settings.dat
+PORT: 4444
+CPORT: 4445
+
+Bei Änderungen von Ports, muss der Client diese angegeben werden mit -port oder -servicePort.
+Beispiel: -port 4445 -servicePort 4444
+
+# Changelog zur letzten Version im Januar 2010
+#######################################################################
+
+- Überarbeitung der GUI.
+- Deutsch hinzugefügt.
+- Abfragen der Benutzerauthentifizierung erst bei Anforderung.
+- Hinzufügen der Möglichkeit Benutzername und Kennwort verschlüsselt abzulegen. 
+- Dienst ist nun Standardverbindungsmodus.
+- Alle Parameter in beiden Verbindungsarten verfügbar.
+- Standardisierte Icons.
+- diverse Bugfixes.
+- Setuproutine mit Möglichkeit für die Installation für alle oder nur dem aktuellen Benutzer.
+- Aktualisierung der Programmbibliotheken auf eine neuere Version.
+- Anzeige, ob verschlüsselte Benutzerdaten für die Verbindung vorhanden sind.
+
+Ergänzung bei -manage Parameter oder in der portablen Version
+
+- Importieren von Konfigurationen (*.crypt und verlinkungen auf *.ovpn)
+- Verschlüsselter Export von Konfigrationen (*.crypt)
+- Refresh der Konfigurationsliste
+- Anzeige der Konfigurationen im Kontextmenu des Systray
+- Quick Editieren der Verbindung
+- Festlegen der Konfigurationsoptionen und Skripte im normalen Editierfenster
+- Umbennen von Konfigurationen
+- Löschen von Konfigurationen
+- Löschen der verschlüsselten Benutzerdaten
+- Ändern der Proxy-Einstellungen
+
+
+=======================================================================================
+Letzte Änderung: Oliver Dehnbostel; 12.04.2010; oliver.dehnbostel@securepoint.de
