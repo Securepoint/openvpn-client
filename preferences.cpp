@@ -101,12 +101,12 @@ Preferences::Preferences() :
     QString titleAdd;
     // Ist der Client mit manage aufgerufen?
     if (Settings::getInstance()->getIsManageClient()) {
-        titleAdd = QObject::tr(" - manage");
+        titleAdd = QObject::tr(" - managed");
     } else if (Settings::getInstance()->getIsPortableClient()) {
         titleAdd = QObject::tr(" - portable");
     }
 
-    this->setWindowTitle(QObject::tr("Securepoint OpenVPN v1") + titleAdd);
+    this->setWindowTitle(QObject::tr("Securepoint OpenVPN v1.0.1") + titleAdd);
 
     // Set DB
     Configs::getInstance()->setDatabase(&this->db);
@@ -398,7 +398,6 @@ void Preferences::refreshDialog()
 
         // Namen setzen
         item->setText(1, configObj->getConfigName() + configObj->getAdvName());
-        item->setToolTip(1, configObj->getConfigPath().replace("/", "\\") + QLatin1String("\\") + configObj->getConfigName() + QLatin1String (".ovpn"));
         // Grundstatus setzen
         if (configObj->hasCrediantials()) {
             item->setIcon(2, QIcon(":/images/crypted.png"));
@@ -614,12 +613,16 @@ void Preferences::userInputIsNeeded(int id, int type)
         // Item und OpenVpn Objekt holen
         TreeConItem *item = dynamic_cast<TreeConItem*>(m_ui->trvConnections->invisibleRootItem()->child(x));
         OpenVpn *vpn = item->getOpenVPN();
+
         // Nun die Daten speichern
         if (vpn->id() == id) {
+
             cName = vpn->getConfigName();
             if (vpn->hasCrediantials(type)) {
+
                 // Das ist ein bischen doof hier, geht aber nicht anderes ohne den client neu zu designen
                 QString value (vpn->getSavedUserData(type));
+
                 SrvCLI::instance()->send(command, QString("%1;%2").arg(id).arg(value));
                 return;
             }
@@ -1315,7 +1318,7 @@ void Preferences::addNewConfigToDatabase(const QString &name, const QString &pat
 
     QString sql (QString("INSERT INTO vpn ([vpn-name], [vpn-config], [vpn-autostart]) VALUES ('%1', '%2', 0);")
              .arg(this->db.makeCleanValue(name))
-             .arg(this->db.makeCleanValue(path)));
+             .arg(this->db.makeCleanValue(path).replace("\\", "/")));
     this->db.execute(sql);
 }
 

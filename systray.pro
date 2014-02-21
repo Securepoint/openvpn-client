@@ -50,7 +50,8 @@ HEADERS = configs.h \
     update/checkupdate.h \
     update/checkinfo.h \
     frmupdatesettings.h \
-    netmanager.h
+    netmanager.h \
+    configvalues.h
 SOURCES = main.cpp \
     configs.cpp \
     openvpn.cpp \
@@ -99,7 +100,8 @@ SOURCES = main.cpp \
     update/checkupdate.cpp \
     update/checkinfo.cpp \
     frmupdatesettings.cpp \
-    netmanager.cpp
+    netmanager.cpp \
+    configvalues.cpp
 
 win32::INCLUDEPATH += "quazip/zlib-1.2.5" \
                       "qca/include/QtCrypto"
@@ -148,37 +150,3 @@ FORMS += preferences.ui \
 
 RC_FILE = myapp.rc
 TRANSLATIONS = SpSSLVpn_ger.ts
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

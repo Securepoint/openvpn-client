@@ -9,7 +9,7 @@ TapDriver::TapDriver()
 }
 
 bool TapDriver::isTapDriverInstalled() {
-    this->tapDriverAvailable = false;
+    this->tapDriverAvailable = true;
     this->checkTapDriver();
     return this->tapDriverAvailable;
 }
@@ -124,8 +124,8 @@ void TapDriver::readDriverData() {
     if (!line.isEmpty()) {
         // QString statt QBA
         QString lineConvert (line);
-        if (lineConvert.contains(QLatin1String("TAP-Win32"), Qt::CaseInsensitive)) {
-            this->tapDriverAvailable = true;
+        if (lineConvert.contains(QLatin1String("No matching devices found."), Qt::CaseInsensitive)) {
+            this->tapDriverAvailable = false;
         } else if (lineConvert.contains(QLatin1String("Drivers installed successfully."), Qt::CaseInsensitive)) {
             this->tapDriverInstalledSuccess = true;
         } else if (lineConvert.contains(QLatin1String("device(s) were removed."), Qt::CaseInsensitive)) {

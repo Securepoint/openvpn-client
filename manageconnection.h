@@ -21,7 +21,7 @@ protected:
     void showEvent(QShowEvent *e);
 
 private:
-    Ui::ManageConnection *ui;    
+    Ui::ManageConnection *ui;
     OpenVpn *configObj;
     QString lastDir;
 
@@ -31,6 +31,11 @@ private:
     void resetFields ();
     void fillFieldFromConfig ();
     QStringList getAllFieldWhichNotIntoTheInterface ();
+
+    QString caValue;
+    QString certValue;
+    QString keyValue;
+    QString pkcs12Value;
 
 private slots:
     void on_cmdErrorConnect_clicked();

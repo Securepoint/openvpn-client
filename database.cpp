@@ -53,11 +53,6 @@ Database::Database()
             //
             QCoreApplication::exit(1);
         }
-        ssql = QLatin1String("CREATE TABLE \"self\" (\"self-name\" VARCHAR, \"self-value\" VARCHAR);");
-        this->execute(ssql);
-        // Insert data
-        ssql = QLatin1String("INSERT INTO self ([self-name], [self-value]) VALUES('firstStart', '1');");
-        this->execute(ssql);
     }
 }
 
@@ -129,20 +124,7 @@ QString Database::makeCleanValue(const QString &value)
     // Removes the most sql injections commands
     //
 
-    QString tmp(value);
-    tmp = tmp.replace(";", "", Qt::CaseInsensitive);
-    tmp = tmp.replace("DROP", "", Qt::CaseInsensitive);
-    tmp = tmp.replace("SELECT", "", Qt::CaseInsensitive);
-    tmp = tmp.replace("INSERT", "", Qt::CaseInsensitive);
-    tmp = tmp.replace("ALTER", "", Qt::CaseInsensitive);
-    tmp = tmp.replace("HAVING", "", Qt::CaseInsensitive);
-    tmp = tmp.replace("GROUP BY", "", Qt::CaseInsensitive);
-    tmp = tmp.replace("CREATE", "", Qt::CaseInsensitive);
-    tmp = tmp.replace("UPDATE", "", Qt::CaseInsensitive);
-    tmp = tmp.replace("UNION", "", Qt::CaseInsensitive);
-    tmp = tmp.replace("INTERSECT", "", Qt::CaseInsensitive);
-
-    return  tmp;
+    return value;
 }
 
 QString Database::join(const QSqlRecord &record, const QString &separator, bool setNewline)

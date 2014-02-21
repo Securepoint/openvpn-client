@@ -64,6 +64,6 @@
         <file>images/banner_neu_sml.png</file>
         <file>images/tree_closed.png</file>
         <file>images/loading.gif</file>
-        <file>images/startscreen.png</file>
+       <!--<file>images/startscreen.png</file>-->
     </qresource>
 </RCC>

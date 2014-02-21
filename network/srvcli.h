@@ -17,7 +17,7 @@ public:
 private:
     static SrvCLI *mInst;
     SrvCLI();
-    void closeConnection ();
+    void closeConnection();
     QSslSocket sslSocket;
     quint64 nextBlockSize;
     QTime startTime;    

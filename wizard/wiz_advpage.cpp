@@ -59,7 +59,7 @@ void AdvPage::initializePage() {
         m_ui->txtVerbose->setText(QLatin1String("3"));
     }
 
-    m_ui->cbCompLzo->setChecked(true);
+    m_ui->cbCompLzo->setChecked(false);
     m_ui->cbFloat->setChecked(true);
     m_ui->cbMsfix->setChecked(true);
     m_ui->cbNobind->setChecked(true);

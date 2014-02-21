@@ -72,8 +72,10 @@ void Settings::refresh()
 
     this->checkWindowsShutdownValue = (sett.value(QLatin1String("exit/checkWinEvent"), QLatin1String("1")).toString() == QLatin1String("1") ? true : false);
     this->cryptKey = sett.value(QLatin1String("self/key"), QLatin1String("")).toString();
+
     if (!this->cryptKey.isEmpty()) {
         Crypt crypt;
+
         this->cryptKey = QString(crypt.cryptToPlainTextExt(this->cryptKey.toAscii()));
     } else {
         // Neuen Key erzeugen
@@ -87,6 +89,7 @@ void Settings::refresh()
 
         sett.setValue(QLatin1String("self/key"), key);
         this->cryptKey = key;
+        this->cryptKey = QString(crypt.cryptToPlainTextExt(this->cryptKey.toAscii()));
     }
 
     //

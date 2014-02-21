@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
 
     // Portabel bauen
     //Settings::getInstance()->setIsManageClient(true);
-    Settings::getInstance()->setIsPortableClient(true);
+    //Settings::getInstance()->setIsPortableClient(true);
     // Wenn Portable ist, immer mit lokalen VPN verbinden
     if (Settings::getInstance()->getIsPortableClient()) {
         Settings::getInstance()->setIsRunAsService(false);

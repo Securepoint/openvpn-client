@@ -54,6 +54,10 @@ QByteArray Crypt::cryptPlainTextExt (const QByteArray &plain)
 
         res = QCA::arrayToHex(u.toByteArray()).toAscii() + QCA::arrayToHex(f.toByteArray()).toAscii();
     }
+	else
+	{
+		MessageBoxA(NULL, "No support", "", 0);
+	}
 
     return res;
 }

@@ -1,0 +1,7 @@
+debug/*
+release/*
+Makefile
+Makefile.*
+server.pro.user
+server.pro.user.*
+object_script.SPOpenVPNService.*

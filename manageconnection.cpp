@@ -4,13 +4,14 @@
 #include "preferences.h"
 #include "appfunc.h"
 #include "message.h"
+#include "configvalues.h"
 
 ManageConnection::ManageConnection(OpenVpn *obj) :
     QDialog(),
     ui(new Ui::ManageConnection),
     configObj (obj)
 {
-    ui->setupUi(this);    
+    ui->setupUi(this);
     this->setWindowFlags(Qt::WindowCloseButtonHint);
 }
 
@@ -294,7 +295,7 @@ void ManageConnection::resetFields() {
 }
 
 void ManageConnection::fillFieldFromConfig() {
-    // Load Config Data    
+    // Load Config Data
     QString cFile (this->configObj->getConfigPath());
     QFile cf (cFile);
 
@@ -356,26 +357,34 @@ void ManageConnection::fillFieldFromConfig() {
         if (!isCAChecked) {
             if (line.left(2).toUpper().trimmed() == "CA") {
                 isCAChecked = true;
-                QStringList keyvalList = line.split(" ");
-                if (keyvalList.size() != 2)
-                    ui->txtCA->setText("");
-                else {
-                    QString val = keyvalList[1];
-                    ui->txtCA->setText(val.replace("\"",""));
-                }
+                QString tmpLine (line.trimmed());
+                // Key value
+                tmpLine = tmpLine.right(line.size() - 2);
+                // Remove " with nothing
+                tmpLine = tmpLine.replace("\"", "");
+                // Trim the line
+                tmpLine = tmpLine.trimmed();
+                //
+                ui->txtCA->setText(tmpLine);
+                //
+                this->caValue = tmpLine;
             }
         }
 
         if (!isPkcs12Checked) {
             if (line.left(6).toUpper().trimmed() == "PKCS12") {
                 isPkcs12Checked = true;
-                QStringList keyvalList = line.split(" ");
-                if (keyvalList.size() != 2)
-                    ui->txtPkcs12Path->setText("");
-                else {
-                    QString val = keyvalList[1];
-                    ui->txtPkcs12Path->setText(val.replace("\"",""));
-                }
+                QString tmpLine (line.trimmed());
+                // Key value
+                tmpLine = tmpLine.right(line.size() - 6);
+                // Remove " with nothing
+                tmpLine = tmpLine.replace("\"", "");
+                // Trim the line
+                tmpLine = tmpLine.trimmed();
+                //
+                ui->txtPkcs12Path->setText(tmpLine);
+                //
+                this->pkcs12Value = tmpLine;
             }
         }
 
@@ -501,25 +510,33 @@ void ManageConnection::fillFieldFromConfig() {
         if (!isCertChecked){
                 if (line.left(4).toUpper().trimmed() == "CERT") {
                     isCertChecked = true;
-                    QStringList keyvalList = line.split(" ");
-                    if (keyvalList.size() != 2)
-                        ui->txtCert->setText("");
-                    else {
-                        QString val = keyvalList[1];
-                        ui->txtCert->setText(val.replace("\"",""));
-                    }
+                    QString tmpLine (line.trimmed());
+                    // Key value
+                    tmpLine = tmpLine.right(line.size() - 4);
+                    // Remove " with nothing
+                    tmpLine = tmpLine.replace("\"", "");
+                    // Trim the line
+                    tmpLine = tmpLine.trimmed();
+                    //
+                    ui->txtCert->setText(tmpLine);
+                    //
+                    this->certValue = tmpLine;
                 }
             }
         if (!isKeyChecked){
                 if (line.left(3).toUpper().trimmed() == "KEY") {
                     isKeyChecked = true;
-                    QStringList keyvalList = line.split(" ");
-                    if (keyvalList.size() != 2)
-                        ui->txtKey->setText("");
-                    else {
-                        QString val = keyvalList[1];
-                        ui->txtKey->setText(val.replace("\"",""));
-                    }
+                    QString tmpLine (line.trimmed());
+                    // Key value
+                    tmpLine = tmpLine.right(line.size() - 3);
+                    // Remove " with nothing
+                    tmpLine = tmpLine.replace("\"", "");
+                    // Trim the line
+                    tmpLine = tmpLine.trimmed();
+                    //
+                    ui->txtKey->setText(tmpLine);
+                    //
+                    this->keyValue = tmpLine;
                 }
             }
         if (!isCompLzoChecked){
@@ -710,7 +727,7 @@ void ManageConnection::fillFieldFromConfig() {
                 } else {
                     ui->cbMuteWirelessWarning->setChecked(false);
                 }
-            }        
+            }
         if (!isCipherChecked){
                 if (line.left(6).toUpper().trimmed() == "CIPHER") {
                     isCipherChecked = true;
@@ -867,14 +884,96 @@ void ManageConnection::on_cmdSave_clicked()
             out << QLatin1String("proto udp\n");
     }
 
-    if (ui->rbNormal->isChecked() && !ui->txtCA->text().isEmpty())
-        out << QLatin1String("ca \"") << ui->txtCA->text().replace("/", "\\\\") << QLatin1String("\"\n");
+    if(!Settings::getInstance()->getIsPortableClient()) {
+        if (ui->rbNormal->isChecked() && !ui->txtCA->text().isEmpty()) {
+            // If temp value and dialog value are not equals, copy the new certificate to the ovpn dir
+            // Otherwise write the plain data from dialog t the config
+            if (this->caValue != ui->txtCA->text()) {
+                // Copy file to config dir and set new path
+                QString newPath (ConfigValues::instance()->pathOfFile(this->configObj->getConfigPath()));
+                QString nameOfFile (ConfigValues::instance()->fileNameOfAbsolutePath(ui->txtCA->text()));
+                QFile::copy(ui->txtCA->text(), QString("%1%2")
+                                                .arg((newPath.right(1) == QLatin1String("/") ? newPath : QString("%1/").arg(newPath)))
+                                                .arg(nameOfFile));
+                // Set new certificate location
+                out << QLatin1String("ca \"") << nameOfFile << QLatin1String("\"\n");
+            } else {
+                // Set the origin data
+                out << QLatin1String("ca \"") << ui->txtCA->text().replace("/", "\\\\") << QLatin1String("\"\n");
+            }
+        }
 
-    if (ui->rbNormal->isChecked() && !ui->txtCert->text().isEmpty())
-        out << QLatin1String("cert \"") << ui->txtCert->text().replace("/", "\\\\") << QLatin1String("\"\n");
 
-    if (ui->rbNormal->isChecked() && !ui->txtKey->text().isEmpty())
-        out << QLatin1String("key \"") << ui->txtKey->text().replace("/", "\\\\") << QLatin1String("\"\n");
+        if (ui->rbNormal->isChecked() && !ui->txtCert->text().isEmpty()) {
+            // If temp value and dialog value are not equals, copy the new certificate to the ovpn dir
+            // Otherwise write the plain data from dialog t the config
+            if (this->certValue != ui->txtCert->text()) {
+                // Copy file to config dir and set new path
+                QString newPath (ConfigValues::instance()->pathOfFile(this->configObj->getConfigPath()));
+                QString nameOfFile (ConfigValues::instance()->fileNameOfAbsolutePath(ui->txtCert->text()));
+                QFile::copy(ui->txtCert->text(), QString("%1%2")
+                                                .arg((newPath.right(1) == QLatin1String("/") ? newPath : QString("%1/").arg(newPath)))
+                                                .arg(nameOfFile));
+                // Set new certificate location
+                out << QLatin1String("cert \"") << nameOfFile << QLatin1String("\"\n");
+            } else {
+                // Set the origin data
+                out << QLatin1String("cert \"") << ui->txtCert->text().replace("/", "\\\\") << QLatin1String("\"\n");
+            }
+        }
+
+
+        if (ui->rbNormal->isChecked() && !ui->txtKey->text().isEmpty()) {
+            // If temp value and dialog value are not equals, copy the new certificate to the ovpn dir
+            // Otherwise write the plain data from dialog t the config
+            if (this->keyValue != ui->txtKey->text()) {
+                // Copy file to config dir and set new path
+                QString newPath (ConfigValues::instance()->pathOfFile(this->configObj->getConfigPath()));
+                QString nameOfFile (ConfigValues::instance()->fileNameOfAbsolutePath(ui->txtKey->text()));
+                QFile::copy(ui->txtKey->text(), QString("%1%2")
+                                                .arg((newPath.right(1) == QLatin1String("/") ? newPath : QString("%1/").arg(newPath)))
+                                                .arg(nameOfFile));
+                // Set new certificate location
+                out << QLatin1String("key \"") << nameOfFile << QLatin1String("\"\n");
+            } else {
+                // Set the origin data
+                out << QLatin1String("key \"") << ui->txtKey->text().replace("/", "\\\\") << QLatin1String("\"\n");
+            }
+        }
+
+
+        if (ui->rbPkcs->isChecked() && !ui->txtPkcs12Path->text().isEmpty()) {
+            // If temp value and dialog value are not equals, copy the new certificate to the ovpn dir
+            // Otherwise write the plain data from dialog t the config
+            if (this->pkcs12Value != ui->txtPkcs12Path->text()) {
+                // Copy file to config dir and set new path
+                QString newPath (ConfigValues::instance()->pathOfFile(this->configObj->getConfigPath()));
+                QString nameOfFile (ConfigValues::instance()->fileNameOfAbsolutePath(ui->txtPkcs12Path->text()));
+                QFile::copy(ui->txtPkcs12Path->text(), QString("%1%2")
+                                                .arg((newPath.right(1) == QLatin1String("/") ? newPath : QString("%1/").arg(newPath)))
+                                                .arg(nameOfFile));
+                // Set new certificate location
+                out << QLatin1String("pkcs12 \"") << nameOfFile << QLatin1String("\"\n");
+            } else {
+                // Set the origin data
+                out << QLatin1String("pkcs12 ") << ui->txtPkcs12Path->text() << QLatin1String("\n");
+            }
+
+        }
+    } else {
+        if (ui->rbNormal->isChecked() && !ui->txtCA->text().isEmpty())
+            out << QLatin1String("ca \"") << ui->txtCA->text().replace("/", "\\\\") << QLatin1String("\"\n");
+
+        if (ui->rbNormal->isChecked() && !ui->txtCert->text().isEmpty())
+            out << QLatin1String("cert \"") << ui->txtCert->text().replace("/", "\\\\") << QLatin1String("\"\n");
+
+        if (ui->rbNormal->isChecked() && !ui->txtKey->text().isEmpty())
+            out << QLatin1String("key \"") << ui->txtKey->text().replace("/", "\\\\") << QLatin1String("\"\n");
+        if (ui->rbPkcs->isChecked() && !ui->txtPkcs12Path->text().isEmpty()) {
+            out << QLatin1String("pkcs12 ") << ui->txtPkcs12Path->text() << QLatin1String("\n");
+        }
+    }
+
 
     if (ui->rbNormal->isChecked() && ui->cbCertIsServer->isChecked())
         out << QLatin1String("ns-cert-type server\n");
@@ -951,10 +1050,6 @@ void ManageConnection::on_cmdSave_clicked()
     if (ui->cbRedirectGateway->isChecked())
         out << QLatin1String("redirect-gateway\n");
 
-    if (ui->rbPkcs->isChecked() && !ui->txtPkcs12Path->text().isEmpty()) {
-        out << QLatin1String("pkcs12 ") << ui->txtPkcs12Path->text() << QLatin1String("\n");
-    }
-
     // Das Windir auswerten
     if (!ui->cbWinDirUseDefault_2->isChecked()) {
         // Custom path oder Env
@@ -1025,7 +1120,7 @@ void ManageConnection::on_cmdSave_clicked()
             return;
         }
     }
-    sf.close();    
+    sf.close();
     this->close();
 }
 
@@ -1235,7 +1330,7 @@ void ManageConnection::on_cmdGetPkcs12Path_clicked()
 
 void ManageConnection::on_rbNormal_toggled(bool checked)
 {
-    if (checked) {        
+    if (checked) {
         ui->txtPkcs12Path->setEnabled(false);
         ui->cmdGetPkcs12Path->setEnabled(false);
         // Die normalen deaktivieren

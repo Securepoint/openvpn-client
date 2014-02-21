@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>300</width>
-    <height>152</height>
+    <height>55</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -35,53 +35,11 @@
   <property name="modal">
    <bool>true</bool>
   </property>
-  <widget class="QGroupBox" name="groupBox">
-   <property name="geometry">
-    <rect>
-     <x>11</x>
-     <y>7</y>
-     <width>281</width>
-     <height>91</height>
-    </rect>
-   </property>
-   <property name="title">
-    <string>Delete settings:</string>
-   </property>
-   <widget class="QWidget" name="verticalLayoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>20</y>
-      <width>261</width>
-      <height>61</height>
-     </rect>
-    </property>
-    <layout class="QVBoxLayout" name="verticalLayout">
-     <item>
-      <widget class="QRadioButton" name="rbAll">
-       <property name="text">
-        <string>Remove all data [Database and Files]</string>
-       </property>
-       <property name="checked">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QRadioButton" name="rbDatabase">
-       <property name="text">
-        <string>Remove only entry in database</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
-  </widget>
   <widget class="QPushButton" name="cmdDelete">
    <property name="geometry">
     <rect>
-     <x>80</x>
-     <y>110</y>
+     <x>70</x>
+     <y>10</y>
      <width>100</width>
      <height>33</height>
     </rect>
@@ -118,8 +76,8 @@ QPushButton {height: 25px; width: 50px;text-align:left;
   <widget class="QPushButton" name="cmdCancel">
    <property name="geometry">
     <rect>
-     <x>190</x>
-     <y>110</y>
+     <x>180</x>
+     <y>10</y>
      <width>100</width>
      <height>33</height>
     </rect>

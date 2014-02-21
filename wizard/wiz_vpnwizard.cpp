@@ -15,7 +15,7 @@
 #include "message.h"
 
 
-VpnWizard::VpnWizard()    
+VpnWizard::VpnWizard()
 {
     addPage(new StartPage);
     addPage(new GeneralPage);
@@ -33,19 +33,19 @@ VpnWizard::VpnWizard()
 }
 
 void VpnWizard::accept()
-{    
+{
     QString configFilePath;
     QString dirPath;
 
 
     configFilePath = AppFunc::getAppSavePath()
-                     + QLatin1String ("/")
+                     + QLatin1String ("/config/")
                      + field("txtConfigName").toString()
                      + QLatin1String("/")
                      + field("txtConfigName").toString()
                      + QLatin1String(".ovpn");
 
-    dirPath = AppFunc::getAppSavePath() + QLatin1String ("/") + field(QLatin1String("txtConfigName")).toString();
+    dirPath = AppFunc::getAppSavePath() + QLatin1String ("/config/") + field(QLatin1String("txtConfigName")).toString();
 
     // Ist das Verzeichnis schon da und gib es schon eine Configfile?
     QDir dirobj (dirPath);

@@ -3,6 +3,7 @@
 
 #include "database.h"
 #include "debug.h"
+#include "preferences.h"
 
 Configs *Configs::mInst = NULL;
 
@@ -86,22 +87,12 @@ void Configs::refreshConfigs()
     // Ist das der erste Refresh ist,
     // dann werden die Verzeichnisse mit durchsucht und
     // die gefundenen Konfigurationen in die Datenbank geschrieben
-
-    QLatin1String ssql ("SELECT [self-value] FROM self WHERE [self-name] = 'firstStart'");
-    QScopedPointer<QSqlQuery> checkFirstStartQuery (this->db->openQuery(ssql));
-    if (checkFirstStartQuery->first()) {
-        if (checkFirstStartQuery->value(0).toString() == QLatin1String("1")) {
-            // Erster Start, die Verzeichnisse durchlaufen
-            if (Settings::getInstance()->getIsPortableClient()) {
-                this->searchConfigs(qApp->applicationDirPath());
-            } else {
-                this->searchConfigs(AppFunc::getAppSavePath());
-            }
-            //
-            // Datenbanl flag setzen
-            this->db->execute(QLatin1String("UPDATE self SET [self-value] = '0' WHERE [self-name] = 'firstStart';"));
-        }
+    if (Settings::getInstance()->getIsPortableClient()) {
+        this->searchConfigs(qApp->applicationDirPath());
+    } else {
+        this->searchConfigs(AppFunc::getAppSavePath() + QLatin1String("/config"));
     }
+
     //
     // Nun die Liste aus der Datenbank füllen
     QLatin1String configSql("SELECT [vpn-id], [vpn-name], [vpn-config], [vpn-autostart] FROM vpn ORDER BY [vpn-name] COLLATE NOCASE ASC;");
@@ -164,9 +155,22 @@ void Configs::searchConfigs (const QString &sDir)
                     QDir td (QCoreApplication::applicationDirPath());
                     configDirectory = td.relativeFilePath(configDirectory);
                 }
+                QString configName (fileInfo.fileName().replace(QLatin1String(".ovpn"), QLatin1String("")));
+                // Check if config already in list
+                QString checkSql(QString("SELECT [vpn-id] FROM vpn WHERE [vpn-name] = '%1' AND [vpn-config] = '%2'")
+                                 .arg(configName)
+                                 .arg(configDirectory));
+                QScopedPointer<QSqlQuery> checkQuery (this->db->openQuery(checkSql));
                 //
+                if (checkQuery->first()) {
+                    // A config with this name and path is already in list
+                    // Skip it
+                    continue;
+                }
+
+                // Config is new, append it to the database
                 QString sql (QString("INSERT INTO vpn  ([vpn-name], [vpn-config], [vpn-autostart]) VALUES ('%1', '%2', 0);")
-                             .arg(fileInfo.fileName().replace(QLatin1String(".ovpn"), QLatin1String("")))
+                             .arg(configName)
                              .arg(configDirectory));
                 this->db->execute(sql);
             }

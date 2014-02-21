@@ -7,6 +7,8 @@
 #include "zip.h"
 
 #include "message.h"
+#include "settings.h"
+#include "configvalues.h"
 
 ImportConfig::ImportConfig(QWidget *parent) :
     QDialog(parent),
@@ -100,7 +102,7 @@ void ImportConfig::on_rbSaveAsName_toggled(bool checked)
 void ImportConfig::on_cmdImport_clicked()
 {
     if (!m_ui->txtExistingOvpn->text().isEmpty()) {
-        // Import existing file       
+        // Import existing file
         QString configName (m_ui->txtExistingOvpn->text().replace(".ovpn", ""));
         configName = configName.right(configName.size() - configName.lastIndexOf("/") - 1);
 
@@ -111,7 +113,141 @@ void ImportConfig::on_cmdImport_clicked()
             }
         }
 
-        Preferences::instance()->addNewConfigToDatabase(configName, m_ui->txtExistingOvpn->text());
+        QString pathToConfig (m_ui->txtExistingOvpn->text());
+        // Copy config to local app data and rename it, if an other name is specified
+        // Only in service mode!
+        if(!Settings::getInstance()->getIsPortableClient()) {
+            // Get the cert names
+            QString caName (ConfigValues::instance()->valueFromConfigKey(pathToConfig, QLatin1String("ca")));
+            QString certName (ConfigValues::instance()->valueFromConfigKey(pathToConfig, QLatin1String("cert")));
+            QString keyName (ConfigValues::instance()->valueFromConfigKey(pathToConfig, QLatin1String("key")));
+            QString pkcs12Name (ConfigValues::instance()->valueFromConfigKey(pathToConfig, QLatin1String("pkcs12")));
+
+            // If file is available copy it
+            // First create folder
+            QString newConfigFolderPath (QString("%1/config/%2")
+                                         .arg(AppFunc::getAppSavePath())
+                                         .arg(configName));
+            QDir newConfigFolderPathDirectory (newConfigFolderPath);
+            if (newConfigFolderPathDirectory.exists(newConfigFolderPath)){
+                // A config with this name is already existing
+                Message::error(QObject::tr("A configuration with this name is already existing!"));
+                //
+                return;
+            }
+
+            // Create path
+            newConfigFolderPathDirectory.mkpath(newConfigFolderPath);
+
+            // Now copy Files
+            QString newConfigPath (QString("%1/%2.ovpn")
+                                   .arg(newConfigFolderPath)
+                                   .arg(configName));
+
+            QFile::copy(pathToConfig, newConfigPath);
+            //
+            QString sourceDirectory (pathToConfig.left(pathToConfig.lastIndexOf("/")));
+            //
+            // Override old path
+            pathToConfig = newConfigPath;
+            // Ca
+            if (!caName.isEmpty()) {
+                // Build source path
+                QString sourcePath (QString("%1/%2")
+                                    .arg(sourceDirectory)
+                                    .arg(caName));
+
+                QString destName (caName);
+                // Do we have an absolute path
+                if (ConfigValues::instance()->isGivenPathAbsolute(caName)) {
+                    // Yes, override path
+                    sourcePath = caName;
+                    // Get the file name from path
+                    destName = ConfigValues::instance()->fileNameOfAbsolutePath(caName);
+                    // Change value in config
+                    ConfigValues::instance()->changeKeyValueInConfig(pathToConfig, QLatin1String("ca"), QString("\"%1\"")
+                                                                                            .arg(destName));
+                }
+                // Copy
+                QFile::copy(sourcePath, QString("%1/%2")
+                                            .arg(newConfigFolderPath)
+                                            .arg(destName));
+            }
+
+            // Cert
+            if (!certName.isEmpty()) {
+                // Build source path
+                QString sourcePath (QString("%1/%2")
+                                    .arg(sourceDirectory)
+                                    .arg(certName));
+
+                QString destName (certName);
+                // Do we have an absolute path
+                if (ConfigValues::instance()->isGivenPathAbsolute(certName)) {
+                    // Yes, override path
+                    sourcePath = certName;
+                    // Get the file name from path
+                    destName = ConfigValues::instance()->fileNameOfAbsolutePath(certName);
+                    // Change value in config
+                    ConfigValues::instance()->changeKeyValueInConfig(pathToConfig, QLatin1String("cert"), QString("\"%1\"")
+                                                                                            .arg(destName));
+                }
+                // Copy
+                QFile::copy(sourcePath, QString("%1/%2")
+                                            .arg(newConfigFolderPath)
+                                            .arg(destName));
+            }
+
+            // Key
+            if (!keyName.isEmpty()) {
+                // Build source path
+                QString sourcePath (QString("%1/%2")
+                                    .arg(sourceDirectory)
+                                    .arg(keyName));
+
+                QString destName (keyName);
+                // Do we have an absolute path
+                if (ConfigValues::instance()->isGivenPathAbsolute(keyName)) {
+                    // Yes, override path
+                    sourcePath = keyName;
+                    // Get the file name from path
+                    destName = ConfigValues::instance()->fileNameOfAbsolutePath(keyName);
+                    // Change value in config
+                    ConfigValues::instance()->changeKeyValueInConfig(pathToConfig, QLatin1String("key"), QString("\"%1\"")
+                                                                                            .arg(destName));
+                }
+                // Copy
+                QFile::copy(sourcePath, QString("%1/%2")
+                                            .arg(newConfigFolderPath)
+                                            .arg(destName));
+            }
+
+            // PKcs12
+            if (!pkcs12Name.isEmpty()) {
+                // Build source path
+                QString sourcePath (QString("%1/%2")
+                                    .arg(sourceDirectory)
+                                    .arg(pkcs12Name));
+
+                QString destName (pkcs12Name);
+                // Do we have an absolute path
+                if (ConfigValues::instance()->isGivenPathAbsolute(pkcs12Name)) {
+                    // Yes, override path
+                    sourcePath = pkcs12Name;
+                    // Get the file name from path
+                    destName = ConfigValues::instance()->fileNameOfAbsolutePath(pkcs12Name);
+                    // Change value in config
+                    ConfigValues::instance()->changeKeyValueInConfig(pathToConfig, QLatin1String("pkcs12"), QString("\"%1\"")
+                                                                                            .arg(destName));
+                }
+                // Copy
+                QFile::copy(sourcePath, QString("%1/%2")
+                                            .arg(newConfigFolderPath)
+                                            .arg(destName));
+            }
+        }
+
+        Preferences::instance()->addNewConfigToDatabase(configName, pathToConfig);
         Preferences::instance()->refreshConfigList();
         Preferences::instance()->setConnectionStatus();
         Preferences::instance()->setIcon();
@@ -143,7 +279,7 @@ void ImportConfig::on_cmdImport_clicked()
                 configName = m_ui->txtNewName->text().trimmed();
             }
 
-            dirPath = AppFunc::getAppSavePath() + QString ("/") + configName;
+            dirPath = AppFunc::getAppSavePath() + QString ("/config/") + configName;
 
             // Verzeichnis da?
             QDir dirobj (dirPath);
@@ -215,13 +351,13 @@ void ImportConfig::on_cmdImport_clicked()
             savePath = dirPath + QString("/") + ovpnFilePath.left(ovpnFilePath.size()-6) + QString(".ovpn");
 
             if (m_ui->rbSaveAsName->isChecked()) {
-                // ovpn umbennen                
+                // ovpn umbennen
                 QFile ovpnFile (savePath);
                 if (ovpnFile.exists()) {
                     // umbenennen
                     ovpnFile.rename(dirPath + QString("/") + configName + QString(".ovpn"));
                     saveName = configName;
-                }                
+                }
             }
             savePath = dirPath + QString("/") + saveName + QString(".ovpn");
 
@@ -239,7 +375,7 @@ void ImportConfig::on_cmdImport_clicked()
                 this->close();
             }
         } else {
-            Message::error(QObject::tr("No import file selected!"), QObject::tr("Import Configuration"));            
+            Message::error(QObject::tr("No import file selected!"), QObject::tr("Import Configuration"));
         }
     }
 }

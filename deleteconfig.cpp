@@ -3,6 +3,7 @@
 #include "preferences.h"
 
 #include "message.h"
+#include "configvalues.h"
 
 DeleteConfig *DeleteConfig::mInst = NULL;
 
@@ -34,8 +35,7 @@ void DeleteConfig::changeEvent(QEvent *e)
     }
 }
 
-void DeleteConfig::showEvent(QShowEvent *e) {    
-    m_ui->rbAll->setChecked(true);
+void DeleteConfig::showEvent(QShowEvent *e) {
     // Mittig ausrichten
     int winW = this->width();
     int winH = this->height();
@@ -80,13 +80,13 @@ void DeleteConfig::on_cmdCancel_clicked()
 }
 
 void DeleteConfig::on_cmdDelete_clicked()
-{    
+{
     // Eintrag in der Datenbank entfernen
     this->removeDatabaseEntry();
     // Sollen auch die Dateien gelöscht werden?
-    if (m_ui->rbAll->isChecked()) {
-        this->removeFiles();
-    }
+
+    this->removeFiles();
+
 
     // Daten aktualisieren
     Preferences::instance()->refreshConfigList();
@@ -106,98 +106,27 @@ void DeleteConfig::setOpenVpnObject(OpenVpn *obj) {
     this->obj = obj;
 }
 
-QString DeleteConfig::getCAFromConfig() {
-    QString retVal ("");
-    QFile conf (obj->getConfigPath());
-    if (conf.open(QIODevice::ReadOnly)) {
-        // Nach ca suchen
-        QTextStream in (&conf);
-        while (!in.atEnd()) {
-            QString line = in.readLine();
-            if (line.trimmed().left(2).toLower() == "ca") {
-                // ca gefunden
-                QStringList keyvalList = line.split(" ");
-                if (keyvalList.size() == 2) {
-                    QString val = keyvalList[1];
-                    retVal = val.replace("\"","");
-                    break;
-                }
-            }
-        }
-        conf.close();
-    }
-    return retVal;
+QString DeleteConfig::getCAFromConfig()
+{
+    //
+    return ConfigValues::instance()->valueFromConfigKey(obj->getConfigPath(), QLatin1String("ca"));
 }
 
 QString DeleteConfig::getCertFromConfig() {
-    QString retVal = "";
-    QFile conf (obj->getConfigPath());
-    if (conf.open(QIODevice::ReadOnly)) {
-        // Nach ca suchen
-        QTextStream in (&conf);
-        while (!in.atEnd()) {
-            QString line = in.readLine();
-            if (line.trimmed().left(4).toLower() == "cert") {
-                // ca gefunden
-                QStringList keyvalList = line.split(" ");
-                if (keyvalList.size() == 2) {
-                    QString val = keyvalList[1];
-                    retVal = val.replace("\"","");
-                    break;
-                }
-            }
-        }
-        conf.close();
-    }
-    return retVal;
+    //
+    return ConfigValues::instance()->valueFromConfigKey(obj->getConfigPath(), QLatin1String("cert"));
 }
 
 QString DeleteConfig::getP12FromConfig()
 {
-    QString retVal = "";
-    QFile conf (obj->getConfigPath());
-    if (conf.open(QIODevice::ReadOnly)) {
-        // Nach ca suchen
-        QTextStream in (&conf);
-        while (!in.atEnd()) {
-            QString line = in.readLine();
-            if (line.trimmed().left(6).toLower() == "pkcs12") {
-                // ca gefunden
-                QStringList keyvalList = line.split(" ");
-                if (keyvalList.size() == 2) {
-                    QString val = keyvalList[1];
-                    retVal = val.replace("\"","");
-                    break;
-                }
-            }
-        }
-        conf.close();
-    }
-    return retVal;
+    //
+    return ConfigValues::instance()->valueFromConfigKey(obj->getConfigPath(), QLatin1String("pkcs12"));
 }
 
 QString DeleteConfig::getKeyFromConfig()
 {
-    QString retVal = "";
-    QFile conf (obj->getConfigPath());
-    if (conf.open(QIODevice::ReadOnly)) {
-        // Nach ca suchen
-        QTextStream in (&conf);
-        while (!in.atEnd()) {
-            QString line = in.readLine();
-            if (line.trimmed().left(3).toLower() == "key") {
-                // ca gefunden
-                QStringList keyvalList = line.split(" ");
-                if (keyvalList.size() == 2) {
-                    QString val = keyvalList[1];
-                    retVal = val.replace("\"","");
-                    break;
-                }
-            }
-        }
-        conf.close();
-    }
-    return retVal;
+    //
+    return ConfigValues::instance()->valueFromConfigKey(obj->getConfigPath(), QLatin1String("key"));
 }
 
 OpenVpn *DeleteConfig::getOpenVpnObject()
@@ -223,7 +152,7 @@ void DeleteConfig::removeFiles()
     QString ca = this->getCAFromConfig();
     if (!ca.isEmpty()) {
         QString caPath;
-        if (ca.indexOf("/") != -1) {
+        if (ConfigValues::instance()->isGivenPathAbsolute(ca)) {
             caPath = ca;
         } else {
             caPath = this->obj->getConfigDirectory() + "/" + ca;
@@ -242,7 +171,7 @@ void DeleteConfig::removeFiles()
         QString cert = this->getCertFromConfig();
         if (!cert.isEmpty()) {
             QString certPath;
-            if (cert.indexOf("/") != -1) {
+            if (ConfigValues::instance()->isGivenPathAbsolute(cert)) {
                 certPath = cert;
             } else {
                 certPath = this->obj->getConfigDirectory() + "/" + cert;
@@ -262,7 +191,7 @@ void DeleteConfig::removeFiles()
         QString key = this->getP12FromConfig();
         if (!key.isEmpty()) {
             QString keyPath;
-            if (key.indexOf("/") != -1) {
+            if (ConfigValues::instance()->isGivenPathAbsolute(key)) {
                 keyPath = key;
             } else {
                 keyPath = this->obj->getConfigDirectory() + "/" + key;
@@ -282,7 +211,7 @@ void DeleteConfig::removeFiles()
         QString key = this->getKeyFromConfig();
         if (!key.isEmpty()) {
             QString keyPath;
-            if (key.indexOf("/") != -1) {
+            if (ConfigValues::instance()->isGivenPathAbsolute(key)) {
                 keyPath = key;
             } else {
                 keyPath = this->obj->getConfigDirectory() + "/" + key;
