@@ -99,6 +99,25 @@ void ImportConfig::on_rbSaveAsName_toggled(bool checked)
     }
 }
 
+QString keys[] = {
+	"ca",
+	"cert",
+	"key",
+	"pkcs12",
+	"auth-user-pass",
+	"secret",
+	"replay-persist",
+	"dh",
+	"cert",
+	"extra-certs",
+	"key",
+	"pkcs12",
+	"tls-auth",
+	"tls-auth",
+	"askpass",
+	"crl-verify"
+};
+
 void ImportConfig::on_cmdImport_clicked()
 {
     if (!m_ui->txtExistingOvpn->text().isEmpty()) {
@@ -117,11 +136,6 @@ void ImportConfig::on_cmdImport_clicked()
         // Copy config to local app data and rename it, if an other name is specified
         // Only in service mode!
         if(!Settings::getInstance()->getIsPortableClient()) {
-            // Get the cert names
-            QString caName (ConfigValues::instance()->valueFromConfigKey(pathToConfig, QLatin1String("ca")));
-            QString certName (ConfigValues::instance()->valueFromConfigKey(pathToConfig, QLatin1String("cert")));
-            QString keyName (ConfigValues::instance()->valueFromConfigKey(pathToConfig, QLatin1String("key")));
-            QString pkcs12Name (ConfigValues::instance()->valueFromConfigKey(pathToConfig, QLatin1String("pkcs12")));
 
             // If file is available copy it
             // First create folder
@@ -151,100 +165,39 @@ void ImportConfig::on_cmdImport_clicked()
             // Override old path
             pathToConfig = newConfigPath;
             // Ca
-            if (!caName.isEmpty()) {
-                // Build source path
-                QString sourcePath (QString("%1/%2")
-                                    .arg(sourceDirectory)
-                                    .arg(caName));
 
-                QString destName (caName);
-                // Do we have an absolute path
-                if (ConfigValues::instance()->isGivenPathAbsolute(caName)) {
-                    // Yes, override path
-                    sourcePath = caName;
-                    // Get the file name from path
-                    destName = ConfigValues::instance()->fileNameOfAbsolutePath(caName);
-                    // Change value in config
-                    ConfigValues::instance()->changeKeyValueInConfig(pathToConfig, QLatin1String("ca"), QString("\"%1\"")
-                                                                                            .arg(destName));
-                }
-                // Copy
-                QFile::copy(sourcePath, QString("%1/%2")
-                                            .arg(newConfigFolderPath)
-                                            .arg(destName));
-            }
+			auto copyConfigFile = [&](const QString &key)
+			{
+				auto keyValue = (ConfigValues::instance()->valueFromConfigKey(pathToConfig, key));
 
-            // Cert
-            if (!certName.isEmpty()) {
-                // Build source path
-                QString sourcePath (QString("%1/%2")
-                                    .arg(sourceDirectory)
-                                    .arg(certName));
+				if(!keyValue.isEmpty())
+				{
+					QString sourcePath (QString("%1/%2")
+						.arg(sourceDirectory)
+						.arg(keyValue));
 
-                QString destName (certName);
-                // Do we have an absolute path
-                if (ConfigValues::instance()->isGivenPathAbsolute(certName)) {
-                    // Yes, override path
-                    sourcePath = certName;
-                    // Get the file name from path
-                    destName = ConfigValues::instance()->fileNameOfAbsolutePath(certName);
-                    // Change value in config
-                    ConfigValues::instance()->changeKeyValueInConfig(pathToConfig, QLatin1String("cert"), QString("\"%1\"")
-                                                                                            .arg(destName));
-                }
-                // Copy
-                QFile::copy(sourcePath, QString("%1/%2")
-                                            .arg(newConfigFolderPath)
-                                            .arg(destName));
-            }
+					QString destName (keyValue);
 
-            // Key
-            if (!keyName.isEmpty()) {
-                // Build source path
-                QString sourcePath (QString("%1/%2")
-                                    .arg(sourceDirectory)
-                                    .arg(keyName));
+					if (ConfigValues::instance()->isGivenPathAbsolute(keyValue)) {
+						// Yes, override path
+						sourcePath = keyValue;
+						// Get the file name from path
+						destName = ConfigValues::instance()->fileNameOfAbsolutePath(keyValue);
+						// Change value in config
+						ConfigValues::instance()->changeKeyValueInConfig(pathToConfig, key, QString("\"%1\"")
+							.arg(destName));
+					}
+					// Copy
+					QFile::copy(sourcePath, QString("%1/%2")
+						.arg(newConfigFolderPath)
+						.arg(destName));
+				}
+			};
 
-                QString destName (keyName);
-                // Do we have an absolute path
-                if (ConfigValues::instance()->isGivenPathAbsolute(keyName)) {
-                    // Yes, override path
-                    sourcePath = keyName;
-                    // Get the file name from path
-                    destName = ConfigValues::instance()->fileNameOfAbsolutePath(keyName);
-                    // Change value in config
-                    ConfigValues::instance()->changeKeyValueInConfig(pathToConfig, QLatin1String("key"), QString("\"%1\"")
-                                                                                            .arg(destName));
-                }
-                // Copy
-                QFile::copy(sourcePath, QString("%1/%2")
-                                            .arg(newConfigFolderPath)
-                                            .arg(destName));
-            }
-
-            // PKcs12
-            if (!pkcs12Name.isEmpty()) {
-                // Build source path
-                QString sourcePath (QString("%1/%2")
-                                    .arg(sourceDirectory)
-                                    .arg(pkcs12Name));
-
-                QString destName (pkcs12Name);
-                // Do we have an absolute path
-                if (ConfigValues::instance()->isGivenPathAbsolute(pkcs12Name)) {
-                    // Yes, override path
-                    sourcePath = pkcs12Name;
-                    // Get the file name from path
-                    destName = ConfigValues::instance()->fileNameOfAbsolutePath(pkcs12Name);
-                    // Change value in config
-                    ConfigValues::instance()->changeKeyValueInConfig(pathToConfig, QLatin1String("pkcs12"), QString("\"%1\"")
-                                                                                            .arg(destName));
-                }
-                // Copy
-                QFile::copy(sourcePath, QString("%1/%2")
-                                            .arg(newConfigFolderPath)
-                                            .arg(destName));
-            }
+			for(const auto &key : keys)
+			{
+				copyConfigFile(key);
+			}
         }
 
         Preferences::instance()->addNewConfigToDatabase(configName, pathToConfig);

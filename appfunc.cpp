@@ -34,6 +34,6 @@ QString AppFunc::getAppSavePath() {
     #elif Q_OS_Mac
        // Mac code
 #endif
-
+	retVal.replace("\\", "/");
     return retVal;
 }

@@ -53,7 +53,7 @@ public:
     void showBallonMessage ();
     void setSavedDataIcon (int id);
     void removeSavedDataIcon (int id);
-    void renameConfig (int id, const QString &newName);
+    void renameConfig (int id, const QString &newName, const QString &oldName);
     void removeConfigInDatabase (int id);
     void addNewConfigToDatabase (const QString &name, const QString &path);
     QString internalBuild () const;

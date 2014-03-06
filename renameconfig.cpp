@@ -84,7 +84,7 @@ void RenameConfig::on_cmdRename_clicked()
         return;
     }
 
-    Preferences::instance()->renameConfig(this->id, m_ui->txtNewName->text().trimmed());
+    Preferences::instance()->renameConfig(this->id, m_ui->txtNewName->text().trimmed(), m_ui->lblOldName->text().trimmed());
     Preferences::instance()->refreshConfigList();
     Preferences::instance()->refreshDialog();
     Preferences::instance()->setConnectionStatus();

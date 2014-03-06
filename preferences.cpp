@@ -106,13 +106,13 @@ Preferences::Preferences() :
         titleAdd = QObject::tr(" - portable");
     }
 
-    this->setWindowTitle(QObject::tr("Securepoint OpenVPN v1.0.1") + titleAdd);
+    this->setWindowTitle(QObject::tr("Securepoint OpenVPN v1.0.2") + titleAdd);
 
     // Set DB
     Configs::getInstance()->setDatabase(&this->db);
 
     // Set Build
-    this->internalBuildValue = QLatin1String("1.0.1");
+    this->internalBuildValue = QLatin1String("1.0.2");
 
     // Update
     m_ui->cmdOpenUpdate->setEnabled(false);
@@ -1287,16 +1287,25 @@ void Preferences::on_cmdToogleWinEvent_clicked()
     m_ui->lblWinEvent->setText((Settings::getInstance()->checkWindowsShutdown() ? QObject::tr("yes") : QObject::tr("no")));
 }
 
-void Preferences::renameConfig(int id, const QString &newName)
+void Preferences::renameConfig(int id, const QString &newName, const QString &oldName)
 {
     //
     // Rename config in db
     //
 
-    QString sql (QString("UPDATE vpn SET [vpn-name] = '%1' WHERE [vpn-id] = %2")
+	rename((AppFunc::getAppSavePath() + QLatin1String ("/") + QLatin1String("config/") + oldName).toAscii().data(), (AppFunc::getAppSavePath() + QLatin1String ("/") + QLatin1String("config/") + newName).toAscii().data());
+
+	QFile file;
+	file.rename(AppFunc::getAppSavePath() + QLatin1String ("/") + QLatin1String("config/") + newName + ("/") + oldName + (".ovpn"), AppFunc::getAppSavePath() + QLatin1String ("/")  + QLatin1String("config/") + newName + ("/") + newName + (".ovpn"));
+
+	
+	QString sql (QString("UPDATE vpn SET [vpn-name] = '%1', [vpn-config] = '%2' WHERE [vpn-id] = %3")
                  .arg(this->db.makeCleanValue(newName))
+				 .arg(this->db.makeCleanValue(AppFunc::getAppSavePath() + QLatin1String ("/") + QLatin1String("config/") + newName + ("/") + newName + (".ovpn")))
                  .arg(id));
+
     this->db.execute(sql);
+
 }
 
 void Preferences::removeConfigInDatabase(int id)

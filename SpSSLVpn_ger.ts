@@ -3302,7 +3302,7 @@ Bitte setzen Sie sich mit Ihrem Systemadministrator in Verbindung.</translation>
     </message>
     <message>
         <location filename="preferences.cpp" line="109"/>
-        <source>Securepoint OpenVPN v1.0.1</source>
+        <source>Securepoint OpenVPN v1.0.2</source>
         <oldsource>Securepoint OpenVPN v1</oldsource>
         <translation></translation>
     </message>

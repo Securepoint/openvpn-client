@@ -83,6 +83,26 @@ void Configs::refreshConfigs()
     // Query DB
     //
 
+	{
+		QLatin1String configSql("SELECT [vpn-id], [vpn-name], [vpn-config], [vpn-autostart] FROM vpn ORDER BY [vpn-name] COLLATE NOCASE ASC;");
+		QScopedPointer<QSqlQuery> configQuery (this->db->openQuery(configSql));
+
+		while (configQuery->next()) 
+		{
+			int vpnId (configQuery->value(0).toInt());
+			QString vpnName (configQuery->value(1).toString());
+			QString vpnConfig (configQuery->value(2).toString());
+
+
+			QString sql (QString("UPDATE vpn SET [vpn-config] = '%1' WHERE [vpn-id] = %2")
+				.arg(this->db->makeCleanValue(vpnConfig.replace("\\", "/")))
+				.arg(vpnId));
+
+			this->db->execute(sql);
+		}
+	};
+
+
     this->clearConfigs();
     // Ist das der erste Refresh ist,
     // dann werden die Verzeichnisse mit durchsucht und
@@ -92,6 +112,7 @@ void Configs::refreshConfigs()
     } else {
         this->searchConfigs(AppFunc::getAppSavePath() + QLatin1String("/config"));
     }
+
 
     //
     // Nun die Liste aus der Datenbank füllen

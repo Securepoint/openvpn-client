@@ -103,81 +103,6 @@ void ConfigExport::on_cmdExport_clicked()
                 Message::error(QObject::tr("Can't open config!"), QObject::tr("Export Configuration"));
                 return;
             }
-            // Datei offen, einlesen
-            QTextStream in (&configFile);
-            QString sCA;
-            QString sCert;
-            QString sKey;
-            QString sPkcs12;
-
-            while (!in.atEnd()) {
-                QString line = in.readLine();
-                if (line.left(2).toUpper().trimmed() == QLatin1String("CA")) {
-                    QStringList keyvalList = line.split(" ");
-                    if (keyvalList.size() != 2)
-                        sCA = QString("");
-                    else {
-                        QString val = keyvalList[1];
-                        sCA = val.replace("\"","");
-                    }
-                }
-                if (line.left(4).toUpper().trimmed() == QLatin1String("CERT")) {
-                    QStringList keyvalList = line.split(" ");
-                    if (keyvalList.size() != 2)
-                        sCert = QString("");
-                    else {
-                        QString val = keyvalList[1];
-                        sCert = val.replace("\"","");
-                    }
-                }
-                if (line.left(3).toUpper().trimmed() == QLatin1String("KEY")) {
-                    QStringList keyvalList = line.split(" ");
-                    if (keyvalList.size() != 2)
-                        sKey = QString("");
-                    else {
-                        QString val = keyvalList[1];
-                        sKey = val.replace("\"","");
-                    }
-                }
-                // Pkcs12
-                if (line.left(6).toUpper().trimmed() == QLatin1String("PKCS12")) {
-                    QStringList keyvalList = line.split(" ");
-                    if (keyvalList.size() != 2)
-                        sPkcs12 = QString("");
-                    else {
-                        QString val = keyvalList[1];
-                        sPkcs12 = val.replace("\"","");
-                    }
-                }
-            }
-            configFile.close();
-
-            // Zertifikatpfade bauen
-            if (sCA.indexOf("/") == -1 && sCA.indexOf("\\") == -1) {
-                // Kein Pfad angeben
-                sCA = this->configPath.left(this->configPath.lastIndexOf("/")) + "/" + sCA;
-            }
-            if (sCert.indexOf("/") == -1 && sCert.indexOf("\\") == -1) {
-                // Kein Pfad angeben
-                sCert = this->configPath.left(this->configPath.lastIndexOf("/")) + "/" + sCert;
-            }
-            if (sKey.indexOf("/") == -1 && sKey.indexOf("\\") == -1) {
-                // Kein Pfad angeben
-                sKey = this->configPath.left(this->configPath.lastIndexOf("/"))  + "/" + sKey;
-            }
-
-            if (sPkcs12.indexOf("/") == -1 && sPkcs12.indexOf("\\") == -1) {
-                // Kein Pfad angeben
-                sPkcs12 = this->configPath.left(this->configPath.lastIndexOf("/"))  + "/" + sPkcs12;
-            }
-
-            // COnfig, CA, Cert und KEy Pfade sind da
-            // nun noch die Script Config
-            QString scriptConfig  = this->configPath.left(this->configPath.lastIndexOf("/"))  + QLatin1String("/scripts.conf");
-            QFile scriptFile (scriptConfig);
-            if (!scriptFile.exists())
-                scriptConfig = QString("");
-            scriptFile.close();
 
             // Besteht das Verzeichnis schon?
             QString dirPath = m_ui->txtSaveTo->text();
@@ -209,27 +134,7 @@ void ConfigExport::on_cmdExport_clicked()
 
             // Alle Daten da, packen
             bool error (false);
-            if (!Zip::archiveFile(zipFile, this->configPath, false)) {
-                error = true;
-            }
-
-            if (!Zip::archiveFile(zipFile, sCA, true)) {
-                error = true;
-            }
-
-            if (!Zip::archiveFile(zipFile, sCert, true)) {
-                error = true;
-            }
-
-            if (!Zip::archiveFile(zipFile, sKey, true)) {
-                error = true;
-            }
-
-            if (!Zip::archiveFile(zipFile, scriptConfig, true)) {
-                error = true;
-            }
-
-            if (!Zip::archiveFile(zipFile, sPkcs12, true)) {
+			if (!Zip::archive(zipFile, this->configPath.left(this->configPath.lastIndexOf("/")), false)) {
                 error = true;
             }
 

@@ -46,9 +46,14 @@ QString ConfigValues::valueFromConfigKey(const QString &ovpnPath, const QString 
             // Key value
             line = line.right(line.size() - key.size());
             // Remove " with nothing
+
+			//line = line.left(line.lastIndexOf("\" ") + 1);
+
             line = line.replace("\"", "");
             // Trim the line
             line = line.trimmed();
+
+			line = line.left(line.lastIndexOf(" "));
 
             // Close file
             config.close();
