@@ -1,0 +1,6 @@
+To build the vpn client you will need:
+
+	- Qt 4 http://qt-project.org/
+	- qca http://delta.affinix.com/qca/
+		- needed openssl http://www.openssl.org/
+	- quazip http://quazip.sourceforge.net/
