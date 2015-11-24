@@ -1,0 +1,212 @@
+QPushButton
+{
+	color: #2c2c2c;
+	border: none;
+}
+
+QPushButton#cmdAddTap
+{
+	color: #2c2c2c;
+
+	background-color: #EEEEEE;
+	padding: 5px;
+	border: #808080;
+}
+
+QPushButton#cmdRemoveTap
+{
+	color: #2c2c2c;
+
+	background-color: #EEEEEE;
+	padding: 5px;
+	border: #808080;
+}
+
+QPushButton#cmdSettingMenu
+{
+	color: #2c2c2c;
+	border: none;
+	
+	min-height: 30px;
+	min-width: 40px;
+	height: 30px;
+	width: 40px;
+}
+
+QPushButton#cmdSettingMenu::menu-indicator
+{ 
+	image: url(none.jpg); 
+}
+
+QPushButton#cmdSettingMenu:hover
+{	
+	color: #ffffff;
+	
+}
+
+QMenu#settingsMenu, QMenu#trayIconMenu, QMenu#connectionActionsMenu
+{ 
+	color: #2c2c2c; 
+	background-color: #ffffff; 
+	border: 1px solid #cccccc;	 
+}
+
+QMenu#settingsMenu::item, QMenu#connectionActionsMenu::item
+{
+
+} 
+
+QMenu#connectionActionsMenu::item
+{
+}
+
+QMenu#connectionActionsMenu::icon
+{
+	padding-left: 7px;
+	padding-top: 7px;
+}
+
+QMenu#settingsMenu::icon
+{
+	padding-left: 7px;
+	padding-top: 7px;
+}
+
+QMenu#trayIconMenu::item
+{ 
+	padding: 3px 15px 3px 25px; 
+} 
+
+QMenu#trayIconMenu::separator 
+{
+    height: 1px;
+    background: #e5e5e5;
+    margin-left: 0px;
+    margin-right: 0px;
+}
+
+QMenu#settingsMenu::item:selected, QMenu#trayIconMenu::item:selected, QMenu#connectionActionsMenu::item:selected
+{
+	color: #ffffff;
+	background-color: #0053a1; 
+}
+
+QFrame#frameMainWindow
+{	
+	background-image: url(:/data/images/bg.png) ;
+	background-repeat: repeat-xy;
+}
+
+QWizardPage > QFrame 
+{	
+	background-image: url(:/data/images/bg-white.png);
+	background-repeat: repeat-xy;
+}
+
+QListView
+{
+	margin-left: 1px;
+	margin-right: 1px;
+	background-image: url(:/data/images/bg-white.png);
+	background-repeat: repeat-xy;
+	border: none;
+}
+
+QLabel#windowTitleLabel, QLabel#windowTitleIcon
+{
+	background-image: url(:/data/images/bg-eeeeee.png);
+}
+
+QWidget#InformationWidget, QWidget#ImportWidget, QWidget#ClientSettingsWidget, QWidget#ExportWidget, QWidget#ConfigSettingsWidget
+{
+	margin-left: 1px;
+	margin-right: 1px;
+	background-image: url(:/data/images/bg-white.png);
+	background-repeat: repeat-xy;
+	border: none;
+}
+
+QLabel
+{
+	background-image: url(none);
+	border: none;
+	color: #000000;
+}
+
+QWidget#InformationWidget > QLabel, QWidget#ImportWidget > QLabel, QWidget#ClientSettingsWidget > QLabel, QWidget#ExportWidget > QLabel, QWidget#ConfigSettingsWidget > QLabel
+{	
+	background-image: url(none);
+	border: none;
+	color: #000000;
+}
+
+QLabel#lblUpdateIcon
+{	
+	background-image: url(none);
+	border: none;
+	color: #000000;
+}
+
+QDialog
+{
+	background-color: #ffffff; 
+}
+
+QWizard
+{
+	background:  #ffffff; 
+}
+
+QWizardPage > QWidget
+{
+	background: none; 
+}
+
+QPlainTextEdit
+{
+	background: none;
+}
+
+QLabel#lblDescription, QLabel#lbWindowTitle
+{
+	background-image: url(none);
+	border: none;
+	color: #000000;
+}
+
+QDialog#line_2, QDialog#line_3, QDialog#line_4, QDialog#line_5
+{
+color: red;
+}
+
+
+QPushButton#cmdBack, QPushButton#cmdChangeUpdateSource, QPushButton#cmdSelectImportFile, QPushButton#cmdImport, QPushButton#cmdChangeMaschineDirectory
+{		
+	border: none;
+}
+
+QPushButton#cmdUpdateState
+{		
+	border: none;
+	padding-left: 5px;
+	text-align: left;
+}
+
+QLineEdit
+{		
+	border: 1px solid #cccccc;
+	background-color: #ffffff;
+	color: #000000;
+}
+
+QFrame#line
+{
+	background-color: #ffffff;
+}
+
+QToolBox > QScrollArea > QWidget > QWidget 
+{
+	background-image: url(:/data/images/bg-white.png);
+	background-repeat: repeat-xy;
+	border: none;
+}

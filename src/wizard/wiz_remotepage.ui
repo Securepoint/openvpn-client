@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>RemotePage</class>
+ <widget class="QWizardPage" name="RemotePage">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>447</width>
+    <height>279</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>WizardPage</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">font-size: 8pt;</string>
+  </property>
+  <property name="title">
+   <string>Remote Settings</string>
+  </property>
+  <property name="subTitle">
+   <string>Specify the remote settings of the connection.</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0" colspan="4">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Please enter the IP and Port of the remote OpenVPN server.</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>Protocol:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>IP:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="2">
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>Port:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QComboBox" name="cmbRemoteProtocol">
+     <property name="styleSheet">
+      <string notr="true">:enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}
+:disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}
+:hover {border: 1px solid red; }</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QLineEdit" name="txtRemoteIP">
+     <property name="styleSheet">
+      <string notr="true">:enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}
+:disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}
+:hover {border: 1px solid red; }</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="2">
+    <widget class="QLineEdit" name="txtRemotePort">
+     <property name="styleSheet">
+      <string notr="true">:enabled {width: 50%;border: 1px solid black; background-color: rgb(255, 255, 255);}
+:disabled {width: 50%;border: 1px solid black; background-color: rgb(195, 195, 195);}
+:hover {border: 1px solid red; width: 50%;}
+
+</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="3">
+    <widget class="QPushButton" name="cmdAdd">
+     <property name="styleSheet">
+      <string notr="true">QPushButton:hover {background-color: rgb(195, 195, 195);}
+QPushButton {;text-align:center;	
+padding-left: 3px;
+	padding-top: 3px;   padding-right: 3px;
+	padding-bottom: 3px;}</string>
+     </property>
+     <property name="text">
+      <string>Add</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0" colspan="4">
+    <widget class="QTableView" name="lvRemote">
+     <property name="selectionMode">
+      <enum>QAbstractItemView::SingleSelection</enum>
+     </property>
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectRows</enum>
+     </property>
+     <property name="showGrid">
+      <bool>false</bool>
+     </property>
+     <property name="gridStyle">
+      <enum>Qt::NoPen</enum>
+     </property>
+     <property name="cornerButtonEnabled">
+      <bool>false</bool>
+     </property>
+     <attribute name="horizontalHeaderHighlightSections">
+      <bool>false</bool>
+     </attribute>
+     <attribute name="verticalHeaderVisible">
+      <bool>false</bool>
+     </attribute>
+    </widget>
+   </item>
+   <item row="4" column="3">
+    <widget class="QPushButton" name="cmdRemove">
+     <property name="styleSheet">
+      <string notr="true">QPushButton:hover {background-color: rgb(195, 195, 195);}
+QPushButton {;text-align:center;	
+padding-left: 3px;
+	padding-top: 3px;   padding-right: 3px;
+	padding-bottom: 3px;}</string>
+     </property>
+     <property name="text">
+      <string>Remove</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="../../res.qrc"/>
+ </resources>
+ <connections/>
+</ui>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Wizard</class>
+ <widget class="QWizard" name="Wizard">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>498</width>
+    <height>402</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>Wizard</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QPushButton:hover {background-color: rgb(195, 195, 195);}
+QPushButton {;text-align:center;	
+padding-left: 3px;
+	padding-top: 3px;   padding-right: 3px;
+	padding-bottom: 3px;}</string>
+  </property>
+  <property name="wizardStyle">
+   <enum>QWizard::ModernStyle</enum>
+  </property>
+  <property name="options">
+   <set>QWizard::ExtendedWatermarkPixmap|QWizard::HelpButtonOnRight</set>
+  </property>
+  <widget class="QWizardPage" name="wizardPage1"/>
+  <widget class="QWizardPage" name="wizardPage"/>
+  <widget class="QWizardPage" name="wizardPage_2"/>
+  <widget class="QWizardPage" name="wizardPage2">
+   <widget class="QWidget" name="widget" native="true">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>250</y>
+      <width>291</width>
+      <height>71</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-image: url(:/data/images/securepoint_h.png);</string>
+    </property>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
