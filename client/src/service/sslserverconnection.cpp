@@ -47,7 +47,7 @@ SslServerConnection::SslServerConnection(quint16 socketDescriptor, QMutex *mut, 
 
     // Now bind some signal of the ssl socket
     QObject::connect(socket, SIGNAL(connected()), SLOT(slotAcceptedClient()));
-    QObject::connect(socket, SIGNAL(disconnected()), socket, SLOT(deleteLater()));   
+    QObject::connect(socket, SIGNAL(disconnected()), socket, SLOT(deleteLater()));
     QObject::connect(socket, SIGNAL(disconnected()), SLOT(slotConnectionClosed()));
     QObject::connect(socket, SIGNAL(modeChanged(QSslSocket::SslMode)), this, SLOT(slotModeChanged(QSslSocket::SslMode)));
     QObject::connect(socket, SIGNAL(readyRead()), SLOT(slotStartRead()));
@@ -107,28 +107,26 @@ void SslServerConnection::slotStartRead()
 
     QDataStream in(socket);
     in.setVersion(QDataStream::Qt_4_6);
-    
+
     qDebug() << "Size available: " << socket->bytesAvailable();
     if (blockSize == 0) {
         if ((quint32) socket->bytesAvailable() < sizeof(qint64)) {
             return;
         }
-        in >> blockSize;        
+        in >> blockSize;
     }
 
-    if (socket->bytesAvailable() < blockSize) {        
+    if (socket->bytesAvailable() < blockSize) {
         return;
     }
 
     QString command("");
     QString params("");
 
-   
-    in >> command;    
+
+    in >> command;
     in >> params;
 
-    qDebug() << "Command: " << command;
-    qDebug() << "params: " << params;
     //
     // Ab hier kann man munter drauf los mit den Daten ;)
     //
@@ -137,7 +135,7 @@ void SslServerConnection::slotStartRead()
 
     // Den Befehl auswerten
     this->blockSize = 0;
-    if (command.isEmpty()) {        
+    if (command.isEmpty()) {
         // Kein Befehl keine Aktion
         return;
     }
@@ -196,7 +194,7 @@ void SslServerConnection::slotStartRead()
         if (fields.size() == 2) {
             // Genug Felder da
             QString cId (fields.at(0));
-            QString cType (fields.at(1));            
+            QString cType (fields.at(1));
             emit needUserInput(cId.toInt(), cType.toInt());
         }
     } else if (command == QLatin1String("STATUS")) {
@@ -237,7 +235,7 @@ void SslServerConnection::slotStartRead()
         // Tap-Device Remove
         params = params.trimmed().toUpper();
         emit receivedRemoveTap(params);
-        
+
     } else if(command == "TAPCOUNT")
     {
         int count = params.toInt();
@@ -277,7 +275,7 @@ void SslServerConnection::slotStartRead()
         this->socket->flush();
 
         return;
-    } else if(command == QLatin1String("GET_ERROR")) { 
+    } else if(command == QLatin1String("GET_ERROR")) {
         // Neuen Block zum Senden erstellen
         QByteArray block;
         // Datasteam an den Block binden
@@ -321,10 +319,10 @@ void SslServerConnection::slotStartRead()
     if(socket->bytesAvailable())
     {
         QCoreApplication::processEvents();
-        
+
         emit slotStartRead();
     }
-    
+
 }
 
 void SslServerConnection::slotConnectionClosed()

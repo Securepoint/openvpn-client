@@ -95,7 +95,7 @@ bool TapDriver::installTapDriver()
 
     QString drvInstallApp (this->getTapPath());
     QString drvPath (QCoreApplication::applicationDirPath() + QString("/bin/driver/OemWin2k.inf"));
-  
+
 
     QStringList argDrvInstall;
     argDrvInstall << QLatin1String ("install");

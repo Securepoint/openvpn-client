@@ -2,7 +2,7 @@
 #include <QByteArray>
 
 
-#include <frmmain.h>
+#include "frmmain.h"
 
 #include "single_application.h"
 #include "message.h"
@@ -19,7 +19,7 @@ SingleApplication::SingleApplication(int &argc, char *argv[], const QString uniq
         char *to = (char*)sharedMemory.data();
         QString id(to);
         id = QString("%1").arg(id.toUInt() + 1);
-        g_strClientName = "SPSSlVpnClient" + id; 
+        g_strClientName = "SPSSlVpnClient" + id;
         memcpy(to, id.toLatin1().data(), qMin(sharedMemory.size(), id.toLatin1().size()));
         sharedMemory.unlock();
     }
@@ -33,7 +33,7 @@ SingleApplication::SingleApplication(int &argc, char *argv[], const QString uniq
             qDebug("Unable to create single instance.");
             return;
         }
-         g_strClientName = "SPSSlVpnClient1"; 
+         g_strClientName = "SPSSlVpnClient1";
         sharedMemory.lock();
         char *to = (char*)sharedMemory.data();
         const char *from = byteArray.data();
@@ -62,7 +62,7 @@ void SingleApplication::setSharedKey(const QString &uniqueKey)
         char *to = (char*)sharedMemory.data();
         QString id(to);
         id = QString("%1").arg(id.toUInt() + 1);
-        g_strClientName = "SPSSlVpnClient" + id; 
+        g_strClientName = "SPSSlVpnClient" + id;
         memcpy(to, id.toLatin1().data(), qMin(sharedMemory.size(), id.toLatin1().size()));
         sharedMemory.unlock();
     }
@@ -76,7 +76,7 @@ void SingleApplication::setSharedKey(const QString &uniqueKey)
             qDebug("Unable to create single instance.");
             return;
         }
-        g_strClientName = "SPSSlVpnClient1"; 
+        g_strClientName = "SPSSlVpnClient1";
         sharedMemory.lock();
         char *to = (char*)sharedMemory.data();
         const char *from = byteArray.data();

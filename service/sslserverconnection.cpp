@@ -99,7 +99,7 @@ void SslServerConnection::slotStartRead()
     //
 
     Debug::log (QLatin1String("Start reading"));
-    
+
     QDataStream in(socket);
     in.setVersion(QDataStream::Qt_4_6);
 
@@ -116,7 +116,7 @@ void SslServerConnection::slotStartRead()
 
      Debug::log (QLatin1String("Start reading"));
      this->blockSize = 0;
-    
+
 
     QString command("");
     QString params("");
@@ -583,6 +583,9 @@ void SslServerConnection::slotError(QAbstractSocket::SocketError err)
     //
     // Error while conntecting
     //
+
+    Q_UNUSED(err)
+
     if (socket->state() != QAbstractSocket::ConnectedState){
         if (socket->state() == QAbstractSocket::UnconnectedState) {
             slotConnectionClosed();

@@ -102,7 +102,7 @@ void SrvCLI::slot_stateChanged(QAbstractSocket::SocketState state)
 
 bool SrvCLI::isOnline() const
 {
-    return this->connectionIsOnline;
+    return (this->sslSocket.state() == QSslSocket::ConnectedState);
 }
 
 void SrvCLI::stopRequest ()
@@ -141,13 +141,18 @@ void SrvCLI::resetConnection()
 
 bool SrvCLI::makeConnection(bool fastmode)
 {
+    if (this->sslSocket.state() != QAbstractSocket::UnconnectedState) {
+        qDebug() << "socket is not in unconnected state";
+        //
+        return true;
+    }
+
     static int requestErrorCount = 0;
     //
-    this->sslSocket.ignoreSslErrors();
     this->sslSocket.connectToHost(QLatin1String("127.0.0.1"), 3656);
     //
 
-    if (!this->sslSocket.waitForConnected(1000)) {
+    if (!this->sslSocket.waitForConnected(2000)) {
         requestErrorCount++;
         if (fastmode || requestErrorCount == 3) {
             requestErrorCount = 0;
@@ -172,41 +177,35 @@ void SrvCLI::slotStartRead()
     //
 
 
-    qDebug() << "Start Reading";
-
     QDataStream in(&sslSocket);
     in.setVersion(QDataStream::Qt_4_6);
-    
-    qDebug() << "Size available: " << sslSocket.bytesAvailable();
+
     if (blockSize == 0) {
         if ((quint32) sslSocket.bytesAvailable() < sizeof(qint64)) {
             return;
         }
-        in >> blockSize;        
+        in >> blockSize;
     }
 
-    if (sslSocket.bytesAvailable() < blockSize) {        
+    if (sslSocket.bytesAvailable() < blockSize) {
         return;
     }
 
     QString command("");
     QString params("");
 
-   
-    in >> command;    
+
+    in >> command;
     in >> params;
 
-    qDebug() << "Command: " << command;
-    qDebug() << "params: " << params;
     //
     // Ab hier kann man munter drauf los mit den Daten ;)
     //
 
-    qDebug() << "Size available: " << sslSocket.bytesAvailable();
 
     // Den Befehl auswerten
     this->blockSize = 0;
-    if (command.isEmpty()) {        
+    if (command.isEmpty()) {
         // Kein Befehl keine Aktion
         return;
     }
@@ -265,7 +264,7 @@ void SrvCLI::slotStartRead()
         if (fields.size() == 2) {
             // Genug Felder da
             QString cId (fields.at(0));
-            QString cType (fields.at(1));            
+            QString cType (fields.at(1));
             emit needUserInput(cId.toInt(), cType.toInt());
         }
     } else if (command == QLatin1String("STATUS")) {
@@ -310,7 +309,7 @@ void SrvCLI::slotStartRead()
         // Tap-Device Remove
         params = params.trimmed().toUpper();
         emit receivedRemoveTap(params);
-        
+
     } else if(command == "TAPCOUNT")
     {
         int count = params.toInt();
@@ -352,7 +351,7 @@ void SrvCLI::slotStartRead()
             this->sslSocket.waitForBytesWritten();
             this->sslSocket.flush();
         }
-    } else if(command == QLatin1String("GET_ERROR")) { 
+    } else if(command == QLatin1String("GET_ERROR")) {
         QStringList fields (params.split(";"));
         if(fields.size() == 2)
         {
@@ -401,10 +400,10 @@ void SrvCLI::slotStartRead()
     if(sslSocket.bytesAvailable())
     {
         QCoreApplication::processEvents();
-        
+
         emit slotStartRead();
     }
-    
+
 }
 
 void SrvCLI::slotConnectionClosed()

@@ -83,7 +83,7 @@ bool TapDriver::installTapDriver() {
 
     // Pfade für die Exe und die Treiber inf
     QString drvInstallApp (QCoreApplication::applicationDirPath() + binDir + QLatin1String("/tapinstall.exe"));
-    QString drvPath (QCoreApplication::applicationDirPath() + binDir + QLatin1String("/driver/OemWin2k.inf"));
+    QString drvPath (QCoreApplication::applicationDirPath() + binDir + QLatin1String("/driver/OemVista.inf"));
 
     // Argumente bauen
     QStringList argDrvInstall;

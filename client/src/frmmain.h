@@ -6,8 +6,8 @@
 #include <QtCore/QEvent>
 #include <QtGui/QShowEvent>
 #include <QtGui/QMovie>
-#include <update/parsexml.h>
-#include <service\sslserver.h>
+#include "update/parsexml.h"
+#include "service\sslserver.h"
 
 namespace Ui {
 class FrmMain;
@@ -37,7 +37,7 @@ public:
     //
     QString version;
 
-   
+
 
     bool startDaemon();
     bool initDaemon();
@@ -77,7 +77,7 @@ private slots:
     void on_cmdSettingMenu_clicked();
 
     void trayActivated(QSystemTrayIcon::ActivationReason reason);
-    
+
 
     void updateCheckIsReady(bool success, QString errorText);
 

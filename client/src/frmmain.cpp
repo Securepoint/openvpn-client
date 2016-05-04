@@ -319,7 +319,6 @@ bool CheckImportOldConfigs()
         }
 
         while (configQuery->next()) {
-            int vpnId (configQuery->value(0).toInt());
             QString vpnName (configQuery->value(1).toString());
             QString vpnConfig (configQuery->value(2).toString());
             bool vpnAutoStart ((configQuery->value(3).toString() == QLatin1String("1") ? true : false));
@@ -379,7 +378,6 @@ bool CheckImportOldConfigs()
 
                 auto copyConfigFile = [&](const QString &_key)
                 {
-                    qDebug() << sourceDirectory;
                     auto keyValue = (ConfigValues::instance()->valueFromConfigKey(pathToConfig, _key));
 
                     if(!keyValue.isEmpty())
@@ -400,9 +398,6 @@ bool CheckImportOldConfigs()
                                 .arg(destName));
                         }
 
-                        qDebug() << sourcePath;
-                        qDebug() << newConfigFolderPath;
-                        qDebug() << destName;
 
                         // Copy
                         QFile::copy(sourcePath, QString("%1/%2")
@@ -666,7 +661,7 @@ LRESULT wndproc1(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 FrmMain::FrmMain()
     : ui(new Ui::FrmMain),
       widgetFactory(new WidgetFactory),
-      version("2.0.15"),
+      version("2.0.16"),
       updateState(0),
       isReconnect(false),
       tapCount(0),
@@ -814,7 +809,7 @@ FrmMain::FrmMain()
         QTimer::singleShot(300, this, SLOT(on_cmdUpdateState_clicked()));
     }
 
-	// Seems Qt fails :)
+    // Seems Qt fails :)
     SetWindowPos((HWND)this->winId(), HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 
     ui->frameMainWindow->setLayout(ui->mainGrid);
@@ -929,8 +924,6 @@ void FrmMain::checkTaskBarAutoHideProperty()
     } else {
         this->m_bTaskBarAutoHide = false;
     }
-
-    qDebug() << "TaskBar state: " << ucState;
 }
 
 void FrmMain::sendClose()
@@ -1432,22 +1425,16 @@ bool FrmMain::initDaemon()
     return true;
 }
 
-bool dummy = false;
-
-
 
 void FrmMain::connectToService()
 {
-    if(SrvCLI::instance()->makeConnection(true))
+    if(SrvCLI::instance()->makeConnection(false)) {
         cvStartDaemon.notify_all();
+    }
 }
 
 void FrmMain::dummyReceived(quint32 id)
 {
-    {
-        std::lock_guard<std::mutex> lk(mutexStartDaemon);
-        dummy = true;
-    }
     cvStartDaemon.notify_all();
 }
 
@@ -1458,52 +1445,56 @@ bool FrmMain::startDaemon()
     bool success (false);
 
     do {
-        //if(SrvCLI::instance()->makeConnection(true))
-        {
-            if(!SrvCLI::instance()->isOnline())
-            {
-                PostMessage(mainHWND, CONNECT_TO_SERVICE, NULL, NULL);
-                std::unique_lock<std::mutex> lk(mutexStartDaemon);
+        success = true;
 
-                if(cvStartDaemon.wait_for(lk, std::chrono::milliseconds(1000)) == std::cv_status::no_timeout)
-                {
-                    success = true;
-                }
-                else
-                {
+        // This extra scope is for the unique lock
+        {
+            if(!SrvCLI::instance()->isOnline()) {
+                // Send connect to message queue
+                PostMessage(mainHWND, CONNECT_TO_SERVICE, NULL, NULL);
+
+                // Lock and wait for notify until timeout is reached
+                std::unique_lock<std::mutex> lk(mutexStartDaemon);
+                if(cvStartDaemon.wait_for(lk, std::chrono::milliseconds(2000)) != std::cv_status::no_timeout) {
+                    // Timeout
                     success = false;
                 }
             }
+        }
 
+        // If no error occurred we are connected
+        // Send the dummy command to check if the
+        // service is available
+        if(success) {
+            // Send dummy command to message queue
             SendMessage(mainHWND, ON_SEND_DUMMY, NULL, NULL);
 
+            // Lock and wait for notify until timeout is reached
             std::unique_lock<std::mutex> lk(mutexStartDaemon);
-
-			if (cvStartDaemon.wait_for(lk, std::chrono::milliseconds(1000)) == std::cv_status::no_timeout)
-            {
-                success = true;
-            }
-            else
-            {
+            if (cvStartDaemon.wait_for(lk, std::chrono::milliseconds(2000)) != std::cv_status::no_timeout) {
+                // Timeout
                 success = false;
             }
         }
 
+        // WTF, alex
         if(closing) {
+            // If we are closing
             closing = false;
-            return false;
         }
-        if(!success)
-        {
+
+        // Increment tries
+        if(!success) {
             ++tries;
         }
 
+        // Check for events which needed to process
         if (qApp->hasPendingEvents()) {
             qApp->processEvents();
         }
 
         //
-       qDebug() << QString(QString("Pref: Connect try: No.: %1 Success: %2")
+        qDebug() << QString(QString("Pref: Connect try: No.: %1 Success: %2")
                            .arg(tries)
                            .arg(success));
 
@@ -1512,8 +1503,11 @@ bool FrmMain::startDaemon()
     connectedToService = true;
     closing = false;
 
-    if(!success)
+    if(!success) {
         SendMessage(mainHWND, FAILED_TO_CONNECT, NULL, NULL);
+        //
+        return false;
+    }
 
     if(success)
     {
@@ -1526,8 +1520,6 @@ bool FrmMain::startDaemon()
             if(con.second->IsAutoStart())
                 ++autoStartCount;
         };
-
-        int lastCount = -1;
 
         // Wait for the tap count to be received
         {
@@ -2014,11 +2006,11 @@ void FrmMain::receivedRemoveTap(QString state)
 
 void FrmMain::showWizard()
 {
-	
+
     VpnWizard vpn;
 
     vpn.exec();
-	
+
     this->activateWindow();
 
     Configs::instance()->findConfigsInDir((Utils::userApplicationDataDirectory() + "/config"));
@@ -2087,6 +2079,6 @@ float windowsDpiScale()
     HDC screen = GetDC(0);
     float dpiX = static_cast<float>(GetDeviceCaps(screen, LOGPIXELSX));
     ReleaseDC(0, screen);
-	//
+    //
     return dpiX / DEFAULT_DPI;
 }

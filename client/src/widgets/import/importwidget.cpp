@@ -79,22 +79,22 @@ void ImportWidget::on_cmdSelectImportFile_clicked()
 }
 
 QString keys[] = {
-	"ca",
-	"cert",
-	"key",
-	"pkcs12",
-	"auth-user-pass",
-	"secret",
-	"replay-persist",
-	"dh",
-	"cert",
-	"extra-certs",
-	"key",
-	"pkcs12",
-	"tls-auth",
-	"tls-auth",
-	"askpass",
-	"crl-verify"
+    "ca",
+    "cert",
+    "key",
+    "pkcs12",
+    "auth-user-pass",
+    "secret",
+    "replay-persist",
+    "dh",
+    "cert",
+    "extra-certs",
+    "key",
+    "pkcs12",
+    "tls-auth",
+    "tls-auth",
+    "askpass",
+    "crl-verify"
 };
 
 void ImportWidget::on_cmdImport_clicked()
@@ -103,7 +103,7 @@ void ImportWidget::on_cmdImport_clicked()
     {
         qDebug() << "No file specified";
     }
-    
+
 
     if(ui->txtSourceFile->text().endsWith(".ovpn"))
     {
@@ -152,7 +152,6 @@ void ImportWidget::on_cmdImport_clicked()
 
         auto copyConfigFile = [&](const QString &key)
         {
-            qDebug() << sourceDirectory;
             auto keyValue = (ConfigValues::instance()->valueFromConfigKey(pathToConfig, key));
 
             if(!keyValue.isEmpty())
@@ -173,10 +172,6 @@ void ImportWidget::on_cmdImport_clicked()
                         .arg(destName));
                 }
 
-                qDebug() << sourcePath;
-                qDebug() << newConfigFolderPath;
-                qDebug() << destName;
-
                 // Copy
                 QFile::copy(sourcePath, QString("%1/%2")
                     .arg(newConfigFolderPath)
@@ -195,7 +190,7 @@ void ImportWidget::on_cmdImport_clicked()
         Configs::instance()->refreshConfigs();
         ((MainListView*)FrmMain::instance()->mainWidget()->widget(MainView))->model.LoadConnections();
         FrmMain::instance()->mainWidget()->showWidget(MainView);
-        
+
     } else {
 #if 1
 
@@ -287,7 +282,7 @@ void ImportWidget::on_cmdImport_clicked()
                     targetFile.waitForBytesWritten(3000);
                     targetFile.flush();
                     targetFile.waitForBytesWritten(3000);
-                        
+
                     // Alles Ok
                     targetFile.close();
                     crypted.close();

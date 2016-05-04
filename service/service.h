@@ -9,7 +9,7 @@
 #include <QtCore/qstack.h>
 #include <QtCore/QDateTime>
 #include <QtCore/QDir>
-#include "qtservice.h"
+#include "src/qtservice.h"
 #include "sslserver.h"
 
 class Service  : public QObject, public QtService<QCoreApplication>

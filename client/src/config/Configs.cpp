@@ -1,23 +1,23 @@
 #include "configs.h"
 
-#include <database/database.h>
+#include <database.h>
 #include <QtCore>
 #include <FrmMain.h>
 #include <WidgetFactory.h>
-#include <database/crypt.h>
-#include <service/SrvCLI.h>
+#include <crypt.h>
+#include <SrvCLI.h>
 
 Configs * Configs::m_Inst = nullptr;
 
 // On windows this is faster than QFile::exists
-inline bool FileExists (const char* name) 
+inline bool FileExists (const char* name)
 {
-	if(INVALID_FILE_ATTRIBUTES == GetFileAttributesA(name) && GetLastError() == ERROR_FILE_NOT_FOUND)
-	{
-	    //File not found
-	    return false;
-	}
-	return true;
+    if(INVALID_FILE_ATTRIBUTES == GetFileAttributesA(name) && GetLastError() == ERROR_FILE_NOT_FOUND)
+    {
+        //File not found
+        return false;
+    }
+    return true;
 }
 
 void Configs::refreshConfigs()
@@ -55,8 +55,8 @@ void Configs::refreshConfigs()
         }
 
         ConnectionState state = (ConnectionState)configQuery->value(4).toInt();
-        
-		// Hack to get correct state in status, this will only show the corrected states when a window is created
+
+        // Hack to get correct state in status, this will only show the corrected states when a window is created
         // Not a good solution, but it works and its easy
         if(FrmMain::instanceCheck())
         {
@@ -64,7 +64,7 @@ void Configs::refreshConfigs()
                 state = ConnectionState::Disconnected;
         }
         ConnectionData* obj = new ConnectionData();
-        
+
 
         obj->SetName(vpnName);
         obj->SetId(vpnId);
@@ -116,7 +116,7 @@ void Configs::refreshConfigs()
     }
 
     // sort the list by name
-    std::sort(this->myList.begin(), this->myList.end(), [](QPair<int, ConnectionData*> a, QPair<int, ConnectionData*> b) -> bool {return a.second->GetName().toLower() < b.second->GetName().toLower();}); 
+    std::sort(this->myList.begin(), this->myList.end(), [](QPair<int, ConnectionData*> a, QPair<int, ConnectionData*> b) -> bool {return a.second->GetName().toLower() < b.second->GetName().toLower();});
 
    /* for(const auto con : Configs::instance()->GetList())
     {

@@ -122,11 +122,11 @@ public slots:
              printf(params.toLatin1().data());
              printf("\n");
          }
-		 else if(command == "GET_CLIENTS")
-		 {
-			 printf(params.toLatin1().data());
-			 printf("\n");
-		 }
+         else if(command == "GET_CLIENTS")
+         {
+             printf(params.toLatin1().data());
+             printf("\n");
+         }
 
          // Always close the application after handling the command
 
@@ -138,7 +138,7 @@ public slots:
      }
  };
 
-#include <main.moc>
+#include "release/main.moc"
 
 
 bool g_bSilent = false;
@@ -269,7 +269,7 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext & context, const Q
 
  QString g_strClientName;
 
- static const char* g_szVersion = "2.0.15";
+ static const char* g_szVersion = "2.0.16";
 
  void PrintHelp()
  {
@@ -307,12 +307,16 @@ int CALLBACK WinMain (_In_  HINSTANCE hInstance,
   _In_  LPSTR lpCmdLine,
   _In_  int nCmdShow)
 {
+    Q_UNUSED(hInstance)
+    Q_UNUSED(hPrevInstance)
+    Q_UNUSED(lpCmdLine)
+    Q_UNUSED(nCmdShow)
 
 
     // Install a message handler for qt
    // qInstallMessageHandler(myMessageOutput);
 
-	// We have to disable buffering, otherwise the output will not show in the console
+    // We have to disable buffering, otherwise the output will not show in the console
     setvbuf(stdout, NULL, _IONBF, 0);
     setvbuf(stderr, NULL, _IONBF, 0);
     setbuf(stdout, NULL);
@@ -408,98 +412,98 @@ int CALLBACK WinMain (_In_  HINSTANCE hInstance,
             return 0;
         } else if(!strcmp(argv[x], "-log")  && x + 1 < argc) {
 
-			QString clientIndex  = argv[x + 1];
-			QString sconfigIndex  = argv[x + 2];
+            QString clientIndex  = argv[x + 1];
+            QString sconfigIndex  = argv[x + 2];
 
 
-			ClientCom com;
-
-			// Connect to the runnin client instance
-			com.socket.connectToHost(QLatin1String("127.0.0.1"), 3656);
-			if(!com.socket.waitForConnected())
-			{
-				//
-				return 0;
-			}
-
-
-			com.sendCommand("GETLOG", clientIndex + ";" + sconfigIndex);
-
-			QApplication::exec();
-
-			return 0;
-		} else if(!strcmp(argv[x], "-error") && x +2 < argc) {
-
-			QString clientIndex  = argv[x + 1];
-			QString sconfigIndex  = argv[x + 2];
-			//int configIndex = sconfigIndex.toInt();
-
-
-			ClientCom com;
-
-			// Connect to the runnin client instance
-			com.socket.connectToHost(QLatin1String("127.0.0.1"), 3656);
-			if(!com.socket.waitForConnected())
-			{
-				//
-				return 0;
-			}
-
-
-			com.sendCommand("GET_ERROR", clientIndex + ";" + sconfigIndex);
-
-			QApplication::exec();
-
-			return 0;
-		} else if(!strcmp(argv[x], "-vpnlog")) {
-			Settings::instance()->setVpnLog(true);
-		} else if(!strcmp(argv[x], "-stop")) {
-			//#define CLOSE_VPN_CLIENT 11055
-			//HWND hwnd = FindWindowA(NULL, "HalloSPSSLVPN");
-			//if(hwnd)
-			//	SendMessage(hwnd, CLOSE_VPN_CLIENT, NULL, NULL);
-			//printf("Could not find the vpn client\n");
             ClientCom com;
 
-			// Connect to the runnin client instance
-			com.socket.connectToHost(QLatin1String("127.0.0.1"), 3656);
-			if(!com.socket.waitForConnected())
-			{
-				//
-				return 0;
-			}
+            // Connect to the runnin client instance
+            com.socket.connectToHost(QLatin1String("127.0.0.1"), 3656);
+            if(!com.socket.waitForConnected())
+            {
+                //
+                return 0;
+            }
 
 
-			com.sendCommand("STOP_CLIENTS", "");
+            com.sendCommand("GETLOG", clientIndex + ";" + sconfigIndex);
 
-			QApplication::exec();
+            QApplication::exec();
 
-			return 0;
-		}  else if(!strcmp(argv[x], "-clients"))  {
-						ClientCom com;
+            return 0;
+        } else if(!strcmp(argv[x], "-error") && x +2 < argc) {
 
-			// Connect to the runnin client instance
-			com.socket.connectToHost(QLatin1String("127.0.0.1"), 3656);
-			if(!com.socket.waitForConnected())
-			{
-				//
-				return 0;
-			}
+            QString clientIndex  = argv[x + 1];
+            QString sconfigIndex  = argv[x + 2];
+            //int configIndex = sconfigIndex.toInt();
 
 
-			com.sendCommand("GET_CLIENTS", "");
+            ClientCom com;
 
-			QApplication::exec();
+            // Connect to the runnin client instance
+            com.socket.connectToHost(QLatin1String("127.0.0.1"), 3656);
+            if(!com.socket.waitForConnected())
+            {
+                //
+                return 0;
+            }
 
-			return 0;
 
-		} else if(!strcmp(argv[x], "-help")) {
+            com.sendCommand("GET_ERROR", clientIndex + ";" + sconfigIndex);
 
-			PrintHelp();
+            QApplication::exec();
 
-			ExitProcess(0);
-			return 0;
-		}
+            return 0;
+        } else if(!strcmp(argv[x], "-vpnlog")) {
+            Settings::instance()->setVpnLog(true);
+        } else if(!strcmp(argv[x], "-stop")) {
+            //#define CLOSE_VPN_CLIENT 11055
+            //HWND hwnd = FindWindowA(NULL, "HalloSPSSLVPN");
+            //if(hwnd)
+            //	SendMessage(hwnd, CLOSE_VPN_CLIENT, NULL, NULL);
+            //printf("Could not find the vpn client\n");
+            ClientCom com;
+
+            // Connect to the runnin client instance
+            com.socket.connectToHost(QLatin1String("127.0.0.1"), 3656);
+            if(!com.socket.waitForConnected())
+            {
+                //
+                return 0;
+            }
+
+
+            com.sendCommand("STOP_CLIENTS", "");
+
+            QApplication::exec();
+
+            return 0;
+        }  else if(!strcmp(argv[x], "-clients"))  {
+                        ClientCom com;
+
+            // Connect to the runnin client instance
+            com.socket.connectToHost(QLatin1String("127.0.0.1"), 3656);
+            if(!com.socket.waitForConnected())
+            {
+                //
+                return 0;
+            }
+
+
+            com.sendCommand("GET_CLIENTS", "");
+
+            QApplication::exec();
+
+            return 0;
+
+        } else if(!strcmp(argv[x], "-help")) {
+
+            PrintHelp();
+
+            ExitProcess(0);
+            return 0;
+        }
         else if(!strcmp(argv[x], "-version")) {
             printf("SSLVpnClient Version %s\n", g_szVersion);
             return 0;
@@ -508,7 +512,7 @@ int CALLBACK WinMain (_In_  HINSTANCE hInstance,
         {
             cmdFound = false;
         }
-	}
+    }
 
     // If the was an invalid command we just inform the user and exit
     if(!cmdFound)
@@ -530,11 +534,11 @@ int CALLBACK WinMain (_In_  HINSTANCE hInstance,
     a.setSharedKey(key);
 
     // Only check if its installed client instance
-	// Check if SSL Vpn client already running
-	if (!g_bPortable && a.isRunning()){
-	    a.sendMessage("Someone is out there");
-	    return 0;
-	}
+    // Check if SSL Vpn client already running
+    if (!g_bPortable && a.isRunning()){
+        a.sendMessage("Someone is out there");
+        return 0;
+    }
 
     // Check if the service is already running, if not start it with -e
     if(g_bPortable)
@@ -549,30 +553,12 @@ int CALLBACK WinMain (_In_  HINSTANCE hInstance,
 
         if(!Utils::IsVPNServiceRunning())
         {
-            QStringList args;
-            args.append("-e");
-
-            struct _STARTUPINFOA StartupInfo;
-            struct _PROCESS_INFORMATION ProcessInformation;
-            _SECURITY_ATTRIBUTES ProcessAttributes = {0xC,0, 1};
-
-            StartupInfo.cb = sizeof(STARTUPINFOA);
-           // StartupInfo.dwFlags = STARTF_USESHOWWINDOW;
-           // StartupInfo.wShowWindow = SW_HIDE;
-            StartupInfo.lpDesktop = NULL;
-            StartupInfo.lpTitle = NULL;
-
-            CreateProcessA(
-                 NULL,
-                 (LPSTR)(QCoreApplication::applicationDirPath() + QLatin1String("/SPSSLVpnService.exe -e")).toLatin1().data(),
-                 &ProcessAttributes,
-                 &ProcessAttributes,
-                 1,
-                 DETACHED_PROCESS /*| CREATE_NO_WINDOW*/,
-                 NULL,
-                 NULL,
-                 &StartupInfo,
-                 &ProcessInformation);
+            QProcess *vpnService = new QProcess();
+            vpnService->setWorkingDirectory(qApp->applicationDirPath());
+            vpnService->start(QCoreApplication::applicationDirPath() + QLatin1String("/SPSSLVpnService.exe"), QStringList() << QLatin1String("-e"));
+            if (!vpnService->waitForStarted(3000)) {
+                qDebug() << "service not startet";
+            }
         }
         else
         {
@@ -697,42 +683,42 @@ int CALLBACK WinMain (_In_  HINSTANCE hInstance,
     FrmMain::instance()->showNormal();
     FrmMain::instance()->close();
 
-	// Show the tray icon
+    // Show the tray icon
     if(!g_bSilent)
-	    FrmMain::instance()->showTrayIcon();
+        FrmMain::instance()->showTrayIcon();
 
-	// If its always popup the show the window on startup
-	if(Settings::instance()->alwaysPopup() && !g_bSilent)
-	{
-		FrmMain::instance()->showNormal();
-	}
+    // If its always popup the show the window on startup
+    if(Settings::instance()->alwaysPopup() && !g_bSilent)
+    {
+        FrmMain::instance()->showNormal();
+    }
 
-	auto r = QApplication::exec();
+    auto r = QApplication::exec();
 
-	// Cleanup on shutdown
+    // Cleanup on shutdown
 
-	// If (-removeTap), then remove all tap devices on shutdown
-	if(removeTap)
-	{
-		TapDriver::instance()->removeTapDriver();
-	}
+    // If (-removeTap), then remove all tap devices on shutdown
+    if(removeTap)
+    {
+        TapDriver::instance()->removeTapDriver();
+    }
 
-	// Remove the -start configs from the database
-	if(vecStartConfigs.size())
-	{
-		for(auto &configData : vecStartConfigs)
-		{
-			for(auto &config : Configs::instance()->getList())
-			{
-				if(config.second->GetName() == configData.configName && config.second->GetConfigPath() == configData.configFile)
-				{
-					Configs::instance()->removeFromDatabase(config.first);
-				}
-			}
-		}
-	}
+    // Remove the -start configs from the database
+    if(vecStartConfigs.size())
+    {
+        for(auto &configData : vecStartConfigs)
+        {
+            for(auto &config : Configs::instance()->getList())
+            {
+                if(config.second->GetName() == configData.configName && config.second->GetConfigPath() == configData.configFile)
+                {
+                    Configs::instance()->removeFromDatabase(config.first);
+                }
+            }
+        }
+    }
 
-	// A little hack to make the com wrapper a bit more reliable when exiting.
+    // A little hack to make the com wrapper a bit more reliable when exiting.
     printf("\n");
     fflush(stdout);
 
@@ -741,7 +727,7 @@ int CALLBACK WinMain (_In_  HINSTANCE hInstance,
     // Hack to fix crash at shutdown, this will prevent the call to ExitProcess
     TerminateProcess (GetCurrentProcess(), 0);
 
-	return r;
+    return r;
 }
 
 // Define some manifest settings

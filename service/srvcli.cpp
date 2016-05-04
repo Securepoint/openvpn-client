@@ -16,6 +16,8 @@ SrvCLI::SrvCLI(QSslSocket *  socket)
 
 void SrvCLI::send(const QString &command, const QString &params, bool fastmode)
 {
+    Q_UNUSED(fastmode)
+
     Debug::log (QString("SRVCLI: Sending: %1 with %2")
                 .arg(params)
                 .arg(command));

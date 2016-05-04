@@ -188,7 +188,7 @@ void Debug::clearCategories()
 
 void Debug::log(const QString &message, DebugLevel::Level level, const QString &filename)
 {
-    qDebug() << message;
+    //qDebug() << message;
     // Schreibt die Logmeldung, wenn ein bestimmtes Level gesetzt ist
     if (debugEnabled) {
         // Level überprüfen

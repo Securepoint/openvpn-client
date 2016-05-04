@@ -207,10 +207,10 @@ std::string Utils::GetProcessNameFromPID( DWORD processID )
         HMODULE hMod;
         DWORD cbNeeded;
 
-        if ( EnumProcessModules( hProcess, &hMod, sizeof(hMod), 
+        if ( EnumProcessModules( hProcess, &hMod, sizeof(hMod),
              &cbNeeded) )
         {
-            GetModuleBaseNameA( hProcess, hMod, szProcessName, 
+            GetModuleBaseNameA( hProcess, hMod, szProcessName,
                                sizeof(szProcessName)/sizeof(char) );
         }
     }
@@ -244,8 +244,9 @@ bool Utils::IsProcessRunning(const char* processName)
     {
         if( aProcesses[i] != 0 )
         {
-            if(GetProcessNameFromPID(aProcesses[i]) == processName)
+            if(GetProcessNameFromPID(aProcesses[i]) == processName) {
                 return true;
+            }
         }
     }
 
@@ -266,7 +267,7 @@ bool Utils::IsVPNServiceRunning()
         {
             SERVICE_STATUS_PROCESS sInfo;
             DWORD bytesNeeded = 0;
-           
+
             if(QueryServiceStatusEx(hSvc,                   // A handle to the service.
                                     SC_STATUS_PROCESS_INFO, // info requested
                                     (LPBYTE)&sInfo,                 // structure to load info to

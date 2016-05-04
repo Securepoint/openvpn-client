@@ -63,8 +63,6 @@ void SslServer::slotThreadFinished()
     // Thread is done, mark the object to delete
     //
 
-    qDebug() << "Finished";
-
     // Remove the connection from the connection list
     SslServerConnection *con = qobject_cast<SslServerConnection*>(sender());
     Q_ASSERT(con);
@@ -76,12 +74,12 @@ void SslServer::slotThreadFinished()
     // mark object to delete
     sender()->deleteLater();
 
-
     if(connections->count() == 0)
     {
         // Close the serivce if we are in portable mode as the last client has disconnected
         if(g_bPortable)
         {
+            //
             QTimer::singleShot(300, Qt::TimerType::CoarseTimer, this, SLOT(OnStopService()));
         }
     }
