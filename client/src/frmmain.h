@@ -7,7 +7,6 @@
 #include <QtGui/QShowEvent>
 #include <QtGui/QMovie>
 #include "update/parsexml.h"
-#include "service\sslserver.h"
 
 namespace Ui {
 class FrmMain;
@@ -37,7 +36,7 @@ public:
     //
     QString version;
 
-
+    void checkForNewConfigAndRefreshUI ();
 
     bool startDaemon();
     bool initDaemon();
@@ -106,14 +105,11 @@ private:
     QMovie updateMovie;
     int updateState;
 
-    QTimer * updateUITimer;
-
-    SslServer *server;
+    QTimer *updateUITimer;
 
     bool m_bTaskBarAutoHide;
     void checkTaskBarAutoHideProperty ();
-
-    unsigned short localPort;
+    void showDiffieHellmanWarningInPortableMode();
 };
 
 #endif // FRMMAIN_H

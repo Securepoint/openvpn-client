@@ -27,17 +27,14 @@ SslServerConnection::SslServerConnection(QObject *parent)
     QObject::connect(socket, SIGNAL(connected()), SLOT(slotAcceptedClient()));
     QObject::connect(socket, SIGNAL(disconnected()), socket, SLOT(deleteLater()));
     QObject::connect(socket, SIGNAL(disconnected()), SLOT(slotConnectionClosed()));
-    QObject::connect(socket, SIGNAL(modeChanged(QSslSocket::SslMode)), this, SLOT(slotModeChanged(QSslSocket::SslMode)));
     QObject::connect(socket, SIGNAL(readyRead()), SLOT(slotStartRead()));
     QObject::connect(socket, SIGNAL(error(QAbstractSocket::SocketError)), SLOT(slotError(QAbstractSocket::SocketError)));
 }
 
-SslServerConnection::SslServerConnection(quint16 socketDescriptor, QMutex *mut, QObject *parent)
+SslServerConnection::SslServerConnection(quint16 socketDescriptor, QObject *parent)
     : QThread(parent),
       blockSize (0)
 {
-    qDebug() << __FUNCSIG__;
-
     // Set the new internal id
     internalId++;
     // Init the ssl socket
@@ -46,7 +43,6 @@ SslServerConnection::SslServerConnection(quint16 socketDescriptor, QMutex *mut, 
     this->socket->setSocketDescriptor(socketDescriptor);
 
     // Now bind some signal of the ssl socket
-    QObject::connect(socket, SIGNAL(connected()), SLOT(slotAcceptedClient()));
     QObject::connect(socket, SIGNAL(disconnected()), socket, SLOT(deleteLater()));
     QObject::connect(socket, SIGNAL(disconnected()), SLOT(slotConnectionClosed()));
     QObject::connect(socket, SIGNAL(modeChanged(QSslSocket::SslMode)), this, SLOT(slotModeChanged(QSslSocket::SslMode)));
@@ -56,7 +52,6 @@ SslServerConnection::SslServerConnection(quint16 socketDescriptor, QMutex *mut, 
 
 SslServerConnection::~SslServerConnection()
 {
-    qDebug() << __FUNCSIG__;
 }
 
 void SslServerConnection::run()
@@ -68,32 +63,6 @@ void SslServerConnection::run()
     this->exec();
 }
 
-
-void SslServerConnection::slotModeChanged (QSslSocket::SslMode mode)
-{
-    //
-    // The socket change the mode - Only enable with debuging
-    //
-    return;
-
-    // Erstmal DC
-    QString modeMes ("");
-    if (mode == QSslSocket::UnencryptedMode) {
-        modeMes = QLatin1String("The socket is unencrypted.");
-    } else if (mode == QSslSocket::SslClientMode) {
-        modeMes = QLatin1String("The socket is a client-side SSL socket.");
-    } else if (mode == QSslSocket::SslServerMode) {
-        modeMes = QLatin1String("The socket is a server-side SSL socket.");
-    }
-}
-
-void SslServerConnection::slotAcceptedClient()
-{
-    // Provide feedback to the user about incoming connections. This
-    // slot is only called if the connection was established, so all
-    // communication is now encrypted.
-}
-
 #include <Windows.h>
 
 void SslServerConnection::slotStartRead()
@@ -102,17 +71,14 @@ void SslServerConnection::slotStartRead()
     // Read the block until the complete block is avaiable
     //
 
-
-    qDebug() << "Start Reading";
-
     QDataStream in(socket);
     in.setVersion(QDataStream::Qt_4_6);
 
-    qDebug() << "Size available: " << socket->bytesAvailable();
     if (blockSize == 0) {
         if ((quint32) socket->bytesAvailable() < sizeof(qint64)) {
             return;
         }
+
         in >> blockSize;
     }
 
@@ -130,9 +96,6 @@ void SslServerConnection::slotStartRead()
     //
     // Ab hier kann man munter drauf los mit den Daten ;)
     //
-
-    qDebug() << "Size available: " << socket->bytesAvailable();
-
     // Den Befehl auswerten
     this->blockSize = 0;
     if (command.isEmpty()) {
@@ -338,12 +301,11 @@ void SslServerConnection::slotError(QAbstractSocket::SocketError err)
     //
     // Error while conntecting
     //
-    if (socket->state() != QAbstractSocket::ConnectedState){
-        if (socket->state() == QAbstractSocket::UnconnectedState) {
-            slotConnectionClosed();
-        } else {
-            slotConnectionClosed();
-        }
+
+    Q_UNUSED(err);
+
+    if (socket->state() != QAbstractSocket::ConnectedState) {
+        slotConnectionClosed();
     }
 }
 

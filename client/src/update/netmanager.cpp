@@ -7,33 +7,11 @@ NetManager::NetManager(QObject *parent)
     : QNetworkAccessManager(parent)
 {
     QObject::connect(this, SIGNAL(proxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)), this, SLOT(proxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)));
-    //
-    this->setProxySettings();
 }
 
 void NetManager::proxyAuthenticationRequired(const QNetworkProxy &proxy, QAuthenticator *auth)
 {
     static int count (0);
-
-/*
-    bool show(true);
-    if (!Settings::getInstance()->updateProxyUser().isEmpty() && !Settings::getInstance()->updateProxyPassword().isEmpty()) {
-        if (count == 5) {
-            count = 0;
-        } else {
-            auth->setUser(Settings::getInstance()->updateProxyUser());
-            auth->setPassword(Settings::getInstance()->updateProxyPassword());
-            show = false;
-            count++;
-        }
-    }
-
-    // Autofill?
-    if (!show) {
-        return;
-    }
-*/
-
     //
     QDialog dlg;
     dlg.setWindowFlags(Qt::Tool | Qt::WindowStaysOnTopHint);
@@ -56,21 +34,9 @@ QNetworkReply *NetManager::createRequest(QNetworkAccessManager::Operation op, co
     QNetworkRequest req = request;
     req.setAttribute(QNetworkRequest::HttpPipeliningAllowedAttribute, false);
     //
-    QNetworkReply *reply = reply = QNetworkAccessManager::createRequest(op, req, outgoingData);
+    QNetworkReply *reply = QNetworkAccessManager::createRequest(op, req, outgoingData);
     //
     emit requestCreated(op, req, reply);
     //
     return reply;
-}
-
-void NetManager::setProxySettings()
-{
-    /*
-    if (Settings::getInstance()->updateUseProxy()) {
-        proxy.setHostName(Settings::getInstance()->updateProxyIp());
-        proxy.setPort(Settings::getInstance()->updateProxyPort().toInt());
-        proxy.setType(QNetworkProxy::HttpProxy);
-        this->setProxy(proxy);
-    }
-    */
 }

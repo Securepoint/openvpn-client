@@ -14,7 +14,9 @@
 
 float windowsDpiScale();
 
+// Definded in main.cpp
 extern bool g_bSilent;
+//
 extern QString g_strClientName;
 
 #include <tchar.h>
@@ -446,6 +448,7 @@ bool CheckImportOldConfigs()
             configData.vpnPkcs12 = vpnPkcs12;
             configData.httpUser = httpUser;
             configData.httpPassword = httpPassword;
+            configData.removeOnStart = false;
 
             configData.configFile = vpnConfig;
 
@@ -611,43 +614,40 @@ LRESULT wndproc1(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             {
                 FrmMain::instance()->connectToService();
             }
+            break;
        case WM_NCHITTEST: {
-        LRESULT hit = DefWindowProc(hwnd, uMsg, wParam, lParam);
+            LRESULT hit = DefWindowProc(hwnd, uMsg, wParam, lParam);
 
-        // check if moving is allowed
-        // If not we always return hit client and not caption
-        if(!bAllowMove)
-            return HTCLIENT;
+            // check if moving is allowed
+            // If not we always return hit client and not caption
+            if(!bAllowMove) {
+                return HTCLIENT;
+            }
 
-        if (hit == HTCLIENT)
-        {
-            // Cehck if the hit was in the title bar
-            POINT p;
-            if (GetCursorPos(&p))
-            {
-                // Get the client coordinate from the cursor position
-                if (ScreenToClient(hwnd, &p))
-                {
-                    if (p.y < 20)
-                    {
-                        // Hit was in the title bar
-                        hit = HTCAPTION;
-                    }
+            if (hit == HTCLIENT) {
+                // Cehck if the hit was in the title bar
+                POINT p;
+                if (GetCursorPos(&p)) {
+                    // Get the client coordinate from the cursor position
+                    if (ScreenToClient(hwnd, &p)) {
+                        if (p.y < 20) {
+                            // Hit was in the title bar
+                            hit = HTCAPTION;
+                        }
 
-                    RECT rect;
-                    GetWindowRect(hwnd, &rect);
+                        RECT rect;
+                        GetWindowRect(hwnd, &rect);
 
-                    // Check if the hit was on close button
-                    if(p.x > ((rect.right - rect.left) - 25))
-                    {
-                        // Hit was on X button, so execute original wndProc
-                       return CallWindowProc(pfOriginalProc, hwnd, uMsg, wParam, lParam);
+                        // Check if the hit was on close button
+                        if(p.x > ((rect.right - rect.left) - 25)) {
+                            // Hit was on X button, so execute original wndProc
+                            return CallWindowProc(pfOriginalProc, hwnd, uMsg, wParam, lParam);
+                        }
                     }
                 }
             }
-        }
 
-        return hit;
+            return hit;
         }
         default:
             return CallWindowProc(pfOriginalProc, hwnd, uMsg, wParam, lParam);
@@ -661,11 +661,14 @@ LRESULT wndproc1(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 FrmMain::FrmMain()
     : ui(new Ui::FrmMain),
       widgetFactory(new WidgetFactory),
-      version("2.0.16"),
+      version("2.0.17"),
       updateState(0),
       isReconnect(false),
       tapCount(0),
-      installingTap(false)
+      closing(false),
+      installingTap(false),
+      qCurrentArrow(nullptr),
+      updateUITimer(nullptr)
 {
     ui->setupUi(this);
 
@@ -1378,11 +1381,6 @@ void FrmMain::showEvent(QShowEvent *event)
 
 bool FrmMain::initDaemon()
 {
-    //this->server = new SslServer(3655, this);
-    // Disconnect vom Service
-
-
-
     QObject::connect(SrvCLI::instance(), SIGNAL(setDisconnected(int)), this, SLOT(setDisconnected(int)));
     // Fehler vom Service
     QObject::connect(SrvCLI::instance(), SIGNAL(setError(int,QString)), this, SLOT(setError(int,QString)));
@@ -1401,27 +1399,6 @@ bool FrmMain::initDaemon()
 
     QObject::connect(SrvCLI::instance(), SIGNAL(receivedDummy(quint32)), this, SLOT(dummyReceived(quint32)));
 
-
-    //
-
-    //QObject::connect(this->server, SIGNAL(setDisconnected(int)), this, SLOT(setDisconnected(int)));
-    //// Fehler vom Service
-    //QObject::connect(this->server, SIGNAL(setError(int,QString)), this, SLOT(setError(int,QString)));
-    //// User eingabe wird erwartet
-    //QObject::connect(this->server, SIGNAL(needUserInput(int,int)), this, SLOT(userInputIsNeeded(int,int)));
-    //// Connection steht
-    //QObject::connect(this->server, SIGNAL(receivedIP(int,QString)), this, SLOT(receivedIP(int,QString)));
-    //// Haben einen Reconnect bekommen
-    //QObject::connect(this->server, SIGNAL(receivedReconnect(int)), this, SLOT(receivedReconnect(int)));
-    //// Tap Steuerung
-    //QObject::connect(this->server, SIGNAL(receivedTapControl(int)), this, SLOT(receivedTapControl(int)));
-    //QObject::connect(this->server, SIGNAL(receivedRemoveTap(QString)), this, SLOT(receivedRemoveTap(QString)));
-    //QObject::connect(this->server, SIGNAL(receivedTapCount(int)), this, SLOT(receivedTapCount(int)));
-    //// Status
-    //QObject::connect(this->server, SIGNAL(receivedStatus(int,bool,bool,int,QString)), this, SLOT(receivedStatus(int,bool,bool,int,QString)));
-
-    //QObject::connect(this->server, SIGNAL(receivedDummy()), this, SLOT(dummyReceived()));
-
     return true;
 }
 
@@ -1435,6 +1412,8 @@ void FrmMain::connectToService()
 
 void FrmMain::dummyReceived(quint32 id)
 {
+    Q_UNUSED(id)
+
     cvStartDaemon.notify_all();
 }
 
@@ -1561,6 +1540,9 @@ void FrmMain::trayActivated(QSystemTrayIcon::ActivationReason reason)
 {
     if (reason == QSystemTrayIcon::DoubleClick) {
         if (!this->isVisible()) {
+            // Make sure that the user seen the dh key warning
+            this->showDiffieHellmanWarningInPortableMode();
+            //
             this->showNormal();
             this->setFocus();
             this->activateWindow();
@@ -1572,21 +1554,11 @@ void FrmMain::trayActivated(QSystemTrayIcon::ActivationReason reason)
 
 void FrmMain::on_cmdCloseWindow_clicked()
 {
-    this->trayIcon->contextMenu()->actions().at(2)->setText(QObject::tr("Show window"));
-
-    SendMessage(mainHWND, WM_CLOSE, NULL, NULL);
-
-    // Disabled because I dont allow move
-    return;
-
-    // Save current position on close if opened from systray extended window
-    if(bSavePos)
-    {
-        prevX = this->geometry().topLeft().x();
-        prevY = this->geometry().topLeft().y();
+    if (this->trayIcon->contextMenu()->actions().size() > 2) {
+        this->trayIcon->contextMenu()->actions().at(2)->setText(QObject::tr("Show window"));
     }
 
-    this->close();
+    SendMessage(mainHWND, WM_CLOSE, NULL, NULL);
 }
 
 void FrmMain::on_cmdSettingMenu_clicked()
@@ -1669,11 +1641,33 @@ void FrmMain::showHideTrayMenu()
         this->trayIcon->contextMenu()->actions().at(2)->setText(QObject::tr("Show window"));
         this->close();
     }
-    else
+    else {
+        // Make sure that the user seen the dh key warning
+        this->showDiffieHellmanWarningInPortableMode();
+        //
         this->show();
+    }
 }
 
 extern bool g_bPortable;
+
+
+void FrmMain::showDiffieHellmanWarningInPortableMode()
+{
+    //
+    // Show a warning about to small dh keys, when we in portable mode
+    // and the user opens the window the first time.
+    //
+
+    // Show smal dh key warning
+    if(g_bPortable) {
+        // Show the warning only once
+        static std::once_flag flag;
+        std::call_once(flag, [this]() {
+            Message::information(QObject::tr("This version needs at least a serverside 1024 bit dh key. If you get an error like 'dh key too small' please use the 2.0.15 client and contact your server administrator.\nhttps://support.securepoint.de/viewtopic.php?t=6216"));
+        });
+    }
+}
 
 void FrmMain::on_cmdUpdateState_clicked()
 {
@@ -2002,7 +1996,24 @@ void FrmMain::receivedRemoveTap(QString state)
     }
 }
 
+void FrmMain::checkForNewConfigAndRefreshUI()
+{
+    //
+    // Check for new configs and refresh the model and ui
+    //
 
+    this->activateWindow();
+
+    // Get all current configs
+    Configs::instance()->findConfigsInDir((Utils::userApplicationDataDirectory() + "/config"));
+    // Update list
+    Configs::instance()->refreshConfigs();
+    // Repaint widgets
+    this->refreshUI();
+
+    // Load all connections
+    ((MainListView*)this->widgetFactory->widget(MainView))->model.LoadConnections();
+}
 
 void FrmMain::showWizard()
 {
@@ -2011,15 +2022,8 @@ void FrmMain::showWizard()
 
     vpn.exec();
 
-    this->activateWindow();
-
-    Configs::instance()->findConfigsInDir((Utils::userApplicationDataDirectory() + "/config"));
-
-    Configs::instance()->refreshConfigs();
-
-    this->refreshUI();
-
-    ((MainListView*)this->widgetFactory->widget(MainView))->model.LoadConnections();
+    // Check for new configs
+    this->checkForNewConfigAndRefreshUI();
 }
 
 void FrmMain::setIcon()

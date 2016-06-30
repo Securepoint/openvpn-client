@@ -6,16 +6,16 @@ Message::Message()
 {
 }
 
+// Definded in main.cpp
 extern bool g_bSilent;
 
 
 bool Message::confirm(const QString &message, const QString &title, bool onTop)
 {
-    if(g_bSilent)
+    if(g_bSilent) {
         return true;
+    }
     
-    bool ret (false);
-
     QMessageBox box;
 
     box.setStyleSheet("QPushButton:hover {background-color: rgb(195, 195, 195);} QPushButton {;text-align:center;padding-right:8px; padding-left: 8px;padding-top: 8px;padding-bottom: 8px;}");
@@ -32,22 +32,19 @@ bool Message::confirm(const QString &message, const QString &title, bool onTop)
     box.setWindowTitle(title);
     box.setText(message);
     //
-    switch (box.exec()) {
-        case QMessageBox::Yes:
-            ret = true;
-            break;
-         default:
-            // All other stuff is false
-            break;
+    if (box.exec() == QMessageBox::Yes) {
+        //
+        return true;
     }
 
-    return ret;
+    return false;
 }
 
 void Message::error(const QString &message, const QString &title, QWidget * parent)
 {
-    if(g_bSilent)
+    if(g_bSilent) {
         return;
+    }
 
     QMessageBox box(parent);
 
@@ -61,19 +58,15 @@ void Message::error(const QString &message, const QString &title, QWidget * pare
     // Set data
     box.setWindowTitle(title);
     box.setText(message);
-    //
-    switch (box.exec()) {
-    default:
-        break;
-    }
 
-    //QMessageBox::critical(parent, title, message);
+    box.exec();
 }
 
 void Message::warning(const QString &message, const QString &title, QWidget * parent)
 {
-    if(g_bSilent)
+    if(g_bSilent) {
         return;
+    }
 
     QMessageBox box(parent);
 
@@ -87,11 +80,9 @@ void Message::warning(const QString &message, const QString &title, QWidget * pa
     // Set data
     box.setWindowTitle(title);
     box.setText(message);
+
     //
-    switch (box.exec()) {
-    default:
-        break;
-    }
+    box.exec();
 }
 
 void Message::information(const QString &message, const QString &title, QWidget * parent)
@@ -111,9 +102,7 @@ void Message::information(const QString &message, const QString &title, QWidget 
     // Set data
     box.setWindowTitle(title);
     box.setText(message);
+
     //
-    switch (box.exec()) {
-    default:
-        break;
-    }
+    box.exec();
 }

@@ -11,13 +11,15 @@
 #include <utils.h>
 
 ConnectionData::ConnectionData(QObject *parent)
-    : QObject(parent)
+    : QObject(parent),
+      id (0),
+      autostart(false),
+      ip(QLatin1String("xxx.xxx.xxx.xxx")),
+      state (ConnectionState::Disconnected),
+      lastUsed(0),
+      lastConnected(0),
+      user(true)
 {
-    ip = "xxx.xxx.xxx.xxx";
-    state = ConnectionState::Disconnected;
-    lastUsed = 0;
-    lastConnected = 0;
-    user = true;
 }
 
 ConnectionData::~ConnectionData()
@@ -98,7 +100,7 @@ QString ConnectionData::GetError()
 quint32 ConnectionData::GetLastConnected()
 {
     return this->lastConnected;
-} 
+}
 
 void ConnectionData::runScript(const QString &type)
 {
@@ -197,7 +199,7 @@ void ConnectionData::SetState(ConnectionState state, bool bDb)
     if(state == ConnectionState::Disconnected)
     {
         runScript("AD");
-    } 
+    }
     else if(state == ConnectionState::Error)
     {
         runScript("EC");
@@ -337,19 +339,15 @@ void ConnectionData::saveUserData(int id, int type, QString value, bool save)
 
 
     if (!value.isEmpty()) {
-        value = Crypt::encodePlaintext(value.toLatin1());
+        value = Crypt::encodePlaintext(value.toUtf8());
     }
 
-    QString sql;
-    sql = QString("UPDATE vpn SET %1 = '%2' WHERE \"vpn-id\" = %3")
-            .arg(field)
-            .arg(value)
-            .arg(this->GetId());
+    QString sql(QString("UPDATE vpn SET %1 = '%2' WHERE \"vpn-id\" = %3")
+                .arg(field)
+                .arg(value)
+                .arg(this->GetId()));
 
     Database::instance()->execute(sql);
-
-    if (!value.isEmpty() && save) {
-    }
 }
 
 bool ConnectionData::HasCrediantials(int type)
@@ -397,7 +395,7 @@ bool ConnectionData::HasCrediantials(int type)
     QString sql;
     sql = QLatin1String("SELECT ") + field + QLatin1String(" FROM vpn WHERE \"vpn-id\" = ") + QString::number(this->GetId());
 
-    
+
 
     // Sind daten für die Verbindung hinterlegt
     QScopedPointer<QSqlQuery> query (Database::instance()->openQuery(sql));
@@ -449,7 +447,7 @@ QString ConnectionData::getSavedUserData(int type)
             .arg(this->GetId());
 
     QScopedPointer<QSqlQuery> query (Database::instance()->openQuery(sql));
-    
+
     QString value;
     if (query->first()) {
         value = query->value(0).toString();
@@ -457,7 +455,8 @@ QString ConnectionData::getSavedUserData(int type)
     }
 
     if (!Crypt::secretKey.isEmpty()) {
-        value = Crypt::decodeToPlaintext(value.toLatin1());
+        // Here we gonna fix that encoding mess
+        return QString::fromUtf8(Crypt::decodeToPlaintext(value));
     }
 
     return value;

@@ -13,26 +13,22 @@ class SslServerConnection : public QThread
     Q_OBJECT
 public:
     SslServerConnection(QObject *parent = 0);
-    SslServerConnection(quint16 socket, QMutex *mut, QObject *parent = 0);
+    SslServerConnection(quint16 socket, QObject *parent = 0);
     ~SslServerConnection();
 
     const quint64 threadId () const;
     void run ();
 
 public slots:
-    void slotAcceptedClient();
     void slotStartRead();
     void slotConnectionClosed();
     void slotError(QAbstractSocket::SocketError err);
-    void slotModeChanged (QSslSocket::SslMode mode);
 
 private:
     qint64 blockSize;
     QSslSocket *socket;
 
     static quint64 internalId;
-
-    QMutex *mutex;
 
 signals:
     void connectionIsClosed ();

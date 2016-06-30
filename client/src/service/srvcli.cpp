@@ -70,10 +70,9 @@ void SrvCLI::slot_peerVerifyError(const QSslError &error)
 
 void SrvCLI::slot_sslErrors(const QList<QSslError> &errors)
 {
-    for(auto error : errors)
-    {
-        qDebug() << error.errorString();
-    }
+
+    Q_UNUSED(errors)
+    //
     this->sslSocket.ignoreSslErrors();
 }
 
@@ -113,10 +112,6 @@ void SrvCLI::stopRequest ()
 
 void SrvCLI::connectionClosedByServer ()
 {
-    if (this->nextBlockSize != 0xFFFF) {
-        //
-        this->response = QString("--error connection closed by server");
-    }
     this->closeConnection();
 }
 
@@ -419,19 +414,10 @@ void SrvCLI::slotError(QAbstractSocket::SocketError err)
     //
     // Error while conntecting
     //
+
+    Q_UNUSED(err)
+
     if (sslSocket.state() != QAbstractSocket::ConnectedState){
-        if (sslSocket.state() == QAbstractSocket::UnconnectedState) {
-            slotConnectionClosed();
-        } else {
-            slotConnectionClosed();
-        }
+        slotConnectionClosed();
     }
 }
-
-//const quint64 SrvCLI::threadId() const
-//{
-//    //
-//    // Return the internal id of this thread
-//    //
-//    return internalId;
-//}

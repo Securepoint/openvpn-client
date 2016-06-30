@@ -116,7 +116,7 @@ void MainListView::connectionButtonClicked(const QModelIndex& index)
     {
         // Ask
     }
-   
+
     pConnection->SetState(ConnectionState::Connecting);
 
     // We need a callback if connection was successful
@@ -174,7 +174,7 @@ void MainListView::customContextMenuRequested(const QPoint &pos)
 
     if(Settings::instance()->managed())
         menu.addAction(QIcon(":/data/images/export.png"), QObject::tr("Export"), this, SLOT(ContextExport()));
-    
+
     menu.addAction(QIcon(":/data/images/remove.png"), QObject::tr("Remove"), this, SLOT(ContextRemove()));
 
     // TODO: change icon
@@ -206,9 +206,6 @@ void MainListView::openQuickEdit()
     auto pConnection = ((MainListView*)FrmMain::instance()->mainWidget()->widget(MainView))->model.GetConnection(this->model.data(this->currentIndex(), Qt::UserRole + 8).toInt());
     QuickEditWidget widget(pConnection->GetConfigPath());
 
-    
-    //widget.setParent(FrmMain::instance());
-    //widget.setWindowFlags(widget.windowFlags() | Qt::WindowStaysOnTopHint);
     widget.exec();
 }
 
@@ -216,14 +213,6 @@ void MainListView::openConfigSettings()
 {
    ((ConfigSettingsWidget*)FrmMain::instance()->mainWidget()->widget(ConfigSettings))->SetId(this->model.data(this->currentIndex(), Qt::UserRole + 8).toInt());
    FrmMain::instance()->mainWidget()->showWidget(ConfigSettings);
-
-   return;
-
-   auto pConnection = ((MainListView*)FrmMain::instance()->mainWidget()->widget(MainView))->model.GetConnection(this->model.data(this->currentIndex(), Qt::UserRole + 8).toInt());
-   AdvConfigSettingsWidget widget(pConnection);
-   //widget.setWindowFlags(widget.windowFlags() | Qt::WindowStaysOnTopHint);
-   //widget.setParent(FrmMain::instance());
-   widget.exec();
 }
 
 
@@ -235,7 +224,7 @@ void MainListView::ContextConnect()
 
 void MainListView::ContextExport()
 {
-    ((ExportWidget*)FrmMain::instance()->mainWidget()->widget(Export))->SetConfigPath(this->model.data(this->currentIndex(), Qt::UserRole + 7).toString());
+   ((ExportWidget*)FrmMain::instance()->mainWidget()->widget(Export))->SetConfigPath(this->model.data(this->currentIndex(), Qt::UserRole + 7).toString());
    FrmMain::instance()->mainWidget()->showWidget(Export);
 }
 

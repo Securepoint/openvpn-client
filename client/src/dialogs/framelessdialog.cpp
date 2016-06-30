@@ -99,13 +99,13 @@ QWidget * FramelessDialog::getWrapperWidget()
 
 void FramelessDialog::postSetupFrameless()
 {
-   
+
 }
 
 void FramelessDialog::setupFrameless()
 {
     /* Make the line stuff border and line below title */
-    
+
     if(!bIsFramelessSetup)
     {
         auto geo = wrapper->geometry();
@@ -150,7 +150,7 @@ void FramelessDialog::setupFrameless()
         static std::once_flag flag;
         std::call_once(flag, [this]() {
             img.load(":/data/images/logo.png", "PNG");
-            img = img.scaled(QSize(122*windowsDpiScale(), 9*windowsDpiScale()), Qt::KeepAspectRatio, Qt::SmoothTransformation);        
+            img = img.scaled(QSize(122*windowsDpiScale(), 9*windowsDpiScale()), Qt::KeepAspectRatio, Qt::SmoothTransformation);
         });
 
         windowTitleIcon->setPixmap(QPixmap::fromImage(img));
@@ -160,7 +160,7 @@ void FramelessDialog::setupFrameless()
         auto g = windowTitleIcon->geometry();
         g.setSize(QSize(130*windowsDpiScale(), DragAreaHeight*windowsDpiScale()));
         windowTitleIcon->setGeometry(g);
-        
+
 
         auto windowTitleLabel = new QLabel(this);
         windowTitleLabel->setObjectName(QStringLiteral("windowTitleLabel"));
@@ -218,12 +218,12 @@ void FramelessDialog::setupFrameless()
         lbWindowTitle->setAlignment(Qt::AlignVCenter | Qt::AlignLeft);
         lbWindowTitle->setText(this->windowTitle());
 */
-       
+
 
      /*  auto windowTitleIcon = new QLabel(this);
        auto windowTitleLabel = new QLabel(this);
        auto horizontalSpacer = new QSpacerItem(40, 20);
-       
+
        windowTitleIcon->setPixmap(QPixmap(":/data/images/logo.png"));
        windowTitleLabel->setText("SSL VPN v2");
        hHeader->addWidget(windowTitleIcon);
@@ -243,7 +243,7 @@ void FramelessDialog::setupFrameless()
 
             QIcon icon1;
             icon1.addPixmap(QPixmap::fromImage(img));
-        
+
             cmdClose_2->setIcon(icon1);
             cmdClose_2->setIconSize(QSize(16*windowsDpiScale(), 16*windowsDpiScale()));
             cmdClose_2->setFlat(true);

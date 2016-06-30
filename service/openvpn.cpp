@@ -22,7 +22,8 @@ OpenVpn::OpenVpn (SrvCLI * srvCLI)
       connectionLineBak (""),
       procScripts (0),
       proxyString (""),
-      _srvCLI(srvCLI)
+      _srvCLI(srvCLI),
+      retryMultiHostCount(0)
 {
 
 }
@@ -410,12 +411,12 @@ void OpenVpn::readProcessData()
             errorMessage = QLatin1String ("TLS Error: Need PEM pass phrase for private key");
             errorOcurred = true;
         } else if (lineOut.contains("TLS Error: TLS handshake failed", Qt::CaseInsensitive)) {
-            
+
             errorMessage = QLatin1String ("TLS error! See log for details");
             errorOcurred = true;
 
             if(this->retryMultiHostCount <= 0) {
-              
+
                 _tlsHandshakeFailed = true;
             }
             else {
@@ -498,7 +499,7 @@ void OpenVpn::readProcessData()
                              .arg(this->id())
                              .arg(errorMessage), QLatin1String("ERROR"));
 
-           
+
         }
 
 

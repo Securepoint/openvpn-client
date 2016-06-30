@@ -12,8 +12,9 @@
 quint64 SslServerConnection::internalId = 0;
 
 SslServerConnection::SslServerConnection(quint16 socketDescriptor, QObject *parent)
-    : QThread(parent),
-      blockSize (0)
+    : QThread (parent),
+      blockSize (0),
+      id (0)
 {
     // Set the new internal id
     _threadId = internalId++;
@@ -586,12 +587,8 @@ void SslServerConnection::slotError(QAbstractSocket::SocketError err)
 
     Q_UNUSED(err)
 
-    if (socket->state() != QAbstractSocket::ConnectedState){
-        if (socket->state() == QAbstractSocket::UnconnectedState) {
-            slotConnectionClosed();
-        } else {
-            slotConnectionClosed();
-        }
+    if (socket->state() != QAbstractSocket::ConnectedState) {
+        slotConnectionClosed();
     }
 }
 

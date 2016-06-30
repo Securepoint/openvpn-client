@@ -14,7 +14,7 @@
 class SrvCLI : public QObject
 {
     Q_OBJECT
-public:   
+public:
     SrvCLI(QSslSocket * socket);
     void resetConnection ();
     bool isOnline () const;
@@ -24,14 +24,12 @@ public slots:
     void send (const QString &command, const QString &params=QString(""), bool fastmode = false);
 
 private:
-    
+
     void closeConnection ();
-    QSslSocket* sslSocket;
-    quint64 nextBlockSize;
-    QTime startTime;    
+    QSslSocket *sslSocket;
+    QTime startTime;
     QString response;
     bool connectionIsOnline;
-    volatile bool work;
 
     quint16 port;
 
