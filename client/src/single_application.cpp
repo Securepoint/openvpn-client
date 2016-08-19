@@ -9,9 +9,7 @@
 
 extern QString g_strClientName;
 
-SingleApplication::SingleApplication(int &argc, char *argv[], const QString uniqueKey)
-    : QApplication(argc, argv),
-      _isRunning(false)
+SingleApplication::SingleApplication(int &argc, char *argv[], const QString uniqueKey) : QApplication(argc, argv)
 {
     sharedMemory.setKey(uniqueKey);
     if (sharedMemory.attach()) {
@@ -24,27 +22,32 @@ SingleApplication::SingleApplication(int &argc, char *argv[], const QString uniq
         g_strClientName = "SPSSlVpnClient" + id;
         memcpy(to, id.toLatin1().data(), qMin(sharedMemory.size(), id.toLatin1().size()));
         sharedMemory.unlock();
-    } else {
+    }
+    else
+    {
         _isRunning = false;
         // attach data to shared memory.
         QByteArray byteArray("1"); // default value to note that no message is available.
-        if (!sharedMemory.create(25)) {
+        if (!sharedMemory.create(25))
+        {
             qDebug("Unable to create single instance.");
             return;
         }
-
-        g_strClientName = "SPSSlVpnClient1";
+         g_strClientName = "SPSSlVpnClient1";
         sharedMemory.lock();
         char *to = (char*)sharedMemory.data();
         const char *from = byteArray.data();
         memcpy(to, from, qMin(sharedMemory.size(), byteArray.size()));
         sharedMemory.unlock();
+
+        // start checking for messages of other instances.
+        //QTimer *timer = new QTimer(this);
+        //connect(timer, SIGNAL(timeout()), this, SLOT(checkForMessage()));
+        //timer->start(1000);
     }
 }
 
-SingleApplication::SingleApplication(int &argc, char *argv[])
-    : QApplication(argc, argv),
-      _isRunning(false)
+SingleApplication::SingleApplication(int &argc, char *argv[]) : QApplication(argc, argv)
 {
 
 }
@@ -62,21 +65,28 @@ void SingleApplication::setSharedKey(const QString &uniqueKey)
         g_strClientName = "SPSSlVpnClient" + id;
         memcpy(to, id.toLatin1().data(), qMin(sharedMemory.size(), id.toLatin1().size()));
         sharedMemory.unlock();
-    } else {
+    }
+    else
+    {
         _isRunning = false;
         // attach data to shared memory.
         QByteArray byteArray("1"); // default value to note that no message is available.
-        if (!sharedMemory.create(25)) {
+        if (!sharedMemory.create(25))
+        {
             qDebug("Unable to create single instance.");
             return;
         }
-
         g_strClientName = "SPSSlVpnClient1";
         sharedMemory.lock();
         char *to = (char*)sharedMemory.data();
         const char *from = byteArray.data();
         memcpy(to, from, qMin(sharedMemory.size(), byteArray.size()));
         sharedMemory.unlock();
+
+        // start checking for messages of other instances.
+        //QTimer *timer = new QTimer(this);
+        //connect(timer, SIGNAL(timeout()), this, SLOT(checkForMessage()));
+        //timer->start(1000);
     }
 }
 
@@ -94,9 +104,6 @@ bool SingleApplication::winEventFilter(MSG* msg, long* result) {
    //        Preferences::instance()->closeAllOpenConnections();
    //    }
    //}
-
-   Q_UNUSED(msg)
-   Q_UNUSED(result)
 
    return false;
 }
@@ -130,10 +137,8 @@ bool SingleApplication::isRunning()
 
 bool SingleApplication::sendMessage(const QString &message)
 {
-    if (!_isRunning) {
+    if (!_isRunning)
             return false;
-    }
-
     QByteArray byteArray("1");
     byteArray.append(message.toUtf8());
     byteArray.append('\0'); // < should be as char here, not a string!

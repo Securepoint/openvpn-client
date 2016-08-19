@@ -42,7 +42,6 @@
 #include <tapdriver.h>
 #include <config\Configs.h>
 #include <widgets\settings\client\settings.h>
-#include <message.h>
 
 // Just a simple socket used in the cli
 class ClientCom : public QObject
@@ -141,11 +140,7 @@ public slots:
 
 #include "release/main.moc"
 
-// Use a global variable as save user data flag
-// Default is true, set it to false is only possible with
-// a command line argument -noSave
-bool globalSaveUserData (true);
-// Wheather show user informations or not
+
 bool g_bSilent = false;
 #ifdef _PORTABLE
 bool g_bPortable = true;
@@ -274,7 +269,7 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext & context, const Q
 
  QString g_strClientName;
 
- static const char* g_szVersion = "2.0.17";
+ static const char* g_szVersion = "2.0.16";
 
  void PrintHelp()
  {
@@ -287,7 +282,6 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext & context, const Q
      printf("\t-silent: Suppress all user interaction (Confirmation dialogs)\n");
      printf("\t-start configPath user password \n");
      printf("\t-user username used for all connections\n");
-     printf("\t-noSave prevent storage of the user credentials\n");
      printf("\t-pwd password used for all connections \n");
      printf("\t-portable: Start the client in portable mode (configs are saved in the current directory)\n");
      printf("\t-vpnlog: Print the VPN Log in the command line\n");
@@ -318,11 +312,9 @@ int CALLBACK WinMain (_In_  HINSTANCE hInstance,
     Q_UNUSED(lpCmdLine)
     Q_UNUSED(nCmdShow)
 
-    // Enable high dpi support, this settings needed
-    // at least Qt 5.6!
-    //qputenv("QT_AUTO_SCREEN_SCALE_FACTOR", "1");
 
-
+    // Install a message handler for qt
+   // qInstallMessageHandler(myMessageOutput);
 
     // We have to disable buffering, otherwise the output will not show in the console
     setvbuf(stdout, NULL, _IONBF, 0);
@@ -336,17 +328,8 @@ int CALLBACK WinMain (_In_  HINSTANCE hInstance,
     // Get the command line and split the command line arguments in argv so we can use it in the code below
     argv = (LPCSTR*)CommandLineToArgvA(GetCommandLineA(), &argc);
 
-    // TODO: Remove qt 5.6 high dpi support until all custom crap is removed
-    // QApplication::setDesktopSettingsAware(false);
+    QApplication::setDesktopSettingsAware(false);
     SingleApplication a(argc, (char**)argv);
-
-    // Set fusion style on high dpi displays
-    if(a.devicePixelRatio() > 1) {
-        // We are running on a high dpi display
-        // Use the fusion style for better look and feel
-        //QApplication::setStyle(QStringLiteral("fusion"));
-    }
-
     std::vector<ConfigData> vecStartConfigs;
 
     bool removeTap = false;
@@ -354,11 +337,6 @@ int CALLBACK WinMain (_In_  HINSTANCE hInstance,
     QString startConfig = "";
 
     bool cmdFound = true;
-
-    // Portable is always managed
-    if(g_bPortable) {
-        Settings::instance()->setManaged(true);
-    }
 
     // Handle CLI
     for (int x = 1; x < argc; x++) {
@@ -404,16 +382,14 @@ int CALLBACK WinMain (_In_  HINSTANCE hInstance,
             x++;
         } else if(!strcmp(argv[x], "-removeTap")) {
             removeTap = true;
-        } else if(!strcmp(argv[x], "-noSave")) {
-            // Denial storage of the user crendentials etc.
-            globalSaveUserData = false;
         } else if(!strcmp(argv[x], "-status")) {
 
             // Can I make that with  the , well, Service?!
 
             Configs::instance()->refreshConfigs();
 
-            for(auto &config : Configs::instance()->getList()) {
+            for(auto &config : Configs::instance()->getList())
+            {
                 std::string state = "UNKNOWN";
 
                 if(config.second->GetState() == ConnectionState::Connected)
@@ -444,7 +420,8 @@ int CALLBACK WinMain (_In_  HINSTANCE hInstance,
 
             // Connect to the runnin client instance
             com.socket.connectToHost(QLatin1String("127.0.0.1"), 3656);
-            if(!com.socket.waitForConnected()) {
+            if(!com.socket.waitForConnected())
+            {
                 //
                 return 0;
             }
@@ -466,7 +443,8 @@ int CALLBACK WinMain (_In_  HINSTANCE hInstance,
 
             // Connect to the runnin client instance
             com.socket.connectToHost(QLatin1String("127.0.0.1"), 3656);
-            if(!com.socket.waitForConnected()) {
+            if(!com.socket.waitForConnected())
+            {
                 //
                 return 0;
             }
@@ -489,7 +467,8 @@ int CALLBACK WinMain (_In_  HINSTANCE hInstance,
 
             // Connect to the runnin client instance
             com.socket.connectToHost(QLatin1String("127.0.0.1"), 3656);
-            if(!com.socket.waitForConnected()) {
+            if(!com.socket.waitForConnected())
+            {
                 //
                 return 0;
             }
@@ -500,12 +479,13 @@ int CALLBACK WinMain (_In_  HINSTANCE hInstance,
             QApplication::exec();
 
             return 0;
-        } else if(!strcmp(argv[x], "-clients"))  {
+        }  else if(!strcmp(argv[x], "-clients"))  {
                         ClientCom com;
 
             // Connect to the runnin client instance
             com.socket.connectToHost(QLatin1String("127.0.0.1"), 3656);
-            if(!com.socket.waitForConnected()) {
+            if(!com.socket.waitForConnected())
+            {
                 //
                 return 0;
             }
@@ -523,52 +503,39 @@ int CALLBACK WinMain (_In_  HINSTANCE hInstance,
 
             ExitProcess(0);
             return 0;
-        } else if(!strcmp(argv[x], "-version")) {
+        }
+        else if(!strcmp(argv[x], "-version")) {
             printf("SSLVpnClient Version %s\n", g_szVersion);
             return 0;
-        } else {
+        }
+        else
+        {
             cmdFound = false;
         }
     }
 
     // If the was an invalid command we just inform the user and exit
-    if(!cmdFound) {
+    if(!cmdFound)
+    {
         printf("Unknown command\nExiting...\n");
         return 0;
     }
 
     // If there was just one argument [path to self] print the help
-    if(argc == 1) {
+    if(argc == 1)
         PrintHelp();
-    }
+
 
     // Use different key so that the portable client does not prevent the installed client from starting
     QString key = "1x4z37";
-    if(g_bPortable) {
-        //
+    if(g_bPortable)
         key = "1x4z37Portable";
-        //
-        // Check for the visual c++ 2013 x86 restributable
-        // This check must be adjusted for each new version
-        QString keyPath ("HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\Microsoft\\DevDiv\\vc\\Servicing\\12.0\\RuntimeMinimum");
-        QSettings windowsRegistry (keyPath, QSettings::NativeFormat);
-        // Check if its installed
-        QString installedValue (windowsRegistry.value(QLatin1String("Install")).toString());
-        //
-        if (installedValue != QLatin1String("1")) {
-            // No vcrest 2013 found
-            Message::warning(QObject::tr("No Visual C++ Redistributable Package for Visual Studio 2013 x86 found. Please download and install it. Application is now exiting."), QObject::tr("Visual C++ Redistributable Packages for Visual Studio 2013"));
-
-            // Exit
-            return 1;
-        }
-    }
 
     a.setSharedKey(key);
 
     // Only check if its installed client instance
     // Check if SSL Vpn client already running
-    if (!g_bPortable && a.isRunning()) {
+    if (!g_bPortable && a.isRunning()){
         a.sendMessage("Someone is out there");
         return 0;
     }
@@ -578,48 +545,52 @@ int CALLBACK WinMain (_In_  HINSTANCE hInstance,
     {
         // Start/check if netman is running, this is required, for windows 8 with hte portable client
         // The installer installs the service with a dependency to netman so it not required for a installed client
-        if(!Utils::StartNetman()) {
+        if(!Utils::StartNetman())
+        {
             MessageBoxA(NULL, "Failed to start netman\nEither the program was not started as administrator or there was an error while starting netman", "Error", 0);
             return 0;
         }
 
-        if(!Utils::IsVPNServiceRunning()) {
+        if(!Utils::IsVPNServiceRunning())
+        {
             QProcess *vpnService = new QProcess();
             vpnService->setWorkingDirectory(qApp->applicationDirPath());
             vpnService->start(QCoreApplication::applicationDirPath() + QLatin1String("/SPSSLVpnService.exe"), QStringList() << QLatin1String("-e"));
             if (!vpnService->waitForStarted(3000)) {
                 qDebug() << "service not startet";
             }
-        } else {
+        }
+        else
+        {
             std::cerr << "Already running" << std::endl;
         }
+    }
+
+
+    // Portable is always managed
+    if(g_bPortable)
+    {
+        Settings::instance()->setManaged(true);
     }
 
     QSettings sett (Utils::userApplicationDataDirectory() + "/sslpnv2.ini", QSettings::IniFormat);
 
     QString cryptKey = sett.value(QLatin1String("self/key"), QLatin1String("")).toString();
-    try {
-        if (!cryptKey.isEmpty()) {
-            cryptKey = QString(Crypt::decodeToPlaintext(cryptKey.toLatin1()));
-        } else {
-            // Neuen Key erzeugen
-            qsrand(QDateTime::currentDateTime().toTime_t());
-            QString _t1 (QString::number((qrand() % 1500) + 1));
-            QString _t2 (QString::number((qrand() % 2500) + 1));
-            QString key (QLatin1String("S3m!BHF") + _t1 + QLatin1String("83$%�kd") + _t2 + QString::number(QDateTime::currentDateTime().toTime_t()) + _t1);
+    if (!cryptKey.isEmpty()) {
+        cryptKey = QString(Crypt::decodeToPlaintext(cryptKey.toLatin1()));
+    } else {
+        // Neuen Key erzeugen
+        qsrand(QDateTime::currentDateTime().toTime_t());
+        QString _t1 (QString::number((qrand() % 1500) + 1));
+        QString _t2 (QString::number((qrand() % 2500) + 1));
+        QString key (QLatin1String("S3m!BHF") + _t1 + QLatin1String("83$%�kd") + _t2 + QString::number(QDateTime::currentDateTime().toTime_t()) + _t1);
 
-            key = QString(Crypt::encodePlaintext(key));
-            sett.setValue(QLatin1String("self/key"), key);
-            cryptKey = key;
+        key = QString(Crypt::encodePlaintext(key));
 
-            cryptKey = Crypt::decodeToPlaintext(cryptKey.toLatin1());
-        }
-    } catch (std::runtime_error &e) {
-        qDebug () << e.what();
-        exit(1);
-    }
-    catch (...) {
-        exit(1);
+        sett.setValue(QLatin1String("self/key"), key);
+        cryptKey = key;
+
+        cryptKey = Crypt::decodeToPlaintext(cryptKey.toLatin1());
     }
 
 
@@ -663,7 +634,8 @@ int CALLBACK WinMain (_In_  HINSTANCE hInstance,
     QTranslator translator_default;
 
     // check if we have to load the german translation
-    if(bGerman) {
+    if(bGerman)
+    {
         // Load the german translation
 
         QString trans_file = QLatin1String("sslvpnclient_de.qm");
@@ -691,8 +663,10 @@ int CALLBACK WinMain (_In_  HINSTANCE hInstance,
     FrmMain::instance();
 
     // Add the auto start configs (-start) to the database
-    if(vecStartConfigs.size()) {
-        for(auto &configData : vecStartConfigs) {
+    if(vecStartConfigs.size())
+    {
+        for(auto &configData : vecStartConfigs)
+        {
             Configs::instance()->addConfigToDatabase(configData);
         }
     }
@@ -710,12 +684,12 @@ int CALLBACK WinMain (_In_  HINSTANCE hInstance,
     FrmMain::instance()->close();
 
     // Show the tray icon
-    if(!g_bSilent) {
+    if(!g_bSilent)
         FrmMain::instance()->showTrayIcon();
-    }
 
     // If its always popup the show the window on startup
-    if(Settings::instance()->alwaysPopup() && !g_bSilent) {
+    if(Settings::instance()->alwaysPopup() && !g_bSilent)
+    {
         FrmMain::instance()->showNormal();
     }
 
@@ -724,15 +698,20 @@ int CALLBACK WinMain (_In_  HINSTANCE hInstance,
     // Cleanup on shutdown
 
     // If (-removeTap), then remove all tap devices on shutdown
-    if(removeTap) {
+    if(removeTap)
+    {
         TapDriver::instance()->removeTapDriver();
     }
 
     // Remove the -start configs from the database
-    if(vecStartConfigs.size()) {
-        for(auto &configData : vecStartConfigs) {
-            for(auto &config : Configs::instance()->getList()) {
-                if(config.second->GetName() == configData.configName && config.second->GetConfigPath() == configData.configFile) {
+    if(vecStartConfigs.size())
+    {
+        for(auto &configData : vecStartConfigs)
+        {
+            for(auto &config : Configs::instance()->getList())
+            {
+                if(config.second->GetName() == configData.configName && config.second->GetConfigPath() == configData.configFile)
+                {
                     Configs::instance()->removeFromDatabase(config.first);
                 }
             }

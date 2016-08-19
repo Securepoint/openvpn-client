@@ -85,12 +85,17 @@ void AdvPage::initializePage() {
     m_ui->txtPath->setText(QLatin1String(""));
 }
 
+void AdvPage::on_cbWinDirUseDefault_toggled(bool checked)
+{
+
+}
+
 void AdvPage::on_cbWinDirOther_toggled(bool checked)
 {
     m_ui->cbWinDirEnvironment->setEnabled(checked);
     m_ui->cbWinDirPath->setEnabled(checked);
 
-    // Das Textfeld hat ein paar mehr M?glichkeiten
+    // Das Textfeld hat ein paar mehr Möglichkeiten
     if (!checked) {
         m_ui->txtPath->setEnabled(false);
     }
@@ -98,6 +103,11 @@ void AdvPage::on_cbWinDirOther_toggled(bool checked)
     if (checked && m_ui->cbWinDirPath->isChecked()) {
         m_ui->txtPath->setEnabled(true);
     }
+}
+
+void AdvPage::on_cbWinDirEnvironment_toggled(bool checked)
+{
+
 }
 
 void AdvPage::on_cbWinDirPath_toggled(bool checked)

@@ -185,35 +185,6 @@ bool Utils::isUserAdmin ()
     return fReturn;
 }
 
-bool Utils::isX64Platform()
-{
-    //
-    // Returns true if we are running on a x64 platform
-    // Needed at leas XP wit SP 2
-    //
-
-    auto Isx64 = []() -> bool {
-        typedef BOOL (WINAPI *LPFN_ISWOW64PROCESS) (HANDLE, PBOOL);
-
-        LPFN_ISWOW64PROCESS fnIsWow64Process;
-
-        BOOL bIsWow64 = FALSE;
-
-        fnIsWow64Process = (LPFN_ISWOW64PROCESS) GetProcAddress(
-            GetModuleHandle(TEXT("kernel32")),"IsWow64Process");
-
-        if(NULL != fnIsWow64Process) {
-            if (!fnIsWow64Process(GetCurrentProcess(),&bIsWow64)) {
-                // handle error
-            }
-        }
-
-        return (bIsWow64 == TRUE);
-    };
-
-    return Isx64();
-}
-
 
 Utils::Utils()
 {
@@ -287,42 +258,35 @@ bool Utils::IsVPNServiceRunning()
     SC_HANDLE hScManager =  OpenSCManagerA(0, // local computer or add computer name here
                                          0, // SERVICES_ACTIVE_DATABASE database is opened by default.
                                          GENERIC_READ); // onyl read info
-    if(0 != hScManager) {
+    if(0 != hScManager)
+    {
         SC_HANDLE hSvc = OpenServiceA(hScManager,    // service manager
                                      "Securepoint VPN",     // service name
                                      GENERIC_READ); // onyl read info
-        if(0 != hSvc) {
+        if(0 != hSvc)
+        {
             SERVICE_STATUS_PROCESS sInfo;
             DWORD bytesNeeded = 0;
-            //
+
             if(QueryServiceStatusEx(hSvc,                   // A handle to the service.
                                     SC_STATUS_PROCESS_INFO, // info requested
                                     (LPBYTE)&sInfo,                 // structure to load info to
                                     sizeof(sInfo),          // size of the buffer
-                                    &bytesNeeded)) {
-                // Default is true, otherwise myReturn is set by IsProcessRunning
-                bool myReturn (true);
-                //
-                if(sInfo.dwCurrentState != SERVICE_RUNNING) {
-                    myReturn = IsProcessRunning("SPSSLVpnService.exe");
+                                    &bytesNeeded))
+            {
+                if(sInfo.dwCurrentState == SERVICE_RUNNING)
+                {
+                    return true;
                 }
-
-                // Cleanup service and manager
-                CloseServiceHandle(hSvc);
-                CloseServiceHandle(hScManager);
-
-                //
-                return myReturn;
+                else
+                {
+                    return IsProcessRunning("SPSSLVpnService.exe");
+                }
             }
-
-            // Cleanup service and manager
-            CloseServiceHandle(hSvc);
-            CloseServiceHandle(hScManager);
-        } else {
-            // Cleanup service manager
-            CloseServiceHandle(hScManager);
         }
-    } else {
+    }
+    else
+    {
         // Check the process
         return IsProcessRunning("SPSSLVpnService.exe");
     }
@@ -332,23 +296,27 @@ bool Utils::IsVPNServiceRunning()
 
 bool Utils::StartNetman()
 {
-    SC_HANDLE schSCManager = OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
-    if (schSCManager == NULL) {
+    SC_HANDLE schSCManager = NULL;
+    SC_HANDLE schService   = NULL;
+
+    BOOL  ret;
+    DWORD dwError;
+
+    schSCManager = OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
+    if (schSCManager == NULL)
         return FALSE;
-    }
 
-    SC_HANDLE schService  = OpenService(schSCManager, L"Netman", SERVICE_ALL_ACCESS);
-    if (schService == NULL) {
-        CloseServiceHandle(schSCManager);
+    schService = OpenService(schSCManager, L"Netman", SERVICE_ALL_ACCESS);
+    if (schService == NULL)
         return FALSE;
-    }
 
+    ret = StartService(schService, 0, NULL);
+    dwError = GetLastError();
 
-    BOOL ret = StartService(schService, 0, NULL);
-    DWORD dwError = GetLastError();
+    ret =  ret || dwError == ERROR_SERVICE_ALREADY_RUNNING;
 
     CloseServiceHandle(schService);
     CloseServiceHandle(schSCManager);
 
-    return (ret || dwError == ERROR_SERVICE_ALREADY_RUNNING);
+    return ret;
 }

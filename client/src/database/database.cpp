@@ -172,7 +172,7 @@ bool Database::execute(const QString &sql)
     query->exec(sql);
     if (query->lastError().type() != QSqlError::NoError) {
         // TODO Warning
-        printf("DB Error %s\n", query->lastError().text().toLatin1().data());
+        printf("DB Error%s\n", query->lastError().text().toLatin1().data());
     }
 
     query->clear();

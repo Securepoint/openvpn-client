@@ -12,11 +12,6 @@
 
 
 float windowsDpiScale();
-// Definded in main.c, default value is true
-// The value changed to false is controlled by
-// a command line argument. If its set to false,
-// it prevents that the user can save his user data.
-extern bool globalSaveUserData;
 
 FrmGetUserData::FrmGetUserData(InputType::UserInputType type, const QString &name, int id, QWidget * parent)
     : FramelessDialog(parent),
@@ -24,8 +19,7 @@ FrmGetUserData::FrmGetUserData(InputType::UserInputType type, const QString &nam
     dataAvail(false),
     frmType (type),
     vpnId (id),
-    force (false),
-    dialogClosedByUser(false)
+    force (false)
 {
    
     // 0 - Username
@@ -46,10 +40,6 @@ FrmGetUserData::FrmGetUserData(InputType::UserInputType type, const QString &nam
 
     this->setupFrameless();
 
-    // Set the save state
-    ui->cbSaveData->setEnabled(globalSaveUserData);
-    ui->cbSaveData->setVisible(globalSaveUserData);
-    //
     ui->cbSaveData->setChecked(false);
 
     ui->groupBox->setTitle(QApplication::translate("FrmGetUserData", "Connection to"));
@@ -117,43 +107,35 @@ void FrmGetUserData::showEvent(QShowEvent *e) {
     if (this->frmType == InputType::Username) {
         ui->lblDescription->setText(QObject::tr("Username:"));
         ui->txtDataField->setEchoMode(QLineEdit::Normal);
-        ui->cbSaveData->setEnabled(globalSaveUserData);
-        ui->cbSaveData->setVisible(globalSaveUserData);
+        ui->cbSaveData->setEnabled(true);
     } else if (this->frmType == InputType::Password) {
         ui->lblDescription->setText(QObject::tr("Password:"));
         ui->txtDataField->setEchoMode(QLineEdit::Password);
-        ui->cbSaveData->setEnabled(globalSaveUserData);
-        ui->cbSaveData->setVisible(globalSaveUserData);
+        ui->cbSaveData->setEnabled(true);
     } else if (this->frmType == InputType::Otp) {
         ui->lblDescription->setText(QObject::tr("One Time Pad:"));
         ui->txtDataField->setEchoMode(QLineEdit::Password);
         ui->cbSaveData->setEnabled(false);
-        ui->cbSaveData->setVisible(false);
     } else if (this->frmType == InputType::PrivateKey) {
         ui->lblDescription->setText(QObject::tr("Crypt Key:"));
         ui->txtDataField->setEchoMode(QLineEdit::Password);
         ui->cbSaveData->setEnabled(false);
-        ui->cbSaveData->setVisible(false);
     } else if (this->frmType == InputType::HttpUsername) {
         ui->lblDescription->setText(QObject::tr("Http user:"));
         ui->txtDataField->setEchoMode(QLineEdit::Normal);
-        ui->cbSaveData->setEnabled(globalSaveUserData);
-        ui->cbSaveData->setVisible(globalSaveUserData);
+        ui->cbSaveData->setEnabled(true);
     } else if (this->frmType == InputType::HttpPassword) {
         ui->lblDescription->setText(QObject::tr("Http password:"));
         ui->txtDataField->setEchoMode(QLineEdit::Password);
-        ui->cbSaveData->setEnabled(globalSaveUserData);
-        ui->cbSaveData->setVisible(globalSaveUserData);
+        ui->cbSaveData->setEnabled(true);
     } else if(this->frmType == InputType::Pkcs12) {
         ui->lblDescription->setText(QObject::tr("PKCS12:"));
         ui->txtDataField->setEchoMode(QLineEdit::Password);
-        ui->cbSaveData->setEnabled(globalSaveUserData);
-        ui->cbSaveData->setVisible(globalSaveUserData);
+        ui->cbSaveData->setEnabled(true);
     } else {
         ui->lblDescription->setText(QObject::tr("Password:"));
         ui->txtDataField->setEchoMode(QLineEdit::Password);
         ui->cbSaveData->setEnabled(false);
-        ui->cbSaveData->setVisible(false);
     }
 
     int winW = this->width();
@@ -187,14 +169,11 @@ void FrmGetUserData::showEvent(QShowEvent *e) {
     e->accept();
     this->setWindowState(Qt::WindowActive);
     ui->txtDataField->setFocus(Qt::PopupFocusReason);
-    //
-    this->dialogClosedByUser = false;
 }
 
 void FrmGetUserData::on_cmdClose_clicked()
 {
     this->close();
-    this->dialogClosedByUser = true;
 }
 
 void FrmGetUserData::on_cmdClose_2_clicked()

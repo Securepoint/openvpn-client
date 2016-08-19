@@ -47,10 +47,6 @@ RemotePage::RemotePage(QWidget *parent) :
 
 void RemotePage::on_tbvRowCountChanged(const QModelIndex &parent, int first, int last)
 {
-    Q_UNUSED(parent)
-    Q_UNUSED(first)
-    Q_UNUSED(last)
-
     setRowCount(this->m_ui->lvRemote->model()->rowCount());
     
 }

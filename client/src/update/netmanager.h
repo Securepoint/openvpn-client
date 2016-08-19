@@ -19,6 +19,7 @@ protected:
 
 private:
     QNetworkProxy proxy;
+    void setProxySettings ();
 
 private slots:
     void proxyAuthenticationRequired(const QNetworkProxy &proxy, QAuthenticator *auth);

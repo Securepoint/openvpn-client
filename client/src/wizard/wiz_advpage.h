@@ -17,7 +17,12 @@ protected:
     void changeEvent(QEvent *e);
 
 private slots:
+    void on_cbWinDirUseDefault_toggled(bool checked);
+
     void on_cbWinDirOther_toggled(bool checked);
+
+    void on_cbWinDirEnvironment_toggled(bool checked);
+
     void on_cbWinDirPath_toggled(bool checked);
 
 private:

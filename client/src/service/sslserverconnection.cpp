@@ -31,7 +31,7 @@ SslServerConnection::SslServerConnection(QObject *parent)
     QObject::connect(socket, SIGNAL(error(QAbstractSocket::SocketError)), SLOT(slotError(QAbstractSocket::SocketError)));
 }
 
-SslServerConnection::SslServerConnection(quint16 socketDescriptor, QObject *parent)
+SslServerConnection::SslServerConnection(quint16 socketDescriptor, QMutex *mut, QObject *parent)
     : QThread(parent),
       blockSize (0)
 {
@@ -301,9 +301,6 @@ void SslServerConnection::slotError(QAbstractSocket::SocketError err)
     //
     // Error while conntecting
     //
-
-    Q_UNUSED(err);
-
     if (socket->state() != QAbstractSocket::ConnectedState) {
         slotConnectionClosed();
     }

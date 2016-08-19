@@ -19,9 +19,10 @@ public:
 private:
     static SrvCLI *mInst;
     SrvCLI();
-
+   
     QSslSocket sslSocket;
-    QTime startTime;
+    quint64 nextBlockSize;
+    QTime startTime;    
     QString response;
     bool connectionIsOnline;
     qint64 blockSize;

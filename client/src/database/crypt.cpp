@@ -58,7 +58,7 @@ QStringList magicsKey()
 
 QString Crypt::encodePlaintext (const QString &plain)
 {
-    return Crypt::encodePlaintext(plain.toUtf8());
+    return Crypt::encodePlaintext(plain.toLatin1());
 }
 
 QString Crypt::encodePlaintext (const QByteArray &plain)
@@ -106,9 +106,9 @@ QString Crypt::encodePlaintext (const QByteArray &plain)
     // Create the crypto key struct that Windows needs.
     HCRYPTKEY hKey = NULL;
     if (!CryptImportKey(hProvider, reinterpret_cast<BYTE*>(&aes_blob), sizeof(AesBlob128), NULL, 0, &hKey)) {
-        if(exceptionEnabled) {
+        if(exceptionEnabled)
             throw std::runtime_error("Unable to create crypto key.");
-        } else
+        else
              MessageBoxA(NULL, "Unable to create crypto key.", "Error", 0);
     }
 
@@ -129,6 +129,8 @@ QString Crypt::encodePlaintext (const QByteArray &plain)
     // This acts as both the length of bytes to be encoded (on input) and the
     // number of bytes used in the resulting encrypted data (on output).
     DWORD length = encrypted.length();
+    DWORD len = encrypted.length();
+
     DWORD dwSize;
 
     // Set variable to length of data in buffer.
@@ -139,6 +141,8 @@ QString Crypt::encodePlaintext (const QByteArray &plain)
     encrypted.resize(dwSize);
 
     if (!CryptEncrypt(hKey, NULL, true, 0, reinterpret_cast<BYTE*>(encrypted.data()), &length, dwSize)) {
+        DWORD err = GetLastError();
+        
         if(exceptionEnabled)
             throw std::runtime_error("Encryption failed");
         else
@@ -195,6 +199,7 @@ QByteArray Crypt::decodeToPlaintext (const QString &crypt)
     // Create the crypto key struct that Windows needs.
     HCRYPTKEY hKey = NULL;
     if (!CryptImportKey(hProvider, reinterpret_cast<BYTE*>(&aes_blob), sizeof(AesBlob128), NULL, 0, &hKey)) {
+        DWORD err = GetLastError();
         if(exceptionEnabled)
             throw std::runtime_error("Unable to create crypto key.");
         else
@@ -221,6 +226,9 @@ QByteArray Crypt::decodeToPlaintext (const QString &crypt)
     DWORD len = encrypted.length();
     length = len;
     if (!CryptDecrypt(hKey, NULL, true, 0, reinterpret_cast<BYTE*>(encrypted.data()), &len)) {
+
+        DWORD err = GetLastError();
+
         if(exceptionEnabled)
             throw std::runtime_error("Encryption failed");
         else {
@@ -233,6 +241,5 @@ QByteArray Crypt::decodeToPlaintext (const QString &crypt)
 
     CryptDestroyKey(hKey);
     CryptReleaseContext(hProvider, 0);
-
     return encrypted;
 }
