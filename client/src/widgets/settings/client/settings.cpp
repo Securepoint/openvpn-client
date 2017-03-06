@@ -28,7 +28,9 @@ Settings::Settings()
       _bShowLog(false),
       _startConfigPath(""),
       _startUser(""),
-      _startPassword("")
+      _startPassword(""),
+      isShowSmallDhKeyHint(true),
+      useGermanValue(false)
 {
 }
 
@@ -90,8 +92,6 @@ bool Settings::useInteract() const
     return this->isUseInteract;
 }
 
-extern bool bGerman;
-
 void Settings::setStartOnWindows(bool flag)
 {
     // Change
@@ -106,8 +106,7 @@ void Settings::setStartOnWindows(bool flag)
         QString path;
         path = QCoreApplication::applicationDirPath() + QLatin1String("/SSLVpnClient.exe");
 
-        if (!bGerman) {
-
+        if (this->useGermanValue) {
             path += QLatin1String(" -german");
         }
 
@@ -264,6 +263,23 @@ void Settings::setEnableUpdate(bool flag)
 bool Settings::enableUpdate() const
 {
     return this->isEnableUpdate;
+}
+
+void Settings::setDhShowSmallKeyInformation(bool flag)
+{
+    // Change
+    if (flag == this->isShowSmallDhKeyHint) {
+        return;
+    }
+    // Value have been changed
+    this->isShowSmallDhKeyHint = flag;
+    //
+    this->save(QLatin1String("dhShowSmallKeyInformation"), (this->isShowSmallDhKeyHint ? QLatin1String("1") : QLatin1String("0")));
+}
+
+bool Settings::dhShowSmallKeyInformation() const
+{
+    return this->isShowSmallDhKeyHint;
 }
 
 void Settings::setUseSecurepoint(bool flag)

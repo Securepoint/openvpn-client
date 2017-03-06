@@ -53,6 +53,8 @@ private slots:
 
     void on_rbUseManual_toggled(bool checked);
 
+    void on_cbShowSmallDhKeyHInt_toggled(bool checked);
+
 public slots:
     void receivedTapCount(int count);
 

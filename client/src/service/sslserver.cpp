@@ -26,7 +26,7 @@ void SslServer::incomingConnection(int socketDescriptor)
     //
     // A new connection is incomming, create a new connection object and append it to the connection list
     //
-    SslServerConnection *newIncommingConnection = new SslServerConnection (socketDescriptor, &mutex, this);
+    SslServerConnection *newIncommingConnection = new SslServerConnection (socketDescriptor, this);
 
     // Add the connection to the current connected list
     this->connections->add(newIncommingConnection);

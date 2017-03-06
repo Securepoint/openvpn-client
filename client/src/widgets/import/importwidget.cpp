@@ -194,28 +194,27 @@ void ImportWidget::on_cmdImport_clicked()
     } else {
 #if 1
 
-        // TODO: request password for crypt file
+        //
         QString strPassword = "";
         FrmGetUserData dialog(InputType::CryptPassword, "Crypt Import");
         QObject::connect(&dialog, SIGNAL(cryptKey(QString)), this, SLOT(cryptKey(QString)));
 
         dialog.setWindowFlags(dialog.windowFlags() | Qt::WindowStaysOnTopHint);
         dialog.exec();
-
-        if(this->cryptPassword.isEmpty())
-        {
-            // Notify user
+        // Check if the user cancelled the action
+        if(dialog.dialogClosedByUser) {
             return;
         }
-        strPassword =  this->cryptPassword;
-         this->cryptPassword = "";
-#if 0
-        // Import crypt file
-        if (ui->txtPassword->text().isEmpty()) {
+
+        if(this->cryptPassword.isEmpty()) {
+            // Notify user
             Message::error(QObject::tr("No password specified!"), QObject::tr("Import Configuration"), this);
             return;
         }
-#endif
+
+        strPassword =  this->cryptPassword;
+        this->cryptPassword = "";
+
         if (!ui->txtSourceFile->text().isEmpty()) {
             if (ui->rbCustomName->isChecked() && ui->txtCustomName->text().isEmpty()) {
                 Message::error(QObject::tr("No import name specified!"), QObject::tr("Import Configuration"), this);
@@ -327,20 +326,10 @@ void ImportWidget::on_cmdImport_clicked()
                 Message::error(QObject::tr("Import failed! Removing empty directory."), QObject::tr("Import Configuration"), this);
                 dirobj.rmdir(dirPath);
             } else {
-                Configs::instance()->refreshConfigs();
-                ((MainListView*)FrmMain::instance()->mainWidget()->widget(MainView))->model.LoadConnections();
+                // Check if we got a new config
+                FrmMain::instance()->checkForNewConfigAndRefreshUI();
+                // Show connection widget
                 FrmMain::instance()->mainWidget()->showWidget(MainView);
-#if 0
-                // do we need this?
-                Preferences::instance()->addNewConfigToDatabase(saveName, savePath.replace("\\", "/"));
-                Preferences::instance()->refreshConfigList();
-                Preferences::instance()->setConnectionStatus();
-                Message::information(QObject::tr("Import successfully ended!"), QObject::tr("Import Configuration"), this);
-                Preferences::instance()->refreshDialog();
-                Preferences::instance()->setIcon();
-
-                this->close();
-#endif
             }
         } else {
            Message::error(QObject::tr("No import file selected!"), QObject::tr("Import Configuration"), this);

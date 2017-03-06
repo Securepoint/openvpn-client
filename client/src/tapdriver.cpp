@@ -19,7 +19,8 @@ TapDriver::TapDriver()
     : tapDriverAvailable (false),
       tapDriverInstalledSuccess (false),
       tapDriverRemovedSuccess (false),
-      tapCount(0)
+      tapCount(0),
+      wait(false)
 {
         auto Isx64 = []() -> bool {
         typedef BOOL (WINAPI *LPFN_ISWOW64PROCESS) (HANDLE, PBOOL);

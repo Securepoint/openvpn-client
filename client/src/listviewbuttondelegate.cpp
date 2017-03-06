@@ -197,9 +197,9 @@ QString ListViewButtonDelegate::cropStringToWidth(const QString &text, const QFo
 
     // Calculate the chars need to truncate
     // Figure out the space is needed for a single character
-    double spaceForCharacter (textWidth / text.size());
+    double spaceForCharacter (qreal(textWidth) / qreal(text.size()));
     // How many characters fit in the available space
-    double charactersForWidth (width / spaceForCharacter);
+    double charactersForWidth (qreal(width) / spaceForCharacter);
     // We only need entire characters
     int charactersLeft (qRound(charactersForWidth));
     // Always one char less than calculated

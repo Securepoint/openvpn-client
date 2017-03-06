@@ -31,7 +31,8 @@ float windowsDpiScale();
 
 ListViewSingleButtonDelegate::ListViewSingleButtonDelegate(QObject *parent)
     : ListViewButtonDelegate (parent),
-      buttonLimits(qMakePair(0, 0))
+      buttonLimits(qMakePair(0, 0)),
+      buttonIconType(0)
 {
     imgStart_.load(":/data/images/start.png");
     imgOffline_.load(":/data/images/offline.png");
@@ -233,7 +234,7 @@ void ListViewSingleButtonDelegate::paint(QPainter *painter, const QStyleOptionVi
 
     QFont font1("Verdana", 9, QFont::Normal);
     //font1.setPixelSize(11);
-    
+
     QFont font2("Verdana", 7, QFont::Normal);
     //font2.setPixelSize(9);
 
@@ -281,7 +282,7 @@ void ListViewSingleButtonDelegate::paint(QPainter *painter, const QStyleOptionVi
     };
 
     if(buttonOption.rect.size() != _lastImgSize)
-    {     
+    {
         imgStart = imgStart_.scaled(buttonOption.rect.size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
         imgOffline = imgOffline_.scaled(buttonOption.rect.size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
         imgError = imgError_.scaled(buttonOption.rect.size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
@@ -297,13 +298,13 @@ void ListViewSingleButtonDelegate::paint(QPainter *painter, const QStyleOptionVi
 
         QSize size(16, 16);
 
-        
+
 
         imgIconUsers = imgIconUsers_.scaled(size * windowsDpiScale(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
         imgIconAutostart = imgIconAutostart_.scaled(size * windowsDpiScale(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
         _lastImgSize = buttonOption.rect.size();
-    }   
+    }
     buttonOption.rect.adjust(((buttonWidth) - imgStart.width()) / 2 +1, ((buttonWidth) - imgStart.height()) / 2 + 1, 0, 0);
 
     ButtonState state = (ButtonState) index.data(Qt::UserRole + 100).toInt();
@@ -361,20 +362,19 @@ void ListViewSingleButtonDelegate::paint(QPainter *painter, const QStyleOptionVi
     static const int iconPadding = 5;
 
     textOption.rect.setTop(buttonOption.rect.bottom());
-    textOption.rect.adjust(0, -imgIconAutostart.height()+2, 0, 0);
+    textOption.rect.adjust(0, -imgIconAutostart.height() + 2, 0, 0);
     textOption.rect.setWidth(imgIconAutostart.width());
 
-    if(index.data(Qt::UserRole + 5).toBool())
-    {
+    if(index.data(Qt::UserRole + 5).toBool()) {
         painter->drawImage(textOption.rect.left(),  textOption.rect.top(), imgIconAutostart);
         textOption.rect.adjust(imgIconAutostart.width() + iconPadding, 0, 0, 0);
     }
 
-    if(index.data(Qt::UserRole + 6).toBool())
-    {
+    if(index.data(Qt::UserRole + 6).toBool()) {
         painter->drawImage(textOption.rect.left(),  textOption.rect.top(), imgIconUsers);
-        textOption.rect.adjust(imgIconAutostart.width() + iconPadding, 0, 0, 0);
+        textOption.rect.adjust(imgIconUsers.width() + iconPadding, 0, 0, 0);
     }
+
     painter->setPen(Qt::lightGray);
     painter->drawLine(option.rect.bottomLeft(), option.rect.bottomRight());
 
@@ -441,7 +441,7 @@ bool ListViewSingleButtonDelegate::editorEvent(QEvent *event, QAbstractItemModel
               if (!this->isBetweenLimits(rectForRow[index.row()], point)) {
                 emit buttonDClick(index);
             }
-            break;                 
+            break;
         }
         default:
             return false;

@@ -7,7 +7,6 @@
 #include <QtGui/QShowEvent>
 #include <QtGui/QMovie>
 #include "update/parsexml.h"
-#include "service\sslserver.h"
 
 namespace Ui {
 class FrmMain;
@@ -37,13 +36,14 @@ public:
     //
     QString version;
 
-
+    void checkForNewConfigAndRefreshUI ();
 
     bool startDaemon();
     bool initDaemon();
     void connectToService();
 
     void showTrayIcon();
+    void setMenuToShowWindow ();
 
 
     void sendClose();
@@ -53,6 +53,8 @@ public:
     void SetReconnect(bool bReconnect) {
         this->isReconnect = bReconnect;
     }
+
+    void showDiffieHellmanWarning();
 
 protected:
     void showEvent(QShowEvent *event);
@@ -106,14 +108,10 @@ private:
     QMovie updateMovie;
     int updateState;
 
-    QTimer * updateUITimer;
-
-    SslServer *server;
+    QTimer *updateUITimer;
 
     bool m_bTaskBarAutoHide;
     void checkTaskBarAutoHideProperty ();
-
-    unsigned short localPort;
 };
 
 #endif // FRMMAIN_H

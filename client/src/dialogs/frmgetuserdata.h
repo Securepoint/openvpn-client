@@ -35,6 +35,7 @@ public:
     FrmGetUserData(InputType::UserInputType type, const QString &name, int id = -1, QWidget * parent = 0);
     ~FrmGetUserData();    
     void setFrmType ();
+    bool dialogClosedByUser;
 
 public slots:
     void receivedCloseMe ();

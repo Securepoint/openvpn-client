@@ -119,7 +119,7 @@ void ExportWidget::on_cmdExport_clicked()
                         // Den Schlüssel setzen
                         Crypt::setSecretKey(exportKey);
                         // Verschlüsseln und schreiben
-                        cryptedFile.write(Crypt::encodePlaintext(data).toLatin1());
+                        cryptedFile.write(Crypt::encodePlaintextAscii(data).toLatin1());
                         cryptedFile.waitForBytesWritten(2000);
                         cryptedFile.flush();
                         cryptedFile.waitForBytesWritten(2000);
@@ -178,6 +178,16 @@ void ExportWidget::paintEvent(QPaintEvent *pe)
     QPainter painter(this);
     //
     style()->drawPrimitive(QStyle::PE_Widget, &option, &painter, this);
+}
+
+void ExportWidget::showEvent(QShowEvent *event)
+{
+    //
+    // Clear all fields
+    //
+
+    ui.txtDestFile->clear();
+    ui.txtExportKey->clear();
 }
 
 void ExportWidget::on_cmdSelectImportFile_clicked()

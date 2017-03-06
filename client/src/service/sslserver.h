@@ -18,17 +18,15 @@ class SslServer : public QTcpServer
 public:
     SslServer(quint16 port, QObject *parent = 0);
     ~SslServer ();
-    SslConnections *connectionsList () const;  
+    SslConnections *connectionsList () const;
 
 private:
     void incomingConnection (int socketDescriptor);
     SslConnections *connections;
 
-    QMutex mutex;    
-
 private slots:
     void slotThreadFinished ();
-    void slotQuitThread ();    
+    void slotQuitThread ();
 
 signals:
     void setDisconnected (int id);

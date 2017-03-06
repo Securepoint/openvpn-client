@@ -120,6 +120,10 @@ Database::Database()
         settingsSql << QString("INSERT INTO settings VALUES ('%1', '%2');")
             .arg(Crypt::encodePlaintext(QLatin1String("maschineConfigDirectory")))
             .arg(Crypt::encodePlaintext(qApp->applicationDirPath() + QLatin1String("/configs")));
+        //
+        settingsSql << QString("INSERT INTO settings VALUES ('%1', '%2');")
+            .arg(Crypt::encodePlaintext(QLatin1String("dhShowSmallKeyInformation")))
+            .arg(Crypt::encodePlaintext(QLatin1String("1")));
 
         /*settingsSql << QString("INSERT INTO settings VALUES ('%1', '%2');")
             .arg(Crypt::encodePlaintext(QLatin1String("proxy-use")))
@@ -140,6 +144,17 @@ Database::Database()
         // Write to disk
         foreach (QString sql, settingsSql) {
             this->execute(sql);
+        }
+    } else {
+        // Check if we have already the field dhShowSmallKeyInformation
+        QScopedPointer<QSqlQuery> checkDhMessage (this->openQuery(QString("SELECT * FROM settings WHERE \"settings-name\" = '%1';")
+                                                                  .arg(Crypt::encodePlaintext(QLatin1String("dhShowSmallKeyInformation")))));
+        //
+        if (!checkDhMessage->first()) {
+            // Settings dont exits, append it
+            this->execute(QString("INSERT INTO settings VALUES ('%1', '%2');")
+                              .arg(Crypt::encodePlaintext(QLatin1String("dhShowSmallKeyInformation")))
+                              .arg(Crypt::encodePlaintext(QLatin1String("1"))));
         }
     }
 }
@@ -172,7 +187,7 @@ bool Database::execute(const QString &sql)
     query->exec(sql);
     if (query->lastError().type() != QSqlError::NoError) {
         // TODO Warning
-        printf("DB Error%s\n", query->lastError().text().toLatin1().data());
+        printf("DB Error %s\n", query->lastError().text().toLatin1().data());
     }
 
     query->clear();

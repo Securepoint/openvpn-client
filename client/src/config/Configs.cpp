@@ -34,10 +34,10 @@ void Configs::refreshConfigs()
         int vpnId (configQuery->value(0).toInt());
 
         auto n = (Crypt::decodeToPlaintext(configQuery->value(1).toString()));
-        vpnName = QString::fromLocal8Bit(n.data(), n.size());
+        vpnName = QString::fromUtf8(n.data(), n.size());
 
         n = (Crypt::decodeToPlaintext(configQuery->value(2).toString()));
-        vpnConfig = QString::fromLocal8Bit(n.data(), n.size());
+        vpnConfig = QString::fromUtf8(n.data(), n.size());
 
         bool vpnAutoStart ((configQuery->value(3).toString() == QLatin1String("1") ? true : false));
         //

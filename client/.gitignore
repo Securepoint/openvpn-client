@@ -1,0 +1,29 @@
+## Ignore temporary files, build results, and generated files
+
+# Build results
+
+[Dd]ebug/
+[Rr]elease/
+x64/
+build/
+[Bb]in/
+[Oo]bj/
+
+# =========================
+# Qt Creator detritus 
+# =========================
+
+Makefile.*
+ui_*.h
+object_script*.*
+SSLVpnClient.pro.user
+*.user
+*.3pre1
+Makefile
+SSLVpnClient.pro.user
+SSLVpnClient.pro.user.2.1pre1
+SSLVpnClient.pro.user.2.2pre5
+SSLVpnClient.pro.user.*
+SSLVpnClient.pro.*
+*.qm
+*.ts

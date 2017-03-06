@@ -58,10 +58,10 @@ QStringList magicsKey()
 
 QString Crypt::encodePlaintext (const QString &plain)
 {
-    return Crypt::encodePlaintext(plain.toLatin1());
+    return Crypt::encodePlaintextUtf8 (plain.toUtf8());
 }
 
-QString Crypt::encodePlaintext (const QByteArray &plain)
+QString Crypt::encodePlaintextUtf8 (const QByteArray &plain)
 {
     QByteArray encrypted;
 
@@ -106,9 +106,9 @@ QString Crypt::encodePlaintext (const QByteArray &plain)
     // Create the crypto key struct that Windows needs.
     HCRYPTKEY hKey = NULL;
     if (!CryptImportKey(hProvider, reinterpret_cast<BYTE*>(&aes_blob), sizeof(AesBlob128), NULL, 0, &hKey)) {
-        if(exceptionEnabled)
+        if(exceptionEnabled) {
             throw std::runtime_error("Unable to create crypto key.");
-        else
+        } else
              MessageBoxA(NULL, "Unable to create crypto key.", "Error", 0);
     }
 
@@ -129,8 +129,6 @@ QString Crypt::encodePlaintext (const QByteArray &plain)
     // This acts as both the length of bytes to be encoded (on input) and the
     // number of bytes used in the resulting encrypted data (on output).
     DWORD length = encrypted.length();
-    DWORD len = encrypted.length();
-
     DWORD dwSize;
 
     // Set variable to length of data in buffer.
@@ -141,8 +139,6 @@ QString Crypt::encodePlaintext (const QByteArray &plain)
     encrypted.resize(dwSize);
 
     if (!CryptEncrypt(hKey, NULL, true, 0, reinterpret_cast<BYTE*>(encrypted.data()), &length, dwSize)) {
-        DWORD err = GetLastError();
-        
         if(exceptionEnabled)
             throw std::runtime_error("Encryption failed");
         else
@@ -154,6 +150,95 @@ QString Crypt::encodePlaintext (const QByteArray &plain)
     return encrypted.toHex();
 }
 
+
+QString Crypt::encodePlaintextAscii (const QByteArray &plain)
+{
+    QByteArray encrypted;
+
+    // Create the crypto provider context.
+    HCRYPTPROV hProvider = NULL;
+    if (!CryptAcquireContext(&hProvider, NULL, NULL, PROV_RSA_AES, CRYPT_VERIFYCONTEXT)) {
+
+        if (GetLastError() == NTE_BAD_KEYSET)
+        {
+            if (!CryptAcquireContext(&hProvider,
+                NULL,
+                NULL,
+                PROV_RSA_AES,
+                CRYPT_NEWKEYSET))
+            {
+                char keks[MAX_PATH] = {0};
+                sprintf(keks, "Last error %d", GetLastError());
+                MessageBoxA(NULL, "Unable to create crypto provider context.", "Error", 0);
+                throw std::runtime_error("Unable to create crypto provider context.");
+            }
+        }
+    }
+
+    int kAesBytes128 = 16;
+
+    // Construct the blob necessary for the key generation.
+    AesBlob128 aes_blob;
+    aes_blob.header.bType = PLAINTEXTKEYBLOB;
+    aes_blob.header.bVersion = CUR_BLOB_VERSION;
+    aes_blob.header.reserved = 0;
+    aes_blob.header.aiKeyAlg = CALG_AES_128;
+    aes_blob.key_length = kAesBytes128;
+    memcpy(aes_blob.key_bytes, secretKey.toLatin1().data(), kAesBytes128);
+
+    if(secretKey.length() < kAesBytes128) {
+        for(int i = secretKey.length(); i < kAesBytes128; ++i)
+        {
+            aes_blob.key_bytes[i] = 0;
+        }
+    }
+
+    // Create the crypto key struct that Windows needs.
+    HCRYPTKEY hKey = NULL;
+    if (!CryptImportKey(hProvider, reinterpret_cast<BYTE*>(&aes_blob), sizeof(AesBlob128), NULL, 0, &hKey)) {
+        if(exceptionEnabled) {
+            throw std::runtime_error("Unable to create crypto key.");
+        } else
+             MessageBoxA(NULL, "Unable to create crypto key.", "Error", 0);
+    }
+
+    DWORD CryptMode = CRYPT_MODE_CBC;;
+    CryptSetKeyParam(hKey, KP_MODE, (LPBYTE)&CryptMode, 0);
+
+    CryptSetKeyParam(hKey, KP_IV, (const BYTE*)QVariant(magicsKey().join("<")).toByteArray().data(), 0);
+
+    // The CryptEncrypt method uses the *same* buffer for both the input and
+    // output (!), so we copy the data to be encrypted into the output array.
+    // Also, for some reason, the AES-128 block cipher on Windows requires twice
+    // the block size in the output buffer. So we resize it to that length and
+    // then chop off the excess after we are done.
+    encrypted.clear();
+    encrypted.append(plain);
+
+
+    // This acts as both the length of bytes to be encoded (on input) and the
+    // number of bytes used in the resulting encrypted data (on output).
+    DWORD length = encrypted.length();
+    DWORD dwSize;
+
+    // Set variable to length of data in buffer.
+    dwSize = length;
+
+    CryptEncrypt(hKey, NULL, true, 0, NULL, &dwSize, dwSize);
+
+    encrypted.resize(dwSize);
+
+    if (!CryptEncrypt(hKey, NULL, true, 0, reinterpret_cast<BYTE*>(encrypted.data()), &length, dwSize)) {
+        if(exceptionEnabled)
+            throw std::runtime_error("Encryption failed");
+        else
+             MessageBoxA(NULL, "Encryption failed.", "Error", 0);
+    }
+
+    CryptDestroyKey(hKey);
+    CryptReleaseContext(hProvider, 0);
+    return encrypted.toHex();
+}
 
 
 QByteArray Crypt::decodeToPlaintext (const QString &crypt)
@@ -199,7 +284,6 @@ QByteArray Crypt::decodeToPlaintext (const QString &crypt)
     // Create the crypto key struct that Windows needs.
     HCRYPTKEY hKey = NULL;
     if (!CryptImportKey(hProvider, reinterpret_cast<BYTE*>(&aes_blob), sizeof(AesBlob128), NULL, 0, &hKey)) {
-        DWORD err = GetLastError();
         if(exceptionEnabled)
             throw std::runtime_error("Unable to create crypto key.");
         else
@@ -226,9 +310,6 @@ QByteArray Crypt::decodeToPlaintext (const QString &crypt)
     DWORD len = encrypted.length();
     length = len;
     if (!CryptDecrypt(hKey, NULL, true, 0, reinterpret_cast<BYTE*>(encrypted.data()), &len)) {
-
-        DWORD err = GetLastError();
-
         if(exceptionEnabled)
             throw std::runtime_error("Encryption failed");
         else {
@@ -241,5 +322,6 @@ QByteArray Crypt::decodeToPlaintext (const QString &crypt)
 
     CryptDestroyKey(hKey);
     CryptReleaseContext(hProvider, 0);
+
     return encrypted;
 }

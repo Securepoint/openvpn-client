@@ -148,15 +148,14 @@ void VpnWizard::accept()
         out << QLatin1String("proto udp\n");
     }
 
-    QVariant t;
-    for(const auto remote : ((RemotePage*)this->page(2))->remoteList())
-    {
+    for(const auto remote : ((RemotePage*)this->page(2))->remoteList()) {
         out << QLatin1String("remote ") << remote << QLatin1String("\n");
     }
 
 
-    if (field(QLatin1String("txtNobind")).toBool())
+    if (field(QLatin1String("txtNobind")).toBool()) {
         out << QLatin1String("nobind\n");
+    }
 
     out << QLatin1String("persist-key\n");
     out << QLatin1String("persist-tun\n");
@@ -170,8 +169,9 @@ void VpnWizard::accept()
     QString keyPath = field(QLatin1String("txtKeyPath")).toString();
     out << QLatin1String("key \"") << keyPath.right(keyPath.size() - keyPath.lastIndexOf("/") - 1) << QLatin1String("\"\n");
 
-    if (field(QLatin1String("txtServerCert")).toBool())
+    if (field(QLatin1String("txtServerCert")).toBool()) {
         out << QLatin1String("ns-cert-type server\n");
+    }
 
     if (field(QLatin1String("txtRouteMethod")).toInt() != 0) {
         if (field(QLatin1String("txtRouteMethod")).toInt() == 1) {

@@ -107,6 +107,8 @@ void ClientSettingsWidget::showEvent(QShowEvent *event)
     ui->cbBlockShutdown->setChecked(Settings::instance()->blockShutdown());
     //ui->cbShowBallon->setChecked(Settings::instance()->showBallon());
     ui->cbAlwaysPopup->setChecked(Settings::instance()->alwaysPopup());
+    //
+    ui->cbShowSmallDhKeyHInt->setChecked(Settings::instance()->dhShowSmallKeyInformation());
 
     // Connection
     //ui->cbInteract->setChecked(Settings::instance()->useInteract());
@@ -325,4 +327,9 @@ void ClientSettingsWidget::on_cmdChangeMaschineDirectory_clicked()
     //ui->txtMaschineConfigDirectory->setText(maschineDirectory);
     //
     //Settings::instance()->setMaschineConfigDirectory(ui->txtMaschineConfigDirectory->text());
+}
+
+void ClientSettingsWidget::on_cbShowSmallDhKeyHInt_toggled(bool checked)
+{
+   Settings::instance()->setDhShowSmallKeyInformation(checked);
 }

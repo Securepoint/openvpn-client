@@ -23,6 +23,7 @@ class Settings : public QObject
 
     Q_PROPERTY (QString maschineConfigDirectory READ maschineConfigDirectory WRITE setMaschineConfigDirectory)
 
+    Q_PROPERTY (bool dhShowSmallKeyInformation READ dhShowSmallKeyInformation WRITE setDhShowSmallKeyInformation)
 public:
     static Settings *instance ();
     virtual ~Settings(){}
@@ -52,6 +53,9 @@ public:
     void setEnableUpdate (bool flag);
     bool enableUpdate () const;
 
+    void setDhShowSmallKeyInformation (bool flag);
+    bool dhShowSmallKeyInformation () const;
+
     void setUseSecurepoint (bool flag);
     bool useSecurepoint () const;
 
@@ -73,6 +77,10 @@ public:
     QString startPassword() const;
     void setStartPassword(const QString &value);
 
+    void setUseGerman () {
+        this->useGermanValue = true;
+    }
+
     void setVpnLog(bool);
     bool VpnLog();
 
@@ -92,6 +100,7 @@ private:
     bool isAlwaysPopup;
 
     bool isShowSplash;
+    bool isShowSmallDhKeyHint;
 
     bool isEnableUpdate;
     QString updateUrlValue;
@@ -105,6 +114,8 @@ private:
     QString _startPassword;
 
     bool _bShowLog;
+
+    bool useGermanValue;
 
     void save (const QString &name, const QString &value);
 };
