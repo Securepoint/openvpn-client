@@ -6,6 +6,7 @@
 
 #include "single_application.h"
 #include "message.h"
+#include "settings/client/settings.h"
 
 extern QString g_strClientName;
 
@@ -82,18 +83,11 @@ void SingleApplication::setSharedKey(const QString &uniqueKey)
 
 // public slots.
 bool SingleApplication::winEventFilter(MSG* msg, long* result) {
-   //if(msg->message == WM_QUERYENDSESSION) {
-   //    // When a connection is online and the user activated the check
-   //    if (Preferences::instance()->isConnectionActive() && Settings::getInstance()->checkWindowsShutdown()) {
-   //        Message::warning(QObject::tr("You are still connected to a vpn network!\nPlease disconnect before you close your windows session.\nBy forcing the quit from windows malfunctions can occurred!"));
-   //        *result = 0;
-   //        return true;
-   //    }
-   //} else if (msg->message == WM_ENDSESSION) {
-   //    if (msg->wParam != 0) {
-   //        Preferences::instance()->closeAllOpenConnections();
-   //    }
-   //}
+   if(msg->message == WM_QUERYENDSESSION) {
+       qDebug() << "Query";
+         // When a connection is online and the user activated the check
+
+   }
 
    Q_UNUSED(msg)
    Q_UNUSED(result)

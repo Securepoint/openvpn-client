@@ -44,6 +44,46 @@
 #include <widgets\settings\client\settings.h>
 #include <message.h>
 
+class PreventShutdownEventFilter : public QAbstractNativeEventFilter
+{
+public:
+    PreventShutdownEventFilter(){}
+    virtual bool nativeEventFilter(const QByteArray &eventType, void *message, long *result)
+    {
+        Q_UNUSED(eventType)
+        // Cast it to the struct we needed here
+        MSG *winMesage = static_cast<MSG*>(message);
+        // We only need to react on closing desktop session
+        if(winMesage->message == WM_QUERYENDSESSION) {
+            if (Settings::instance()->blockShutdown()) {
+               // Check if we have a connected vpn session
+               bool atLeastONeSessionIsConnected (false);
+               //
+               for(const auto &con : Configs::instance()->getList()) {
+                   if(con.second->GetState() == ConnectionState::Connected) {
+                       // Found one
+                       atLeastONeSessionIsConnected = true;
+                       // If one session is connected, theres no need to check another session
+                       break;
+                   }
+               }
+
+               // Still connected?
+               if (atLeastONeSessionIsConnected) {
+                   // Oh, show a warning if the user get back to desktop
+                   Message::warning(QObject::tr("You are still connected to a vpn network!\nPlease disconnect before you close your windows session.\nBy forcing the quit from windows malfunctions can occurred!"));
+                   //
+                   *result = 0;
+                   //
+                   return true;
+               }
+            }
+        }
+
+        return false;
+    }
+};
+
 // Just a simple socket used in the cli
 class ClientCom : public QObject
  {
@@ -274,7 +314,7 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext & context, const Q
 
  QString g_strClientName;
 
- static const char* g_szVersion = "2.0.19";
+ static const char* g_szVersion = "2.0.21";
 
  void PrintHelp()
  {
@@ -337,6 +377,9 @@ int CALLBACK WinMain (_In_  HINSTANCE hInstance,
     // TODO: Remove qt 5.6 high dpi support until all custom crap is removed
     // QApplication::setDesktopSettingsAware(false);
     SingleApplication a(argc, (char**)argv);
+
+    PreventShutdownEventFilter preventShutdownEventFilter;
+    a.installNativeEventFilter(&preventShutdownEventFilter);
 
     // Set fusion style on high dpi displays
     if(a.devicePixelRatio() > 1) {

@@ -14,6 +14,7 @@ public:
     static QString enviromentValue (const QString &name);
     static bool isUserAdmin ();
     static bool isX64Platform ();
+    static bool isLegalFileName(QString nameToCheck);
 
     static bool IsProcessRunning(const char* processName);
     static std::string GetProcessNameFromPID(DWORD processID);

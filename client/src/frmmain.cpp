@@ -239,7 +239,7 @@ void FixDatabaseEncryption(const QString &targetKey, const QStringList &keys)
 
 
     // Now fix up the settings :)
-     QScopedPointer<QSqlQuery> query (Database::instance()->openQuery("SELECT [settings-name], [settings-value] FROM settings;"));
+    QScopedPointer<QSqlQuery> query (Database::instance()->openQuery("SELECT [settings-name], [settings-value] FROM settings;"));
     //
     while (query->next()) {
         // Set value
@@ -661,7 +661,7 @@ LRESULT wndproc1(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 FrmMain::FrmMain()
     : ui(new Ui::FrmMain),
       widgetFactory(new WidgetFactory),
-      version("2.0.19"),
+      version("2.0.21"),
       updateState(0),
       isReconnect(false),
       tapCount(0),

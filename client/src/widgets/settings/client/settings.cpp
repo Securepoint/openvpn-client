@@ -101,64 +101,36 @@ void Settings::setStartOnWindows(bool flag)
     // Value have been changed
     this->isStartOnWindows = flag;
 
-     QSettings regRun (QLatin1String("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run"), QSettings::NativeFormat);
-    if (flag) {
-        QString path;
-        path = QCoreApplication::applicationDirPath() + QLatin1String("/SSLVpnClient.exe");
-
-        if (this->useGermanValue) {
-            path += QLatin1String(" -german");
-        }
-
-        if (this->isManaged) {
-            // Add manage param
-            path += QLatin1String(" -manage");
-        }
-
-        path = path.replace("/", "\\");
-        regRun.setValue(QLatin1String("SpSSLVPN"), path);
-    } else {
-        if (this->startOnWindows()) {
-            regRun.remove(QLatin1String("SpSSLVPN"));
-        }
-    }
-
     //
     this->save(QLatin1String("startOnWindows"), (this->isStartOnWindows ? QLatin1String("1") : QLatin1String("0")));
 }
 
+void Settings::setRegEntryStartOnWindows (bool flag) {
+   QSettings regRun (QLatin1String("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run"), QSettings::NativeFormat);
+   //
+   regRun.remove(QLatin1String("SpSSLVPN"));
+   //
+   if (flag) {
+       QString path;
+       path = QCoreApplication::applicationDirPath() + QLatin1String("/SSLVpnClient.exe");
+
+       if (this->useGermanValue) {
+           path += QLatin1String(" -german");
+       }
+
+       if (this->isManaged) {
+           // Add manage param
+           path += QLatin1String(" -manage");
+       }
+
+       path = path.replace("/", "\\");
+       //
+       regRun.setValue(QLatin1String("SpSSLVPN"), path);
+   }
+}
+
 bool Settings::startOnWindows() const
 {
-    QSettings regRun (QLatin1String("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run"), QSettings::NativeFormat);
-    QString regVal = regRun.value(QLatin1String("SpSSLVPN"), QLatin1String("0")).toString();
-    // Ist der Eintrag da und gefüllt
-    if (regVal != QLatin1String("0")) {
-        if(!isStartOnWindows)
-        {
-            QSettings regRun (QLatin1String("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run"), QSettings::NativeFormat);
-            regRun.remove(QLatin1String("SpSSLVPN"));
-        }
-        else
-        {
-            QSettings regRun (QLatin1String("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run"), QSettings::NativeFormat);
-            QString path;
-            path = QCoreApplication::applicationDirPath() + QLatin1String("/SSLVpnClient.exe");
-
-            /*if (!this->isLangGerman) {
-
-            path += QLatin1String(" -useEnglish");
-            }*/
-
-            if (this->isManaged) {
-                // Add manage param
-                path += QLatin1String(" -manage");
-            }
-
-            path = path.replace("/", "\\");
-            regRun.setValue(QLatin1String("SpSSLVPN"), path);
-        } 
-    }
-
     return this->isStartOnWindows;
 }
 

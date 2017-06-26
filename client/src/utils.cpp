@@ -2,6 +2,7 @@
 //#include <WinSock2.h>
 #include <Windows.h>
 #include <psapi.h>
+#include <Shlobj.h>
 
 #pragma comment (lib, "Advapi32.lib")
 
@@ -17,6 +18,57 @@ QString Utils::dataDirectory()
     QDir dir (QCoreApplication::applicationDirPath());
 
     return dir.absolutePath() + QLatin1String("/data");
+}
+
+bool Utils::isLegalFileName(QString nameToCheck)
+{
+
+    if (nameToCheck.isEmpty()) {
+        return false;
+    }
+
+    QMap<QString, int> invalidNames;
+    //
+    invalidNames.insert(QLatin1String("CON"), 1);
+    invalidNames.insert(QLatin1String("PRN"), 2);
+    invalidNames.insert(QLatin1String("AUX"), 3);
+    invalidNames.insert(QLatin1String("NUL"), 4);
+    //
+    invalidNames.insert(QLatin1String("COM1"), 5);
+    invalidNames.insert(QLatin1String("COM2"), 6);
+    invalidNames.insert(QLatin1String("COM3"), 7);
+    invalidNames.insert(QLatin1String("COM4"), 8);
+    invalidNames.insert(QLatin1String("COM5"), 9);
+    invalidNames.insert(QLatin1String("COM6"), 10);
+    invalidNames.insert(QLatin1String("COM7"), 11);
+    invalidNames.insert(QLatin1String("COM8"), 12);
+    invalidNames.insert(QLatin1String("COM9"), 13);
+    //
+    invalidNames.insert(QLatin1String("LPT1"), 14);
+    invalidNames.insert(QLatin1String("LPT2"), 15);
+    invalidNames.insert(QLatin1String("LPT3"), 16);
+    invalidNames.insert(QLatin1String("LPT4"), 17);
+    invalidNames.insert(QLatin1String("LPT5"), 18);
+    invalidNames.insert(QLatin1String("LPT6"), 19);
+    invalidNames.insert(QLatin1String("LPT7"), 20);
+    invalidNames.insert(QLatin1String("LPT8"), 21);
+    invalidNames.insert(QLatin1String("LPT9"), 22);
+
+    //
+    if (invalidNames.contains(nameToCheck)) {
+        return false;
+    }
+
+    // Normal char check
+    LPCWSTR filename = (const wchar_t*) nameToCheck.utf16();
+    WCHAR valid_invalid[MAX_PATH];
+    wcscpy_s(valid_invalid, filename);
+
+    int result = PathCleanupSpec(nullptr, valid_invalid);
+
+    // If return value is non-zero, or if 'valid_invalid'
+    // is modified, file-name is assumed invalid
+    return result == 0 && wcsicmp(valid_invalid, filename)==0;
 }
 
 QString Utils::userApplicationDataDirectory()

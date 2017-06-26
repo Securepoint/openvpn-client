@@ -150,7 +150,8 @@ INCLUDEPATH +=  . \
 LIBS += -llibEGL \
     -llibGLESv2 \
     -lgdi32 \
-    -luser32
+    -luser32 \
+    -lShell32
 
 TRANSLATIONS += ./sslvpnclient_de.ts
 RESOURCES += res.qrc

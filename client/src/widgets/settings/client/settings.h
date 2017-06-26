@@ -34,6 +34,7 @@ public:
 
     void setStartOnWindows (bool flag) ;
     bool startOnWindows () const;
+    void setRegEntryStartOnWindows (bool flag);
 
     bool blockShutdown() const;
     void setBlockShutdown (bool flag);
