@@ -12,6 +12,7 @@ ParseXML::~ParseXML()
 
 void ParseXML::runParser()
 {
+    CheckInfoList::getInstance()->clearCheckInfoList();
     this->chk.sendRequest();
 }
 
@@ -53,7 +54,7 @@ QString ParseXML::highestVersion()
         return QObject::tr("n/a");
     }
 
-    return CheckInfoList::getInstance()->getCheckInfoList().at(0).getBuild();
+    return CheckInfoList::getInstance()->getCheckInfoList().value(0).getBuild();
 }
 
 void ParseXML::receivedError(const QString errMessage)

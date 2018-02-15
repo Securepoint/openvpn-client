@@ -9,6 +9,9 @@
 #include <frmmain.h>
 #include <widgets/settings/client/settings.h>
 #include <utils.h>
+#include <service/servicelogdata.h>
+
+extern bool g_bPortable;
 
 ConnectionData::ConnectionData(QObject *parent)
     : QObject(parent),
@@ -68,6 +71,38 @@ void ConnectionData::startAfterConnectDelayed()
     this->runScript("AC");
 }
 
+void ConnectionData::scriptFinished(int exitCode, QProcess::ExitStatus status)
+{
+    ServiceLogData::instance()->append(this->id, QString("Process exitcode %1 with status %2\n")
+                                       .arg(exitCode)
+                                       .arg(status));
+}
+
+void ConnectionData::scriptErrorOccurred(QProcess::ProcessError error)
+{
+    QString errorString ("n/a");
+    //
+    if (error == QProcess::FailedToStart) {
+        errorString =  "The process failed to start.";
+    } else if (error == QProcess::Crashed) {
+        errorString =  "The process crashed some time after starting successfully.";
+    } else if (error == QProcess::Timedout) {
+        errorString =  "The last waitFor...() function timed out.";
+    } else if (error == QProcess::WriteError) {
+        errorString =  "An error occurred when attempting to write to the process.";
+    } else if (error == QProcess::ReadError) {
+        errorString =  "An error occurred when attempting to read from the process.";
+    }
+
+    ServiceLogData::instance()->append(this->id, QString("Process error %1\n")
+                                       .arg(errorString));
+}
+
+void ConnectionData::scriptStartet()
+{
+    ServiceLogData::instance()->append(this->id, QString("Process started\n"));
+}
+
 
 quint32 ConnectionData::GetId()
 {
@@ -104,13 +139,31 @@ quint32 ConnectionData::GetLastConnected()
 
 void ConnectionData::runScript(const QString &type)
 {
-    if (!this->getScript(type).isEmpty()) {
+    QString scriptToStart (this->getScript(type));
+    if (!scriptToStart.isEmpty()) {
+
+        ServiceLogData::instance()->append(this->id, "Starting script: " + type + "\n");
+        //
+        if (g_bPortable) {
+            // Replace placeholder with path
+            scriptToStart = scriptToStart.replace("$appDir", qApp->applicationDirPath());
+
+            ServiceLogData::instance()->append(this->id, "Script path: " + scriptToStart + "\n");
+        }
 
         auto procScripts = new QProcess(this);
         QObject::connect(procScripts, SIGNAL(error(QProcess::ProcessError)), this, SLOT(showProcessScriptError(QProcess::ProcessError)));
+        QObject::connect(procScripts, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(scriptFinished(int,QProcess::ExitStatus)));
         QObject::connect(procScripts, SIGNAL(finished(int,QProcess::ExitStatus)), procScripts, SLOT(deleteLater()));
+        QObject::connect(procScripts, SIGNAL(error(QProcess::ProcessError)), this, SLOT(scriptErrorOccurred(QProcess::ProcessError)));
+        QObject::connect(procScripts, SIGNAL(errorOccurred(QProcess::ProcessError)), this, SLOT(scriptErrorOccurred(QProcess::ProcessError)));
 
-        procScripts->start(this->getScript(type));
+        QObject::connect(procScripts, SIGNAL(started()), this, SLOT(scriptStartet()));
+
+        //
+        ServiceLogData::instance()->append(this->id, "Script call: " + scriptToStart + "\n");
+        //
+        procScripts->start(scriptToStart);
         qApp->processEvents() ;
     }
 }
@@ -251,6 +304,7 @@ const QString& ConnectionData::GetConfigPath()
 
 const QString ConnectionData::GetDir()
 {
+    // No, okay just return the value
     return this->configPath.left(this->configPath.lastIndexOf("/"));
 }
 

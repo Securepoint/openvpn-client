@@ -283,6 +283,7 @@ void AdvConfigSettingsWidget::resetFields() {
     // Windows
 
     ui->cbMsfix->setChecked(false);
+    ui->cbBlockOutsideDns->setChecked(false);
     ui->txtFragment->setText("");
     ui->cmbRouteMethod->setCurrentIndex(0);
     ui->txtDevNode->setText("");
@@ -335,6 +336,7 @@ void AdvConfigSettingsWidget::fillFieldFromConfig() {
     bool isMtuChecked = false;
     bool isFragmentChecked = false;
     bool isMsFixChecked = false;
+    bool isBlockOutsideDnsChecked = false;
     bool isProtoChecked = false;
     bool isFloatChecked = false;
     bool isRemoteChecked = false;
@@ -454,6 +456,15 @@ void AdvConfigSettingsWidget::fillFieldFromConfig() {
                     ui->cbMsfix->setChecked(true);
                 } else {
                     ui->cbMsfix->setChecked(false);
+                }
+            }
+
+        if (!isBlockOutsideDnsChecked){
+                if (line.toUpper().trimmed() == "BLOCK-OUTSIDE-DNS") {
+                    isBlockOutsideDnsChecked = true;
+                    ui->cbBlockOutsideDns->setChecked(true);
+                } else {
+                    ui->cbBlockOutsideDns->setChecked(false);
                 }
             }
 
@@ -822,11 +833,11 @@ void AdvConfigSettingsWidget::fillFieldFromConfig() {
     cf.close();
    // Scripts einlesen
 
-   ui->txtAfterConnect->setText(this->configObj->getScript ("AC").replace("\"", ""));
-   ui->txtAfterDisconnect->setText(this->configObj->getScript ("AD").replace("\"", ""));
-   ui->txtBeforeConnect->setText(this->configObj->getScript ("BC").replace("\"", ""));
-   ui->txtBeforeDisconnect->setText(this->configObj->getScript ("BD").replace("\"", ""));
-   ui->txtErrorConnect->setText(this->configObj->getScript ("EC").replace("\"", ""));
+   ui->txtAfterConnect->setText(this->configObj->getScript ("AC"));
+   ui->txtAfterDisconnect->setText(this->configObj->getScript ("AD"));
+   ui->txtBeforeConnect->setText(this->configObj->getScript ("BC"));
+   ui->txtBeforeDisconnect->setText(this->configObj->getScript ("BD"));
+   ui->txtErrorConnect->setText(this->configObj->getScript ("EC"));
    ui->txtScriptACDelay->setText((this->configObj->getScript ("TO") == "" ? "5000" : this->configObj->getScript ("TO")));
 
    // Pkcs 12 gefunden dann dies setzen
@@ -861,7 +872,7 @@ void AdvConfigSettingsWidget::on_cmdSave_clicked()
     out << QLatin1String("### \n");
     out << QLatin1String("### Configuration file created by Securepoint SSL VPN ") + QDate::currentDate().toString() + QLatin1String(" - ") + QTime::currentTime().toString() +  QLatin1String("\n");
     out << QLatin1String("### Project website: http://sourceforge.net/projects/securepoint/ \n");
-    out << QLatin1String("### Securepoint GmbH, Salzstrasse 1, Lueneburg, Germany; www.securepoint.de \n");
+    out << QLatin1String("### Securepoint GmbH, Bleckeder Landstrasse 28, 21337 Lueneburg, Germany; www.securepoint.de \n");
     out << QLatin1String("### \n");
     out << QLatin1String("### For further information about the configuration file, \n");
     out << QLatin1String("### please visit: http://www.openvpn.net/index.php/open-source/documentation\n");
@@ -1032,6 +1043,10 @@ void AdvConfigSettingsWidget::on_cmdSave_clicked()
 
     if (ui->cbMsfix->isChecked())
         out << QLatin1String("mssfix\n");
+
+    if (ui->cbBlockOutsideDns->isChecked()) {
+        out << QLatin1String("block-outside-dns\n");
+    }
 
     if (!ui->txtFragment->text().isEmpty())
         out << QLatin1String("fragment ") << ui->txtFragment->text() << QLatin1String("\n");
@@ -1290,6 +1305,7 @@ QStringList AdvConfigSettingsWidget::getAllFieldWhichNotIntoTheInterface() {
                     && line.trimmed().left(7).toUpper() != "TUN-MTU"
                     && line.trimmed().left(8).toUpper() != "FRAGMENT"
                     && line.toUpper().trimmed() != "MSSFIX"
+                    && line.toUpper().trimmed() != "BLOCK-OUTSIDE-DNS"
                     && line.toUpper().trimmed() != "REDIRECT-GATEWAY"
                     && line.trimmed().left(5).toUpper() != "PROTO"
                     && line.toUpper().trimmed() != "FLOAT"

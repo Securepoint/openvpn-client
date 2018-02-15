@@ -187,11 +187,7 @@ void ClientSettingsWidget::receivedTapCount(int count)
 
 void ClientSettingsWidget::on_cbStartOnWindows_toggled(bool checked)
 {
-    //
-    // Update setting
-    //
 
-    Settings::instance()->setStartOnWindows(checked);
 }
 
 void ClientSettingsWidget::on_cbBlockShutdown_toggled(bool checked)
@@ -332,4 +328,14 @@ void ClientSettingsWidget::on_cmdChangeMaschineDirectory_clicked()
 void ClientSettingsWidget::on_cbShowSmallDhKeyHInt_toggled(bool checked)
 {
    Settings::instance()->setDhShowSmallKeyInformation(checked);
+}
+
+void ClientSettingsWidget::on_cbStartOnWindows_clicked(bool checked)
+{
+    //
+    // Update setting
+    //
+
+    Settings::instance()->setStartOnWindows(checked);
+    Settings::instance()->setRegEntryStartOnWindows(checked);
 }

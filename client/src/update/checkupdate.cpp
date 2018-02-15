@@ -25,6 +25,7 @@ void CheckUpdate::finishedSlot(QNetworkReply *reply)
         // Reading bytes form the reply
         QByteArray bytes = reply->readAll();  // bytes
         QString string(bytes); // string
+
         emit finished(string);
     } else {
         emit error(reply->errorString());

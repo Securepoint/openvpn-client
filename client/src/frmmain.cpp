@@ -661,8 +661,9 @@ LRESULT wndproc1(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 FrmMain::FrmMain()
     : ui(new Ui::FrmMain),
       widgetFactory(new WidgetFactory),
-      version("2.0.20"),
+      version("2.0.22"),
       updateState(0),
+      lastUpdateState(-1),
       isReconnect(false),
       tapCount(0),
       closing(false),
@@ -872,10 +873,17 @@ void FrmMain::refreshUI()
         static QImage img;
 
         static std::once_flag flag;
-        std::call_once(flag, [this]() {
-            img.load(":/data/images/16_autostart.png", "PNG");
+        if (this->lastUpdateState != this->updateState) {
+            this->lastUpdateState = this->updateState;
+            //
+            if (this->updateState == NewVersion) {
+                img.load(":/data/images/newerversion.png", "PNG");
+            } else {
+                img.load(":/data/images/16_autostart.png", "PNG");
+            }
+
             img = img.scaled(QSize(16*windowsDpiScale(), 16*windowsDpiScale()), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-        });
+        };
 
         ui->lblUpdateIcon->setPixmap(QPixmap::fromImage(img));
         ui->lblUpdateIcon->setMaximumSize(16*windowsDpiScale(), 20*windowsDpiScale());
@@ -1595,50 +1603,16 @@ void FrmMain::updateCheckIsReady(bool success, QString errorText)
     this->updateMovie.stop();
 
     //
-    if (success) {
-        //
-        QString uVersion (this->update.highestVersion());
+    ui->cmdUpdateState->setEnabled(true);
 
-        if (this->version == uVersion) {
-            //
-            ui->cmdUpdateState->setText(QObject::tr("up to date."));
-            ui->lblUpdateIcon->setPixmap(QPixmap("://images/up2date.png"));
-            ui->cmdUpdateState->setToolTip(QObject::tr("Click to check again"));
-            //
-            this->updateState = UpToDate;
-        } else {
-            // Check if it is a newer version
-            QString thisVersion (this->version);
-            QString netVersion (uVersion);
-            // Remove dots
-            thisVersion = thisVersion.remove(".");
-            netVersion = netVersion.remove(".");
-            // To int
-            int dVersion = thisVersion.toInt();
-            int dNetVersion = netVersion.toInt();
-            //
-            if (dNetVersion > dVersion) {
-                ui->cmdUpdateState->setText(QObject::tr("an update is available"));
-                ui->lblUpdateIcon->setPixmap(QPixmap(":/data/images/newerversion.png"));
-                ui->cmdUpdateState->setToolTip(QObject::tr("Click to download the installer"));
-                //
-                this->updateState = NewVersion;
-            } else {
-                ui->cmdUpdateState->setText(QObject::tr("up to date."));
-                ui->lblUpdateIcon->setPixmap(QPixmap(":/data/images/up2date.png"));
-                ui->cmdUpdateState->setToolTip(QObject::tr("Click to check again"));
-                //
-                this->updateState = UpToDate;
-            }
-        }
-        //
-        ui->cmdUpdateState->setToolTip(QObject::tr("Click to check again"));
-    } else {
+
+
+    //
+    if (!success) {
         ui->cmdUpdateState->setText(QObject::tr("Unable to connect to update server"));
         ui->cmdUpdateState->setToolTip(errorText);
 
         static QImage img;
-
         static std::once_flag flag;
         std::call_once(flag, [this]() {
             img.load(":/data/images/16_autostart.png", "PNG");
@@ -1648,10 +1622,61 @@ void FrmMain::updateCheckIsReady(bool success, QString errorText)
         ui->lblUpdateIcon->setPixmap(QPixmap::fromImage(img));
         //
         this->updateState = UpdateError;
+
+        return;
     }
 
+
     //
-    ui->cmdUpdateState->setEnabled(true);
+    QString uVersion (this->update.highestVersion());
+    if (this->version == uVersion) {
+        //
+        ui->cmdUpdateState->setText(QObject::tr("up to date."));
+        QImage newIcon;
+        newIcon.load(":/data/images/up2date.png", "PNG");
+        newIcon = newIcon.scaled(QSize(16*windowsDpiScale(), 16*windowsDpiScale()), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        ui->lblUpdateIcon->setPixmap(QPixmap::fromImage(newIcon));
+        ui->cmdUpdateState->setToolTip(QObject::tr("Click to check again"));
+        //
+        this->updateState = UpToDate;
+        //
+        return;
+    }
+
+    // Check if it is a newer version
+    QString thisVersion (this->version);
+    QString netVersion (uVersion);
+    // Remove dots
+    thisVersion = thisVersion.remove(".");
+    netVersion = netVersion.remove(".");
+    // To int
+    int dVersion = thisVersion.toInt();
+    int dNetVersion = netVersion.toInt();
+    //
+    if (dNetVersion > dVersion) {
+        ui->cmdUpdateState->setText(QObject::tr("an update is available"));
+        QImage newIcon;
+        newIcon.load(":/data/images/newerversion.png", "PNG");
+        newIcon = newIcon.scaled(QSize(16*windowsDpiScale(), 16*windowsDpiScale()), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        ui->lblUpdateIcon->setPixmap(QPixmap::fromImage(newIcon));
+
+        ui->cmdUpdateState->setToolTip(QObject::tr("Click to download the installer"));
+        //
+        this->updateState = NewVersion;
+
+        //
+        return;
+    }
+
+    // No update available
+    ui->cmdUpdateState->setText(QObject::tr("up to date."));
+    QImage newIcon;
+    newIcon.load(":/data/images/up2date.png", "PNG");
+    newIcon = newIcon.scaled(QSize(16*windowsDpiScale(), 16*windowsDpiScale()), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    ui->lblUpdateIcon->setPixmap(QPixmap::fromImage(newIcon));
+    ui->cmdUpdateState->setToolTip(QObject::tr("Click to check again"));
+    //
+    this->updateState = UpToDate;
 }
 
 void FrmMain::showHideTrayMenu()

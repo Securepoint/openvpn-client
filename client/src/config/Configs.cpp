@@ -7,6 +7,8 @@
 #include <crypt.h>
 #include <SrvCLI.h>
 
+extern bool g_bPortable;
+
 Configs * Configs::m_Inst = nullptr;
 
 // On windows this is faster than QFile::exists
@@ -41,10 +43,17 @@ void Configs::refreshConfigs()
 
         bool vpnAutoStart ((configQuery->value(3).toString() == QLatin1String("1") ? true : false));
         //
+        if (g_bPortable) {
+            // We are running in portable mode, so we need to check if the dir is a relative path or an absolute!
+            if (!vpnConfig.contains(":")) {
+                // Relative path, build the absolute
+                QDir currentApplicationDirectory (qApp->applicationDirPath());
+                vpnConfig = currentApplicationDirectory.absoluteFilePath(vpnConfig);
+            }
+        }
 
-        if(!FileExists(vpnConfig.toLatin1().data()))
-        {
-            printf("Remove Config %s\n", vpnConfig.toLatin1().data());
+        if(!QFile::exists(vpnConfig)){
+            printf("Remove2 Config %s\n", vpnConfig.toLatin1().data());
             removeFromDatabase(vpnId);
             continue;
         }
@@ -133,7 +142,7 @@ void Configs::removeFromDatabase(int id)
 
 void Configs::addConfigToDatabase(const ConfigData &data)
 {
-    if(ConfigExists(data.configName, data.configFile))
+    if(ConfigExists(data.configName))
         return;
 
      QString sql (QString("INSERT INTO vpn  (\"vpn-name\", \"vpn-config\", \"vpn-autostart\", \"vpn-user\", \"vpn-password\", \"vpn-pkcs12\", \"vpn-http-user\", \"vpn-http-password\", \"vpn-remove-on-start\") VALUES ('%1', '%2', '%3', '%4', '%5', '%6', '%7', '%8', '%9');")
@@ -249,12 +258,12 @@ bool Configs::isConfigInList(int id)
     return false;
 }
 
-bool Configs::ConfigExists(const QString &name, const QString &configPath)
+bool Configs::ConfigExists(const QString &name)
 {
     refreshConfigs();
     for(auto &config : this->myList)
     {
-        if(config.second->GetConfigPath() == configPath || config.second->GetName() == name)
+        if(config.second->GetName() == name)
         {
             return true;
         }
@@ -288,26 +297,24 @@ void Configs::findConfigsInDir(const QString &sDir)
                 // Konfiguration der Datenbank hinzufügen
                 QString configDirectory (tempDir.replace("\\", "/") + QLatin1String("/") + fileInfo.fileName());
                 //
+                // On portable mode we need to save only a relative path
+                if (g_bPortable) {
+                    QDir applicationDirectory (qApp->applicationDirPath());
+                    //
+                    configDirectory = applicationDirectory.relativeFilePath(configDirectory);
+                }
 
-                 // Check if config already in list
-                QString checkSql(QString("SELECT \"vpn-id\" FROM vpn WHERE \"vpn-name\" = '%1' AND \"vpn-config\" = '%2'")
-                    .arg(Crypt::encodePlaintext(configName))
-                    .arg(Crypt::encodePlaintext(configDirectory)));
+                // Check if config already in list
+                QString checkSql(QString("SELECT \"vpn-id\" FROM vpn WHERE \"vpn-name\" = '%1'")
+                    .arg(Crypt::encodePlaintext(configName)));
 
                 QScopedPointer<QSqlQuery> checkQuery (Database::instance()->openQuery(checkSql));
                 //
                 if (checkQuery->first()) {
-                    // A config with this name and path is already in list
-                    // Skip it
-                   /* ConnectionData * pConnection = new ConnectionData();
-                    pConnection->SetName(QString(fileInfo.fileName().replace(".ovpn", "")));
-                    pConnection->SetState(ConnectionState::Disconnected);
-                    ((MainListView*)FrmMain::instance()->mainWidget()->widget(MainView))->model.AddConnection(pConnection);
-*/
                     continue;
                 }
 
-                if(ConfigExists(configName, configDirectory))
+                if(ConfigExists(configName))
                     continue;
 
                 QString sql (QString("INSERT INTO vpn  (\"vpn-name\", \"vpn-config\", \"vpn-autostart\") VALUES ('%1', '%2', 0);")

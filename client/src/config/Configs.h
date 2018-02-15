@@ -52,7 +52,7 @@ public:
         return myList;
     }
 
-    bool ConfigExists(const QString &name, const QString &config);
+    bool ConfigExists(const QString &name);
 };
 
 

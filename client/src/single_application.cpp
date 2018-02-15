@@ -92,9 +92,6 @@ bool SingleApplication::winEventFilter(MSG* msg, long* result) {
    Q_UNUSED(msg)
    Q_UNUSED(result)
 
-   Q_UNUSED(msg)
-   Q_UNUSED(result)
-
    return false;
 }
 

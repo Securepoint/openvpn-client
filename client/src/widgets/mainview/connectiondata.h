@@ -2,6 +2,7 @@
 #define CONNECTIONDATA_H
 
 #include <QObject>
+#include <QtCore>
 
 enum ConnectionState : char
 {
@@ -82,7 +83,11 @@ public slots:
         void saveUserData (int id, int type, QString value, bool save);
 
 private slots:
-        void startAfterConnectDelayed ();    
+    void startAfterConnectDelayed ();
+    void scriptFinished(int exitCode, QProcess::ExitStatus status);
+    void scriptErrorOccurred(QProcess::ProcessError error);
+    void scriptStartet();
+
 };
 
 #endif // CONNECTIONDATA_H

@@ -21,6 +21,7 @@
 
 #include <future>
 
+
 #ifdef QT_OPENGL
 #error "OpenGL"
 #endif
@@ -44,10 +45,10 @@
 #include <widgets\settings\client\settings.h>
 #include <message.h>
 
-class Foobar : public QAbstractNativeEventFilter
+class PreventShutdownEventFilter : public QAbstractNativeEventFilter
 {
 public:
-    Foobar(){}
+    PreventShutdownEventFilter(){}
     virtual bool nativeEventFilter(const QByteArray &eventType, void *message, long *result)
     {
         Q_UNUSED(eventType)
@@ -314,7 +315,7 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext & context, const Q
 
  QString g_strClientName;
 
- static const char* g_szVersion = "2.0.20";
+ static const char* g_szVersion = "2.0.22";
 
  void PrintHelp()
  {
@@ -329,7 +330,6 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext & context, const Q
      printf("\t-user username used for all connections\n");
      printf("\t-noSave prevent storage of the user credentials\n");
      printf("\t-pwd password used for all connections \n");
-     printf("\t-portable: Start the client in portable mode (configs are saved in the current directory)\n");
      printf("\t-vpnlog: Print the VPN Log in the command line\n");
      printf("\t-status: shows the status of the connections in the currently running VPN Client instance of the current folder [ ID NAME STATUS ]\n");
      printf("\t-removeTap: Remove TAP Devices on shutdown\n");
@@ -378,8 +378,8 @@ int CALLBACK WinMain (_In_  HINSTANCE hInstance,
     // QApplication::setDesktopSettingsAware(false);
     SingleApplication a(argc, (char**)argv);
 
-    Foobar foo;
-    a.installNativeEventFilter(&foo);
+    PreventShutdownEventFilter preventShutdownEventFilter;
+    a.installNativeEventFilter(&preventShutdownEventFilter);
 
     // Set fusion style on high dpi displays
     if(a.devicePixelRatio() > 1) {
@@ -411,8 +411,6 @@ int CALLBACK WinMain (_In_  HINSTANCE hInstance,
             loadGermanTranslation = true;
         } else if(!strcmp(argv[x], "-silent")) {
             g_bSilent = true;
-        } else if(!strcmp(argv[x], "-portable")) {
-            g_bPortable = true;
         } else if(!strcmp(argv[x], "-debug")) {
             g_bDebug = true;
         } else if(!strcmp(argv[x], "-start") && x + 3 < argc) {
@@ -593,9 +591,15 @@ int CALLBACK WinMain (_In_  HINSTANCE hInstance,
         // Check for the visual c++ 2013 x86 restributable
         // This check must be adjusted for each new version
         QString keyPath ("HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\Microsoft\\DevDiv\\vc\\Servicing\\12.0\\RuntimeMinimum");
+        if (!Utils::isX64Platform()) {
+            // We are running under a x86 system, we need to check an other path
+            keyPath = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\DevDiv\\vc\\Servicing\\12.0\\RuntimeMinimum";
+        }
+
         QSettings windowsRegistry (keyPath, QSettings::NativeFormat);
         // Check if its installed
         QString installedValue (windowsRegistry.value(QLatin1String("Install")).toString());
+
         //
         if (installedValue != QLatin1String("1")) {
             // No vcrest 2013 found

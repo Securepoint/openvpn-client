@@ -107,6 +107,7 @@ private:
     ParseXML update;
     QMovie updateMovie;
     int updateState;
+    int lastUpdateState;
 
     QTimer *updateUITimer;
 

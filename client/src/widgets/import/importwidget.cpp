@@ -13,6 +13,10 @@
 #include <database/crypt.h>
 #include <dialogs/frmgetuserdata.h>
 #include <message.h>
+#include <Database/Database.h>
+#include <Database/Crypt.h>
+
+extern bool g_bPortable;
 
 ImportWidget::ImportWidget(QWidget *parent) :
     QWidget(parent),
@@ -54,6 +58,16 @@ void ImportWidget::paintEvent(QPaintEvent *pe)
     QPainter painter(this);
     //
     style()->drawPrimitive(QStyle::PE_Widget, &option, &painter, this);
+}
+
+void ImportWidget::showEvent(QShowEvent *event)
+{
+    ui->txtCustomName->clear();
+    ui->txtSourceFile->clear();
+    ui->rbFileName->setChecked(true);
+
+    //
+    event->accept();
 }
 
 void ImportWidget::on_cmdSelectImportFile_clicked()
@@ -99,7 +113,7 @@ QString keys[] = {
 
 void ImportWidget::on_cmdImport_clicked()
 {
-    if (!ui->txtSourceFile->text().isEmpty())
+    if (ui->txtSourceFile->text().isEmpty())
     {
         qDebug() << "No file specified";
     }
@@ -117,6 +131,32 @@ void ImportWidget::on_cmdImport_clicked()
                 configName = ui->txtCustomName->text();
             }
         }
+
+        QString newConnectionName (configName.trimmed());
+
+        if (!Utils::isLegalFileName(newConnectionName)) {
+            Message::error(QObject::tr("Invalid config name. At least one letter of [a-zA-Z0-9-_ ]."), QObject::tr("User Information"), FrmMain::instance());
+
+            //
+            return;
+        }
+
+        // Check if it already exists
+        QString sqlCheckExists (QString("SELECT * FROM vpn WHERE \"vpn-name\" = '%1';")
+                    .arg(Crypt::encodePlaintext(Database::instance()->makeCleanValue(newConnectionName))));
+
+        QScopedPointer<QSqlQuery> checkExistsQuery (Database::instance()->openQuery(sqlCheckExists));
+
+        if(checkExistsQuery->first()) {
+            // A connection with this name already exits
+            Message::error(QObject::tr("A connection with this name already exits."), QObject::tr("User Information"), FrmMain::instance());
+
+            //
+            return;
+        }
+
+        configName = newConnectionName;
+
 
         QString pathToConfig (ui->txtSourceFile->text());
 
@@ -232,11 +272,45 @@ void ImportWidget::on_cmdImport_clicked()
                 configName = ui->txtCustomName->text().trimmed();
             }
 
+            QString newConnectionName (configName.trimmed());
+
+            if (!Utils::isLegalFileName(newConnectionName)) {
+                Message::error(QObject::tr("Invalid config name. At least one letter of [a-zA-Z0-9-_ ]."), QObject::tr("User Information"), FrmMain::instance());
+
+                //
+                return;
+            }
+
+            // Check if it already exists
+            QString sqlCheckExists (QString("SELECT * FROM vpn WHERE \"vpn-name\" = '%1';")
+                        .arg(Crypt::encodePlaintext(Database::instance()->makeCleanValue(newConnectionName))));
+
+            QScopedPointer<QSqlQuery> checkExistsQuery (Database::instance()->openQuery(sqlCheckExists));
+
+            if(checkExistsQuery->first()) {
+                // A connection with this name already exits
+                Message::error(QObject::tr("A connection with this name already exits."), QObject::tr("User Information"), FrmMain::instance());
+
+                //
+                return;
+            }
+
+            configName = newConnectionName;
+
             dirPath = Utils::userApplicationDataDirectory() + QString ("/config/") + configName;
 
             // Verzeichnis da?
             QDir dirobj (dirPath);
-            if (!dirobj.exists(dirPath)){
+            //
+            if (dirobj.exists(dirPath)){
+                // Check if its empty
+                if (dirobj.entryInfoList(QDir::NoDotAndDotDot|QDir::AllEntries).count() > 0) {
+                    // Verzeichnis existiert
+                    Message::error(QObject::tr("A directory with this name already exists!"), QObject::tr("Import Configuration"), this);
+                    //
+                    return;
+                }
+            } else {
                 //Verzeichnis existiert nicht
                 // Pfad erstellen
                 if (!dirobj.mkpath(dirPath)) {
@@ -244,11 +318,8 @@ void ImportWidget::on_cmdImport_clicked()
                     Message::error(QObject::tr("Unable to create directory!"), QObject::tr("Import Configuration"), this);
                     return;
                 }
-            } else {
-                // Verzeichnis existiert
-                Message::error(QObject::tr("A diretory with this name already exists!"), QObject::tr("Import Configuration"), this);
-                return;
             }
+
             // Datei ins neue Verzeichnis kopieren
             //QFile importFileCrypt (m_ui->txtImportPath->text());
             QString packFile = dirPath + QString("/") + configName + QString(".zip");
@@ -294,6 +365,11 @@ void ImportWidget::on_cmdImport_clicked()
             // Nun die Datei entpacken
             if (!CZip::extract(packFile, dirPath, "", "")) {
                 Message::error(QObject::tr("Can't open zip file"), QObject::tr("Import Configuration"), this);
+
+                // Remove zi file on error
+                QFile configZip (packFile);
+                configZip.remove();
+
                 return;
             }
 

@@ -17,6 +17,7 @@ public:
 
 protected:
     void paintEvent(QPaintEvent *pe);
+    void showEvent(QShowEvent *event);
 
 private slots:
     void on_cmdBack_clicked();

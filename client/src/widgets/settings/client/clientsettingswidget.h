@@ -55,6 +55,8 @@ private slots:
 
     void on_cbShowSmallDhKeyHInt_toggled(bool checked);
 
+    void on_cbStartOnWindows_clicked(bool checked);
+
 public slots:
     void receivedTapCount(int count);
 
