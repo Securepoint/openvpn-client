@@ -1,4 +1,0 @@
-To build the vpn client you will need:
-
-	- Qt 5 http://qt-project.org/	
-	- quazip http://quazip.sourceforge.net/
