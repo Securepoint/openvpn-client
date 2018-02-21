@@ -5,3 +5,6 @@ To build the vpn client you will need:
 	- Microsoft Platform SDK
 
 Open the pro-file(client/service) with Qt-Creator and click build. No other dependencies are needed.
+
+To build the service version uncomment line 9 in client/SSLVpnClient.pro and comment out the line 12.
+To build the portable version uncomment line 12 in client/SSLVpnClient.pro and comment out the line 9.
