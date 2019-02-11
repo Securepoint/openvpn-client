@@ -87,6 +87,24 @@ bool TapDriver::installTapDriver() {
     QString drvInstallApp (QCoreApplication::applicationDirPath() + binDir + QLatin1String("/tapinstall.exe"));
     QString drvPath (QCoreApplication::applicationDirPath() + binDir + QLatin1String("/driver/OemVista.inf"));
 
+
+    if(g_bPortable) {
+        NTSTATUS(WINAPI *RtlGetVersion)(LPOSVERSIONINFOEXW);
+        OSVERSIONINFOEXW osInfo;
+
+        *(FARPROC*)&RtlGetVersion = GetProcAddress(GetModuleHandleA("ntdll"), "RtlGetVersion");
+
+        if (RtlGetVersion) {
+            osInfo.dwOSVersionInfoSize = sizeof(osInfo);
+            RtlGetVersion(&osInfo);
+
+            if (osInfo.dwMajorVersion >= 10.0) {
+                drvPath = QCoreApplication::applicationDirPath() + binDir + QLatin1String("/driver/win10/OemVista.inf");
+            }
+        }
+    }
+
+
     // Argumente bauen
     QStringList argDrvInstall;
     argDrvInstall << QLatin1String ("install");

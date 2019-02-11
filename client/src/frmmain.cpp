@@ -661,7 +661,7 @@ LRESULT wndproc1(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 FrmMain::FrmMain()
     : ui(new Ui::FrmMain),
       widgetFactory(new WidgetFactory),
-      version("2.0.22"),
+      version("2.0.23"),
       updateState(0),
       lastUpdateState(-1),
       isReconnect(false),

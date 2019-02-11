@@ -1,5 +1,6 @@
 #include "tapdriver.h"
 #include "message.h"
+#include "utils.h"
 
 #include <QtWidgets/QApplication>
 
@@ -48,6 +49,7 @@ TapDriver::TapDriver()
     if (Isx64()) {
         arch = QLatin1String("x64");
     }
+
 }
 
 bool TapDriver::isTapDriverInstalled()
@@ -95,8 +97,13 @@ bool TapDriver::installTapDriver()
     this->tapDriverInstalledSuccess = false;
 
     QString drvInstallApp (this->getTapPath());
-    QString drvPath (QCoreApplication::applicationDirPath() + QString("/bin/driver/OemWin2k.inf"));
 
+    QString drvPath (QCoreApplication::applicationDirPath() + QString("/bin/driver/OemWin2k.inf"));
+    if(Utils::isWindows10Platform()) {
+        drvPath = QCoreApplication::applicationDirPath() + QString("/bin/driver/win10/OemWin2k.inf");
+    }
+
+    Message::information(drvPath, "useing path");
 
     QStringList argDrvInstall;
     argDrvInstall << QLatin1String ("install");

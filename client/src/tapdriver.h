@@ -34,6 +34,7 @@ private:
 
 
     QString arch;
+    QString win10Driver;
 
 private slots:
     void readDriverData ();

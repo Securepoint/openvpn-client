@@ -12,6 +12,8 @@
 
 #include <message.h>
 
+extern bool g_bPortable;
+
 ClientSettingsWidget::ClientSettingsWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ClientSettingsWidget)

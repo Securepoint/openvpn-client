@@ -266,6 +266,25 @@ bool Utils::isX64Platform()
     return Isx64();
 }
 
+bool Utils::isWindows10Platform()
+{
+    NTSTATUS(WINAPI *RtlGetVersion)(LPOSVERSIONINFOEXW);
+    OSVERSIONINFOEXW osInfo;
+
+    *(FARPROC*)&RtlGetVersion = GetProcAddress(GetModuleHandleA("ntdll"), "RtlGetVersion");
+
+    if (RtlGetVersion) {
+        osInfo.dwOSVersionInfoSize = sizeof(osInfo);
+        RtlGetVersion(&osInfo);
+
+        if (osInfo.dwMajorVersion < 10.0) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 
 Utils::Utils()
 {
