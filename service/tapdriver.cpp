@@ -89,21 +89,28 @@ bool TapDriver::installTapDriver() {
 
 
     if(g_bPortable) {
+        Debug::error("Portable version");
+        //
         NTSTATUS(WINAPI *RtlGetVersion)(LPOSVERSIONINFOEXW);
         OSVERSIONINFOEXW osInfo;
 
         *(FARPROC*)&RtlGetVersion = GetProcAddress(GetModuleHandleA("ntdll"), "RtlGetVersion");
 
         if (RtlGetVersion) {
+            Debug::error("Found RtlGetVersion");
+            //
             osInfo.dwOSVersionInfoSize = sizeof(osInfo);
             RtlGetVersion(&osInfo);
 
+
+            Debug::error("Windows version " + QString::number(osInfo.dwMajorVersion));
+            //
             if (osInfo.dwMajorVersion >= 10.0) {
                 drvPath = QCoreApplication::applicationDirPath() + binDir + QLatin1String("/driver/win10/OemVista.inf");
             }
         }
     }
-
+    Debug::error("Driver path " + drvPath);
 
     // Argumente bauen
     QStringList argDrvInstall;
