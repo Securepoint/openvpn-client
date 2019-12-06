@@ -661,7 +661,7 @@ LRESULT wndproc1(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 FrmMain::FrmMain()
     : ui(new Ui::FrmMain),
       widgetFactory(new WidgetFactory),
-      version("2.0.24"),
+      version("2.0.27"),
       updateState(0),
       lastUpdateState(-1),
       isReconnect(false),
@@ -672,6 +672,10 @@ FrmMain::FrmMain()
       updateUITimer(nullptr)
 {
     ui->setupUi(this);
+
+    // Hide unuses update buttons
+    ui->lblUpdateIcon->setVisible(false);
+    ui->cmdUpdateState->setVisible(false);
 
 
     QFont font("Verdana", 5, QFont::Normal);
@@ -772,7 +776,7 @@ FrmMain::FrmMain()
         menuSettings->addAction(QIcon(":/data/images/new.png"), QObject::tr("New"), this, SLOT(showWizard()));
 
     if(Settings::instance()->managed())
-        menuSettings->addAction(QIcon(":/data/images/import.png"), QObject::tr("Import"), this->widgetFactory, SLOT(showImport()));
+        menuSettings->addAction(QIcon(":/data/images/16_autostart.png"), QObject::tr("Import"), this->widgetFactory, SLOT(showImport()));
 
     menuSettings->addAction(QIcon(":/data/images/settings_03.png"), QObject::tr("Client settings"), this->widgetFactory, SLOT(showClientSettings()));
 
@@ -847,7 +851,7 @@ FrmMain::FrmMain()
     cmdClose_2->setGeometry(QRect(size.width(), 2, 16*windowsDpiScale(), 16*windowsDpiScale()));
 
     {
-        QImage img(":/data/images/close.png");
+        QImage img(":/data/images/import.png");
         img = img.scaled(QSize(16*windowsDpiScale(), 16*windowsDpiScale()), Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
         QIcon icon1;
