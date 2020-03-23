@@ -503,10 +503,11 @@ void OpenVpn::readProcessData()
         }
 
 
-        if(lineOut.contains("Received control message: AUTH_FAILED", Qt::CaseInsensitive))
-        {
-            _srvCLI->send(QString ("%1")
-                .arg(this->id()), QLatin1String("REMOVE_USER_DATA"));
+        if(lineOut.contains("Received control message: AUTH_FAILED", Qt::CaseInsensitive)) {
+            // OTP Line: AUTH_FAILED,CRV1:R,E:----:----:Please enter token PIN
+            if(!lineOut.contains("Please enter token PIN", Qt::CaseInsensitive)) {
+                _srvCLI->send(QString ("%1").arg(this->id()), QLatin1String("REMOVE_USER_DATA"));
+            }
         }
 
         // Die Ausgabe von OpenVPN immer senden, sofern es keine Useraufforderungen sind

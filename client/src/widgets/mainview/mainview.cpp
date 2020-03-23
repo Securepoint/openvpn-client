@@ -172,10 +172,10 @@ void MainListView::customContextMenuRequested(const QPoint &pos)
 
     menu.addAction(QIcon(":/data/images/connect.png"), connectText, this, SLOT(ContextConnect()));
 
-    if(Settings::instance()->managed())
+    if(Settings::instance()->managed()) {
         menu.addAction(QIcon(":/data/images/export.png"), QObject::tr("Export"), this, SLOT(ContextExport()));
-
-    menu.addAction(QIcon(":/data/images/remove.png"), QObject::tr("Remove"), this, SLOT(ContextRemove()));
+        menu.addAction(QIcon(":/data/images/remove.png"), QObject::tr("Remove"), this, SLOT(ContextRemove()));
+    }
 
     // TODO: change icon
     menu.addAction(QIcon(":/data/images/wheel-dark.png"), QObject::tr("Log"), this, SLOT(ContextLog()));

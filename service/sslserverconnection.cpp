@@ -18,6 +18,11 @@ SslServerConnection::SslServerConnection(quint16 socketDescriptor, QObject *pare
 {
     // Set the new internal id
     _threadId = internalId++;
+    //
+    Debug::log(QString("Create new connection with internal thread id %1 and socket descriptor %2")
+               .arg(_threadId)
+               .arg(socketDescriptor));
+
     // Init the ssl socket
     this->socket = new QSslSocket(this);
     this->socket->setProtocol(QSsl::AnyProtocol);
@@ -44,6 +49,9 @@ void SslServerConnection::run()
 
 void SslServerConnection::setId(quint32 id)
 {
+    Debug::log(QString("Set connection id %1")
+               .arg(id));
+    //
     this->id = id;
 }
 
@@ -54,6 +62,9 @@ quint32 SslServerConnection::getId()
 
 void SslServerConnection::setName(QString name)
 {
+    Debug::log(QString("Set connection name %1")
+               .arg(name));
+    //
     this->name = name;
 }
 
@@ -218,17 +229,58 @@ void SslServerConnection::slotStartRead()
             goto check_available;
         }
 
-        // Das Objekt suchen und holen
-        OpenVpn *item = this->foundItemInList(params.toInt());
-        Q_ASSERT(item);
-        if (!item) {
-            Debug::error(QLatin1String("Close: No valid item."));
-             goto check_available;
+        OpenVpn *item = 0;
+        // We need to check if we need to use another connection
+        // because we got a cli command from a client
+        if (params.indexOf(";") > 0) {
+            Debug::error(QLatin1String("Close: CLI command"));
+            // Get the client id and the conneciton id
+            QStringList ids = params.split(";");
+            //
+            if (ids.size() != 2) {
+                Debug::error(QLatin1String("Close: invalid client;connectionid."));
+                goto check_available;
+            }
+
+            int clientId = QString(ids.value(0)).toInt();
+            int connectionId = QString(ids.value(1)).toInt();
+
+            auto list = Service::instance()->GetServer()->connectionsList();
+            //
+            for(auto i = 0; i < list->count(); ++i) {
+                if(list->element(i) != this) {
+                    if (list->element(i)->getId() == clientId) {
+                        Debug::error(QLatin1String("Close: Find connection"));
+                        item = list->element(i)->foundItemInList(connectionId);
+                        break;
+                    }
+                }
+            }
+
+            // Check
+            if (!item) {
+                Debug::error(QLatin1String("Close: No valid item."));
+                goto check_available;
+            }
+
+        } else {
+            Debug::error(QLatin1String("Close: Nornmal client command"));
+            // Normal client, no cli command
+            // Get the connection
+            item = this->foundItemInList(params.toInt());
+
+            Q_ASSERT(item);
+
+            if (!item) {
+                Debug::error(QLatin1String("Close: No valid item."));
+                goto check_available;
+            }
         }
 
         // Disconnect triggern
-        item->disconnectVpn();
-
+        if (item) {
+            item->disconnectVpn();
+        }
     } else if (command == QLatin1String("STATUS")) {
 
         if (params.isEmpty()) {

@@ -258,6 +258,20 @@ bool Configs::isConfigInList(int id)
     return false;
 }
 
+ConnectionData *Configs::configWithId(int id)
+{
+    QListIterator<QPair<int, ConnectionData*> > i(this->myList);
+
+    while (i.hasNext()) {
+        QPair <int, ConnectionData*> entry = i.next();
+        ConnectionData *obj = entry.second;
+
+        if(id == entry.first) {
+            return obj;
+        }
+    }
+}
+
 bool Configs::ConfigExists(const QString &name)
 {
     refreshConfigs();

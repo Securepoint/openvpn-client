@@ -1,6 +1,7 @@
 #include "service.h"
 #include "debug.h"
 #include "srvcli.h"
+#include "settings.h"
 
 #include <QtCore\qsettings.h>
 
@@ -23,6 +24,18 @@ void Service::start()
 
     // Ini-Datei öffenen
     QSettings serviceSettings (QCoreApplication::applicationDirPath() + QLatin1String("/service.ini"), QSettings::IniFormat);
+
+    //
+    int tapDeviceCountTimeout (serviceSettings.value(QLatin1String("tap/count"), 20000).toInt());
+    int tapInstallTimeout (serviceSettings.value(QLatin1String("tap/install"), 180000).toInt());
+    int tapRemoveTimeout (serviceSettings.value(QLatin1String("tap/remove"), 60000).toInt());
+    int tapCheckTimeout (serviceSettings.value(QLatin1String("tap/check"), 30000).toInt());
+
+    Settings::instance()->setTapDeviceTimeout(tapDeviceCountTimeout);
+    Settings::instance()->setTapInstallTimeout(tapInstallTimeout);
+    Settings::instance()->setTapRemoveTimeout(tapRemoveTimeout);
+    Settings::instance()->setTapCheckTimeout(tapCheckTimeout);
+
     //
     quint16 myPort (serviceSettings.value(QLatin1String("ports/service"), 3656).toInt());
 
@@ -73,6 +86,12 @@ void Service::start()
     Debug::enableMSecs(serviceSettings.value(QLatin1String("debug/msecs"), 1).toBool());
 
     Debug::log(QString("Starting service on port %1").arg(myPort));
+
+    // Print tap timout settings to debug log
+    Debug::log(QString("Device count timeout: %1").arg(Settings::instance()->tapDeviceTimeout()));
+    Debug::log(QString("Device install timeout: %1").arg(Settings::instance()->tapInstallTimeout()));
+    Debug::log(QString("Device remove timeout: %1").arg(Settings::instance()->tapRemoveTimeout()));
+    Debug::log(QString("Device check timeout: %1").arg(Settings::instance()->tapCheckTimeout()));
 
     // SSL Server starten
     this->server = new SslServer(myPort, this);

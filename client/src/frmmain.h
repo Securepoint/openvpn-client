@@ -49,6 +49,7 @@ public:
     void sendClose();
 
     void setIcon();
+    void checkIfSendToTrayIsNeeded();
 
     void SetReconnect(bool bReconnect) {
         this->isReconnect = bReconnect;

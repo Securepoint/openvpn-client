@@ -24,6 +24,8 @@ class Settings : public QObject
     Q_PROPERTY (QString maschineConfigDirectory READ maschineConfigDirectory WRITE setMaschineConfigDirectory)
 
     Q_PROPERTY (bool dhShowSmallKeyInformation READ dhShowSmallKeyInformation WRITE setDhShowSmallKeyInformation)
+
+    Q_PROPERTY (bool sendToTrayAfterConnect READ sendToTrayAfterConnect WRITE setSendToTrayAfterConnect)
 public:
     static Settings *instance ();
     virtual ~Settings(){}
@@ -85,6 +87,9 @@ public:
     void setVpnLog(bool);
     bool VpnLog();
 
+    void setSendToTrayAfterConnect (bool flag);
+    bool sendToTrayAfterConnect () const;
+
 private:
     Settings();
     static Settings *mInst;
@@ -109,6 +114,7 @@ private:
     bool isUseSecurepoint;
 
     bool isManaged;
+    bool isSendToTrayAfterConnect;
 
     QString _startConfigPath;
     QString _startUser;

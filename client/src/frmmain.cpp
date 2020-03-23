@@ -661,7 +661,7 @@ LRESULT wndproc1(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 FrmMain::FrmMain()
     : ui(new Ui::FrmMain),
       widgetFactory(new WidgetFactory),
-      version("2.0.27"),
+      version("2.0.28"),
       updateState(0),
       lastUpdateState(-1),
       isReconnect(false),
@@ -2047,8 +2047,8 @@ void FrmMain::userInputIsNeeded(int id, int type)
     }
 
     // Es sind keine Daten gespeichert, neue abfragen
-    FrmGetUserData * dialog = new  FrmGetUserData(ntype, cName, id);
-    QObject::connect(dialog, SIGNAL(saveUserData(int,int,QString,bool)), this, SLOT(saveUserData(int,int,QString,bool)));
+    FrmGetUserData *dialog = new  FrmGetUserData(ntype, cName, id);
+    QObject::connect(dialog, SIGNAL(saveUserData(int, int, QString, bool)), this, SLOT(saveUserData(int, int, QString, bool)));
     dialog->setWindowFlags(dialog->windowFlags() | Qt::WindowStaysOnTopHint);
     dialog->setModal(true);
     dialog->setAttribute(Qt::WidgetAttribute::WA_DeleteOnClose);
@@ -2058,8 +2058,7 @@ void FrmMain::userInputIsNeeded(int id, int type)
 void FrmMain::saveUserData(int id, int type, QString value, bool save)
 {
     auto pConnection = ((MainListView*)this->widgetFactory->widget(MainView))->model.GetConnection(id);
-    if(pConnection)
-    {
+    if(pConnection) {
         pConnection->saveUserData(id, type, value, save);
     }
 }
@@ -2153,6 +2152,48 @@ void FrmMain::setIcon()
     }
 
     this->trayIcon->setIcon(icon);
+}
+
+void FrmMain::checkIfSendToTrayIsNeeded()
+{
+    // Send to tray after all connection configs succesfully connect
+    // This method is called by the ConnectionData::startAfterConnectDelayed method after we received a ip from openvpn
+    // with a min delay of 2000ms.
+    if (Settings::instance()->sendToTrayAfterConnect()) {
+        // Get the states
+        bool configError (false);
+        bool configConnecting (false);
+        bool configConnected (false);
+
+        for(auto con : Configs::instance()->getList())
+        {
+            switch (con.second->GetState())
+            {
+            case ConnectionState::Connecting:
+                configConnecting = true;
+                break;
+            case ConnectionState::Connected:
+                configConnected = true;
+                break;
+            case ConnectionState::Error:
+                configError = true;
+                break;
+            default:
+                break;
+                // Nix
+            }
+        }
+
+        //
+        if (!configError && !configConnecting && configConnected) {
+            if (this->isVisible()) {
+                //
+                this->trayIcon->contextMenu()->actions().at(2)->setText(QObject::tr("Show window"));
+                //
+                this->close();
+            }
+        }
+    }
 }
 
 

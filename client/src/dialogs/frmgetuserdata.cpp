@@ -128,6 +128,7 @@ void FrmGetUserData::showEvent(QShowEvent *e) {
         ui->lblDescription->setText(QObject::tr("One Time Pad:"));
         ui->txtDataField->setEchoMode(QLineEdit::Password);
         ui->cbSaveData->setEnabled(false);
+        ui->cbSaveData->setChecked(false);
         ui->cbSaveData->setVisible(false);
     } else if (this->frmType == InputType::PrivateKey) {
         ui->lblDescription->setText(QObject::tr("Crypt Key:"));
@@ -240,7 +241,7 @@ void FrmGetUserData::on_cmdOK_clicked()
         this->close();
     } else if (frmType == InputType::Otp) {
         SrvCLI::instance()->send(QLatin1String("CKNEEDED"), QString("%1;%2").arg(this->vpnId).arg(ui->txtDataField->text()));
-        emit saveUserData(this->vpnId, 2, ui->txtDataField->text(), ui->cbSaveData->isChecked());
+        //
         this->close();
     } else if (frmType == InputType::PrivateKey) {
         emit cryptKey(ui->txtDataField->text());

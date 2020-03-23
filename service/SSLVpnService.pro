@@ -17,7 +17,9 @@ HEADERS += ./debug.h \
     ./sslserverconnection.h \
     ./tapdriver.h \
     ./src/qtservice.h \
-    ./src/qtservice_p.h
+    ./src/qtservice_p.h \
+    settings.h
+include(src\qtservice.pri)
 SOURCES += ./debug.cpp \
     ./main.cpp \
     ./openvpn.cpp \
@@ -28,7 +30,8 @@ SOURCES += ./debug.cpp \
     ./sslserverconnection.cpp \
     ./tapdriver.cpp \
     ./src/qtservice.cpp \
-    ./src/qtservice_win.cpp
+    ./src/qtservice_win.cpp \
+    settings.cpp
 
 
 LIBS += -lgdi32 \

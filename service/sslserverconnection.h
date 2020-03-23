@@ -30,6 +30,7 @@ public:
     quint32 getId();
     void setName(QString name);
     QString getName();
+    OpenVpn *foundItemInList (const int &id);
     SrvCLI * srvcli()
     {
         return this->_srvCLI;
@@ -55,7 +56,7 @@ private:
     SrvCLI * _srvCLI;
 
     QList<QPair<int, OpenVpn*>> vpnList;
-    OpenVpn *foundItemInList (const int &id);
+
 
 signals:
     void connectionIsClosed ();

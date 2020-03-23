@@ -30,7 +30,8 @@ Settings::Settings()
       _startUser(""),
       _startPassword(""),
       isShowSmallDhKeyHint(true),
-      useGermanValue(false)
+      useGermanValue(false),
+      isSendToTrayAfterConnect(false)
 {
 }
 
@@ -41,14 +42,15 @@ void Settings::loadOrRefresh()
     //
 
     // Lock save
-    this->isOnRefresh = true;
+    this->isOnRefresh = true;       
 
     QScopedPointer<QSqlQuery> query (Database::instance()->openQuery("SELECT [settings-name], [settings-value] FROM settings;"));
     //
     while (query->next()) {
         // Set value
-        QString name (Crypt::decodeToPlaintext(query->value(0).toString()));
+        QString name (Crypt::decodeToPlaintext(query->value(0).toString()));        
         QString valueRaw (Crypt::decodeToPlaintext(query->value(1).toString()));
+
         // Read meta object data
         const QMetaObject *object = this->metaObject();
         int index (object->indexOfProperty(name.toLatin1().constData()));
@@ -331,6 +333,18 @@ void Settings::save(const QString &name, const QString &value)
                      .arg(settingsName));
         // Save
         Database::instance()->execute(sql);
+
+        QScopedPointer<QSqlQuery> query (Database::instance()->openQuery(QString("SELECT [settings-value] FROM settings WHERE [settings-name] = '%1';")
+                                                                         .arg(settingsName)));
+        //
+        if (!query->first()) {
+            // We need an insert, because this settings didnt exits in database
+            QString sql (QString("INSERT INTO settings ([settings-value], [settings-name]) VALUES ('%1', '%2');")
+                         .arg(settingsValue)
+                         .arg(settingsName));
+            // Save
+            Database::instance()->execute(sql);
+        }
     }
 }
 
@@ -374,4 +388,21 @@ void Settings::save(const QString &name, const QString &value)
     bool Settings::VpnLog()
     {
         return this->_bShowLog;
+    }
+
+    void Settings::setSendToTrayAfterConnect(bool flag)
+    {
+        // Change
+        if (flag == this->isSendToTrayAfterConnect) {
+            return;
+        }
+        // Value have been changed
+        this->isSendToTrayAfterConnect = flag;
+        //
+        this->save(QLatin1String("sendToTrayAfterConnect"), (this->isSendToTrayAfterConnect ? QLatin1String("1") : QLatin1String("0")));
+    }
+
+    bool Settings::sendToTrayAfterConnect() const
+    {
+        return this->isSendToTrayAfterConnect;
     }

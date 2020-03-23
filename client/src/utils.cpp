@@ -276,7 +276,7 @@ bool Utils::isWindows10Platform()
     if (RtlGetVersion) {
         osInfo.dwOSVersionInfoSize = sizeof(osInfo);
         RtlGetVersion(&osInfo);
-qDebug() << osInfo.dwMajorVersion;
+
         if (osInfo.dwMajorVersion < 10.0) {
             return false;
         }

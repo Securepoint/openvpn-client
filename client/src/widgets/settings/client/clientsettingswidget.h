@@ -37,14 +37,6 @@ private slots:
 
     void on_cbAutoRestart_toggled(bool checked);
 
-    void on_cbCheckUpdate_toggled(bool checked);
-
-    void on_rbSecurepoint_toggled(bool checked);
-
-    void on_cmdChangeUpdateSource_clicked();
-
-    void on_rbSourceforge_toggled(bool checked);
-
     void on_cmdChangeMaschineDirectory_clicked();
 
     void on_cmdAddTap_clicked();
@@ -56,6 +48,8 @@ private slots:
     void on_cbShowSmallDhKeyHInt_toggled(bool checked);
 
     void on_cbStartOnWindows_clicked(bool checked);
+
+    void on_cbSendToTrayAfterConnect_toggled(bool checked);
 
 public slots:
     void receivedTapCount(int count);

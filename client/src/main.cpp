@@ -39,11 +39,11 @@
 #include <fcntl.h>
 #include <io.h>
 #include <iostream>
-#include <fstream>
 #include <tapdriver.h>
 #include <config\Configs.h>
-#include <widgets\settings\client\settings.h>
 #include <message.h>
+
+#include "widgets/mainview/connectiondata.h"
 
 class PreventShutdownEventFilter : public QAbstractNativeEventFilter
 {
@@ -315,7 +315,7 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext & context, const Q
 
  QString g_strClientName;
 
- static const char* g_szVersion = "2.0.27";
+ static const char* g_szVersion = "2.0.28";
 
  void PrintHelp()
  {
@@ -327,6 +327,7 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext & context, const Q
      printf("\t-german: Change the language to german\n");
      printf("\t-silent: Suppress all user interaction (Confirmation dialogs)\n");
      printf("\t-start configPath user password \n");
+     printf("\t-disconnect id (disconnect for clientId and connectionId e.g. -disconnect 0 1). See also -clients and -status\n");
      printf("\t-user username used for all connections\n");
      printf("\t-noSave prevent storage of the user credentials\n");
      printf("\t-pwd password used for all connections \n");
@@ -434,6 +435,69 @@ int CALLBACK WinMain (_In_  HINSTANCE hInstance,
             vecStartConfigs.push_back(configData);
 
             x+=3;
+        } else if(!strcmp(argv[x], "-disconnect" ) && x + 2 < argc) {
+            QString clientIdString = argv[x + 1];
+            QString connectionIdString = argv[x + 2];
+            // We need the id as integer, not as a string
+            bool ok;
+            int connectionId (connectionIdString.toInt(&ok, 10));
+            //
+            if(!ok) {
+                printf("Invalid ID! See -status for valid IDs.");
+                //
+                return 0;
+            }
+
+            // Check if the client id is a valid number
+            clientIdString.toInt(&ok, 10);
+            //
+            if(!ok) {
+                printf("Invalid client ID(not a number)! See -clients for valid IDs.");
+                //
+                return 0;
+            }
+
+            // Okay id is a valid integer, try to find a config with this id
+            // Update configs
+            Configs::instance()->refreshConfigs();
+
+            // Check if the config is available
+            if (!Configs::instance()->isConfigInList(connectionId)) {
+                printf("Unknown ID! See -status for known IDs.");
+                //
+                return 0;
+            }
+
+            // Get the config
+            ConnectionData *runningConnection = Configs::instance()->configWithId(connectionId);
+
+            // Id is in list
+            if(runningConnection->GetState() != ConnectionState::Connected && runningConnection->GetState() != ConnectionState::Connecting) {
+                printf("Already disconnected! See -status for status.");
+                //
+                return 0;
+            }
+
+            // Disconnect the client
+            ClientCom serviceCommunication;
+
+            // Connect to the runnin client instance
+            serviceCommunication.socket.connectToHost(QLatin1String("127.0.0.1"), 3656);
+            // Default timeout is 30s
+            if(!serviceCommunication.socket.waitForConnected(10000)) {
+                //
+                printf("Can't connect to the management service.");
+                //
+                return 0;
+            }
+
+            serviceCommunication.sendCommand(QLatin1String("Close"), QString("%1;%2")
+                                                                        .arg(clientIdString)
+                                                                        .arg(connectionIdString));
+
+            QCoreApplication::processEvents();
+
+            return 0;
         } else if(!strcmp(argv[x], "-user" ) && x + 1 < argc) {
             QString startUser = argv[x + 1];
             Settings::instance()->setStartUser(startUser);
@@ -541,7 +605,7 @@ int CALLBACK WinMain (_In_  HINSTANCE hInstance,
 
             return 0;
         } else if(!strcmp(argv[x], "-clients"))  {
-                        ClientCom com;
+            ClientCom com;
 
             // Connect to the runnin client instance
             com.socket.connectToHost(QLatin1String("127.0.0.1"), 3656);

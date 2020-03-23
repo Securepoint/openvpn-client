@@ -2,6 +2,7 @@
 #define WIZ_REMOTEPAGE_H
 
 #include <QtWidgets/QWizardPage>
+#include <QtCore>
 
 namespace Ui {
     class RemotePage;
@@ -24,6 +25,7 @@ public:
 
 protected:
     void changeEvent(QEvent *e);
+    void showEvent(QShowEvent *event);
     bool eventFilter(QObject* object, QEvent* event);
 
 private:

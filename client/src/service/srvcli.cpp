@@ -147,7 +147,7 @@ bool SrvCLI::makeConnection(bool fastmode)
     this->sslSocket.connectToHost(QLatin1String("127.0.0.1"), 3656);
     //
 
-    if (!this->sslSocket.waitForConnected(2000)) {
+    if (!this->sslSocket.waitForConnected(5000)) {
         requestErrorCount++;
         if (fastmode || requestErrorCount == 3) {
             requestErrorCount = 0;

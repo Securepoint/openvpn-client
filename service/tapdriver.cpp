@@ -1,5 +1,6 @@
 #include "tapdriver.h"
 #include "debug.h"
+#include "settings.h"
 
 #include <Windows.h>
 
@@ -38,6 +39,9 @@ TapDriver::TapDriver()
     if (Isx64()) {
         arch = QLatin1String("x64");
     }
+
+    //
+    Debug::log(QString("Windows is x64: %1").arg((arch == "x64" ? "true" : "false")));
 }
 
 bool TapDriver::isTapDriverInstalled() {
@@ -68,8 +72,11 @@ void TapDriver::checkTapDriver() {
     this->drvProc.start(drvInstallApp, argIsDrvInstalled);
 
     // Wenn nach 30 Sekunden der Prozess nicht gestartet und beendet wurde, ist ein Fehler aufgetreten
-    if(!this->drvProc.waitForFinished()) {
-        Debug::error(QLatin1String("TAP driver check process failed!"));
+    if(!this->drvProc.waitForFinished(Settings::instance()->tapCheckTimeout())) {
+        Debug::error(QString("TAP driver check process failed! Timeout: %1 ms")
+                     .arg(Settings::instance()->tapCheckTimeout()));
+
+        //
         return;
     }
 }
@@ -78,10 +85,12 @@ bool TapDriver::installTapDriver() {
     //
     // Einen Tap Device installieren mit Hilfe der tapinstall.exe
     //
+    Debug::error(QLatin1String("Install a tap device"));
 
     this->tapDriverInstalledSuccess = false;
 
     QString binDir = QLatin1String("/bin") + (g_bPortable ? QString("/%1").arg(arch) : "");
+    Debug::error(QString("Bin dir").arg(binDir));
 
     // Pfade für die Exe und die Treiber inf
     QString drvInstallApp (QCoreApplication::applicationDirPath() + binDir + QLatin1String("/tapinstall.exe"));
@@ -90,12 +99,15 @@ bool TapDriver::installTapDriver() {
 
     if(g_bPortable) {
         Debug::error("Portable version");
+        // Set Windows 10 as default
+        drvPath = QCoreApplication::applicationDirPath() + binDir + QLatin1String("/driver/win10/OemVista.inf");
         //
         NTSTATUS(WINAPI *RtlGetVersion)(LPOSVERSIONINFOEXW);
         OSVERSIONINFOEXW osInfo;
 
         *(FARPROC*)&RtlGetVersion = GetProcAddress(GetModuleHandleA("ntdll"), "RtlGetVersion");
 
+        Debug::log("Try to RtlGetVersion");
         if (RtlGetVersion) {
             Debug::error("Found RtlGetVersion");
             //
@@ -105,11 +117,15 @@ bool TapDriver::installTapDriver() {
 
             Debug::error("Windows version " + QString::number(osInfo.dwMajorVersion));
             //
-            if (osInfo.dwMajorVersion >= 10.0) {
-                drvPath = QCoreApplication::applicationDirPath() + binDir + QLatin1String("/driver/win10/OemVista.inf");
+            if (osInfo.dwMajorVersion < 10) {
+                // Set the windows 7 path
+                drvPath = QCoreApplication::applicationDirPath() + binDir + QLatin1String("/driver/OemVista.inf");
             }
         }
+    } else {
+        Debug::error(QLatin1String("Service mode"));
     }
+
     Debug::error("Driver path " + drvPath);
 
     // Argumente bauen
@@ -127,8 +143,11 @@ bool TapDriver::installTapDriver() {
     this->drvInstallProc.start(drvInstallApp, argDrvInstall);
 
     // Warten das der Prozess beendet ist
-    if(!this->drvInstallProc.waitForFinished()) {
-        Debug::error(QLatin1String("TAP driver install process failed!"));
+    if(!this->drvInstallProc.waitForFinished(Settings::instance()->tapInstallTimeout())) {
+        Debug::error(QString("TAP driver install process failed! Timeout: %1 ms")
+                     .arg(Settings::instance()->tapInstallTimeout()));
+
+        //
         return false;
     }
 
@@ -165,8 +184,11 @@ bool TapDriver::removeTapDriver() {
     drvRemoveProc.start(drvInstallApp, argDrvRemove);
 
     // Auf das Beenden des Prozesses warten
-    if(!this->drvRemoveProc.waitForFinished(60000)) {
-        Debug::error(QLatin1String("TAP driver remove process failed!"));
+    if(!this->drvRemoveProc.waitForFinished(Settings::instance()->tapRemoveTimeout())) {
+        Debug::error(QString("TAP driver remove process failed! Timeout: %1 ms")
+                     .arg(Settings::instance()->tapRemoveTimeout()));
+
+        //
         return false;
     }
 
@@ -188,6 +210,9 @@ void TapDriver::readDriverData() {
     if (!line.isEmpty()) {
         // QString statt QBA
         QString lineConvert (line);
+        //
+        Debug::log(QString("TAP Output %1").arg(lineConvert));
+        //
         if (lineConvert.contains(QLatin1String("TAP-Windows"), Qt::CaseInsensitive)) {
             this->tapDriverAvailable = true;
         } else if (lineConvert.contains(QLatin1String("Drivers installed successfully."), Qt::CaseInsensitive)) {
@@ -207,7 +232,7 @@ int TapDriver::deviceCount()
 
     QString binDir = QLatin1String("/bin") + (g_bPortable ? QString("/%1").arg(arch) : "");
 
-     QString drvInstallApp (QCoreApplication::applicationDirPath() + binDir + QLatin1String("/tapinstall.exe"));
+    QString drvInstallApp (QCoreApplication::applicationDirPath() + binDir + QLatin1String("/tapinstall.exe"));
 
     QStringList argIsDrvInstalled;
     argIsDrvInstalled << QLatin1String ("hwids");
@@ -225,7 +250,11 @@ int TapDriver::deviceCount()
             qApp->processEvents();
         }
 
-        if (startDate.msecsTo(QDateTime::currentDateTime()) > 1500) {
+        if (startDate.msecsTo(QDateTime::currentDateTime()) > Settings::instance()->tapDeviceTimeout()) {
+            //
+            Debug::log(QString("TAP Count timeout: %1 ms")
+                       .arg(Settings::instance()->tapDeviceTimeout()));
+            //
             this->tapCount = -1;
             break;
         }
@@ -252,6 +281,9 @@ void TapDriver::readTapCount()
     // Daten da?
     if (!line.isEmpty()) {
         QString lineConvert (line);
+        //
+        Debug::log(QString("TAP Output %1").arg(lineConvert));
+        //
         if (lineConvert.contains(QLatin1String("matching device(s) found."), Qt::CaseInsensitive)) {
             // Get tap count
             this->tapCount = 0;
@@ -264,12 +296,18 @@ void TapDriver::readTapCount()
                     int val (str.toInt(&ok));
                     if (ok) {
                         this->tapCount = val;
+                        //
+                        Debug::log(QString("TAP Count %1").arg(this->tapCount));
+                        //
                     }
                 }
             }
 
             this->wait = false;
         } else if (lineConvert.startsWith(QLatin1String("No matching devices found."))) {
+            //
+            Debug::log(QString("No TAP found"));
+            //
             this->tapCount = 0;
             this->wait = false;
         }

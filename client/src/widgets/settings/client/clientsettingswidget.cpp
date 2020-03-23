@@ -27,13 +27,6 @@ ClientSettingsWidget::ClientSettingsWidget(QWidget *parent) :
     //
     //ui->tabConnection->setLayout(ui->verticalLayoutConnection);
     //
-    ui->tabUpdate->setLayout(ui->verticalLayoutUpdate);
-
-    //
-    ui->gbUpdateSource->setLayout(ui->verticalLayoutUpdateSource);
-    //
-    ui->gbDownloadSpource->setLayout(ui->verticalLayouDownloadSource);
-    //
     //ui->gbMaschineConfigsDirectory->setLayout(ui->verticalLayoutMaschineConfigDirectory);
 }
 
@@ -112,21 +105,14 @@ void ClientSettingsWidget::showEvent(QShowEvent *event)
     //
     ui->cbShowSmallDhKeyHInt->setChecked(Settings::instance()->dhShowSmallKeyInformation());
 
+
+    ui->cbSendToTrayAfterConnect->setChecked(Settings::instance()->sendToTrayAfterConnect());
     // Connection
     //ui->cbInteract->setChecked(Settings::instance()->useInteract());
     //ui->cbAutoRestart->setChecked(Settings::instance()->autoRestart());
 
     //ui->cbAutoRestart->setVisible(false);
     //ui->cbInteract->setVisible(false);
-
-    // Update
-    ui->cbCheckUpdate->setChecked(Settings::instance()->enableUpdate());
-    if (Settings::instance()->useSecurepoint()) {
-        ui->rbSecurepoint->setChecked(true);
-    } else {
-        ui->rbSourceforge->setChecked(true);
-    }
-    ui->txtUpdateSource->setText(Settings::instance()->updateUrl());
 
     //
     //ui->txtMaschineConfigDirectory->setText(Settings::instance()->maschineConfigDirectory());
@@ -246,52 +232,6 @@ void ClientSettingsWidget::on_cbAutoRestart_toggled(bool checked)
     Settings::instance()->setAutoRestart(checked);
 }
 
-void ClientSettingsWidget::on_cbCheckUpdate_toggled(bool checked)
-{
-    //
-    // Update setting
-    //
-
-    Settings::instance()->setEnableUpdate(checked);
-}
-
-void ClientSettingsWidget::on_rbSecurepoint_toggled(bool checked)
-{
-    //
-    // Update setting
-    //
-
-    Settings::instance()->setUseSecurepoint(checked);
-}
-
-void ClientSettingsWidget::on_cmdChangeUpdateSource_clicked()
-{
-    //
-    // Change the update check url
-    //
-
-    if (ui->cmdChangeUpdateSource->text() == QObject::tr("Change")) {
-        // User want to change the url
-        ui->cmdChangeUpdateSource->setText(QObject::tr("Save"));
-        ui->txtUpdateSource->setReadOnly(false);
-    } else {
-        // Save the url and disable the field
-        ui->cmdChangeUpdateSource->setText(QObject::tr("Change"));
-        ui->txtUpdateSource->setReadOnly(true);
-        //
-        Settings::instance()->setUpdateUrl(ui->txtUpdateSource->text());
-    }
-}
-
-void ClientSettingsWidget::on_rbSourceforge_toggled(bool checked)
-{
-    //
-    // Update setting
-    //
-
-    Settings::instance()->setUseSecurepoint(!checked);
-}
-
 void ClientSettingsWidget::on_cmdAddTap_clicked()
 {
     QApplication::setOverrideCursor(Qt::WaitCursor);
@@ -340,4 +280,9 @@ void ClientSettingsWidget::on_cbStartOnWindows_clicked(bool checked)
 
     Settings::instance()->setStartOnWindows(checked);
     Settings::instance()->setRegEntryStartOnWindows(checked);
+}
+
+void ClientSettingsWidget::on_cbSendToTrayAfterConnect_toggled(bool checked)
+{
+    Settings::instance()->setSendToTrayAfterConnect(checked);
 }

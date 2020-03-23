@@ -2,7 +2,6 @@
 
 #include <qdatetime.h>
 #include <service/srvcli.h>
-#include <dialogs/FrmGetUserData.h>
 #include <database/crypt.h>
 #include <database/database.h>
 #include <message.h>
@@ -58,6 +57,14 @@ void ConnectionData::SetIP(const QString &ip)
     scriptDelay = timeOut.trimmed().toInt();
 
     QTimer::singleShot(scriptDelay, this, SLOT(startAfterConnectDelayed()));
+
+    // Send to tray check is a little bit delayed
+    QCoreApplication::processEvents();
+    //
+    QTimer::singleShot(500, this, [this] () {
+        // Call the send to tray check
+        FrmMain::instance()->checkIfSendToTrayIsNeeded();
+    });
 
     this->ip = ip;
 }
@@ -202,8 +209,7 @@ quint32 ConnectionData::GetLastUsed()
 
 void ConnectionData::SetLastUsed(quint32 lastUsed, bool bDb)
 {
-    if(bDb)
-    {
+    if(bDb) {
         QString sql;
         sql = QString("UPDATE vpn SET %1 = '%2' WHERE \"vpn-id\" = %3")
             .arg("\"vpn-last-used\"")
@@ -212,13 +218,13 @@ void ConnectionData::SetLastUsed(quint32 lastUsed, bool bDb)
 
         Database::instance()->execute(sql);
     }
+
     this->lastUsed = lastUsed;
 }
 
 void ConnectionData::SetLastConnected(quint32 lastConnected, bool bDb)
 {
-    if(bDb)
-    {
+    if(bDb) {
         QString sql;
         sql = QString("UPDATE vpn SET %1 = '%2' WHERE \"vpn-id\" = %3")
             .arg("\"vpn-last-connected\"")
@@ -227,6 +233,7 @@ void ConnectionData::SetLastConnected(quint32 lastConnected, bool bDb)
 
         Database::instance()->execute(sql);
     }
+
     this->lastConnected = lastConnected;
 }
 
@@ -237,8 +244,7 @@ ConnectionState ConnectionData::GetState()
 
 void ConnectionData::SetState(ConnectionState state, bool bDb)
 {
-    if(bDb)
-    {
+    if(bDb) {
         QString sql;
         sql = QString("UPDATE vpn SET %1 = '%2' WHERE \"vpn-id\" = %3")
             .arg("\"vpn-state\"")
@@ -246,20 +252,21 @@ void ConnectionData::SetState(ConnectionState state, bool bDb)
             .arg(this->GetId());
 
         Database::instance()->execute(sql);
+
+        if(state == ConnectionState::Disconnected) {
+            runScript("AD");
+        }
+        else if(state == ConnectionState::Error) {
+            runScript("EC");
+        }
     }
+
     this->state = state;
 
-    if(state == ConnectionState::Disconnected)
-    {
-        runScript("AD");
-    }
-    else if(state == ConnectionState::Error)
-    {
-        runScript("EC");
+    if(FrmMain::instanceCheck() && FrmMain::instance()) {
+        FrmMain::instance()->setIcon();
     }
 
-    if(FrmMain::instanceCheck() && FrmMain::instance())
-        FrmMain::instance()->setIcon();
 }
 
 void ConnectionData::SetAutoStart(bool bAutoStart)
