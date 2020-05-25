@@ -20,7 +20,8 @@ ConnectionData::ConnectionData(QObject *parent)
       state (ConnectionState::Disconnected),
       lastUsed(0),
       lastConnected(0),
-      user(true)
+      user(false),
+      errorAlreadyFired(false)
 {
 }
 
@@ -210,13 +211,9 @@ quint32 ConnectionData::GetLastUsed()
 void ConnectionData::SetLastUsed(quint32 lastUsed, bool bDb)
 {
     if(bDb) {
-        QString sql;
-        sql = QString("UPDATE vpn SET %1 = '%2' WHERE \"vpn-id\" = %3")
-            .arg("\"vpn-last-used\"")
-            .arg((int)lastUsed)
-            .arg(this->GetId());
-
-        Database::instance()->execute(sql);
+        Database::instance()->execute(QString("UPDATE vpn SET \"vpn-last-used\" = '%1' WHERE \"vpn-id\" = %2;")
+                                      .arg((int)lastUsed)
+                                      .arg(this->GetId()));
     }
 
     this->lastUsed = lastUsed;
@@ -226,8 +223,7 @@ void ConnectionData::SetLastConnected(quint32 lastConnected, bool bDb)
 {
     if(bDb) {
         QString sql;
-        sql = QString("UPDATE vpn SET %1 = '%2' WHERE \"vpn-id\" = %3")
-            .arg("\"vpn-last-connected\"")
+        sql = QString("UPDATE vpn SET \"vpn-last-connected\" = '%1' WHERE \"vpn-id\" = %2")
             .arg((int)lastConnected)
             .arg(this->GetId());
 
@@ -242,39 +238,43 @@ ConnectionState ConnectionData::GetState()
     return state;
 }
 
-void ConnectionData::SetState(ConnectionState state, bool bDb)
+void ConnectionData::SetState(ConnectionState newState, bool bDb)
 {
     if(bDb) {
         QString sql;
-        sql = QString("UPDATE vpn SET %1 = '%2' WHERE \"vpn-id\" = %3")
-            .arg("\"vpn-state\"")
-            .arg((int)state)
+        sql = QString("UPDATE vpn SET \"vpn-state\" = '%1' WHERE \"vpn-id\" = %2")
+            .arg((int)newState)
             .arg(this->GetId());
 
         Database::instance()->execute(sql);
 
-        if(state == ConnectionState::Disconnected) {
+        if(newState == ConnectionState::Disconnected && (this->state == ConnectionState::Connected || this->state == ConnectionState::Disconnecting)) {
             runScript("AD");
-        }
-        else if(state == ConnectionState::Error) {
-            runScript("EC");
+        } else if(newState == ConnectionState::Error) {
+            // Check if we already call the error script
+            if (!errorAlreadyFired) {
+                runScript("EC");
+                // Call script only once on each connect
+                errorAlreadyFired = true;
+            }
+        } else if(newState == ConnectionState::Connecting) {
+            // Reset error flag on connecting
+            errorAlreadyFired = false;
         }
     }
 
-    this->state = state;
+    this->state = newState;
 
     if(FrmMain::instanceCheck() && FrmMain::instance()) {
         FrmMain::instance()->setIcon();
     }
-
 }
 
 void ConnectionData::SetAutoStart(bool bAutoStart)
 {
     {
         QString sql;
-        sql = QString("UPDATE vpn SET %1 = '%2' WHERE \"vpn-id\" = %3")
-            .arg("\"vpn-autostart\"")
+        sql = QString("UPDATE vpn SET \"vpn-autostart\" = '%1' WHERE \"vpn-id\" = %2")
             .arg(bAutoStart ? "1" : "0")
             .arg(this->GetId());
 
@@ -367,8 +367,7 @@ bool ConnectionData::Connect()
                                                     + QLatin1String (";")
                                                     + (Settings::instance()->useInteract() ? QLatin1String("0") : QLatin1String("1"))
                                                     + QLatin1String (";")
-                                                    + makeProxyString().join(" "));
-    return true;
+                                                    + makeProxyString().join(" "));   
 }
 
 void ConnectionData::saveUserData(int id, int type, QString value, bool save)
@@ -379,6 +378,8 @@ void ConnectionData::saveUserData(int id, int type, QString value, bool save)
     if (!save) {
         return;
     }
+
+    bool needUserDataStateUpdate (false);
     // Welcher type wurde übergeben
     // 0 - Username
     // 1 - Pwd
@@ -388,27 +389,44 @@ void ConnectionData::saveUserData(int id, int type, QString value, bool save)
     QString field;
     if (type == 0) {
         field = QLatin1String("\"vpn-user\"");
+        needUserDataStateUpdate = true;
     } else if (type == 1) {
         field = QLatin1String("\"vpn-password\"");
+        needUserDataStateUpdate = true;
     } else if (type == 3) {
         field = QLatin1String("\"vpn-pkcs12\"");
     } else if (type == 5) {
         field = QLatin1String("\"vpn-http-user\"");
     } else if (type == 6) {
         field = QLatin1String("\"vpn-http-password\"");
+    } else {
+        return;
     }
-
 
     if (!value.isEmpty()) {
-        value = Crypt::encodePlaintext(value.toUtf8());
+        value = "'" + Crypt::encodePlaintext(value.toUtf8()) + "'";
+    } else {
+        // On empty values we need to the it to null dur to the coalesce for the credential available check
+        value = "null";
     }
 
-    QString sql(QString("UPDATE vpn SET %1 = '%2' WHERE \"vpn-id\" = %3")
+    QString sql(QString("UPDATE vpn SET %1 = %2 WHERE \"vpn-id\" = %3")
                 .arg(field)
                 .arg(value)
                 .arg(this->GetId()));
 
     Database::instance()->execute(sql);
+
+    // Check for userdata update
+    if (needUserDataStateUpdate) {
+        QScopedPointer<QSqlQuery> query (Database::instance()->openQuery(QString ("SELECT coalesce(\"vpn-user\",\"vpn-password\", 0) AS CREDENTIAL_STATE FROM vpn WHERE \"vpn-id\" = %1;")
+                                                                         .arg(this->GetId())));
+        // Data must be available
+        if (query->first()) {
+            // Now check the value
+            this->SetUserConfig(query->value(0).toString() == "0" ? false : true);
+        }
+    }
 }
 
 bool ConnectionData::HasCrediantials(int type)
@@ -526,7 +544,11 @@ QString ConnectionData::getSavedUserData(int type)
 
 bool ConnectionData::Disconnect()
 {
-    runScript("BD");
+    // Only call the befor disconnect script after! we make an stable connection
+    if (this->state == ConnectionState::Connected) {
+        runScript("BD");
+    }
+
     return SrvCLI::instance()->send(QLatin1String("Close"), QString::number(GetId()));
 }
 

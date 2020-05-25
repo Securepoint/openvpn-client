@@ -23,22 +23,22 @@ SrvCLI::SrvCLI()
     QObject::connect (&this->sslSocket, SIGNAL(peerVerifyError(QSslError)), this, SLOT(slot_peerVerifyError(QSslError)));
     QObject::connect (&this->sslSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(slot_stateChanged(QAbstractSocket::SocketState)));
 
-    QObject::connect(&this->sslSocket, SIGNAL(connected()), SLOT(slotAcceptedClient()));
     QObject::connect(&this->sslSocket, SIGNAL(disconnected()), SLOT(slotConnectionClosed()));
     QObject::connect(&this->sslSocket, SIGNAL(readyRead()), SLOT(slotStartRead()));
     QObject::connect(&this->sslSocket, SIGNAL(error(QAbstractSocket::SocketError)), SLOT(slotError(QAbstractSocket::SocketError)));
 }
 
-bool SrvCLI::send(const QString &command, const QString &params, bool fastmode)
+bool SrvCLI::send(const QString &command, const QString &params)
 {
     if (!this->connectionIsOnline){
-        if (!this->makeConnection(fastmode)) {
+        if (!this->makeFastConnection()) {
             // Keine Verbindung
             return false;
         }
     }
 
     this->sendRequest(command, params);
+    //
     return true;
 }
 
@@ -134,7 +134,7 @@ void SrvCLI::resetConnection()
     }
 }
 
-bool SrvCLI::makeConnection(bool fastmode)
+bool SrvCLI::makeFastConnection()
 {
     if (this->sslSocket.state() != QAbstractSocket::UnconnectedState) {
         qDebug() << "socket is not in unconnected state";
@@ -142,24 +142,16 @@ bool SrvCLI::makeConnection(bool fastmode)
         return true;
     }
 
-    static int requestErrorCount = 0;
     //
     this->sslSocket.connectToHost(QLatin1String("127.0.0.1"), 3656);
     //
-
-    if (!this->sslSocket.waitForConnected(5000)) {
-        requestErrorCount++;
-        if (fastmode || requestErrorCount == 3) {
-            requestErrorCount = 0;
-            qDebug() << "Connect to service failed";
-            return false;
-        } else {
-            return this->makeConnection(fastmode);
-        }
+    if (!this->sslSocket.waitForConnected(1900)) {
+        qDebug() << "Connect to service failed";
+        //
+        return false;
     }
 
-    // Hat alles geklappt
-    requestErrorCount = 0;
+    // All fine, set new state
     this->connectionIsOnline = true;
 
     return true;
@@ -322,7 +314,6 @@ void SrvCLI::slotStartRead()
             emit receivedIP(cId.toInt(), cIP);
         }
     } else if(command == QLatin1String("REMOVE_USER_DATA")) {
-         qDebug() << "Unknown command";
         emit needUserInput(params.toInt(), -1);
     } else if(command == QLatin1String("GETLOG")) {
         QStringList fields (params.split(";"));

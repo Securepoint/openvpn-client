@@ -11,10 +11,10 @@ class SrvCLI : public QObject
     Q_OBJECT
 public:
     static SrvCLI *instance ();
-    bool send (const QString &command, const QString &params=QString(""), bool fastmode = false);
+    bool send (const QString &command, const QString &params=QString(""));
     void resetConnection ();
     bool isOnline () const;
-    bool makeConnection (bool fastmode);
+    bool makeFastConnection ();
     void closeConnection();
 private:
     static SrvCLI *mInst;

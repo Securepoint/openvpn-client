@@ -186,6 +186,8 @@ void ExportWidget::showEvent(QShowEvent *event)
     // Clear all fields
     //
 
+    Q_UNUSED(event)
+
     ui.txtDestFile->clear();
     ui.txtExportKey->clear();
 }

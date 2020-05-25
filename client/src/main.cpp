@@ -190,10 +190,20 @@ bool globalSaveUserData (true);
 bool g_bSilent = false;
 #ifdef _PORTABLE
 bool g_bPortable = true;
-#pragma message("Compiling Portable")
+#pragma message("COMPILLING PORTABLE VERSION")
 #else
 bool g_bPortable = false;
-#pragma message("Compiling Normal")
+#pragma message("===========================")
+#pragma message("COMPILLING SERVICE VERSION")
+#endif
+
+// Multiclient uses QCoreApplication
+// Singleclient uses SingleApplication
+#ifdef MULTICLIENT
+#pragma message("USE MULTICLIENT")
+#else
+#pragma message("USE SINGLECLIENT")
+#pragma message("===========================")
 #endif
 bool g_bDebug = false;
 
@@ -315,7 +325,7 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext & context, const Q
 
  QString g_strClientName;
 
- static const char* g_szVersion = "2.0.28";
+ static const char* g_szVersion = "2.0.29";
 
  void PrintHelp()
  {
@@ -345,7 +355,7 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext & context, const Q
 #include <cmath>
 
 
- float windowsDpiScale();
+float windowsDpiScale();
 
 int CALLBACK WinMain (_In_  HINSTANCE hInstance,
   _In_  HINSTANCE hPrevInstance,
@@ -377,7 +387,11 @@ int CALLBACK WinMain (_In_  HINSTANCE hInstance,
 
     // TODO: Remove qt 5.6 high dpi support until all custom crap is removed
     // QApplication::setDesktopSettingsAware(false);
+#ifdef MULTICLIENT
+    QApplication a(argc, (char**)argv);
+#else
     SingleApplication a(argc, (char**)argv);
+#endif
 
     PreventShutdownEventFilter preventShutdownEventFilter;
     a.installNativeEventFilter(&preventShutdownEventFilter);
@@ -402,6 +416,8 @@ int CALLBACK WinMain (_In_  HINSTANCE hInstance,
         Settings::instance()->setManaged(true);
     }
 
+    int startDaemonDelay (0);
+
     bool  loadGermanTranslation(false);
     // Handle CLI
     for (int x = 1; x < argc; x++) {
@@ -414,6 +430,8 @@ int CALLBACK WinMain (_In_  HINSTANCE hInstance,
             g_bSilent = true;
         } else if(!strcmp(argv[x], "-debug")) {
             g_bDebug = true;
+        } else if(!strcmp(argv[x], "-delayDaemon" ) && x + 1 < argc) {
+            startDaemonDelay = QString(argv[x + 1]).toInt();
         } else if(!strcmp(argv[x], "-start") && x + 3 < argc) {
             QString startConfigPath = argv[x + 1];
             QString startUsername = argv[x + 2];
@@ -674,15 +692,18 @@ int CALLBACK WinMain (_In_  HINSTANCE hInstance,
         }
     }
 
+#ifndef MULTICLIENT
     a.setSharedKey(key);
 
     // Only check if its installed client instance
     // Check if SSL Vpn client already running
     if (!g_bPortable && a.isRunning()) {
+        //
         a.sendMessage("Someone is out there");
+        //
         return 0;
     }
-
+#endif
     // Check if the service is already running, if not start it with -e
     if(g_bPortable)
     {
@@ -815,10 +836,15 @@ int CALLBACK WinMain (_In_  HINSTANCE hInstance,
     // Initialize the service connection stuff
     FrmMain::instance()->initDaemon();
 
-    // Start async connect to service
-    auto func = std::bind(&FrmMain::startDaemon, FrmMain::instance());
-    auto handle = std::thread(func);
-    handle.detach();
+    // Preventing service timeout, when we are starting with windows
+    // somethimes the services isn't already full started
+    QTimer::singleShot(startDaemonDelay, []() {
+        // Start async connect to service
+        auto func = std::bind(&FrmMain::startDaemon, FrmMain::instance());
+        auto handle = std::thread(func);
+        handle.detach();
+    });
+
 
     // Speed up first double click
     FrmMain::instance()->showNormal();

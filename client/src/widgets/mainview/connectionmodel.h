@@ -16,8 +16,8 @@ public:
     virtual QVariant data(const QModelIndex &index, int role) const;
 	virtual bool setData(const QModelIndex &index, const QVariant &value, int role);
 
-    void AddConnection(ConnectionData * pConnection, bool bSystem = false, int bDivider = 0);
-     ConnectionData * GetConnection(int index);
+    void AddConnection(ConnectionData * pConnection);
+    ConnectionData * GetConnection(int index);
     ConnectionData * GetConnection(const QModelIndex &index);
     void Reset();
 
@@ -27,13 +27,9 @@ private:
 	{
 		ConnectionData * pConnection;
 		int state;
-        bool bDivider;
 	};
 
-    ListItemData * dividerItem;
-
     QList<ListItemData*> connections;
-    QList<ListItemData*> systemConnections;
 };
 
 #endif // CONNECTIONMODEL_H

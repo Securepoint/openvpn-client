@@ -175,7 +175,7 @@ void ClientSettingsWidget::receivedTapCount(int count)
 
 void ClientSettingsWidget::on_cbStartOnWindows_toggled(bool checked)
 {
-
+    Q_UNUSED(checked)
 }
 
 void ClientSettingsWidget::on_cbBlockShutdown_toggled(bool checked)

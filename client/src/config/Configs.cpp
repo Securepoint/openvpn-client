@@ -14,8 +14,7 @@ Configs * Configs::m_Inst = nullptr;
 // On windows this is faster than QFile::exists
 inline bool FileExists (const char* name)
 {
-    if(INVALID_FILE_ATTRIBUTES == GetFileAttributesA(name) && GetLastError() == ERROR_FILE_NOT_FOUND)
-    {
+    if(INVALID_FILE_ATTRIBUTES == GetFileAttributesA(name) && GetLastError() == ERROR_FILE_NOT_FOUND) {
         //File not found
         return false;
     }
@@ -24,7 +23,7 @@ inline bool FileExists (const char* name)
 
 void Configs::refreshConfigs()
 {
-    QLatin1String configSql("SELECT \"vpn-id\", \"vpn-name\", \"vpn-config\", \"vpn-autostart\", \"vpn-state\", \"vpn-last-used\", \"vpn-last-connected\", \"vpn-last-error\" FROM vpn;");
+    QLatin1String configSql("SELECT \"vpn-id\", \"vpn-name\", \"vpn-config\", \"vpn-autostart\", \"vpn-state\", \"vpn-last-used\", \"vpn-last-connected\", \"vpn-last-error\", coalesce(\"vpn-user\",\"vpn-password\", 0) AS CREDENTIAL_STATE FROM vpn;");
     QScopedPointer<QSqlQuery> configQuery (Database::instance()->openQuery(configSql));
         //
     QString vpnName = "";
@@ -67,10 +66,10 @@ void Configs::refreshConfigs()
 
         // Hack to get correct state in status, this will only show the corrected states when a window is created
         // Not a good solution, but it works and its easy
-        if(FrmMain::instanceCheck())
-        {
-            if(state == ConnectionState::Connected || state == ConnectionState::Connecting || state == ConnectionState::Disconnecting)
+        if(FrmMain::instanceCheck()) {
+            if(state == ConnectionState::Connected || state == ConnectionState::Connecting || state == ConnectionState::Disconnecting) {
                 state = ConnectionState::Disconnected;
+            }
         }
         ConnectionData* obj = new ConnectionData();
 
@@ -88,23 +87,26 @@ void Configs::refreshConfigs()
         obj->SetLastConnected(configQuery->value(6).toUInt(), false /* dont write to database */);
         obj->SetError(configQuery->value(7).toString());
 
+        // Handle saved credential state, coalesce must be not equal to 0
+        const QString credentialsAreSet = configQuery->value(8).toString();
+        // Now check the value
+        obj->SetUserConfig(credentialsAreSet == "0" ? false : true);
+
+        // Append config to list
         this->myList.append(qMakePair(vpnId, obj));
     }
 
     std::list<int> removedIds;
-    for(auto item : this->myList)
-    {
+    for(auto item : this->myList) {
         removedIds.push_back(item.first);
     }
 
-    for(auto vpnId : vpnIds)
-    {
+    for(auto vpnId : vpnIds) {
         removedIds.remove(vpnId);
     }
 
 
-    if(removedIds.size() > 0)
-    {
+    if(removedIds.size() > 0) {
         QMutableListIterator<QPair<int, ConnectionData*> > i(this->myList);
 
         while (i.hasNext()) {
@@ -126,11 +128,6 @@ void Configs::refreshConfigs()
 
     // sort the list by name
     std::sort(this->myList.begin(), this->myList.end(), [](QPair<int, ConnectionData*> a, QPair<int, ConnectionData*> b) -> bool {return a.second->GetName().toLower() < b.second->GetName().toLower();});
-
-   /* for(const auto con : Configs::instance()->GetList())
-    {
-        SrvCLI::instance()->send(QLatin1String("STATUS"), QString("%1").arg(con.second->GetId()));
-    }*/
 }
 
 void Configs::removeFromDatabase(int id)
@@ -157,29 +154,6 @@ void Configs::addConfigToDatabase(const ConfigData &data)
          .arg(data.removeOnStart));
 
      Database::instance()->execute(sql);
-}
-
-void Configs::clearConfigs()
-{
-    //
-    // Löscht die Liste der Verbindungen, bis auf Konfiguration, die sich gerade verbinden, verbunden sind oder einen Fehler haben
-    //
-
-    // OD: Mutable List statt foreach
-    QMutableListIterator<QPair<int, ConnectionData*> > i(this->myList);
-
-    while (i.hasNext()) {
-        QPair <int, ConnectionData*> entry = i.next();
-        ConnectionData *obj = entry.second;
-
-       /* if (!obj->isConnectionStable() && !obj->isConnecting() && !obj->isError())*/ {
-            // Objekt löschen
-            delete obj;
-            obj = 0;
-            // Nun aus der Liste entfernen
-            i.remove();
-        }
-    }
 }
 
 void Configs::cleanupConfigs()
@@ -270,6 +244,8 @@ ConnectionData *Configs::configWithId(int id)
             return obj;
         }
     }
+
+    return nullptr;
 }
 
 bool Configs::ConfigExists(const QString &name)

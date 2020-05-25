@@ -23,7 +23,8 @@ OpenVpn::OpenVpn (SrvCLI * srvCLI)
       procScripts (0),
       proxyString (""),
       _srvCLI(srvCLI),
-      retryMultiHostCount(0)
+      retryMultiHostCount(0),
+      connectionIsAOtpConnection(false)
 {
 
 }
@@ -493,6 +494,15 @@ void OpenVpn::readProcessData()
             errorOcurred = false;
         }
 
+        if(lineOut.contains("Please enter token PIN", Qt::CaseInsensitive)) {
+            Debug::log(QLatin1String("Found otp connection"));
+            //
+            this->connectionIsAOtpConnection = true;
+            //
+            errorOcurred = false;
+            showLine = false;
+        }
+
         if (errorOcurred) {
             this->connectionStable = false;
             _srvCLI->send(QString("%1;%2")
@@ -505,7 +515,9 @@ void OpenVpn::readProcessData()
 
         if(lineOut.contains("Received control message: AUTH_FAILED", Qt::CaseInsensitive)) {
             // OTP Line: AUTH_FAILED,CRV1:R,E:----:----:Please enter token PIN
-            if(!lineOut.contains("Please enter token PIN", Qt::CaseInsensitive)) {
+            if(!this->connectionIsAOtpConnection) {
+                Debug::log(QLatin1String("Sending remove user data"));
+                //
                 _srvCLI->send(QString ("%1").arg(this->id()), QLatin1String("REMOVE_USER_DATA"));
             }
         }

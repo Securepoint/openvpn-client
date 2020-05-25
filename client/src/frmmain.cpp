@@ -661,12 +661,11 @@ LRESULT wndproc1(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 FrmMain::FrmMain()
     : ui(new Ui::FrmMain),
       widgetFactory(new WidgetFactory),
-      version("2.0.28"),
+      version("2.0.29"),
       updateState(0),
       lastUpdateState(-1),
       isReconnect(false),
       tapCount(0),
-      closing(false),
       installingTap(false),
       qCurrentArrow(nullptr),
       updateUITimer(nullptr)
@@ -951,42 +950,34 @@ bool connectedToService = false;
 
 void FrmMain::closeApplication()
 {
-    if(Settings::instance()->blockShutdown())
-    {
+    if(Settings::instance()->blockShutdown()) {
         // Check for shutdown, so ask to close connections, if connected
-        for(const auto &con : Configs::instance()->getList())
-        {
-            if(con.second->GetState() == ConnectionState::Connected)
-            {
-                if(Message::confirm(QObject::tr("You are currently connected. Do you want to close the connection(s)?"), QObject::tr("Please confirm"), true))
-                {
-                    for(const auto &conDis : Configs::instance()->getList())
-                    {
+        for(const auto &con : Configs::instance()->getList()) {
+            if(con.second->GetState() == ConnectionState::Connected) {
+                if(Message::confirm(QObject::tr("You are currently connected. Do you want to close the connection(s)?"), QObject::tr("Please confirm"), true)) {
+                    for(const auto &conDis : Configs::instance()->getList()) {
                         conDis.second->Disconnect();
                     }
+                    //
                     break;
-                }
-                else
-                {
+                } else {
                     return;
                 }
             }
         }
-
     }
+
     //
     // Exit the vpn client
     //
-
     this->trayIcon->hide();
 
-    closing = true;
-
+    // Fullfil all waiting conditions
     cvStartDaemon.notify_all();
+
     //
     QCoreApplication::processEvents();
     //
-
     QCoreApplication::exit();
 }
 
@@ -1428,7 +1419,7 @@ bool FrmMain::initDaemon()
 
 void FrmMain::connectToService()
 {
-    if(SrvCLI::instance()->makeConnection(false)) {
+    if(SrvCLI::instance()->makeFastConnection()) {
         cvStartDaemon.notify_all();
     }
 }
@@ -1447,8 +1438,6 @@ bool FrmMain::startDaemon()
     bool success (false);
 
     do {
-        success = true;
-
         // This extra scope is for the unique lock
         {
             if(!SrvCLI::instance()->isOnline()) {
@@ -1457,9 +1446,9 @@ bool FrmMain::startDaemon()
 
                 // Lock and wait for notify until timeout is reached
                 std::unique_lock<std::mutex> lk(mutexStartDaemon);
-                if(cvStartDaemon.wait_for(lk, std::chrono::milliseconds(2000)) != std::cv_status::no_timeout) {
+                if(cvStartDaemon.wait_for(lk, std::chrono::milliseconds(2000)) == std::cv_status::no_timeout) {
                     // Timeout
-                    success = false;
+                    success = true;
                 }
             }
         }
@@ -1473,21 +1462,12 @@ bool FrmMain::startDaemon()
 
             // Lock and wait for notify until timeout is reached
             std::unique_lock<std::mutex> lk(mutexStartDaemon);
-            if (cvStartDaemon.wait_for(lk, std::chrono::milliseconds(2000)) != std::cv_status::no_timeout) {
-                // Timeout
-                success = false;
+            if (cvStartDaemon.wait_for(lk, std::chrono::milliseconds(2000)) == std::cv_status::no_timeout) {
+                // All fine, exit loop
+                qDebug() << QString("Service connection is stable");
+                //
+                break;
             }
-        }
-
-        // WTF, alex
-        if(closing) {
-            // If we are closing
-            closing = false;
-        }
-
-        // Increment tries
-        if(!success) {
-            ++tries;
         }
 
         // Check for events which needed to process
@@ -1496,67 +1476,57 @@ bool FrmMain::startDaemon()
         }
 
         //
-        qDebug() << QString(QString("Pref: Connect try: No.: %1 Success: %2")
-                           .arg(tries)
-                           .arg(success));
+        qDebug() << QString(QString("Connect try: No.: %1 failed")
+                           .arg(++tries));
 
-    } while ((!success) && (tries < 3));
+        if(tries > 5) {
+            // Okay thats it, bye bye
+            SendMessage(mainHWND, FAILED_TO_CONNECT, NULL, NULL);
+            //
+            return false;
+        }
+    } while (true);
 
     connectedToService = true;
-    closing = false;
 
-    if(!success) {
-        SendMessage(mainHWND, FAILED_TO_CONNECT, NULL, NULL);
-        //
-        return false;
+    // Get the tap count
+    SendMessage(mainHWND, RECEIVE_TAP_COUNT, NULL, NULL);
+
+    int autoStartCount = 0;
+    // Get the number of tap devices we have to install
+    for(const auto& con : Configs::instance()->getList()) {
+        if(con.second->IsAutoStart()) {
+            ++autoStartCount;
+        }
+    };
+
+    // Wait for the tap count to be received
+    {
+        std::unique_lock<std::mutex> lk(mutex_first_tap_count);
+        cv_first_tap_count.wait(lk, []{ return received_first_tap_count; } /* this is not necessary, but allows use with special condition */);
     }
 
-    if(success)
-    {
-        SendMessage(mainHWND, RECEIVE_TAP_COUNT, NULL, NULL);
-
-         int autoStartCount = 0;
-        // Get the number of tap devices we have to install
-        for(const auto& con : Configs::instance()->getList())
-        {
-            if(con.second->IsAutoStart())
-                ++autoStartCount;
-        };
+    while(this->tapCount < autoStartCount) {
+        // Set the bool for first tap count to false so the below code blocks and waits for the tap count to be received
+        received_first_tap_count = false;
+        SendMessage(mainHWND, INSTALL_TAP_DEVICE, NULL, NULL);
 
         // Wait for the tap count to be received
-        {
-            std::unique_lock<std::mutex> lk(mutex_first_tap_count);
-            cv_first_tap_count.wait(lk, []{ return received_first_tap_count; } /* this is not necessary, but allows use with special condition */);
-        }
+        std::unique_lock<std::mutex> lk(mutex_first_tap_count);
+        cv_first_tap_count.wait(lk, []{ return received_first_tap_count; } /* this is not necessary, but allows use with special condition */);
+    }
 
-        while(this->tapCount < autoStartCount)
-        {
-            // Set the bool for first tap count to false so the below code blocks and waits for the tap count to be received
-            received_first_tap_count = false;
-            SendMessage(mainHWND, INSTALL_TAP_DEVICE, NULL, NULL);
+    // Now start all the autostart configs
+    for(const auto& con : Configs::instance()->getList()) {
+        if(con.second->IsAutoStart()) {
+            con.second->Connect();
 
-            // Wait for the tap count to be received
-            std::unique_lock<std::mutex> lk(mutex_first_tap_count);
-            cv_first_tap_count.wait(lk, []{ return received_first_tap_count; } /* this is not necessary, but allows use with special condition */);
-        }
-
-        // Now start all the autostart configs
-        for(const auto& con : Configs::instance()->getList())
-        {
-            if(con.second->IsAutoStart())
-            {
-                con.second->Connect();
-
-                // Wait so we dont spam and the service has enough time to initialize the connect so we dont try to connec on the same tap device
-                std::this_thread::sleep_for(std::chrono::milliseconds(300));
-            }
+            // Wait so we dont spam and the service has enough time to initialize the connect so we dont try to connec on the same tap device
+            std::this_thread::sleep_for(std::chrono::milliseconds(300));
         }
     }
 
-    connectedToService = true;
-    closing = false;
-
-    return success;
+    return true;
 }
 
 void FrmMain::trayActivated(QSystemTrayIcon::ActivationReason reason)
@@ -1991,7 +1961,14 @@ void FrmMain::userInputIsNeeded(int id, int type)
             {
                 pConnection->saveUserData(id, i, "", true);
             }
+            //
+            QApplication::processEvents();
+
+            ((MainListView*)widgetFactory->widget(MainView))->update();
+            ((MainListView*)widgetFactory->widget(MainView))->repaint();
         }
+
+
 
         return;
     }

@@ -24,7 +24,6 @@ SslServerConnection::SslServerConnection(QObject *parent)
     this->socket->setProtocol(QSsl::AnyProtocol);
 
     // Now bind some signal of the ssl socket
-    QObject::connect(socket, SIGNAL(connected()), SLOT(slotAcceptedClient()));
     QObject::connect(socket, SIGNAL(disconnected()), socket, SLOT(deleteLater()));
     QObject::connect(socket, SIGNAL(disconnected()), SLOT(slotConnectionClosed()));
     QObject::connect(socket, SIGNAL(readyRead()), SLOT(slotStartRead()));
@@ -216,7 +215,7 @@ void SslServerConnection::slotStartRead()
             emit receivedIP(cId.toInt(), cIP);
         }
     } else if(command == QLatin1String("REMOVE_USER_DATA")) {
-         qDebug() << "Unknown command";
+        qDebug() << "SSL Server receive remove user data";
         emit needUserInput(params.toInt(), -1);
     } else if(command == QLatin1String("GETLOG")) {
         // Neuen Block zum Senden erstellen

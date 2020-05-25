@@ -81,11 +81,11 @@ void ConfigSettingsWidget::SetId(int id)
 
 void ConfigSettingsWidget::on_cmdRemoveCreds_clicked()
 {
-    auto pConnection = ((MainListView*)FrmMain::instance()->mainWidget()->widget(MainView))->model.GetConnection(id);
-
-    for(int i = 0; i < 7; ++i)
-    {
-        pConnection->saveUserData(id, i, "", true);
+    auto currentConnection = ((MainListView*)FrmMain::instance()->mainWidget()->widget(MainView))->model.GetConnection(id);
+    // There are 7 user data types available, damn maginc number
+    for(int userDataTypeIndex = 0; userDataTypeIndex < 7; ++userDataTypeIndex) {
+        // Empty third argument overrides saved data
+        currentConnection->saveUserData(id, userDataTypeIndex, "", true);
     }
 
     Message::information(QObject::tr("User data has been deleted successfully"), QObject::tr("User Information"), FrmMain::instance());

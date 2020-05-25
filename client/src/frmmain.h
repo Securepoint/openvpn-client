@@ -24,7 +24,6 @@ private:
     bool isReconnect;
     int tapCount;
     bool installingTap;
-    bool closing;
 
 public:
     static FrmMain *instance ();

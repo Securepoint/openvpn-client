@@ -76,6 +76,7 @@ private:
     quint32 id;
     bool autostart;
     bool user;
+    bool errorAlreadyFired;
     ConnectionState state;
 
 public slots:

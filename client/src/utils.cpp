@@ -325,80 +325,82 @@ std::string Utils::GetProcessNameFromPID( DWORD processID )
 
 bool Utils::IsProcessRunning(const char* processName)
 {
-    DWORD aProcesses[1024], cbNeeded, cProcesses;
-    unsigned int i;
+    DWORD processList[1024];
+    DWORD bytesofReturningList;
+    DWORD processCount;
 
-    if ( !EnumProcesses( aProcesses, sizeof(aProcesses), &cbNeeded ) )
-    {
-        return 1;
+    if (!EnumProcesses(processList, sizeof(processList), &bytesofReturningList)) {
+        //
+        return true;
     }
 
-
     // Calculate how many process identifiers were returned.
+    processCount = bytesofReturningList / sizeof(DWORD);
 
-    cProcesses = cbNeeded / sizeof(DWORD);
+    // Check the name for each process.
+    for (int processIndex = 0; processIndex < processCount; ++processIndex) {
+        if(processList[processIndex] == 0) {
+            continue;
+        }
 
-    // Print the name and process identifier for each process.
-
-    for ( i = 0; i < cProcesses; i++ )
-    {
-        if( aProcesses[i] != 0 )
-        {
-            if(GetProcessNameFromPID(aProcesses[i]) == processName) {
-                return true;
-            }
+        // Get the name of the pid
+        if (GetProcessNameFromPID(processList[processIndex]) == processName) {
+            //
+            return true;
         }
     }
 
+    // Default return is false
     return false;
 }
 
 bool Utils::IsVPNServiceRunning()
 {
-    SC_HANDLE hScManager =  OpenSCManagerA(0, // local computer or add computer name here
-                                         0, // SERVICES_ACTIVE_DATABASE database is opened by default.
-                                         GENERIC_READ); // onyl read info
-    if(0 != hScManager) {
-        SC_HANDLE hSvc = OpenServiceA(hScManager,    // service manager
-                                     "Securepoint VPN",     // service name
-                                     GENERIC_READ); // onyl read info
-        if(0 != hSvc) {
-            SERVICE_STATUS_PROCESS sInfo;
-            DWORD bytesNeeded = 0;
-            //
-            if(QueryServiceStatusEx(hSvc,                   // A handle to the service.
-                                    SC_STATUS_PROCESS_INFO, // info requested
-                                    (LPBYTE)&sInfo,                 // structure to load info to
-                                    sizeof(sInfo),          // size of the buffer
-                                    &bytesNeeded)) {
-                // Default is true, otherwise myReturn is set by IsProcessRunning
-                bool myReturn (true);
-                //
-                if(sInfo.dwCurrentState != SERVICE_RUNNING) {
-                    myReturn = IsProcessRunning("SPSSLVpnService.exe");
-                }
-
-                // Cleanup service and manager
-                CloseServiceHandle(hSvc);
-                CloseServiceHandle(hScManager);
-
-                //
-                return myReturn;
-            }
-
-            // Cleanup service and manager
-            CloseServiceHandle(hSvc);
-            CloseServiceHandle(hScManager);
-        } else {
-            // Cleanup service manager
-            CloseServiceHandle(hScManager);
-        }
-    } else {
-        // Check the process
+    // Get a handle to the service manager
+    // Params: local computer,SERVICES_ACTIVE_DATABASE(default) and read only
+    SC_HANDLE handleOfServiceManager =  OpenSCManagerA(0, 0, GENERIC_READ);
+    // No handle, service is not installed, check the running state of the serive executable.
+    // Maybe we are in portable mode or the service manager is still not ready yet
+    if(handleOfServiceManager == 0) {
+        // Return the state if the process is running
         return IsProcessRunning("SPSSLVpnService.exe");
     }
 
-    return false;
+    // Handle to service manager is valid, try to open the service
+    // Params: Handle of service manager, service name and read only access
+    SC_HANDLE handleOfService = OpenServiceA(handleOfServiceManager, "Securepoint VPN", GENERIC_READ);
+
+    // Check if we got the handle
+    if(handleOfService == 0) {
+        // Close service manager
+        CloseServiceHandle(handleOfServiceManager);
+        //
+        return false;
+    }
+
+    // Default it is running, otherwise we set the state later
+    bool serviceIsRunning (true);
+
+    // Service handle is valid, now get the status
+    // Params: Service handle, status type info, target struct, size of target struct, bytes returned
+    SERVICE_STATUS_PROCESS serviceInfo;
+    DWORD bytesNeeded = 0;
+    //
+    if(QueryServiceStatusEx(handleOfService, SC_STATUS_PROCESS_INFO, (LPBYTE)&serviceInfo, sizeof(serviceInfo), &bytesNeeded) == 0) {
+        serviceIsRunning = false;
+    }
+
+    // If the service is not running, check the state of the process
+    if(serviceInfo.dwCurrentState != SERVICE_RUNNING) {
+        serviceIsRunning = IsProcessRunning("SPSSLVpnService.exe");
+    }
+
+    // Cleanup service and manager handle
+    CloseServiceHandle(handleOfService);
+    CloseServiceHandle(handleOfServiceManager);
+
+    //
+    return serviceIsRunning;
 }
 
 bool Utils::StartNetman()

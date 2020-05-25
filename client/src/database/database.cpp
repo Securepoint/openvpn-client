@@ -182,19 +182,16 @@ void Database::close()
 
 bool Database::execute(const QString &sql)
 {
-    bool retVal (true);
-    QSqlQuery *query = new QSqlQuery (QSqlDatabase::database(QLatin1String("myConnection")));
+    //
+    QScopedPointer<QSqlQuery> query (new QSqlQuery (QSqlDatabase::database(QLatin1String("myConnection"))));
     query->exec(sql);
+    // Check for an error, just write a debug info
     if (query->lastError().type() != QSqlError::NoError) {
-        // TODO Warning
-        printf("DB Error %s\n", query->lastError().text().toLatin1().data());
+        //
+        printf("DB Error %s\n", query->lastError().text().toLatin1().data());        
     }
 
-    query->clear();
-    delete query;
-    query = 0;
-
-    return retVal;
+    return true;
 }
 
 QSqlQuery* Database::openQuery(const QString &sql)

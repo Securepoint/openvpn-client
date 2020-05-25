@@ -1,12 +1,56 @@
 
 #include "crypt.h"
-//#include <WinSock2.h>
 #include <Windows.h>
 #include <wincrypt.h>
-//#include "qca.h"
+#include "dpapi.h"
+
+
+QByteArray DPAPI::encodePlaintextUtf8(const QByteArray &inputUtf8)
+{
+    DATA_BLOB decryptedData;
+    DATA_BLOB encryptedData;
+
+    decryptedData.pbData = (BYTE*)inputUtf8.data();
+    decryptedData.cbData = inputUtf8.length();
+
+    if(!CryptProtectData(&decryptedData, L"SECUREPOINT_SSLVPN_VALUES", NULL, NULL, NULL, 0,&encryptedData)) {
+        //MessageBoxA(NULL, "DPAPI encoding failed.", "Error", 0);
+        qDebug() << "DPAPI encoding failed.";
+        //
+        return QByteArray();
+    }
+
+    // Return it as hex
+    return (QByteArray::fromRawData((char*)encryptedData.pbData, encryptedData.cbData)).toHex();
+}
+
+QByteArray DPAPI::decodeToPlaintext(const QByteArray &inputHex)
+{
+    DATA_BLOB encryptedData;
+    DATA_BLOB decryptedData;
+
+    // Useless, we always use the same description
+    LPWSTR descriptionString;
+
+    // All crypted text is hex
+    QByteArray bytesToDecrypt (QByteArray::fromHex(inputHex));
+
+    encryptedData.pbData = (BYTE*)bytesToDecrypt.data();
+    encryptedData.cbData = bytesToDecrypt.length();
+
+    if(!CryptUnprotectData(&encryptedData, &descriptionString, NULL, NULL, NULL, 0, &decryptedData)) {
+        //MessageBoxA(NULL, "DPAPI decoding failed.", "Error", 0);
+        qDebug() << "DPAPI decoding failed.";
+        //
+        return QByteArray();
+    }
+
+    return QByteArray::fromRawData((char*)decryptedData.pbData, decryptedData.cbData);
+}
 
 QString Crypt::secretKey = "aes128-cbc-pkcs7-sn93-sh21-jks-1";
 bool Crypt::exceptionEnabled = false;
+bool Crypt::useDPAPI = false;
 
 Crypt::Crypt()
     /* : secretKey("aes128-cbc-pkcs7-sn93-sh21-jks-12")*/
@@ -29,6 +73,16 @@ void Log(const char* szFormat, ...)
 
     OutputDebugStringA(szBuff);
     OutputDebugStringA("\n");
+}
+
+void Crypt::enableDPAPI()
+{
+    useDPAPI = true;
+}
+
+bool Crypt::isDPAPIEnabled()
+{
+    return useDPAPI;
 }
 
 void Crypt::setSecretKey(const QString &key)
@@ -58,6 +112,13 @@ QStringList magicsKey()
 
 QString Crypt::encodePlaintext (const QString &plain)
 {
+    // Bridge the encode method to make sure we are
+    // passing a utf8 byte array to the encoding method
+    if (useDPAPI) {
+        return DPAPI::encodePlaintextUtf8(plain.toUtf8());
+    }
+
+    // Default is no dpapi support
     return Crypt::encodePlaintextUtf8 (plain.toUtf8());
 }
 
@@ -239,9 +300,17 @@ QString Crypt::encodePlaintextAscii (const QByteArray &plain)
     CryptReleaseContext(hProvider, 0);
     return encrypted.toHex();
 }
+QByteArray Crypt::decodeToPlaintext (const QString &crypt) {
+    //
+    if (useDPAPI) {
+        return DPAPI::decodeToPlaintext(crypt.toLocal8Bit());
+    }
 
+    // Default is no dpapi
+    return Crypt::decodeToPlaintextWithKey(crypt);
+}
 
-QByteArray Crypt::decodeToPlaintext (const QString &crypt)
+QByteArray Crypt::decodeToPlaintextWithKey (const QString &crypt)
 {
     QByteArray encrypted;
 
@@ -325,3 +394,4 @@ QByteArray Crypt::decodeToPlaintext (const QString &crypt)
 
     return encrypted;
 }
+

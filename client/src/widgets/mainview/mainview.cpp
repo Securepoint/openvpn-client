@@ -77,55 +77,25 @@ bool MainListView::eventFilter(QObject *obj, QEvent *event)
 
 void MainListView::connectionButtonClicked(const QModelIndex& index)
 {
-    auto pConnection =  this->model.GetConnection(index);
+    auto currentConnection =  this->model.GetConnection(index);
 
-    if(pConnection->GetState() == ConnectionState::Connected)
-    {
-        // Ask want to disconnect
+    switch (currentConnection->GetState()) {
+        case ConnectionState::Connecting:
+        case ConnectionState::Connected:
+            currentConnection->Disconnect();
+            currentConnection->SetState(ConnectionState::Disconnecting);
+            currentConnection->SetLastUsed(QDateTime::currentDateTime().toTime_t());
+            //
+            break;
+        default:
+            // On all other states we do a connect
+            currentConnection->SetState(ConnectionState::Connecting);
 
-        if(!pConnection->Disconnect())
-        {
-            // TODO: handle error
-            pConnection->SetState(ConnectionState::Error);
-        }
-        else
-            pConnection->SetState(ConnectionState::Disconnecting);
-
-        pConnection->SetLastUsed(QDateTime::currentDateTime().toTime_t());
-
-        return;
+            // We need a callback if connection was successful
+            if(!currentConnection->Connect()) {
+                currentConnection->SetState(ConnectionState::Error);
+            }
     }
-
-    // Just in case
-    if(pConnection->GetState() == ConnectionState::Connecting)
-    {
-        // Ask before disconnect
-        if(!pConnection->Disconnect())
-        {
-            pConnection->SetState(ConnectionState::Error);
-        }
-        else
-            pConnection->SetState(ConnectionState::Disconnecting);
-
-        pConnection->SetLastUsed(QDateTime::currentDateTime().toTime_t());
-
-        return;
-    }
-
-    if(pConnection->GetState() == ConnectionState::Error)
-    {
-        // Ask
-    }
-
-    pConnection->SetState(ConnectionState::Connecting);
-
-    // We need a callback if connection was successful
-    if(!pConnection->Connect())
-    {
-        pConnection->SetState(ConnectionState::Error);
-        // TODO: set error text
-    }
-
 }
 
 

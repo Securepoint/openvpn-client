@@ -71,6 +71,8 @@ private:
 
     SrvCLI * _srvCLI;
 
+    bool connectionIsAOtpConnection;
+
 private slots:
     void showProcessError (QProcess::ProcessError error);
     void readProcessData ();
