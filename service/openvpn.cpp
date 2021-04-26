@@ -54,6 +54,9 @@ void OpenVpn::connectToVpn()
     QString cFile (this->configPath + QLatin1String("/") + this->configName + QLatin1String(".ovpn"));
     Debug::log(QString("File %1").arg(cFile));
 
+    // This flag controls the connection reject if an invalid script security is detected
+    bool isScriptSecurityError (false);
+    //
     {
         QFile cf (cFile);
 
@@ -71,9 +74,48 @@ void OpenVpn::connectToVpn()
         // Read the host count
         while (!in.atEnd()) {
             QString line = in.readLine();
-            if(line.trimmed().toLower().left(6) == "remote")
+            line = line.trimmed().toLower();
+            if(line.left(6) == "remote") {
                 ++this->retryMultiHostCount;
+            } else if (line.left(15) == "script-security") {
+                // The user sets a new script security. Check the value
+                // Values possible:
+                // 0 - no execution allowd
+                // 1 - only build-in tools
+                // 2 - script file like vbs, bat ...
+                // 3 - password passed to scripts bei env variables
+                //
+                // Only 0 and 1 is allowed! All other connections are rejected!
+
+                // Replace all milti whitespaces with a single one
+                line = line.simplified();
+                // Split in key value
+                QStringList keyValue = line.split(" ");
+                // If its not 2 its not a valid value, reject it
+                if (keyValue.size() != 2) {
+                    isScriptSecurityError = true;
+                } else {
+                    // Its a valid value check the value for level 0 and 1
+                    QString value = keyValue.value(1);
+                    //
+                    if (!(value == "0" || value == "1")) {
+                        isScriptSecurityError = true;
+                    }
+                }
+            }
         }
+    }
+
+    // Do we have an script security error?
+    if (isScriptSecurityError) {
+        // Yes, reject the connection! We'll never execute scripts with a script security higher than 1
+        // see: https://openvpn.net/community-resources/reference-manual-for-openvpn-2-4 @ –script-security level
+        this->connecting = false;
+         this->connectionStable = false;
+        _srvCLI->send(QString("%1;%2")
+                         .arg(this->id())
+                         .arg("Unsafe configuration found: use of script-security greater than 1. This connection is rejected! For further informations see: https://openvpn.net/community-resources/reference-manual-for-openvpn-2-4, section: script-security level"), QLatin1String("ERROR"));
+        return;
     }
 
     // Die Parameter für OpenVpn bauen
