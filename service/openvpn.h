@@ -37,6 +37,17 @@ public:
     void setUseInteract (const QString &interact);
     void setConfigName (const QString &name);
     void setConfigPath (const QString &path);
+    QString fullConfigPath() const;
+    void setVaultDirName (const QString &name){
+        this->vaultDirName = name;
+    }
+    void setUserVaultDirName (const QString &name){
+        this->userVaultDirName = name;
+    }
+    void setOriginConfigPath (const QString &path){
+        this->originConfigPath = path;
+    }
+
     void setProxyString (const QString &proxy);
     bool isConnectionStable () const;
     bool isConnecting () const;
@@ -57,6 +68,10 @@ private:
     int lastAction;
     QString configName;
     QString configPath;
+    QString fullConfigPathValue;
+    QString vaultDirName;
+    QString originConfigPath;
+    QString userVaultDirName;
     QString configPrivKey;
     QString challengeKey;
 

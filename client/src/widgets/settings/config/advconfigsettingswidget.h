@@ -50,8 +50,6 @@ private slots:
     void on_cmdGetCAPath_clicked();
     void on_cmdSave_clicked();
     void on_cmdClose_clicked();
-    void on_cbWinDirOther_2_toggled(bool checked);
-    void on_cbWinDirPath_2_toggled(bool checked);
     void on_rbPkcs_toggled(bool checked);
     void on_cmdGetPkcs12Path_clicked();
     void on_rbNormal_toggled(bool checked);

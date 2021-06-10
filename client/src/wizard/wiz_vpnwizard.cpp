@@ -25,30 +25,30 @@ VpnWizard::VpnWizard(QWidget * parent)
     addPage(new AdvPage);
     addPage(new CEndPage);
 
-    
+
     //this->button(QWizard::WizardButton::BackButton)->setIcon(QIcon(":/data/images/back_small.png"));
     //this->button(QWizard::WizardButton::NextButton)->setIcon(QIcon(":/data/images/next_small.png"));
-    
+
 
     auto geom = this->geometry();
     geom.setHeight(460);
     geom.setWidth(501);
 
-	QSize size = geom.size();
-	//
-	int h = size.height();
-	int w = size.width();
-	//
+    QSize size = geom.size();
+    //
+    int h = size.height();
+    int w = size.width();
+    //
 
-	size.setHeight(qFloor(h * windowsDpiScale()));
-	size.setWidth(qFloor(w * windowsDpiScale()));
+    size.setHeight(qFloor(h * windowsDpiScale()));
+    size.setWidth(qFloor(w * windowsDpiScale()));
 
-	setFixedWidth(size.width());
-	setFixedHeight(size.height());
+    setFixedWidth(size.width());
+    setFixedHeight(size.height());
 
-	//
+    //
     resize(size);
-    
+
     QPixmap pixmap(":/data/images/banner_wiz.png");
     pixmap = pixmap.scaledToWidth(size.width(), Qt::TransformationMode::SmoothTransformation);
     setPixmap(QWizard::BannerPixmap, pixmap);
@@ -65,7 +65,7 @@ VpnWizard::VpnWizard(QWidget * parent)
     DWORD style = GetWindowLong((HWND)winId(), GWL_STYLE);
     SetWindowLong((HWND)winId(), GWL_STYLE, style);
     setWizardStyle(ModernStyle);
-    
+
 
 
     //this->button(QWizard::WizardButton::NextButton)->setLayoutDirection(Qt::RightToLeft);
@@ -157,6 +157,10 @@ void VpnWizard::accept()
         out << QLatin1String("nobind\n");
     }
 
+    if (field(QLatin1String("txtUserPass")).toBool()) {
+        out << QLatin1String("auth-user-pass\n");
+    }
+
     out << QLatin1String("persist-key\n");
     out << QLatin1String("persist-tun\n");
 
@@ -181,22 +185,6 @@ void VpnWizard::accept()
         }
     }
 
-    // Das Windir auswerten
-    if (!field(QLatin1String("cbDefault")).toBool()) {
-        // Custom path oder Env
-        if (field(QLatin1String("cbEnvironment")).toBool()) {
-            out << QLatin1String("win-sys env") << QLatin1String("\n");
-        } else {
-            // Sind Leerzeichen im String
-            QString winDir (field(QLatin1String("txtPath")).toString());
-            winDir = winDir.trimmed();
-            if (winDir.indexOf(" ") > -1 ) {
-                winDir = QLatin1String("\"") + winDir + QLatin1String("\"");
-            }
-            out << QLatin1String("win-sys ") << winDir << QLatin1String("\n");
-        }
-    }
-
     if (!field(QLatin1String("txtVerbose")).toString().isEmpty())
         out << QLatin1String("verb ") << field(QLatin1String("txtVerbose")).toString() << QLatin1String("\n");
 
@@ -209,10 +197,7 @@ void VpnWizard::accept()
     if (field(QLatin1String("txtCompLzo")).toBool())
         out << QLatin1String("comp-lzo\n");
 
-    if (field(QLatin1String("txtUserPass")).toBool())
-        out << QLatin1String("auth-user-pass\n");
-
-    // Config ist geschrieben, Datei schließen
+    // Config ist geschrieben, Datei schlie?en
     configFile.close();
     // Nun die Dateien kopieren
     QFile caFile (field(QLatin1String("txtCAPath")).toString());
@@ -245,7 +230,7 @@ void VpnWizard::accept()
     keyFile.close();
     // Refresh des Dialoges
     // Generieren eines neuen Openvpn Objektes
-    // Das Objekt wird dann an die ObjList angehängt
+    // Das Objekt wird dann an die ObjList angeh?ngt
     // Dann muss nur noch der Dialog aktualisiert werden
    // Preferences::instance()->addNewConfigToDatabase(field("txtConfigName").toString(), configFilePath);
    // Preferences::instance()->refreshConfigList();

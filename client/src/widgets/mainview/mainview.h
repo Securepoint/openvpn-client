@@ -28,6 +28,7 @@ private slots:
     void ContextLog();
     void connectionButtonClicked(const QModelIndex&);
     void connectionButtonDClick(const QModelIndex&);
+    void createChecksumOfConfig ();
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event);

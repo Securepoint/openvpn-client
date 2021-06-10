@@ -6,6 +6,7 @@
 #include <WidgetFactory.h>
 #include <crypt.h>
 #include <SrvCLI.h>
+#include <checksum.h>
 
 extern bool g_bPortable;
 
@@ -312,6 +313,21 @@ void Configs::findConfigsInDir(const QString &sDir)
                     .arg(Crypt::encodePlaintext(configDirectory)));
 
                 Database::instance()->execute(sql);
+
+                // Calculate the checksum
+                if (!g_bPortable) {
+                    QString idOfInsertSql(QString("SELECT \"vpn-id\" FROM vpn WHERE \"vpn-name\" = '%1'")
+                        .arg(Crypt::encodePlaintext(configName)));
+
+                    QScopedPointer<QSqlQuery> idOfInsertQuery (Database::instance()->openQuery(idOfInsertSql));
+                    //
+                    if (!idOfInsertQuery->first()) {
+                        continue;
+                    }
+
+                    int configId = idOfInsertQuery->value(0).toInt();
+                    Checksum::instance()->createNewChecksumFromFile(configId, configDirectory);
+                }
             }
         }
     }

@@ -16,10 +16,6 @@ public:
 protected:
     void changeEvent(QEvent *e);
 
-private slots:
-    void on_cbWinDirOther_toggled(bool checked);
-    void on_cbWinDirPath_toggled(bool checked);
-
 private:
     Ui::AdvPage *m_ui;
     void initializePage ();

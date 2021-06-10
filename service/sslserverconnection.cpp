@@ -1,12 +1,17 @@
 #include "sslserverconnection.h"
 #include "sslserver.h"
 #include <QtNetwork/QSslKey>
+#include <QCryptographicHash>
 
 #include "debug.h"
 #include "openvpn.h"
 #include "srvcli.h"
 #include "tapdriver.h"
 #include "service.h"
+
+#include <QUuid>
+
+extern bool g_bPortable;
 
 // We need in the next 10000 years no new one ;D
 quint64 SslServerConnection::internalId = 0;
@@ -104,6 +109,88 @@ void SslServerConnection::recDig(int id)
     Debug::log(QString("receive sig from %1").arg(id));
 }
 
+QString SslServerConnection::rewriteConfigPath(QString origin, QString newPathDirectory, ConfigPathTypes type)
+{
+    // Takes a configuration path and rewrite it to the new destination
+    // Origin pathes looks like this:
+    // ca filename
+    // ca "filename"
+    // ca 'filename'
+    // ca "c:\\foo\\bar\\filename"
+    // ca 'c:\\foo\\bar\\filename'
+
+    // No destination dir, no new path...
+    if (newPathDirectory.isEmpty()) {
+        return "";
+    }
+
+    // We always need 2 parts, find the first space and take the right part of it
+    int firstSpacePosition = origin.indexOf(" ");
+    //
+    if (firstSpacePosition == -1) {
+        return "";
+    }
+    // Magic number alert ;)
+    // -1 is to fix the position of the indexOf, due to it starts by 0
+    // with the right method we need it by starting at 1,so we need to subtract one more char
+    QString pathOrFilename (origin.right(origin.size() - firstSpacePosition - 1));
+    // Cleanup string, remove all ",' and spaces
+    pathOrFilename = pathOrFilename
+                        .replace("'", "")
+                        .replace("\"", "")
+                        .simplified();
+
+    // String should now looks like this
+    // filename, c:\\foo\\bar\\filename
+    // Check for a path
+    if (pathOrFilename.indexOf("\\") > -1) {
+        // Its a path, remove it, magic number explanation see above
+        pathOrFilename = pathOrFilename.right(pathOrFilename.size() - pathOrFilename.lastIndexOf(("\\") - 1));
+    }
+
+    // We got only a filename, build the new
+    QString setting;
+    switch (type) {
+        case ConfigPathTypes::CA:
+            setting = "ca";
+            break;
+        case ConfigPathTypes::CERT:
+            setting = "cert";
+            break;
+        case ConfigPathTypes::KEY:
+            setting = "key";
+            break;
+        case ConfigPathTypes::AUTH:
+            setting = "auth-user-pass";
+            break;
+        case ConfigPathTypes::EXTRA_CERTS:
+            setting = "extra-certs";
+            break;
+        case ConfigPathTypes::SECRET:
+            setting = "secret";
+            break;
+        case ConfigPathTypes::TLS_AUTH:
+            setting = "tls-auth";
+            break;
+        case ConfigPathTypes::DH:
+            setting = "dh";
+            break;
+        case ConfigPathTypes::PKCS12:
+            setting = "pkcs12";
+            break;
+        case ConfigPathTypes::TLS_CRYPT:
+            setting = "tls-crypt";
+            break;
+        default:
+            return "";
+    }
+
+    return QString("%1 \"%2\\\\%3\"")
+            .arg(setting)
+            .arg(newPathDirectory.replace("/", "\\\\") /* OpenVPN needs escaped \ instead of / */)
+            .arg(pathOrFilename);
+}
+
 void SslServerConnection::slotStartRead()
 {
     //
@@ -159,10 +246,18 @@ void SslServerConnection::slotStartRead()
 
         // Hat die Parameterliste die richtige Länge
         QStringList fields (params.split(";"));
-        if (fields.size() == 4) {
-            // 0: ID; 1: Config Path; 2: Interact
+        if (fields.size() == 8) {
+            // 0: ID, 1: Username, 2: SID, 3: Path, 4: Content as Base64, 5: Interact, 6: Proxy-String, 7: isPortable
             // Ist der Eintrag schon in der Liste
             int configId (fields.at(0).toInt());
+            QString configFullPath (fields.at(3));
+            QString configPath = configFullPath.left(configFullPath.lastIndexOf("/"));
+            QString originConfigPath (configPath);
+            QString configName = configFullPath.right(configFullPath.size() - configFullPath.lastIndexOf("/") - 1);
+            configName = configName.left(configName.size() - 5);
+            QString usersVaultDirName;
+            QString allVaultsPath;
+
             OpenVpn *item = this->foundItemInList(configId);
            // Q_ASSERT(item);
 
@@ -186,17 +281,197 @@ void SslServerConnection::slotStartRead()
 
             Debug::log(QLatin1String("Build new object"));
 
+            if (!g_bPortable) {
+                // Check if its exists an read the content
+                QString username (fields.at(1));
+                QString userSID (fields.at(2));                
+                QString configContent (QByteArray::fromBase64(fields.at(4).toUtf8()));
+
+                // Check if we got content
+                if(configContent.isEmpty()) {
+                    _srvCLI->send(QString("%1;Empty configuration file found %2\n")
+                                            .arg(configId)
+                                            .arg(configFullPath), QLatin1String("ERROR"));
+                    //
+                    return;
+                }
+
+                // Create hash of the config content
+                QString hashOfContent(QCryptographicHash::hash(configContent.toUtf8(), QCryptographicHash::Sha256).toHex());
+
+                // Now check if its the same like in the registry
+                // If no hash is found, set this hash as new one
+                QSettings registry(QSettings::NativeFormat, QSettings::SystemScope, "Securepoint", "SSLVPN");
+
+                QString registryHash = registry.value(QString("Users/%1/Security/%2/Checksum").arg(userSID).arg(configId)).toString();
+                // Do we got an hash?
+                if(registryHash.simplified().isEmpty()) {
+                    // No, set the current as new hash
+                    registry.setValue(QString("Users/%1/Security/%2/Checksum").arg(userSID).arg(configId), hashOfContent);
+                    // Write a log message to notify the user
+                    _srvCLI->send(QString("%1;Set new checksum %2 of %3 for user %4[%5]\n")
+                                            .arg(configId)
+                                            .arg(hashOfContent)
+                                            .arg(configFullPath)
+                                            .arg(username)
+                                            .arg(userSID), QLatin1String("LOG"));
+
+                } else {
+                    // We got a checksum, both must be equal!
+                    if (registryHash != hashOfContent) {
+                        // Thats really bad stuff
+                        _srvCLI->send(QString("%1;Checksum error, rejecting connect request! %2 Getting %3 expecting %4.\n")
+                                                .arg(configId)
+                                                .arg(configFullPath)
+                                                .arg(hashOfContent)
+                                                .arg(registryHash), QLatin1String("ERROR"));
+                        //
+                        return;
+                    }
+
+                    // Write a short notice
+                    _srvCLI->send(QString("%1;Checksum %2 is okay\n")
+                                            .arg(configId)
+                                            .arg(hashOfContent), QLatin1String("LOG"));
+                }
+
+                // Now read the config, rewrite the ca, cert, key,auth file paths and write it to a save space in %Programms%
+                // This flag controls the connection reject if an invalid script security is detected
+
+                // Additionally we check the config to some "special" settings which are unsafe fo rmany reasons.
+                // Particularly we skip or reject settings which make it possible to do a local privilege escalation!
+                // This happens already partly in 2.0.31(only rejecting custom scrips). This version rejects more settings.
+                // If this feature are needed, please take the source of 2.0.30 and fork it.
+
+                QStringList lines = configContent
+                                    /* Replace possible crappy windows line ends with \n*/
+                                    .replace("\r\n", "\n")
+                                    /* And now split the lines into a list */
+                                    .split("\n");
+
+                int lineCount (lines.size());
+                QStringList connectConfigLines;
+                // Loop all lines and handle some of them (comments, ca, cert, key, auth-user-pass, script security etc.)
+                // Please note that the client can't handle inline certs, keys and similar stuff.
+                for (int lineIndex = 0; lineIndex < lineCount; ++lineIndex) {
+                    QString line = lines.value(lineIndex);
+                    // Cleanup spaces and other crap, replace all multi whitespaces with a single one
+                    line = line.simplified();
+                    // Skip empty lines
+                    if (line.isEmpty()) {
+                        continue;
+                    }
+
+                    // Check for comments
+                    if (line.startsWith("#")) {
+                        continue;
+                    } else if (line.toLower().startsWith("win-sys")) {
+                        // OpenVpn ignore this line. In case of rebuild-in this feature in future we skip it, due to security reasons.
+                        continue;
+                    } else if (line.toLower().startsWith("script-security")) {
+                        // The user sets a new script security. Check the value
+                        // Values possible:
+                        // 0 - no execution allowd
+                        // 1 - only build-in tools
+                        // 2 - script file like vbs, bat ...
+                        // 3 - password passed to scripts bei env variables
+                        //
+                        // Only 0 and 1 is allowed! All other connections are rejected!
+                        // Split in key value
+                        QStringList keyValue = line.split(" ");
+                        // If its not 2 its not a valid value, reject it
+                        bool isScriptSecurityError (false);
+                        if (keyValue.size() == 2) {
+                            isScriptSecurityError = true;
+                        } else {
+                            // Its a valid value check the value for level 0 and 1
+                            QString value = keyValue.value(1);
+                            //
+                            if (!(value == "0" || value == "1")) {
+                                isScriptSecurityError = true;
+                            }
+                        }
+
+                        // Do we have an script security error?
+                        if (isScriptSecurityError) {
+                            // Yes, reject the connection! We'll never execute scripts with a script security higher than 1
+                            // see: https://openvpn.net/community-resources/reference-manual-for-openvpn-2-4 @ –script-security level
+                            _srvCLI->send(QString("%1;%2")
+                                             .arg(configId)
+                                             .arg("Unsafe configuration found: use of script-security greater than 1. This connection is rejected! For further informations see: https://openvpn.net/community-resources/reference-manual-for-openvpn-2-4, section: script-security level"), QLatin1String("ERROR"));
+                            return;
+                        }
+                    }
+
+                    // All checks are done, append line to the connection config.
+                    connectConfigLines.append(line);
+                }
+
+                // Rewrite config data
+                configContent = connectConfigLines.join("\n");
+
+                // Get this app dir
+                QString serviceDir (qApp->applicationDirPath());
+                QString allUsersVault (serviceDir + "/vault");
+                QString usersVault (serviceDir + "/vault/" + userSID);
+                QString vaultConfigName = QUuid::createUuid().toString()
+                                                             .replace("{", "")
+                                                             .replace("}", "");
+
+                // Remove dir
+                QDir allUsersVaultDir(allUsersVault);
+                if (allUsersVaultDir.exists(allUsersVault)) {
+                    allUsersVaultDir.removeRecursively();
+                }
+
+                // Create a new clean one
+                QDir usersVaultDir (usersVault);
+                if (!usersVaultDir.mkpath(usersVault)) {
+                    _srvCLI->send(QString("%1;Can't create configuration vault.\n")
+                                            .arg(configId), QLatin1String("ERROR"));
+                    //
+                    return;
+                }
+
+                {
+                    // All fine, write file
+                    QFile writer (usersVault + "/" + vaultConfigName + ".ovpn");
+                    if (!writer.open(QFile::WriteOnly | QFile::Truncate)) {
+                        _srvCLI->send(QString("%1;Can't write configuration file.\n")
+                                                .arg(configId), QLatin1String("ERROR"));
+                        //
+                        return;
+                    }
+
+                    writer.write(configContent.toUtf8());
+                    writer.flush();
+                    writer.waitForBytesWritten(500);
+
+                    writer.close();
+                }
+
+                // After this pass the new file to openvpn
+                configPath = usersVault;
+                configName = vaultConfigName;
+
+                //
+                usersVaultDirName = userSID;
+                allVaultsPath = allUsersVault;
+
+            } // End of portable check
+
+            // Resume with normal connect
             // Alls ok, wir bauen us ein neues Objekt
             OpenVpn *sslVpn = new OpenVpn (_srvCLI);
-            // Nun die Parameter setzen
-            QString configPath = fields.at(1).left(fields.at(1).lastIndexOf("/"));
-            QString configName = fields.at(1).right(fields.at(1).size() - fields.at(1).lastIndexOf("/") - 1);
-            configName = configName.left(configName.size() - 5);
+            // Nun die Parameter setzen            
             sslVpn->setConfigPath(configPath);
             sslVpn->setConfigName(configName);
-            sslVpn->setUseInteract(fields.at(2));
-            sslVpn->setProxyString(fields.at(3));
+            sslVpn->setUseInteract(fields.at(5));
+            sslVpn->setProxyString(fields.at(6));
             sslVpn->setId(configId);
+            sslVpn->setUserVaultDirName(usersVaultDirName);
+            sslVpn->setVaultDirName(allVaultsPath);
+            sslVpn->setOriginConfigPath(originConfigPath);
 
             QObject::connect(sslVpn, SIGNAL(foobar(int)), this, SLOT(recDig(int)));
 
@@ -549,6 +824,120 @@ void SslServerConnection::slotStartRead()
 
          _srvCLI->send("DATA", "ALL_STATUS");
         return;
+    } else if (command == QLatin1String("WRITE_CHECKSUM")) {
+        //
+        // Create a checksum of the configuration and store it into the registry
+        //
+
+        // ID, Path, Content as Base64
+        QStringList fields (params.split(";"));
+        if (fields.size() == 6) {
+            // ID, Username, SID, Path, Content as Base64, isPortable
+            int configId (fields.at(0).toInt());
+            QString username (fields.at(1));
+            QString userSID (fields.at(2));
+            QString configPath (fields.at(3));
+            QString configContent (fields.at(4));
+
+            // In Portable mode we are always run in admin context otherwise
+            // netherthanless it doesn't matter who we are,
+            // because we are running in user context
+            if (g_bPortable) {
+                return;
+            }
+
+            // Now write this hash into the registry
+            // We write in HKLM due to protect the checksum of manipulation.
+
+            QSettings registry(QSettings::NativeFormat, QSettings::SystemScope, "Securepoint", "SSLVPN");
+            registry.setValue(QString("Users/%1/Security/%2/Checksum").arg(userSID).arg(configId), configContent);
+
+            // Write a log message to notify the user
+            _srvCLI->send(QString("%1;Write checksum %2 of %3 for user %4[%5]\n")
+                                    .arg(configId)
+                                    .arg(configContent)
+                                    .arg(configPath)
+                                    .arg(username)
+                                    .arg(userSID), QLatin1String("LOG"));
+            //
+        }
+    } else if (command == QLatin1String("CHECKSUM")) {
+        //
+        // Create a checksum of the configuration and store it into the registry
+        //
+
+        // ID, Path, Content as Base64
+        QStringList fields (params.split(";"));
+        if (fields.size() == 6) {
+            // ID, Username, SID, Path, Content as Base64, isPortable
+            int configId (fields.at(0).toInt());
+            QString username (fields.at(1));
+            QString userSID (fields.at(2));
+            QString configPath (fields.at(3));
+            QString configContent (QByteArray::fromBase64(fields.at(4).toUtf8()));
+
+            // In Portable mode we are always run in admin context otherwise
+            // netherthanless it doesn't matter who we are,
+            // because we are running in user context
+            if (g_bPortable) {
+                return;
+            }
+
+            // Create hash of the config content
+            QString hashOfContent(QCryptographicHash::hash(configContent.toUtf8(), QCryptographicHash::Sha256).toHex());
+
+            // Now write this hash into the registry
+            // We write in HKLM due to protect the checksum of manipulation.
+
+            QSettings registry(QSettings::NativeFormat, QSettings::SystemScope, "Securepoint", "SSLVPN");
+            registry.setValue(QString("Users/%1/Security/%2/Checksum").arg(userSID).arg(configId), hashOfContent);
+
+            // Write a log message to notify the user
+            _srvCLI->send(QString("%1;Create checksum %2 of %3 for user %4[%5]\n")
+                                    .arg(configId)
+                                    .arg(hashOfContent)
+                                    .arg(configPath)
+                                    .arg(username)
+                                    .arg(userSID), QLatin1String("LOG"));
+            //
+        }
+    } else if (command == QLatin1String("REMOVE_CHECKSUM")) {
+        //
+        // Create a checksum of the configuration and store it into the registry
+        //
+
+        // ID, Path, Content as Base64
+        QStringList fields (params.split(";"));
+        if (fields.size() == 4) {
+            // ID, Username, SID, isPortable
+            int configId (fields.at(0).toInt());
+            QString username (fields.at(1));
+            QString userSID (fields.at(2));
+
+            // In Portable mode we are always run in admin context otherwise
+            // netherthanless it doesn't matter who we are,
+            // because we are running in user context
+            if (g_bPortable) {
+                return;
+            }
+
+            {
+                QSettings registryConfig(QSettings::NativeFormat, QSettings::SystemScope, "Securepoint", "SSLVPN");
+                registryConfig.remove(QString("Users/%1/Security/%2").arg(userSID).arg(configId));
+            }
+
+            // Check if we need to remove the userkey, too
+            QSettings registryUser(QSettings::NativeFormat, QSettings::SystemScope, "Securepoint", "SSLVPN");
+            // Start a group and count the sub keys
+            registryUser.beginGroup(QString("Users/%1").arg(userSID));
+            QStringList keys = registryUser.allKeys();
+            registryUser.endGroup();
+            //
+            if(keys.size() == 0) {
+                // No more checksum available for this user, remove the entry
+                registryUser.remove(QString("Users/%1").arg(userSID));
+            }
+        }
     } else {
         // unknown command error
         Debug::error(QLatin1String("Unknown command: ") + command + QLatin1String(" - P: ") + params);

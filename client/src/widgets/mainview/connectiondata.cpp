@@ -9,6 +9,8 @@
 #include <widgets/settings/client/settings.h>
 #include <utils.h>
 #include <service/servicelogdata.h>
+#include <userinfo.h>
+#include <checksum.h>
 
 extern bool g_bPortable;
 
@@ -147,6 +149,7 @@ quint32 ConnectionData::GetLastConnected()
 
 void ConnectionData::runScript(const QString &type)
 {
+    //
     QString scriptToStart (this->getScript(type));
     if (!scriptToStart.isEmpty()) {
 
@@ -175,6 +178,27 @@ void ConnectionData::runScript(const QString &type)
         qApp->processEvents() ;
     }
 }
+
+QString ConnectionData::getScriptContent() {
+    QFile scrtiptFile (this->GetDir() + QLatin1String("/scripts.conf"));
+
+    if (scrtiptFile.exists()) {
+        // Öffnen und auslesen
+        if (!scrtiptFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            Message::error(QObject::tr("Can't read scriptconfig file!"), QObject::tr("An error occured"), FrmMain::instance());
+            return QLatin1String ("");
+        }
+
+        QString content (scrtiptFile.readAll());
+
+        scrtiptFile.close();
+
+        return content;
+    }
+
+    return QLatin1String("");
+}
+
 
 QString ConnectionData::getScript(const QString &type)
 {
@@ -363,11 +387,19 @@ bool ConnectionData::Connect()
 
     return SrvCLI::instance()->send(QLatin1String("Open"), QString::number(this->GetId())
                                                     + QLatin1String(";")
+                                                    + UserInfo::instance()->currentLogonUser()
+                                                    + QLatin1String(";")
+                                                    + UserInfo::instance()->currentLogonSID()
+                                                    + QLatin1String(";")
                                                     + this->GetConfigPath()
+                                                    + QLatin1String(";")
+                                                    + QString(Checksum::instance()->base64OfFileContent(this->GetId(), this->GetConfigPath()))
                                                     + QLatin1String (";")
                                                     + (Settings::instance()->useInteract() ? QLatin1String("0") : QLatin1String("1"))
                                                     + QLatin1String (";")
-                                                    + makeProxyString().join(" "));   
+                                                    + makeProxyString().join(" ")
+                                                    + QLatin1String (";")
+                                                    + (g_bPortable ? "1" : "0"));
 }
 
 void ConnectionData::saveUserData(int id, int type, QString value, bool save)

@@ -20,7 +20,6 @@ HEADERS += ./src/frmmain.h \
     ./src/message.h \
     ./src/rightalignpushbuttonmenu.h \
     ./src/single_application.h \
-    ./src/tapdriver.h \
     ./src/utils.h \
     ./src/widgetfactory.h \
     ./src/config/Configs.h \
@@ -67,7 +66,9 @@ HEADERS += ./src/frmmain.h \
     ./src/zip/czip.h \
     ./src/zip/unzip.h \
     ./src/zip/zip.h \
-    src/zip/zipdefines.h
+    src/zip/zipdefines.h \
+    src/userinfo.h \
+    src/checksum.h
 SOURCES += ./src/frmmain.cpp \
     ./src/listviewbuttondelegate.cpp \
     ./src/listviewsinglebuttondelegate.cpp \
@@ -75,7 +76,6 @@ SOURCES += ./src/frmmain.cpp \
     ./src/message.cpp \
     ./src/rightalignpushbuttonmenu.cpp \
     ./src/single_application.cpp \
-    ./src/tapdriver.cpp \
     ./src/utils.cpp \
     ./src/widgetfactory.cpp \
     ./src/config/Configs.cpp \
@@ -120,7 +120,9 @@ SOURCES += ./src/frmmain.cpp \
     ./src/wizard/wizard.cpp \
     ./src/zip/czip.cpp \
     ./src/zip/unzip.cpp \
-    ./src/zip/zip.cpp
+    ./src/zip/zip.cpp \
+    src/userinfo.cpp \
+    src/checksum.cpp
 FORMS += ./src/frmmain.ui \
     ./src/dialogs/frmgetuserdata.ui \
     ./src/dialogs/servicelog.ui \

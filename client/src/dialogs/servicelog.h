@@ -32,6 +32,7 @@ private slots:
     void on_cmdSave_clicked();
     void on_cmdStopLog_clicked();
     void refreshData ();
+    void on_cmdClearLog_clicked();
 };
 
 #endif // SERVICELOG_H

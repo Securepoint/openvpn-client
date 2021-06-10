@@ -5,12 +5,17 @@
 #include <QtGui/qguiapplication.h>
 #include <QtWidgets/QDesktopWidget>
 
+#include <checksum.h>
+
 float windowsDpiScale();
 
-QuickEditWidget::QuickEditWidget(const QString &path, QWidget * parent) :
+extern bool g_bPortable;
+
+QuickEditWidget::QuickEditWidget(const QString &path, const int id, QWidget * parent) :
     FramelessDialog(parent),
     m_ui(new Ui::QuickEditWidget),
-    path (path)
+    path (path),
+    id(id)
 {
      
     this->setWindowFlags(Qt::WindowCloseButtonHint);
@@ -104,15 +109,27 @@ void QuickEditWidget::on_cmdSave_clicked()
     // Speichern
     QFile saveFile (this->path);
     if (!saveFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
-         return;
+        return;
     }
 
-     QTextStream out(&saveFile);
-     out << m_ui->memConfigContent->toPlainText();
-     saveFile.close();
-     // Reload File
-     m_ui->memConfigContent->setPlainText(this->getContent());
-     this->close();
+    QString fileContent = m_ui->memConfigContent->toPlainText();
+    if (fileContent.endsWith("\n")) {
+        fileContent = fileContent.left(fileContent.lastIndexOf("\n"));
+    }
+
+    //
+    QTextStream out(&saveFile);
+    //
+    out << fileContent;
+    saveFile.close();
+
+    // Update the checksum of the file
+    Checksum::instance()->createNewChecksum(Checksum::instance()->base64OfContent(fileContent), this->id, this->path);
+
+    // Reload File
+    m_ui->memConfigContent->setPlainText(this->getContent());
+
+    this->close();
 }
 
 void QuickEditWidget::on_cmdClose_clicked()

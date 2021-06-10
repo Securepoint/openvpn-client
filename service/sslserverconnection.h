@@ -36,6 +36,19 @@ public:
         return this->_srvCLI;
     }
 
+    enum ConfigPathTypes {
+        CA,
+        CERT,
+        EXTRA_CERTS,
+        KEY,
+        AUTH,
+        DH,
+        SECRET,
+        TLS_AUTH,
+        PKCS12,
+        TLS_CRYPT
+    };
+
 public slots:
     void slotAcceptedClient();
     void slotStartRead();
@@ -57,6 +70,7 @@ private:
 
     QList<QPair<int, OpenVpn*>> vpnList;
 
+    QString rewriteConfigPath (QString origin, QString newPathDirectory, ConfigPathTypes type);
 
 signals:
     void connectionIsClosed ();

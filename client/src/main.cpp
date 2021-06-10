@@ -2,9 +2,11 @@
 
 #include <Windows.h>
 #include <Windowsx.h>
+#include "userinfo.h"
 #include <Shlobj.h>
 #include <string>
 #include <cstdio>
+
 
 #include <ShellScalingApi.h>
 
@@ -39,7 +41,6 @@
 #include <fcntl.h>
 #include <io.h>
 #include <iostream>
-#include <tapdriver.h>
 #include <config\Configs.h>
 #include <message.h>
 
@@ -325,7 +326,7 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext & context, const Q
 
  QString g_strClientName;
 
- static const char* g_szVersion = "2.0.30";
+ static const char* g_szVersion = "2.0.33";
 
  void PrintHelp()
  {
@@ -333,17 +334,14 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext & context, const Q
      printf("\nUsage: SSLVpnClient.com [options]\n");
      printf("Options:\n");
      printf("\t-help: Display this information\n");
-     printf("\t-manage: Allow the user to import, edit, remove and create configs\n");
      printf("\t-german: Change the language to german\n");
      printf("\t-silent: Suppress all user interaction (Confirmation dialogs)\n");
-     printf("\t-start configPath user password \n");
      printf("\t-disconnect id (disconnect for clientId and connectionId e.g. -disconnect 0 1). See also -clients and -status\n");
      printf("\t-user username used for all connections\n");
      printf("\t-noSave prevent storage of the user credentials\n");
      printf("\t-pwd password used for all connections \n");
      printf("\t-vpnlog: Print the VPN Log in the command line\n");
-     printf("\t-status: shows the status of the connections in the currently running VPN Client instance of the current folder [ ID NAME STATUS ]\n");
-     printf("\t-removeTap: Remove TAP Devices on shutdown\n");
+     printf("\t-status: shows the status of the connections in the currently running VPN Client instance of the current folder [ ID NAME STATUS ]\n");     
      printf("\t-stop: Close the VPN Client\n");
      printf("\t-log clientid configid: Prints the VPN Log for the given configuration\n");
      printf("\t-error id: Prints the last error for the given configuration\n");
@@ -389,7 +387,7 @@ int CALLBACK WinMain (_In_  HINSTANCE hInstance,
     // QApplication::setDesktopSettingsAware(false);
 #ifdef MULTICLIENT
     QApplication a(argc, (char**)argv);
-#else
+#else   
     SingleApplication a(argc, (char**)argv);
 #endif
 
@@ -405,54 +403,30 @@ int CALLBACK WinMain (_In_  HINSTANCE hInstance,
 
     std::vector<ConfigData> vecStartConfigs;
 
-    bool removeTap = false;
-
     QString startConfig = "";
 
     bool cmdFound = true;
 
-    // Portable is always managed
-    if(g_bPortable) {
+    // We need admin priviledge in normal mode to change config settings
+    if (Utils::isUserAdmin() || g_bPortable) {
         Settings::instance()->setManaged(true);
     }
 
-    int startDaemonDelay (0);
+    int startDaemonDelay (0);    
 
     bool  loadGermanTranslation(false);
     // Handle CLI
     for (int x = 1; x < argc; x++) {
-        if (!strcmp(argv[x], "-manage")) {
-            // Benutzer kann Einstellungen �ndern
-            Settings::instance()->setManaged(true);
-        } else if(!strcmp(argv[x], "-german")) {
+        if(!strcmp(argv[x], "-german")) {
             loadGermanTranslation = true;
         } else if(!strcmp(argv[x], "-silent")) {
             g_bSilent = true;
         } else if(!strcmp(argv[x], "-debug")) {
             g_bDebug = true;
+        } else if(!strcmp(argv[x], "-manage")) {
+            Settings::instance()->setManaged(true);
         } else if(!strcmp(argv[x], "-delayDaemon" ) && x + 1 < argc) {
             startDaemonDelay = QString(argv[x + 1]).toInt();
-        } else if(!strcmp(argv[x], "-start") && x + 3 < argc) {
-            QString startConfigPath = argv[x + 1];
-            QString startUsername = argv[x + 2];
-            QString startPassword = argv[x + 3];
-            startConfig = startConfigPath;
-
-            ConfigData configData;
-            startConfig.replace("\\", "/");
-            QString configName = startConfig;
-            configName.replace(".ovpn", "");
-            configName = configName.right(configName.size() - configName.lastIndexOf("/") - 1);
-
-            configData.configName = configName;
-            configData.isAutoStart = true;
-            configData.configFile = startConfig;
-            configData.vpnUser = startUsername;
-            configData.vpnPassword = startPassword;
-
-            vecStartConfigs.push_back(configData);
-
-            x+=3;
         } else if(!strcmp(argv[x], "-disconnect" ) && x + 2 < argc) {
             QString clientIdString = argv[x + 1];
             QString connectionIdString = argv[x + 2];
@@ -524,8 +498,6 @@ int CALLBACK WinMain (_In_  HINSTANCE hInstance,
             QString startPassword = argv[x + 1];
             Settings::instance()->setStartPassword(startPassword);
             x++;
-        } else if(!strcmp(argv[x], "-removeTap")) {
-            removeTap = true;
         } else if(!strcmp(argv[x], "-noSave")) {
             // Denial storage of the user crendentials etc.
             globalSaveUserData = false;
@@ -737,7 +709,7 @@ int CALLBACK WinMain (_In_  HINSTANCE hInstance,
             qsrand(QDateTime::currentDateTime().toTime_t());
             QString _t1 (QString::number((qrand() % 1500) + 1));
             QString _t2 (QString::number((qrand() % 2500) + 1));
-            QString key (QLatin1String("S3m!BHF") + _t1 + QLatin1String("83$%�kd") + _t2 + QString::number(QDateTime::currentDateTime().toTime_t()) + _t1);
+            QString key (QLatin1String("S3m!BHF") + _t1 + QLatin1String("83$%kd") + _t2 + QString::number(QDateTime::currentDateTime().toTime_t()) + _t1);
 
             key = QString(Crypt::encodePlaintext(key));
             sett.setValue(QLatin1String("self/key"), key);
@@ -864,25 +836,12 @@ int CALLBACK WinMain (_In_  HINSTANCE hInstance,
         FrmMain::instance()->showNormal();
     }
 
+    UserInfo::instance();
+
+
     auto r = QApplication::exec();
 
     // Cleanup on shutdown
-
-    // If (-removeTap), then remove all tap devices on shutdown
-    if(removeTap) {
-        TapDriver::instance()->removeTapDriver();
-    }
-
-    // Remove the -start configs from the database
-    if(vecStartConfigs.size()) {
-        for(auto &configData : vecStartConfigs) {
-            for(auto &config : Configs::instance()->getList()) {
-                if(config.second->GetName() == configData.configName && config.second->GetConfigPath() == configData.configFile) {
-                    Configs::instance()->removeFromDatabase(config.first);
-                }
-            }
-        }
-    }
 
     // A little hack to make the com wrapper a bit more reliable when exiting.
     printf("\n");

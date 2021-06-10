@@ -192,100 +192,98 @@ void Debug::log(const QString &message, DebugLevel::Level level, const QString &
     // Schreibt die Logmeldung, wenn ein bestimmtes Level gesetzt ist
     if (debugEnabled) {
         // Level überprüfen
-        if (level <= debugLevel) {
-            // Soll das Datum mit erfasst werden
-            QString timeDate ("");
-            if (dateTimeEnabled) {
-                QString dateFormat (QLatin1String("dd.MM.yyyy hh:mm:ss"));
-                // Millisekunden ausgeben
-                if (mSecsEnabled) {
-                    dateFormat = QLatin1String("dd.MM.yyyy hh:mm:ss.zzz");
-                }
-                timeDate = QDateTime::currentDateTime().toString(dateFormat);
+        // Soll das Datum mit erfasst werden
+        QString timeDate ("");
+        if (dateTimeEnabled) {
+            QString dateFormat (QLatin1String("dd.MM.yyyy hh:mm:ss"));
+            // Millisekunden ausgeben
+            if (mSecsEnabled) {
+                dateFormat = QLatin1String("dd.MM.yyyy hh:mm:ss.zzz");
             }
+            timeDate = QDateTime::currentDateTime().toString(dateFormat);
+        }
 
-            // Ist der Pfad gefüllt
-            if (debugPath.isEmpty()) {
+        // Ist der Pfad gefüllt
+        if (debugPath.isEmpty()) {
+            debugPath = QCoreApplication::applicationDirPath();
+        }
+        // Ist der Pfad vorhanden
+        QDir debugDir (debugPath);
+        if(!debugDir.exists()) {
+            // Pfad erstellen
+            if (!debugDir.mkpath(debugPath)) {
+                // Fehler
                 return;
             }
-            // Ist der Pfad vorhanden
-            QDir debugDir (debugPath);
-            if(!debugDir.exists()) {
-                // Pfad erstellen
-                if (!debugDir.mkpath(debugPath)) {
-                    // Fehler
-                    return;
+        }
+
+        // Soll eine extra Datei erstellt werden?
+        QString fileName ("debug-vpn-service.txt");
+        if (!filename.isEmpty()) {
+            fileName = filename;
+        }
+
+        // Nun die Einrückrung
+        QString indent;
+        // Die Stackgröße spiegelt die Einrücktiefe wieder
+        indent = indent.fill(QChar('\t'), debugCategories.size());
+
+        // Das Level herausfinden
+        QString levelName ("");
+        switch (level) {
+            case DebugLevel::Error:
+                levelName = QLatin1String("Error");
+                if (debugLevel == DebugLevel::Error) {
+                    // Die Einrücktiefe ist 0
+                    indent.clear();
                 }
-            }
+                break;
+            case DebugLevel::Category:
+                levelName = QLatin1String("Category");
+                break;
+            case DebugLevel::Function:
+                levelName = QLatin1String("Function");
+                break;
+            case DebugLevel::Comment:
+                levelName = QLatin1String("Comment");
+                break;
+            case DebugLevel::Database:
+                levelName = QLatin1String("Database");
+                break;
+            case DebugLevel::Debug:
+                levelName = QLatin1String("Debug");
+                break;
+            case DebugLevel::Construktor:
+                levelName = QLatin1String("Construktor");
+                break;
+            case DebugLevel::Destruktor:
+                levelName = QLatin1String("Destruktor");
+                break;
+            default:
+                // Diesen Fall sollte es nicht geben
+                // Da es nur ein Flag für die Ausgabesteuerung ist
+                levelName = QLatin1String("ALL");
+        }
 
-            // Soll eine extra Datei erstellt werden?
-            QString fileName ("debug-vpn-service.txt");
-            if (!filename.isEmpty()) {
-                fileName = filename;
-            }
-
-            // Nun die Einrückrung
-            QString indent;
-            // Die Stackgröße spiegelt die Einrücktiefe wieder
-            indent = indent.fill(QChar('\t'), debugCategories.size());
-
-            // Das Level herausfinden
-            QString levelName ("");
-            switch (level) {
-                case DebugLevel::Error:
-                    levelName = QLatin1String("Error");
-                    if (debugLevel == DebugLevel::Error) {
-                        // Die Einrücktiefe ist 0
-                        indent.clear();
-                    }
-                    break;
-                case DebugLevel::Category:
-                    levelName = QLatin1String("Category");
-                    break;
-                case DebugLevel::Function:
-                    levelName = QLatin1String("Function");
-                    break;
-                case DebugLevel::Comment:
-                    levelName = QLatin1String("Comment");
-                    break;
-                case DebugLevel::Database:
-                    levelName = QLatin1String("Database");
-                    break;
-                case DebugLevel::Debug:
-                    levelName = QLatin1String("Debug");
-                    break;
-                case DebugLevel::Construktor:
-                    levelName = QLatin1String("Construktor");
-                    break;
-                case DebugLevel::Destruktor:
-                    levelName = QLatin1String("Destruktor");
-                    break;
-                default:
-                    // Diesen Fall sollte es nicht geben
-                    // Da es nur ein Flag für die Ausgabesteuerung ist
-                    levelName = QLatin1String("ALL");
-            }
-
-            // LineFeed bestimmen
-            QLatin1String lineFeed ("\r\n");
+        // LineFeed bestimmen
+        QLatin1String lineFeed ("\r\n");
 #ifndef Q_OS_WIN32
-            lineFeed = QLatin1String ("\n");
+        lineFeed = QLatin1String ("\n");
 #endif
 
-            // Alles bearbeitet, nun den String ausgeben
-            // Datei öffnen
-            QFile debugFile (debugPath + fileName);
-            if (debugFile.open(QIODevice::WriteOnly | QIODevice::Append)) {
-                // Datei ist offen nun schreiben
-                QString data (indent + timeDate + QLatin1String (" ") + levelName  + QLatin1String (" -> ") + message + lineFeed);
-                debugFile.write(data.toLatin1());
-                printf("%s\n", data.toLatin1().data());
-                //SrvCLI::instance()->send(QString(data.toLatin1()), QLatin1String("LOG"));
-                // Kurz warten
-                debugFile.waitForBytesWritten(1000);
-                // Datei wieder schließen
-                debugFile.close();
-            }
+        // Alles bearbeitet, nun den String ausgeben
+        // Datei öffnen
+        QFile debugFile (debugPath + fileName);
+        if (debugFile.open(QIODevice::WriteOnly | QIODevice::Append)) {
+            // Datei ist offen nun schreiben
+            QString data (indent + timeDate + QLatin1String (" ") + levelName  + QLatin1String (" -> ") + message + lineFeed);
+            debugFile.write(data.toLatin1());
+            printf("%s\n", data.toLatin1().data());
+            //SrvCLI::instance()->send(QString(data.toLatin1()), QLatin1String("LOG"));
+            // Kurz warten
+            debugFile.waitForBytesWritten(1000);
+            // Datei wieder schließen
+            debugFile.close();
         }
     }
 }

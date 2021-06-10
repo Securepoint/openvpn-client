@@ -116,13 +116,12 @@ void Settings::setRegEntryStartOnWindows (bool flag) {
        QString path;
        path = QCoreApplication::applicationDirPath() + QLatin1String("/SSLVpnClient.exe");
 
-       if (this->useGermanValue) {
-           path += QLatin1String(" -german");
+       if (this->isManaged) {
+           path += QLatin1String(" -manage");
        }
 
-       if (this->isManaged) {
-           // Add manage param
-           path += QLatin1String(" -manage");
+       if (this->useGermanValue) {
+           path += QLatin1String(" -german");
        }
 
        path = path.replace("/", "\\");

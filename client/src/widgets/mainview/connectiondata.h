@@ -79,6 +79,8 @@ private:
     bool errorAlreadyFired;
     ConnectionState state;
 
+    QString getScriptContent();
+
 public slots:
         void writeUserData (QString data);
         void saveUserData (int id, int type, QString value, bool save);

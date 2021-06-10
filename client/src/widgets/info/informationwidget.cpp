@@ -4,6 +4,7 @@
 #include <frmmain.h>
 #include <widgetfactory.h>
 #include <QtGui/qpainter.h>
+#include <userinfo.h>
 
 InformationWidget::InformationWidget(QWidget *parent) :
     QWidget(parent),
@@ -26,6 +27,11 @@ InformationWidget::InformationWidget(QWidget *parent) :
     QObject::connect(ui->cmdForum, &QPushButton::clicked, []() {
         QDesktopServices::openUrl(QUrl("http://support.securepoint.de/"));
     });
+
+    ui->lblUserInfo->setText(QObject::tr("SSLVPN: %1")
+                             .arg(UserInfo::instance()->currentThreadUser()));
+    ui->lblLogonUserInfo->setText(QObject::tr("Logon: %1")
+                             .arg(UserInfo::instance()->currentLogonUser()));
 }
 
 InformationWidget::~InformationWidget()

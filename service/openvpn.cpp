@@ -42,7 +42,7 @@ void OpenVpn::connectToVpn()
 
     // Haben wir eine ID?
     if (this->id() == -1) {
-        // Das hier dürfte nie passieren!
+        // Das hier d?rfte nie passieren!
         Debug::error(QLatin1String("OpenVpn: No valid id to connect."));
         return;
     }
@@ -50,22 +50,20 @@ void OpenVpn::connectToVpn()
     this->connecting = true;
     this->lastAction = -1;
 
-    // Pfad für die Config bauen
-    QString cFile (this->configPath + QLatin1String("/") + this->configName + QLatin1String(".ovpn"));
-    Debug::log(QString("File %1").arg(cFile));
+    //
+    this->fullConfigPathValue = this->configPath + QLatin1String("/") + this->configName + QLatin1String(".ovpn");
+    Debug::log(QString("File %1").arg(this->fullConfigPathValue));
 
-    // This flag controls the connection reject if an invalid script security is detected
-    bool isScriptSecurityError (false);
     //
     {
-        QFile cf (cFile);
+        QFile cf (this->fullConfigPathValue);
 
         if (!cf.open(QIODevice::ReadOnly | QIODevice::Text)) {
             this->connecting = false;
              this->connectionStable = false;
             _srvCLI->send(QString("%1;%2")
                              .arg(this->id())
-                             .arg("Failed to read " + cFile), QLatin1String("ERROR"));
+                             .arg("Failed to read " + this->fullConfigPathValue), QLatin1String("ERROR"));
             return;
         }
 
@@ -77,58 +75,21 @@ void OpenVpn::connectToVpn()
             line = line.trimmed().toLower();
             if(line.left(6) == "remote") {
                 ++this->retryMultiHostCount;
-            } else if (line.left(15) == "script-security") {
-                // The user sets a new script security. Check the value
-                // Values possible:
-                // 0 - no execution allowd
-                // 1 - only build-in tools
-                // 2 - script file like vbs, bat ...
-                // 3 - password passed to scripts bei env variables
-                //
-                // Only 0 and 1 is allowed! All other connections are rejected!
-
-                // Replace all milti whitespaces with a single one
-                line = line.simplified();
-                // Split in key value
-                QStringList keyValue = line.split(" ");
-                // If its not 2 its not a valid value, reject it
-                if (keyValue.size() != 2) {
-                    isScriptSecurityError = true;
-                } else {
-                    // Its a valid value check the value for level 0 and 1
-                    QString value = keyValue.value(1);
-                    //
-                    if (!(value == "0" || value == "1")) {
-                        isScriptSecurityError = true;
-                    }
-                }
             }
         }
     }
 
-    // Do we have an script security error?
-    if (isScriptSecurityError) {
-        // Yes, reject the connection! We'll never execute scripts with a script security higher than 1
-        // see: https://openvpn.net/community-resources/reference-manual-for-openvpn-2-4 @ –script-security level
-        this->connecting = false;
-         this->connectionStable = false;
-        _srvCLI->send(QString("%1;%2")
-                         .arg(this->id())
-                         .arg("Unsafe configuration found: use of script-security greater than 1. This connection is rejected! For further informations see: https://openvpn.net/community-resources/reference-manual-for-openvpn-2-4, section: script-security level"), QLatin1String("ERROR"));
-        return;
-    }
-
-    // Die Parameter für OpenVpn bauen
+    // Die Parameter f?r OpenVpn bauen
     QStringList arguments;
     arguments << QString ("--service");
     arguments << QString ("openvpngui_exit_%1").arg(this->id());
     arguments << QString ("0");
     arguments << QString ("--config");
-    arguments << cFile;
+    arguments << this->fullConfigPathValue;
 
-    // Wurde ein Proxy übergeben
+    // Wurde ein Proxy ?bergeben
     if (!this->proxyString.trimmed().isEmpty()) {
-        // Proxy wurde übergeben
+        // Proxy wurde ?bergeben
         arguments << this->proxyString.split(" ");
     }
 
@@ -141,7 +102,7 @@ void OpenVpn::connectToVpn()
     arguments << QString("--tls-cipher");
     arguments << QString("TLS-DHE-RSA-WITH-AES-256-CBC-SHA:TLS-DHE-RSA-WITH-CAMELLIA-256-CBC-SHA:TLS-DHE-RSA-WITH-3DES-EDE-CBC-SHA:TLS-DHE-RSA-WITH-AES-128-CBC-SHA:TLS-DHE-RSA-WITH-SEED-CBC-SHA:TLS-DHE-RSA-WITH-CAMELLIA-128-CBC-SHA:TLS-DHE-RSA-WITH-DES-CBC-SHA:TLS-DHE-RSA-WITH-AES-256-GCM-SHA384:TLS-DHE-RSA-WITH-AES-256-CBC-SHA256:TLS-DHE-RSA-WITH-AES-128-GCM-SHA256:TLS-DHE-RSA-WITH-AES-128-CBC-SHA256");
 
-    // Prozesssignale zur Überwachung an die Slots binden
+    // Prozesssignale zur ?berwachung an die Slots binden
     if (!QObject::connect(&this->proc, SIGNAL(error ( QProcess::ProcessError)), this, SLOT(showProcessError (QProcess::ProcessError)))) {
         Debug::error(QLatin1String("OpenVPN: Can't connect process error signal"));
     }
@@ -159,7 +120,7 @@ void OpenVpn::connectToVpn()
     }
 
     // Programm starten im Config Verzeichnis, sonst findet OpenVPN keine Zertifikate
-    this->proc.setWorkingDirectory(this->configPath + QLatin1String("/"));
+    this->proc.setWorkingDirectory(this->originConfigPath + QLatin1String("/"));
 
     auto Isx64 = []() -> bool {
         typedef BOOL (WINAPI *LPFN_ISWOW64PROCESS) (HANDLE, PBOOL);
@@ -297,7 +258,7 @@ void OpenVpn::showProcessError(QProcess::ProcessError error)
         _srvCLI->send(QString::number(this->id()) + QLatin1String(";") + errMessage, QLatin1String("ERROR"));
         // Wenn der Process nicht gestartet werden kann, gibt es auch kein finished Signal
         if (error == QProcess::FailedToStart) {
-            // Element aus der Liste löschen
+            // Element aus der Liste l?schen
             emit removeItemFromList(this->id());
         }
     }
@@ -333,6 +294,54 @@ void OpenVpn::disconnectVpn(bool silent)
         this->proc.waitForFinished(5000);
     }
 
+    // Now deletes the users config within the vault
+    if(!g_bPortable) {
+        Debug::log(QString("%1; Removing %2")
+                                   .arg(this->id())
+                                   .arg(this->fullConfigPathValue));
+        {
+            QFile configVaultFile (this->fullConfigPathValue);
+            //
+            if (configVaultFile.exists()) {
+                //
+                Debug::log(QString("%1; File exists")
+                           .arg(this->id()));
+                        //
+                if (!configVaultFile.remove()) {
+                    Debug::log(QString("%1;Error on removing %2: %3")
+                                            .arg(this->id())
+                                            .arg(this->fullConfigPathValue)
+                                            .arg(configVaultFile.errorString()));
+                }
+            }
+        }
+
+        // Check if the directory is empty, if yes remove the user vault dir
+        int totalFilesInVaultLeft = 0;
+        {
+            QDir userVaultDir(this->vaultDirName + "/" + this->userVaultDirName);
+            //
+            userVaultDir.setFilter(QDir::AllEntries | QDir::NoDotAndDotDot);
+            //
+            totalFilesInVaultLeft = userVaultDir.count();
+        }
+        //
+        Debug::log(QString("%1; %2 left in vault %3 in %4")
+                                   .arg(this->id())
+                                   .arg(totalFilesInVaultLeft)
+                                   .arg(this->userVaultDirName)
+                                   .arg(this->vaultDirName));
+
+        // Check if its empty
+        if (totalFilesInVaultLeft == 0) {
+            // Remove dir
+            QDir dir(this->vaultDirName + "/" + this->userVaultDirName);
+            if (dir.exists()) {
+                dir.removeRecursively();
+            }
+        }
+    }
+
     if(!silent)
     {
         //
@@ -363,7 +372,7 @@ void OpenVpn::readProcessData()
         // 1 - Pwd
         // 2 - OTP
         // 3 - PKCS12
-        // 4 - Private Key für Crypted User Data
+        // 4 - Private Key f?r Crypted User Data
         QString pkkey (line);
         if (pkkey.contains("Enter Private Key Password:", Qt::CaseInsensitive)) {
             Debug::log(QLatin1String("Wait for private key"));
@@ -596,7 +605,7 @@ void OpenVpn::readProcessData()
                              .arg(this->id())
                              .arg(connectionLineBak), QLatin1String("LOG"));
 
-            // Nun die Ip senden, damit kann der Client auf grün gehen
+            // Nun die Ip senden, damit kann der Client auf gr?n gehen
             Debug::log(QString("RECEIVEDIP: %1;%2").arg(this->id()).arg(this->connectionIP));
             _srvCLI->send(QString("%1;%2").arg(this->id()).arg(this->connectionIP), QLatin1String("RECEIVEDIP"));
         }
@@ -683,6 +692,11 @@ void OpenVpn::setConfigName(const QString &name)
 void OpenVpn::setConfigPath(const QString &path)
 {
     this->configPath = path;
+}
+
+QString OpenVpn::fullConfigPath() const
+{
+    return this->fullConfigPathValue;
 }
 
 void OpenVpn::setUseInteract(const QString &interact)

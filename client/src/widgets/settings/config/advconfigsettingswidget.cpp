@@ -10,6 +10,8 @@
 #include <QtWidgets/QDesktopWidget>
 #include <QtWidgets/QFileDialog>
 
+#include <checksum.h>
+
 float windowsDpiScale();
 
 AdvConfigSettingsWidget::AdvConfigSettingsWidget(ConnectionData *obj, QWidget * parent) :
@@ -75,13 +77,6 @@ void AdvConfigSettingsWidget::showEvent(QShowEvent *e) {
     ui->cmbRouteMethod->insertItem(0, QObject::tr("Not defined"));
     ui->cmbRouteMethod->insertItem(1, QLatin1String("Exe"));
     ui->cmbRouteMethod->insertItem(2, QLatin1String("IPAPI"));
-
-    ui->cbWinDirUseDefault_2->setChecked(true);
-    ui->cbWinDirEnvironment_2->setChecked(true);
-    ui->cbWinDirEnvironment_2->setEnabled(false);
-    ui->cbWinDirPath_2->setEnabled(false);
-    ui->txtPath_2->setText("");
-    ui->txtPath_2->setEnabled(false);
 
     this->fillCipherCombo();
 
@@ -261,7 +256,6 @@ void AdvConfigSettingsWidget::resetFields() {
     ui->cbPersistKey->setChecked(false);
     ui->cbPersistTun->setChecked(false);
     ui->cbNoCache->setChecked(false);
-    ui->cbUserPass->setChecked(false);
     ui->cbRedirectGateway->setChecked(false);
 
     ui->cmbDev->setCurrentIndex(0);
@@ -349,7 +343,6 @@ void AdvConfigSettingsWidget::fillFieldFromConfig() {
     bool isVerboseChecked = false;
     bool isMuteChecked = false;
     bool isNoCacheChecked = false;
-    bool isUserPassChecked = false;
     bool isRouteMethodChecked = false;
     bool isRouteDelayChecked = false;
     bool isDevNodeChecked = false;
@@ -363,7 +356,6 @@ void AdvConfigSettingsWidget::fillFieldFromConfig() {
     bool isCipherChecked = false;
     bool isCertTyoeServerChecked = false;
     bool isRedirectGatewayChecked = false;
-    bool isWindirChecked = false;
     bool isPkcs12Checked = false;
 
     while (!in.atEnd()) {
@@ -501,10 +493,10 @@ void AdvConfigSettingsWidget::fillFieldFromConfig() {
                 }
             }
         if (!isRemoteChecked){
-                if (line.left(6).toUpper().trimmed() == "REMOTE") {
+                if (line.trimmed().toUpper().left(7) == "REMOTE ") {
                     //isRemoteChecked = true;
                     QStringList keyvalList = line.split(" ");
-                    if (keyvalList.size() != 3){
+                    if (keyvalList.size() < 3){
                         //ui->txtRemotePort->setText("");
                         //ui->txtRemote->setText("");
                     } else {
@@ -518,6 +510,17 @@ void AdvConfigSettingsWidget::fillFieldFromConfig() {
                         newRow.append(itm);
                         itm = new QStandardItem(valport.replace("\"",""));
                         newRow.append(itm);
+
+                        // Check if we got proto settings
+                        if (keyvalList.size() == 4) {
+                            QString proto = keyvalList[3];
+                            // If its no tcp it is udp ...
+                            if(proto.trimmed().toUpper() == "TCP") {
+                                ui->cmbProto->setCurrentIndex(1);
+                            } else {
+                                ui->cmbProto->setCurrentIndex(2);
+                            }
+                        }
 
                         m->appendRow(newRow);
                     }
@@ -619,15 +622,7 @@ void AdvConfigSettingsWidget::fillFieldFromConfig() {
                     ui->cbNoCache->setChecked(false);
                 }
             }
-        if (!isUserPassChecked){
-                if (line.toUpper().trimmed() == "AUTH-USER-PASS") {
-                    isUserPassChecked = true;
-                    ui->cbUserPass->setChecked(true);
-                } else {
 
-                    ui->cbUserPass->setChecked(false);
-                }
-            }
         if (!isRouteMethodChecked){
                 if (line.left(12).toUpper().trimmed() == "ROUTE-METHOD") {
                     isRouteMethodChecked = true;
@@ -788,47 +783,6 @@ void AdvConfigSettingsWidget::fillFieldFromConfig() {
                     ui->cbCertIsServer->setChecked(false);
                 }
             }
-
-        if (!isWindirChecked) {
-            if (line.trimmed().left(7).toUpper() == QLatin1String("WIN-SYS")) {
-                isWindirChecked = true;
-                // Unterscheidung, ob der Path Leerzeichen hat
-                if (line.indexOf(" ", 9) > -1) {
-                    // Leerzeichen im Path
-                    QString path (line.right(line.size() - 8));
-                    path = path.replace("\"", "").trimmed();
-                    ui->cbWinDirOther_2->setChecked(true);
-                    ui->cbWinDirPath_2->setChecked(true);
-                    ui->cbWinDirEnvironment_2->setEnabled(true);
-                    ui->cbWinDirPath_2->setEnabled(true);
-                    ui->txtPath_2->setEnabled(true);
-                    ui->txtPath_2->setText(path);
-                } else {
-                    QStringList keyvalList = line.split(" ");
-                    // Das Windows verzeichnis finden
-                    if (keyvalList.size() == 2) {
-                        if (keyvalList.at(1).trimmed().toUpper() == QLatin1String("ENV")) {
-                            ui->cbWinDirOther_2->setChecked(true);
-                            ui->cbWinDirEnvironment_2->setChecked(true);
-                            ui->cbWinDirEnvironment_2->setEnabled(true);
-                            ui->cbWinDirPath_2->setEnabled(true);
-                            ui->txtPath_2->setEnabled(false);
-                            ui->txtPath_2->setText(QLatin1String(""));
-                        } else {
-                            // Muss ein Pfad sein
-                            ui->cbWinDirOther_2->setChecked(true);
-                            ui->cbWinDirPath_2->setChecked(true);
-                            ui->cbWinDirEnvironment_2->setEnabled(true);
-                            ui->cbWinDirPath_2->setEnabled(true);
-                            ui->txtPath_2->setEnabled(true);
-                            QString path (keyvalList.at(1));
-                            ui->txtPath_2->setText(path.replace("\"", ""));
-                        }
-                    }
-                }
-            }
-        }
-
     }
     cf.close();
    // Scripts einlesen
@@ -852,21 +806,9 @@ void AdvConfigSettingsWidget::fillFieldFromConfig() {
 
 void AdvConfigSettingsWidget::on_cmdSave_clicked()
 {
-    if (ui->cbWinDirOther_2->isChecked() && ui->cbWinDirPath_2->isChecked() && ui->txtPath_2->text().isEmpty()) {
-        Message::error(QObject::tr("Please select a windows path!"), QObject::tr("Save Configuration"), this);
-        return;
-    }
-
     QStringList oldFields = this->getAllFieldWhichNotIntoTheInterface();
-    // GUI auslesen und config speichern
-    QFile cf (this->configObj->GetConfigPath());
 
-    if (!cf.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
-        Message::error(QObject::tr("Unable to open file!"), QObject::tr("Save Configuration"), this);
-        return;
-    }
-
-    QTextStream out(&cf);
+    QStringList out;
     // Datei offen, fertig zum schreiben
     out << QLatin1String("##############################################\n");
     out << QLatin1String("### \n");
@@ -902,9 +844,6 @@ void AdvConfigSettingsWidget::on_cmdSave_clicked()
     if (ui->cbNoCache->isChecked())
         out << QLatin1String("auth-nocache\n");
 
-    if (ui->cbUserPass->isChecked())
-        out << QLatin1String("auth-user-pass\n");
-
     if (ui->cmbDev->currentIndex() != 0) {
         if (ui->cmbDev->currentIndex() == 1)
             out << QLatin1String("dev tun\n");
@@ -922,7 +861,7 @@ void AdvConfigSettingsWidget::on_cmdSave_clicked()
         QStringList list;
         QStandardItemModel * m = (QStandardItemModel*)this->ui->lvRemote->model();
         for(int row = 0; row < m->rowCount(); ++row)
-        { 
+        {
             list.append(m->item(row, 0)->text() + QLatin1String(" ") +  m->item(row , 1)->text());
         }
         return list;
@@ -1017,20 +956,7 @@ void AdvConfigSettingsWidget::on_cmdSave_clicked()
             }
 
         }
-    } /*else {
-        if (ui->rbNormal->isChecked() && !ui->txtCA->text().isEmpty())
-            out << QLatin1String("ca \"") << ui->txtCA->text().replace("/", "\\\\") << QLatin1String("\"\n");
-
-        if (ui->rbNormal->isChecked() && !ui->txtCert->text().isEmpty())
-            out << QLatin1String("cert \"") << ui->txtCert->text().replace("/", "\\\\") << QLatin1String("\"\n");
-
-        if (ui->rbNormal->isChecked() && !ui->txtKey->text().isEmpty())
-            out << QLatin1String("key \"") << ui->txtKey->text().replace("/", "\\\\") << QLatin1String("\"\n");
-        if (ui->rbPkcs->isChecked() && !ui->txtPkcs12Path->text().isEmpty()) {
-            out << QLatin1String("pkcs12 ") << ui->txtPkcs12Path->text() << QLatin1String("\n");
-        }
-    }*/
-
+    }
 
     if (ui->rbNormal->isChecked() && ui->cbCertIsServer->isChecked())
         out << QLatin1String("ns-cert-type server\n");
@@ -1111,30 +1037,42 @@ void AdvConfigSettingsWidget::on_cmdSave_clicked()
     if (ui->cbRedirectGateway->isChecked())
         out << QLatin1String("redirect-gateway\n");
 
-    // Das Windir auswerten
-    if (!ui->cbWinDirUseDefault_2->isChecked()) {
-        // Custom path oder Env
-        if (ui->cbWinDirEnvironment_2->isChecked()) {
-            out << QLatin1String("win-sys env") << QLatin1String("\n");
-        } else {
-            // Sind Leerzeichen im String
-            QString winDir (ui->txtPath_2->text());
-            winDir = winDir.trimmed();
-            if (winDir.indexOf(" ") > -1 ) {
-                winDir = QLatin1String("\"") + winDir + QLatin1String("\"");
-            }
-            out << QLatin1String("win-sys ") << winDir << QLatin1String("\n");
-        }
-    }
-
     if (oldFields.size() > 0) {
        // Alte Felder die nicht in der GUI sind vorhanden
         out << QLatin1String("\n#Fields which could be not manage wih GUI \n\n");
         out << oldFields.join("\n");
     }
 
-    // Datei schließen
+
+
+    // Write the string list to file
+    QFile cf (this->configObj->GetConfigPath());
+
+    if (!cf.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
+        Message::error(QObject::tr("Unable to open file!"), QObject::tr("Save Configuration"), this);
+        return;
+    }
+
+    QTextStream configStream(&cf);
+
+    //
+    QString content;
+    //
+    for ( QStringList::Iterator it = out.begin(); it != out.end(); ++it ) {
+        content += QString (*it);
+    }
+
+    configStream << content + "\n";
+
+    cf.waitForBytesWritten(300);
+
+    //
     cf.close();
+
+    // Update checksum
+    // Update the checksum of the file
+    Checksum::instance()->createNewChecksum(Checksum::instance()->base64OfContent(content), this->configObj->GetId(), this->configObj->GetConfigPath());
+
     // Scripts ablegen
     bool scriptDataWrite(false);
 #if 1
@@ -1184,6 +1122,7 @@ void AdvConfigSettingsWidget::on_cmdSave_clicked()
     }
     sf.close();
 #endif
+
     this->close();
 }
 
@@ -1309,7 +1248,7 @@ QStringList AdvConfigSettingsWidget::getAllFieldWhichNotIntoTheInterface() {
                     && line.toUpper().trimmed() != "REDIRECT-GATEWAY"
                     && line.trimmed().left(5).toUpper() != "PROTO"
                     && line.toUpper().trimmed() != "FLOAT"
-                    && line.trimmed().left(6).toUpper() != "REMOTE"
+                    && line.trimmed().left(7).toUpper() != "REMOTE "
                     && line.toUpper().trimmed() != "NOBIND"
                     && line.toUpper().trimmed() != "PERSIST-KEY"
                     && line.toUpper().trimmed() != "PERSIST-TUN"
@@ -1319,7 +1258,6 @@ QStringList AdvConfigSettingsWidget::getAllFieldWhichNotIntoTheInterface() {
                     && line.trimmed().left(4).toUpper() != "VERB"
                     && line.trimmed().left(4).toUpper() != "MUTE"
                     && line.toUpper().trimmed() != "AUTH-NOCACHE"
-                    && line.toUpper().trimmed() != "AUTH-USER-PASS"
                     && line.trimmed().left(12).toUpper() != "ROUTE-METHOD"
                     && line.trimmed().left(11).toUpper() != "ROUTE-DELAY"
                     && line.trimmed().left(8).toUpper() != "DEV-NODE"
@@ -1331,33 +1269,12 @@ QStringList AdvConfigSettingsWidget::getAllFieldWhichNotIntoTheInterface() {
                     && !line.trimmed().left(11).contains("HTTP-PROXY ", Qt::CaseInsensitive)
                     && line.toUpper().trimmed() != "MUTE-REPLAY-WARNINGS"
                     && line.trimmed().left(6).toUpper() != "CIPHER"
-                    && line.toUpper().trimmed() != "NS-CERT-TYPE SERVER"
-                    && line.trimmed().left(7).toUpper() != "WIN-SYS") {
+                    && line.toUpper().trimmed() != "NS-CERT-TYPE SERVER") {
                    fieldsNotIncluded.append(line);
                 }
     }
     cf.close();
     return fieldsNotIncluded;
-}
-
-void AdvConfigSettingsWidget::on_cbWinDirOther_2_toggled(bool checked)
-{
-    ui->cbWinDirEnvironment_2->setEnabled(checked);
-    ui->cbWinDirPath_2->setEnabled(checked);
-
-    // Das Textfeld hat ein paar mehr Möglichkeiten
-    if (!checked) {
-        ui->txtPath_2->setEnabled(false);
-    }
-
-    if (checked && ui->cbWinDirPath_2->isChecked()) {
-        ui->txtPath_2->setEnabled(true);
-    }
-}
-
-void AdvConfigSettingsWidget::on_cbWinDirPath_2_toggled(bool checked)
-{
-    ui->txtPath_2->setEnabled(checked);
 }
 
 void AdvConfigSettingsWidget::on_rbPkcs_toggled(bool checked)

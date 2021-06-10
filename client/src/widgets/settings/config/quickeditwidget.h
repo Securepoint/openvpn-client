@@ -13,7 +13,7 @@ namespace Ui {
 class QuickEditWidget : public FramelessDialog {
     Q_OBJECT
 public:    
-    QuickEditWidget(const QString &path, QWidget * parent = 0);
+    QuickEditWidget(const QString &path, const int id, QWidget * parent = 0);
 
 protected:
     void changeEvent(QEvent *e);
@@ -22,6 +22,7 @@ protected:
 private:
     Ui::QuickEditWidget *m_ui;        
     QString path;
+    int id;
     QString getContent ();
 
 private slots:

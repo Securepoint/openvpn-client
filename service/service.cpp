@@ -21,6 +21,15 @@ Service::Service(int argc, char **argv)
 void Service::start()
 {
     // Den Port einlesen und den SSL-Server starten
+    // Cleanup accidentally unremoved configs in vault
+    QString serviceDir (QCoreApplication::applicationDirPath());
+    QString allUsersVault (serviceDir + "/vault");
+
+    // Remove dir
+    QDir allUsersVaultDir(allUsersVault);
+    if (allUsersVaultDir.exists(allUsersVault)) {
+        allUsersVaultDir.removeRecursively();
+    }
 
     // Ini-Datei öffenen
     QSettings serviceSettings (QCoreApplication::applicationDirPath() + QLatin1String("/service.ini"), QSettings::IniFormat);
@@ -42,7 +51,7 @@ void Service::start()
     // Debug an/ ausschalten
     Debug::setDebugPath(QCoreApplication::applicationDirPath());
 
-#if _DEBUG
+#if _ENABLE_DEBUG
     Debug::enableDebugging(serviceSettings.value(QLatin1String("debug/state"), 1).toBool());
     int debLev (serviceSettings.value(QLatin1String("debug/level"), 9).toInt());
 #else
@@ -100,6 +109,15 @@ void Service::start()
 void Service::stop()
 {
     this->server->close();
+    //
+    QString serviceDir (QCoreApplication::applicationDirPath());
+    QString allUsersVault (serviceDir + "/vault");
+
+    // Remove dir
+    QDir allUsersVaultDir(allUsersVault);
+    if (allUsersVaultDir.exists(allUsersVault)) {
+        allUsersVaultDir.removeRecursively();
+    }
 }
 
 void Service::pause()

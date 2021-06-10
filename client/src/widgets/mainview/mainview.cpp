@@ -11,9 +11,11 @@
 #include <widgets/settings/config/quickeditwidget.h>
 
 #include <dialogs/servicelog.h>
+#include <checksum.h>
 
 #include <widgets/settings/client/settings.h>
 
+extern bool g_bPortable;
 
 MainListView::MainListView(QWidget *parent)
     : QListView(parent)
@@ -108,6 +110,14 @@ void MainListView::connectionButtonDClick(const QModelIndex& index)
     // TODO: show error log
 }
 
+void MainListView::createChecksumOfConfig()
+{
+    // ID, Username, SID, Path, Content as Base64
+    auto pConnection = ((MainListView*)FrmMain::instance()->mainWidget()->widget(MainView))->model.GetConnection(this->model.data(this->currentIndex(), Qt::UserRole + 8).toInt());
+    //
+    Checksum::instance()->createNewChecksumFromFile(pConnection->GetId(), pConnection->GetConfigPath());
+}
+
 void MainListView::customContextMenuRequested(const QPoint &pos)
 {
     // Check if the connections exits
@@ -128,12 +138,10 @@ void MainListView::customContextMenuRequested(const QPoint &pos)
 
     QString connectText = QObject::tr("Connect");
     if(this->model.GetConnection(this->currentIndex())->GetState() == ConnectionState::Disconnected
-         || this->model.GetConnection(this->currentIndex())->GetState() == ConnectionState::Error)
-    {
+         || this->model.GetConnection(this->currentIndex())->GetState() == ConnectionState::Error){
 
     }
-    else if(this->model.GetConnection(this->currentIndex())->GetState() == ConnectionState::Connecting)
-    {
+    else if(this->model.GetConnection(this->currentIndex())->GetState() == ConnectionState::Connecting) {
         connectText = QObject::tr("Cancel");
     }
     else {
@@ -141,20 +149,20 @@ void MainListView::customContextMenuRequested(const QPoint &pos)
     }
 
     menu.addAction(QIcon(":/data/images/connect.png"), connectText, this, SLOT(ContextConnect()));
+    menu.addSeparator();
 
     if(Settings::instance()->managed()) {
         menu.addAction(QIcon(":/data/images/export.png"), QObject::tr("Export"), this, SLOT(ContextExport()));
         menu.addAction(QIcon(":/data/images/remove.png"), QObject::tr("Remove"), this, SLOT(ContextRemove()));
+        menu.addAction(QIcon(":/data/images/quick-edit.png"), QObject::tr("Quick Edit"), this, SLOT(openQuickEdit()));
+        menu.addAction(QIcon(":/data/images/wheel-dark.png"), QObject::tr("Settings"), this, SLOT(openConfigSettings()));
+        //
+        menu.addSeparator();
+        menu.addAction(QIcon(":/data/images/quick-edit.png"), QObject::tr("Create Checksum"), this, SLOT(createChecksumOfConfig()));
     }
 
     // TODO: change icon
     menu.addAction(QIcon(":/data/images/wheel-dark.png"), QObject::tr("Log"), this, SLOT(ContextLog()));
-
-    if(Settings::instance()->managed())
-        menu.addAction(QIcon(":/data/images/quick-edit.png"), QObject::tr("Quick Edit"), this, SLOT(openQuickEdit()));
-
-    if(Settings::instance()->managed())
-        menu.addAction(QIcon(":/data/images/wheel-dark.png"), QObject::tr("Settings"), this, SLOT(openConfigSettings()));
 
     menu.addSeparator();
 
@@ -174,7 +182,7 @@ void MainListView::setCursorSlot(Qt::CursorShape type)
 void MainListView::openQuickEdit()
 {
     auto pConnection = ((MainListView*)FrmMain::instance()->mainWidget()->widget(MainView))->model.GetConnection(this->model.data(this->currentIndex(), Qt::UserRole + 8).toInt());
-    QuickEditWidget widget(pConnection->GetConfigPath());
+    QuickEditWidget widget(pConnection->GetConfigPath(), pConnection->GetId());
 
     widget.exec();
 }
@@ -206,10 +214,15 @@ void MainListView::ContextRemove()
 
         model.GetConnection(this->currentIndex())->Delete();
 
-        Configs::instance()->removeFromDatabase(model.GetConnection(this->currentIndex())->GetId());
+        int configId (model.GetConnection(this->currentIndex())->GetId());
+        Configs::instance()->removeFromDatabase(configId);
 
         Configs::instance()->refreshConfigs();
 
+        // Remove the checksum of thsi config
+        Checksum::instance()->removeChecksum(configId);
+
+        // Load the new connections and get the current state
         model.LoadConnections();
 
         for(const auto con : Configs::instance()->getList())

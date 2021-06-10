@@ -27,17 +27,9 @@ private slots:
 
     void on_cbBlockShutdown_toggled(bool checked);
 
-    void on_cbShowBallon_toggled(bool checked);
-
     void on_cbAlwaysPopup_toggled(bool checked);
 
-    void on_cbShowSplash_toggled(bool checked);
-
     void on_cbInteract_toggled(bool checked);
-
-    void on_cbAutoRestart_toggled(bool checked);
-
-    void on_cmdChangeMaschineDirectory_clicked();
 
     void on_cmdAddTap_clicked();
 

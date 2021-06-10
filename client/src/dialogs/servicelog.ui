@@ -83,6 +83,24 @@ QPushButton {;text-align:center;
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="cmdClearLog">
+       <property name="styleSheet">
+        <string notr="true">:hover {background-color: rgb(195, 195, 195);}
+QPushButton {;text-align:center;
+	padding-left: 3px;
+	padding-right: 3px;
+	padding-top: 3px;
+	padding-bottom: 3px;}</string>
+       </property>
+       <property name="text">
+        <string>Clear Log</string>
+       </property>
+       <property name="flat">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -164,8 +182,6 @@ QPushButton {;text-align:center;
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="systray.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

@@ -8,8 +8,6 @@
 #include <utils.h>
 #include <service/SrvCLI.h>
 
-#include <tapdriver.h>
-
 #include <message.h>
 
 extern bool g_bPortable;
@@ -187,15 +185,6 @@ void ClientSettingsWidget::on_cbBlockShutdown_toggled(bool checked)
     Settings::instance()->setBlockShutdown(checked);
 }
 
-void ClientSettingsWidget::on_cbShowBallon_toggled(bool checked)
-{
-    //
-    // Update setting
-    //
-
-    Settings::instance()->setShowBallon(checked);
-}
-
 void ClientSettingsWidget::on_cbAlwaysPopup_toggled(bool checked)
 {
     //
@@ -205,15 +194,6 @@ void ClientSettingsWidget::on_cbAlwaysPopup_toggled(bool checked)
     Settings::instance()->setAlwaysPopup(checked);
 }
 
-void ClientSettingsWidget::on_cbShowSplash_toggled(bool checked)
-{
-    //
-    // Update setting
-    //
-
-    Settings::instance()->setShowSplash(checked);
-}
-
 void ClientSettingsWidget::on_cbInteract_toggled(bool checked)
 {
     //
@@ -221,15 +201,6 @@ void ClientSettingsWidget::on_cbInteract_toggled(bool checked)
     //
 
     Settings::instance()->setUseInteract(checked);
-}
-
-void ClientSettingsWidget::on_cbAutoRestart_toggled(bool checked)
-{
-    //
-    // Update setting
-    //
-
-    Settings::instance()->setAutoRestart(checked);
 }
 
 void ClientSettingsWidget::on_cmdAddTap_clicked()
@@ -245,26 +216,6 @@ void ClientSettingsWidget::on_cmdRemoveTap_clicked()
             QApplication::setOverrideCursor(Qt::WaitCursor);
             SrvCLI::instance()->send(QLatin1String("REMOVETAP"), QLatin1String(""));
         }
-}
-
-void ClientSettingsWidget::on_cmdChangeMaschineDirectory_clicked()
-{
-    //
-    // Change the maschine configuration dir
-    //
-
-    // User want to change the path
-    //
-    QString maschineDirectory (QFileDialog::getExistingDirectory(this, QObject::tr("Select import file"), Settings::instance()->maschineConfigDirectory()));
-    //
-    if (maschineDirectory.isEmpty()) {
-        return;
-    }
-
-    // Fill ui
-    //ui->txtMaschineConfigDirectory->setText(maschineDirectory);
-    //
-    //Settings::instance()->setMaschineConfigDirectory(ui->txtMaschineConfigDirectory->text());
 }
 
 void ClientSettingsWidget::on_cbShowSmallDhKeyHInt_toggled(bool checked)

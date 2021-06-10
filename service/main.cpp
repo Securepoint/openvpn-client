@@ -16,7 +16,7 @@ int main(int argc, char **argv)
         if(!strcmp(argv[x], "-e")) {
             g_bPortable = true;
         }
-    }
+    }    
 
     // Kurz und knapp :)
     Service vpnservice (argc, argv);

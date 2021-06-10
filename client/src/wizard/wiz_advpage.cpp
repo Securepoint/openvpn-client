@@ -26,16 +26,7 @@ AdvPage::AdvPage(QWidget *parent) :
     registerField(QLatin1String("txtCompLzo"), m_ui->cbCompLzo);
     registerField(QLatin1String("txtFloat"), m_ui->cbFloat);
     registerField(QLatin1String("txtNobind"), m_ui->cbNobind);
-    registerField(QLatin1String("txtUserPass"), m_ui->cbUserPass);
-
-    // Windir
-    // Fields
-    registerField(QLatin1String("cbDefault"), m_ui->cbWinDirUseDefault);
-    registerField(QLatin1String("cbOther"), m_ui->cbWinDirOther);
-    registerField(QLatin1String("cbEnvironment"), m_ui->cbWinDirEnvironment);
-    registerField(QLatin1String("cbPath"), m_ui->cbWinDirPath);
-
-    registerField(QLatin1String("txtPath"), m_ui->txtPath);
+    registerField(QLatin1String("txtUserPass"), m_ui->cbAuthUserPass);
 
     this->setTitle("\n\n" + this->title());
 }
@@ -73,34 +64,8 @@ void AdvPage::initializePage() {
     m_ui->cbFloat->setChecked(true);
     m_ui->cbMsfix->setChecked(true);
     m_ui->cbNobind->setChecked(true);
-    m_ui->cbUserPass->setChecked(true);
+    m_ui->cbAuthUserPass->setChecked(true);
 
     m_ui->cmbRouteMethod->setCurrentIndex(1);
 
-    m_ui->cbWinDirUseDefault->setChecked(true);
-    m_ui->cbWinDirEnvironment->setChecked(true);
-    m_ui->cbWinDirEnvironment->setEnabled(false);
-    m_ui->cbWinDirPath->setEnabled(false);
-    m_ui->txtPath->setEnabled(false);
-    m_ui->txtPath->setText(QLatin1String(""));
-}
-
-void AdvPage::on_cbWinDirOther_toggled(bool checked)
-{
-    m_ui->cbWinDirEnvironment->setEnabled(checked);
-    m_ui->cbWinDirPath->setEnabled(checked);
-
-    // Das Textfeld hat ein paar mehr M?glichkeiten
-    if (!checked) {
-        m_ui->txtPath->setEnabled(false);
-    }
-
-    if (checked && m_ui->cbWinDirPath->isChecked()) {
-        m_ui->txtPath->setEnabled(true);
-    }
-}
-
-void AdvPage::on_cbWinDirPath_toggled(bool checked)
-{
-    m_ui->txtPath->setEnabled(checked);
 }

@@ -161,3 +161,9 @@ void ServiceLog::on_cmdClose_clicked()
     this->close();
 }
 
+
+void ServiceLog::on_cmdClearLog_clicked()
+{
+    ServiceLogData::instance()->clearId(this->openvpnId);
+    m_ui->memLog->clear();
+}
