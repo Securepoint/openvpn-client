@@ -1,5 +1,6 @@
 #include "frmmain.h"
 #include "ui_frmmain.h"
+#include <debug/debug.h>
 
 #define _UNICODE
 // Fix error in QDateTime
@@ -36,12 +37,13 @@ extern QString g_strClientName;
 #include <widgets/settings/client/settings.h>
 #include "dialogs\frmgetuserdata.h"
 #include <service\srvcli.h>
-#include <config/configs.h>
+#include <config/Configs.h>
 #include <message.h>
 #include <wizard\wiz_vpnwizard.h>
 #include <database\crypt.h>
 #include <database\database.h>
-
+#include <proxysettings.h>
+#include <updatecheck.h>
 
 //
 // Message IDs
@@ -52,6 +54,8 @@ extern QString g_strClientName;
 #define INSTALL_TAP_DEVICE 10056
 #define RECEIVE_TAP_COUNT 10057
 #define CONNECT_TO_SERVICE 10058
+
+
 
 // Magic number for the arrow in window position calculation
 #define ARROW_HEIGHT 28
@@ -171,9 +175,23 @@ FrmMain *FrmMain::instance()
     // Create singleton
     //
 
+
     if (!mInst) {
         // Create a new instance
         mInst = new FrmMain;
+
+
+
+#if _ENABLE_DEBUG
+        // enable Debug
+        Debug::enableDebugging(true);
+        // set debug path to debug-vpn-client.txt
+        Debug::setDebugPath(QCoreApplication::applicationDirPath());
+        //anable date and time stamp
+        Debug::enableMSecs(true);
+#endif
+        // load settings from client.ini
+        QSettings clientSettings (QCoreApplication::applicationDirPath() + QLatin1String("/client.ini"), QSettings::IniFormat);
 
         // Set a custom window text for SendMessage in combination with FindWindow
         SetWindowText((HWND)mInst->winId(), _TEXT("HalloSPSSLVPN"));
@@ -182,6 +200,11 @@ FrmMain *FrmMain::instance()
         {
             SrvCLI::instance()->send(QLatin1String("STATUS"), QString("%1").arg(con.second->GetId()));
         }*/
+
+        //check if there is a config available
+        if(!Configs::instance()->isConnectionAvailable()){
+            mInst->checkForNewConfigAndRefreshUI();
+        }
 
         Configs::instance()->refreshConfigs();
 
@@ -241,16 +264,134 @@ WNDPROC pfOriginalProc;
 
 bool bAllowMove = false;
 
+bool FrmMain::nativeEvent(const QByteArray &eventType, void *message, long *result)
+{
+    MSG *winMessage = (MSG*) message;
+
+
+    switch (winMessage->message)
+    {
+        case static_cast<UINT>(WM_POWERBROADCAST):
+        {
+            if(winMessage->wParam == PBT_APMSUSPEND
+            || winMessage->wParam == PBT_APMSTANDBY)
+            {
+                for(const auto &conDis : Configs::instance()->getList())
+                {
+                    conDis.second->Disconnect();
+                }
+            }
+            break;
+        }
+        case static_cast<UINT>(CLOSE_VPN_CLIENT):
+        {
+            //HWND senderHandle = (HWND) winMessage->hwnd;
+            FrmMain::instance()->closeApplication();
+            break;
+        }
+        case static_cast<UINT>(ON_TB_MOVE):
+        {
+           // HWND senderHandle = (HWND) winMessage->hwnd;
+            FrmMain::instance()->taskBarMove();
+            break;
+        }
+        case static_cast<UINT>(ON_SEND_DUMMY):
+        {
+            //HWND senderHandle = (HWND) winMessage->hwnd;
+            SrvCLI::instance()->send(QLatin1String("Dummy"), g_strClientName);
+            //if(qApp->hasPendingEvents())
+            //{
+                qApp->processEvents();
+            //}
+            break;
+        }
+        case static_cast<UINT>(FAILED_TO_CONNECT):
+        {
+           // HWND senderHandle = (HWND) winMessage->hwnd;
+            Debug::log(QLatin1String("number: ") + QString::number(winMessage->message) + " FAILED_TO_CONNECT");
+            Message::error(QObject::tr("Failed to connect to service! Please make sure the service is running and restart the application!"));
+        break;
+        }
+        case static_cast<UINT>(INSTALL_TAP_DEVICE):
+        {
+            //HWND senderHandle = (HWND) winMessage->hwnd;
+            Debug::log(QLatin1String("number: ") + QString::number(winMessage->message) + " INSTALL_TAP_DEVICE");
+            SrvCLI::instance()->send(QLatin1String("ADDTAP"), QLatin1String(""));
+            break;
+        }
+        case static_cast<UINT>(RECEIVE_TAP_COUNT):
+        {
+           // HWND senderHandle = (HWND) winMessage->hwnd;
+            Debug::log(QLatin1String("number: ") + QString::number(winMessage->message) + " RECEIVE_TAP_COUNT");
+            SrvCLI::instance()->send(QLatin1String("TAPCOUNT"), QLatin1String(""));
+            break;
+        }
+        case static_cast<UINT>(CONNECT_TO_SERVICE):
+        {
+            //HWND senderHandle = (HWND) winMessage->hwnd;
+            Debug::log(QLatin1String("number: ") + QString::number(winMessage->message) + " CONNECT_TO_SERVICE");
+            FrmMain::instance()->connectToService();
+            break;
+        }
+        case static_cast<UINT>(WM_NCHITTEST):
+        {
+
+
+            LRESULT hit = DefWindowProc(winMessage->hwnd, winMessage->message, (int) winMessage->wParam, (int) winMessage->lParam);
+
+            // check if moving is allowed
+            // If not we always return hit client and not caption
+
+            if(!bAllowMove) {
+                return QWidget::nativeEvent(eventType, message, result);
+            }
+
+            if (hit == HTCLIENT) {
+                // Cehck if the hit was in the title bar
+                POINT p;
+
+                if (GetCursorPos(&p)) {
+
+                    // Get the client coordinate from the cursor position
+                    if (ScreenToClient(winMessage->hwnd, &p))
+                    {
+                        if (p.y < 20) {
+                            // Hit was in the title bar
+                            *result = HTCAPTION;
+                        }
+                        else
+                        {
+                           return false;
+                        }
+
+                        RECT rect;
+                        GetWindowRect(winMessage->hwnd, &rect);
+
+                        // Check if the hit was on close button
+                        if(p.x > ((rect.right - rect.left) - 25)) {
+                            // Hit was on X button, so execute original wndProc
+
+                            return QWidget::nativeEvent(eventType, message, result);
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+        default:
+        {
+            return QWidget::nativeEvent(eventType, message, result);
+        }
+    }
+    return 0;
+}
+
 // This handles some custom Window Messages so we can send commands from any thread and they will be executed on the main thread
 // QT requires that for many things
 LRESULT wndproc1(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-    //
-    //
-    //
-
     switch (uMsg) {
-    case WM_POWERBROADCAST:
+        case WM_POWERBROADCAST:
         {
             if(wParam == PBT_APMSUSPEND
                 || wParam == PBT_APMSTANDBY)
@@ -307,13 +448,17 @@ LRESULT wndproc1(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             }
 
             if (hit == HTCLIENT) {
+                Debug::log("debug1");
                 // Cehck if the hit was in the title bar
                 POINT p;
                 if (GetCursorPos(&p)) {
+                    Debug::log("debug2");
                     // Get the client coordinate from the cursor position
                     if (ScreenToClient(hwnd, &p)) {
+                                        Debug::log("debug3");
                         if (p.y < 20) {
                             // Hit was in the title bar
+                                            Debug::log("debug4");
                             hit = HTCAPTION;
                         }
 
@@ -340,12 +485,11 @@ LRESULT wndproc1(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 
 
+
 FrmMain::FrmMain()
     : ui(new Ui::FrmMain),
       widgetFactory(new WidgetFactory),
-      version("2.0.33"),
-      updateState(0),
-      lastUpdateState(-1),
+      version("2.0.38"),
       isReconnect(false),
       tapCount(0),
       installingTap(false),
@@ -355,7 +499,6 @@ FrmMain::FrmMain()
     ui->setupUi(this);
 
     // Hide unuses update buttons
-    ui->lblUpdateIcon->setVisible(false);
     ui->cmdUpdateState->setVisible(false);
 
 
@@ -405,7 +548,7 @@ FrmMain::FrmMain()
     trayIcon->setIcon(icon);
 
     //
-    pfOriginalProc = (WNDPROC)SetWindowLong((HWND)winId(), GWL_WNDPROC, (long)wndproc1);
+    //pfOriginalProc = (WNDPROC)SetWindowLong((HWND)winId(), GWL_WNDPROC, (long)wndproc1);
 
     // Start check taskbar geomentry thread
     std::thread th(TBThread);
@@ -483,16 +626,7 @@ FrmMain::FrmMain()
     // Display into systray
 
 
-    // Set movie
-    this->updateMovie.setFileName(":/data/images/loading.gif");
-
     qApp->installEventFilter(this);
-
-    // Start update if it enables
-    if (Settings::instance()->enableUpdate()) {
-        //
-        QTimer::singleShot(300, this, SLOT(on_cmdUpdateState_clicked()));
-    }
 
     // Seems Qt fails :)
     SetWindowPos((HWND)this->winId(), HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
@@ -540,8 +674,11 @@ FrmMain::FrmMain()
         cmdClose_2->setIconSize(QSize(16*windowsDpiScale(), 16*windowsDpiScale()));
         cmdClose_2->setFlat(true);
     }
-}
 
+    // Load and migrate the proxy stuff if available
+    ProxySettings::instance();
+    // Start the update check
+}
 
 void FrmMain::refreshUI()
 {
@@ -550,33 +687,7 @@ void FrmMain::refreshUI()
     QApplication::processEvents();
 
     ((MainListView*)widgetFactory->widget(MainView))->update();
-    ((MainListView*)widgetFactory->widget(MainView))->repaint();
-
-    { /* Do the resizing for the Update Icon */
-        static QImage img;
-
-        static std::once_flag flag;
-        if (this->lastUpdateState != this->updateState) {
-            this->lastUpdateState = this->updateState;
-            //
-            if (this->updateState == NewVersion) {
-                img.load(":/data/images/newerversion.png", "PNG");
-            } else {
-                img.load(":/data/images/16_autostart.png", "PNG");
-            }
-
-            img = img.scaled(QSize(16*windowsDpiScale(), 16*windowsDpiScale()), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-        };
-
-        ui->lblUpdateIcon->setPixmap(QPixmap::fromImage(img));
-        ui->lblUpdateIcon->setMaximumSize(16*windowsDpiScale(), 20*windowsDpiScale());
-        ui->lblUpdateIcon->setMinimumSize(16*windowsDpiScale(), 20*windowsDpiScale());
-        ui->lblUpdateIcon->setFixedSize(16*windowsDpiScale(), 20*windowsDpiScale());
-        auto g = ui->lblUpdateIcon->geometry();
-        g.setSize(QSize(16*windowsDpiScale(), 20*windowsDpiScale()));
-        ui->lblUpdateIcon->setGeometry(g);
-    }
-
+    ((MainListView*)widgetFactory->widget(MainView))->repaint();    
 
     { /* Do the resizing for the Settings Icon */
         static QImage img;
@@ -769,7 +880,6 @@ void FrmMain::showEvent(QShowEvent *event)
     //
     // Set window position
     //
-
     this->trayIcon->contextMenu()->actions().at(2)->setText(QObject::tr("Hide window"));
 
     Configs::instance()->refreshConfigs();
@@ -815,9 +925,8 @@ void FrmMain::showEvent(QShowEvent *event)
         if(desktop->screenGeometry(desktop->screenNumber(QCursor::pos())).contains(tbPoint))
             break;
     }
+
     while(hTaskBar = FindWindowEx(NULL, hTaskBar, _TEXT("Shell_TrayWnd"), NULL));
-
-
     {
         RECT tbRect;
 
@@ -833,7 +942,6 @@ void FrmMain::showEvent(QShowEvent *event)
                 hTaskBar = NULL;
             }
         }
-
         /// In case we still have no TrayWnd try to use SecondayTrayWnd
         if(!hTaskBar)
         {
@@ -855,7 +963,6 @@ void FrmMain::showEvent(QShowEvent *event)
                     break;
             }
             while(hTaskBar = FindWindowEx(NULL, hTaskBar, _TEXT("Shell_SecondaryTrayWnd"), NULL));
-
             {
                 GetWindowRect(hTaskBar, &tbRect);
 
@@ -869,8 +976,6 @@ void FrmMain::showEvent(QShowEvent *event)
                 }
             }
         }
-
-
     }
 
     // If we still have no hTaskBar then we are fucked and cant do anything,
@@ -889,7 +994,6 @@ void FrmMain::showEvent(QShowEvent *event)
     int frameX (0);
     int frameY (0);
 
-
     APPBARDATA pabd;
 
     pabd.hWnd = hTaskBar;
@@ -903,7 +1007,7 @@ void FrmMain::showEvent(QShowEvent *event)
         RECT rect;
         GetWindowRect(hNotifyArea, &rect);
 
-        if((this->trayIcon->geometry().topLeft().y() > rect.top && this->trayIcon->geometry().topLeft().y() < rect.bottom) || m_bTaskBarAutoHide || !hTaskBar) {
+        if((this->trayIcon->geometry().topLeft().y() >= rect.top && this->trayIcon->geometry().topLeft().y() <= rect.bottom) || m_bTaskBarAutoHide || !hTaskBar) {
             qCurrentArrow = nullptr;
 
             bSavePos = true;
@@ -934,7 +1038,6 @@ void FrmMain::showEvent(QShowEvent *event)
             this->setGeometry(trayIconRightTopCorner.x() - positionIconHorizontalSpace, trayIconRightTopCorner.y() - ui->frameMainWindow->height() - positionIconVerticalSpace, this->width(), this->height());
         }
     } else {
-
         bSavePos = false;
         bAllowMove = false;
         RECT rect;
@@ -1093,6 +1196,12 @@ bool FrmMain::initDaemon()
 
     QObject::connect(SrvCLI::instance(), SIGNAL(receivedDummy(quint32)), this, SLOT(dummyReceived(quint32)));
 
+    // Check for updates
+    UpdateCheck *doUpdateCheck = new UpdateCheck;
+    QObject::connect(doUpdateCheck, SIGNAL(updateAvailable(QString)), this, SLOT(updateAvailable(QString)));
+    // Fire
+    doUpdateCheck->run();
+
     return true;
 }
 
@@ -1179,13 +1288,13 @@ bool FrmMain::startDaemon()
             ++autoStartCount;
         }
     };
-
+    Debug::log(QLatin1String("number of tap devices we have to install: ") + QString::number(autoStartCount));
     // Wait for the tap count to be received
     {
         std::unique_lock<std::mutex> lk(mutex_first_tap_count);
         cv_first_tap_count.wait(lk, []{ return received_first_tap_count; } /* this is not necessary, but allows use with special condition */);
     }
-
+    Debug::log(QLatin1String("tapcount:  ") + QString::number(tapCount));
     while(this->tapCount < autoStartCount) {
         // Set the bool for first tap count to false so the below code blocks and waits for the tap count to be received
         received_first_tap_count = false;
@@ -1233,8 +1342,19 @@ void FrmMain::trayActivated(QSystemTrayIcon::ActivationReason reason)
     }
 }
 
+void FrmMain::updateAvailable(QString version)
+{
+    this->updateVersion = version;
+    //
+    ui->cmdUpdateState->setText(QObject::tr("%1 is available").arg(version));
+    ui->cmdUpdateState->setVisible(true);
+}
+
 void FrmMain::on_cmdCloseWindow_clicked()
 {
+    QWidget *tlw = window();
+    mainHWND = (HWND)tlw->internalWinId();
+
     if (this->trayIcon->contextMenu()->actions().size() > 2) {
         this->trayIcon->contextMenu()->actions().at(2)->setText(QObject::tr("Show window"));
     }
@@ -1244,97 +1364,13 @@ void FrmMain::on_cmdCloseWindow_clicked()
 
 void FrmMain::on_cmdSettingMenu_clicked()
 {
-
+    Debug::log(QLatin1String("on_cmdSettingMenu_clicked()"));
     this->close();
-}
-
-void FrmMain::updateCheckIsReady(bool success, QString errorText)
-{
-    //
-    // Update is finished
-    //
-
-    this->updateMovie.stop();
-
-    //
-    ui->cmdUpdateState->setEnabled(true);
-
-
-
-    //
-    if (!success) {
-        ui->cmdUpdateState->setText(QObject::tr("Unable to connect to update server"));
-        ui->cmdUpdateState->setToolTip(errorText);
-
-        static QImage img;
-        static std::once_flag flag;
-        std::call_once(flag, [this]() {
-            img.load(":/data/images/16_autostart.png", "PNG");
-            img = img.scaled(QSize(16*windowsDpiScale(), 16*windowsDpiScale()), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-        });
-
-        ui->lblUpdateIcon->setPixmap(QPixmap::fromImage(img));
-        //
-        this->updateState = UpdateError;
-
-        return;
-    }
-
-
-    //
-    QString uVersion (this->update.highestVersion());
-    if (this->version == uVersion) {
-        //
-        ui->cmdUpdateState->setText(QObject::tr("up to date."));
-        QImage newIcon;
-        newIcon.load(":/data/images/up2date.png", "PNG");
-        newIcon = newIcon.scaled(QSize(16*windowsDpiScale(), 16*windowsDpiScale()), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-        ui->lblUpdateIcon->setPixmap(QPixmap::fromImage(newIcon));
-        ui->cmdUpdateState->setToolTip(QObject::tr("Click to check again"));
-        //
-        this->updateState = UpToDate;
-        //
-        return;
-    }
-
-    // Check if it is a newer version
-    QString thisVersion (this->version);
-    QString netVersion (uVersion);
-    // Remove dots
-    thisVersion = thisVersion.remove(".");
-    netVersion = netVersion.remove(".");
-    // To int
-    int dVersion = thisVersion.toInt();
-    int dNetVersion = netVersion.toInt();
-    //
-    if (dNetVersion > dVersion) {
-        ui->cmdUpdateState->setText(QObject::tr("an update is available"));
-        QImage newIcon;
-        newIcon.load(":/data/images/newerversion.png", "PNG");
-        newIcon = newIcon.scaled(QSize(16*windowsDpiScale(), 16*windowsDpiScale()), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-        ui->lblUpdateIcon->setPixmap(QPixmap::fromImage(newIcon));
-
-        ui->cmdUpdateState->setToolTip(QObject::tr("Click to download the installer"));
-        //
-        this->updateState = NewVersion;
-
-        //
-        return;
-    }
-
-    // No update available
-    ui->cmdUpdateState->setText(QObject::tr("up to date."));
-    QImage newIcon;
-    newIcon.load(":/data/images/up2date.png", "PNG");
-    newIcon = newIcon.scaled(QSize(16*windowsDpiScale(), 16*windowsDpiScale()), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-    ui->lblUpdateIcon->setPixmap(QPixmap::fromImage(newIcon));
-    ui->cmdUpdateState->setToolTip(QObject::tr("Click to check again"));
-    //
-    this->updateState = UpToDate;
 }
 
 void FrmMain::showHideTrayMenu()
 {
+    Debug::log(QLatin1String("showHideTrayMenu"));
     if(this->isVisible()) {
         this->trayIcon->contextMenu()->actions().at(2)->setText(QObject::tr("Show window"));
         this->close();
@@ -1402,46 +1438,11 @@ void FrmMain::showDiffieHellmanWarning()
 
 void FrmMain::on_cmdUpdateState_clicked()
 {
-
-    Configs::instance()->findConfigsInDir((Utils::userApplicationDataDirectory() + "/config"));
-
-    if(g_bPortable)
-    {
-         Configs::instance()->findConfigsInDir((Utils::userApplicationDataDirectory() + "/../data"));
+    // https://updatevpn.securepoint.de/sslvpn-client/${version}/VPNClientInstaller.zip -
+    if (Message::confirm(QObject::tr("Do you want to download the installer of the new SSL VPN v%1").arg(this->updateVersion), QObject::tr("An Update is available"))) {
+        QDesktopServices::openUrl(QUrl(QString("https://updatevpn.securepoint.de/sslvpn-client/%1/VPNClientInstaller.zip").arg(this->updateVersion)));
     }
-
-    //
-    // Check for update
-    //
-
-    if (this->updateState == NewVersion) {
-        if (Settings::instance()->useSecurepoint()) {
-            QDesktopServices::openUrl(QUrl("http://download.securepoint.de"));
-        } else {
-            QDesktopServices::openUrl(QUrl("http://sourceforge.net/projects/securepoint/files"));
-        }
-
-        //
-        return;
-    }
-
-    // Disable button
-    ui->cmdUpdateState->setEnabled(false);
-    //
-    ui->cmdUpdateState->setText(QObject::tr("checking ..."));
-
-    // Create new parser
-    QObject::connect(&this->update, SIGNAL(finished(bool, QString)), this, SLOT(updateCheckIsReady(bool, QString)));
-
-    //
-    ui->lblUpdateIcon->setMovie(&this->updateMovie);
-    //
-    this->updateMovie.start();
-
-    // Go
-    this->update.runParser();
 }
-
 
 void FrmMain::setDisconnected(int id)
 {
@@ -1743,6 +1744,13 @@ void FrmMain::checkForNewConfigAndRefreshUI()
 
     // Get all current configs
     Configs::instance()->findConfigsInDir((Utils::userApplicationDataDirectory() + "/config"));
+
+    if(g_bPortable){      
+        QDir dir(Utils::userApplicationDataDirectory());
+        dir.cdUp();
+        Configs::instance()->findConfigsInDir((dir.path() + "/data/config"));
+    }
+
     // Update list
     Configs::instance()->refreshConfigs();
     // Repaint widgets

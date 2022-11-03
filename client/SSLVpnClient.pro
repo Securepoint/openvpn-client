@@ -4,12 +4,14 @@ TARGET = SSLVpnClient
 QT += core sql network xml widgets gui
 
 CONFIG += release
+# Enable Debug
+#DEFINES += _ENABLE_DEBUG
 
 # Enable multiclient for development
-#DEFINES += MULTICLIENT
+# DEFINES += MULTICLIENT
 
 # Service
-#DEFINES += _WINDOWS _WINDOWS QT_WIDGETS_LIB QT_XML_LIB QT_NETWORK_LIB QT_SQL_LIB QT_OPENGL_ES_2_ANGLE NOMINMAX QT_WIDGETS_LIB QT_XML_LIB QT_NETWORK_LIB QT_SQL_LIB QT_OPENGL_ES_2 QT_OPENGL_ES_2_ANGLE QT_DLL
+DEFINES += _WINDOWS _WINDOWS QT_WIDGETS_LIB QT_XML_LIB QT_NETWORK_LIB QT_SQL_LIB QT_OPENGL_ES_2_ANGLE NOMINMAX QT_WIDGETS_LIB QT_XML_LIB QT_NETWORK_LIB QT_SQL_LIB QT_OPENGL_ES_2 QT_OPENGL_ES_2_ANGLE QT_DLL
 
 # _PORTABLE
 DEFINES += _PORTABLE PORTABLE _WINDOWS _WINDOWS QT_WIDGETS_LIB QT_XML_LIB QT_NETWORK_LIB QT_SQL_LIB QT_OPENGL_ES_2_ANGLE NOMINMAX QT_WIDGETS_LIB QT_XML_LIB QT_NETWORK_LIB QT_SQL_LIB QT_OPENGL_ES_2 QT_OPENGL_ES_2_ANGLE _PORTABLE QT_DLL
@@ -38,10 +40,6 @@ HEADERS += ./src/frmmain.h \
     ./src/service/sslserverconnection.h \
     ./src/service/tasktransaction.h \
     ./src/service/transactionthread.h \
-    ./src/update/checkinfo.h \
-    ./src/update/checkupdate.h \
-    ./src/update/netmanager.h \
-    ./src/update/parsexml.h \
     ./src/widgets/export/exportwidget.h \
     ./src/widgets/import/importwidget.h \
     ./src/widgets/info/informationwidget.h \
@@ -66,9 +64,14 @@ HEADERS += ./src/frmmain.h \
     ./src/zip/czip.h \
     ./src/zip/unzip.h \
     ./src/zip/zip.h \
+    src/debug/debug.h \
     src/zip/zipdefines.h \
     src/userinfo.h \
-    src/checksum.h
+    src/checksum.h \
+    src/update/ui_authenticationdialog.h \
+    src/update/updatecheck.h \
+    src/proxysettings.h \
+    src/dialogs/sslcertsdialog.h
 SOURCES += ./src/frmmain.cpp \
     ./src/listviewbuttondelegate.cpp \
     ./src/listviewsinglebuttondelegate.cpp \
@@ -93,10 +96,6 @@ SOURCES += ./src/frmmain.cpp \
     ./src/service/sslserverconnection.cpp \
     ./src/service/tasktransaction.cpp \
     ./src/service/transactionthread.cpp \
-    ./src/update/checkinfo.cpp \
-    ./src/update/checkupdate.cpp \
-    ./src/update/netmanager.cpp \
-    ./src/update/parsexml.cpp \
     ./src/widgets/export/exportwidget.cpp \
     ./src/widgets/import/importwidget.cpp \
     ./src/widgets/info/informationwidget.cpp \
@@ -121,8 +120,12 @@ SOURCES += ./src/frmmain.cpp \
     ./src/zip/czip.cpp \
     ./src/zip/unzip.cpp \
     ./src/zip/zip.cpp \
+    src/debug/debug.cpp \
     src/userinfo.cpp \
-    src/checksum.cpp
+    src/checksum.cpp \
+    src/update/updatecheck.cpp \
+    src/proxysettings.cpp \
+    src/dialogs/sslcertsdialog.cpp
 FORMS += ./src/frmmain.ui \
     ./src/dialogs/frmgetuserdata.ui \
     ./src/dialogs/servicelog.ui \
@@ -139,7 +142,9 @@ FORMS += ./src/frmmain.ui \
     ./src/wizard/wiz_generalpage.ui \
     ./src/wizard/wiz_remotepage.ui \
     ./src/wizard/wiz_startpage.ui \
-    ./src/wizard/wizard.ui
+    ./src/wizard/wizard.ui \
+    src/update/authenticationdialog.ui \    
+    src/dialogs/sslcertsdialog.ui
 
 INCLUDEPATH +=  . \
                 src \
@@ -158,6 +163,10 @@ LIBS += -llibEGL \
     -luser32 \
     -lShell32 \
     -lCrypt32
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../../Qt/5.15.0/winrt_x86_msvc2019/lib/ -llibEGL
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../../Qt/5.15.0/winrt_x86_msvc2019/lib/ -llibEGLd
+else:unix: LIBS += -L$$PWD/../../../../../../Qt/5.15.0/winrt_x86_msvc2019/lib/ -llibEGL
 
 TRANSLATIONS += ./sslvpnclient_de.ts
 RESOURCES += res.qrc

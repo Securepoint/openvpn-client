@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'authenticationdialog.ui'
 **
-** Created: Tue 17. Apr 09:41:08 2012
+** Created: Wed 7. Mar 14:40:35 2012
 **      by: Qt User Interface Compiler version 4.7.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -10,7 +10,17 @@
 #ifndef UI_AUTHENTICATIONDIALOG_H
 #define UI_AUTHENTICATIONDIALOG_H
 
-#include <QtWidgets>
+#include <QtCore/QVariant>
+#include <QtWidgets/QAction>
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QDialog>
+#include <QtWidgets/QDialogButtonBox>
+#include <QtWidgets/QGridLayout>
+#include <QtWidgets/QHeaderView>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QSpacerItem>
 
 QT_BEGIN_NAMESPACE
 
@@ -97,12 +107,12 @@ public:
 
     void retranslateUi(QDialog *Dialog)
     {
-        Dialog->setWindowTitle(QApplication::translate("Dialog", "Http authentication required", 0));
-        label->setText(QApplication::translate("Dialog", "You need to supply a Username and a Password to access this site", 0));
-        label_2->setText(QApplication::translate("Dialog", "Username:", 0));
-        label_3->setText(QApplication::translate("Dialog", "Password:", 0));
-        label_4->setText(QApplication::translate("Dialog", "Site:", 0));
-        siteDescription->setText(QApplication::translate("Dialog", "%1 at %2", 0));
+        Dialog->setWindowTitle("Http authentication required");
+        label->setText("You need to supply a Username and a Password to access this site");
+        label_2->setText("Username:");
+        label_3->setText("Password:");
+        label_4->setText("Site:");
+        siteDescription->setText(QString("%1 at %2"));
     } // retranslateUi
 
 };

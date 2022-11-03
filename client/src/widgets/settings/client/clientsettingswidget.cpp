@@ -7,8 +7,10 @@
 #include "settings.h"
 #include <utils.h>
 #include <service/SrvCLI.h>
+#include <debug/debug.h>
 
 #include <message.h>
+#include <proxysettings.h>
 
 extern bool g_bPortable;
 
@@ -40,16 +42,16 @@ void ClientSettingsWidget::on_cmdBack_clicked()
     //
     // Save the proxy settings
 
-    QSettings proxIni (Utils::dataDirectory() + QLatin1String("/proxy.ini"), QSettings::IniFormat);
     if (ui->rbUseConfig->isChecked()) {
-        proxIni.setValue("proxy-use", "CONFIG");
+        ProxySettings::instance()->setProxyTypeInUse("CONFIG");
     } else if (ui->rbUseIE->isChecked()) {
-        proxIni.setValue("proxy-use", "IE");
+        ProxySettings::instance()->setProxyTypeInUse("IE");
     } else {
-        proxIni.setValue("proxy-use", "MANUAL");
-        proxIni.setValue("proxy-type", (ui->rbHttpProxy->isChecked() ? "HTTP" : "SOCKS"));
-        proxIni.setValue("proxy-ip", ui->txtProxyIP->text());
-        proxIni.setValue("proxy-port", ui->txtProxyPort->text());
+        ProxySettings::instance()->setProxyTypeInUse("MANUAL");
+        ProxySettings::instance()->setIsHttpProxy(ui->rbHttpProxy->isChecked());
+        //
+        ProxySettings::instance()->setProxyHost(ui->txtProxyIP->text());
+        ProxySettings::instance()->setProxyPort(ui->txtProxyPort->text());
     }
 
     FrmMain::instance()->mainWidget()->showWidget(MainView);
@@ -125,9 +127,8 @@ void ClientSettingsWidget::showEvent(QShowEvent *event)
    
     ui->lbTAPCount->setText(QObject::tr("Current TAP Count: ") + QString("%1").arg(tapCount));
 
-     QFile pINI (Utils::dataDirectory() + QLatin1String("/proxy.ini"));
-    if (!pINI.exists()) {
-        //Message::error(QObject::tr("No proxy config available!"), QObject::tr("Proxy Settings"));
+
+    if (!ProxySettings::instance()->settingsAvailable()) {
         ui->rbUseConfig->setChecked(true);
         ui->rbUseIE->setEnabled(true);
         ui->rbUseManual->setEnabled(true);
@@ -136,10 +137,10 @@ void ClientSettingsWidget::showEvent(QShowEvent *event)
         ui->txtProxyIP->setEnabled(false);
         ui->txtProxyPort->setEnabled(false);
     } else {
-        QSettings proxIni (Utils::dataDirectory() + QLatin1String("/proxy.ini"), QSettings::IniFormat);
-        if (proxIni.value("proxy-use","").toString() == "CONFIG") {
+
+        if (ProxySettings::instance()->proxyTypeInUse() == "CONFIG") {
             ui->rbUseConfig->setChecked(true);
-        } else if (proxIni.value("proxy-use","").toString() == "IE") {
+        } else if (ProxySettings::instance()->proxyTypeInUse() == "IE") {
             ui->rbUseIE->setChecked(true);
         } else {
             // MANUAL
@@ -148,17 +149,18 @@ void ClientSettingsWidget::showEvent(QShowEvent *event)
             ui->txtProxyIP->setEnabled(true);
             ui->txtProxyPort->setEnabled(true);
             ui->rbUseManual->setChecked(true);
-            ui->txtProxyPort->setText(proxIni.value("proxy-port","8080").toString());
-            ui->txtProxyIP->setText(proxIni.value("proxy-ip","").toString());
-            if (proxIni.value("proxy-type","").toString() == "HTTP")
+            //
+            ui->txtProxyPort->setText(ProxySettings::instance()->proxyPort().isEmpty() ? "8080" : ProxySettings::instance()->proxyPort());
+            ui->txtProxyIP->setText(ProxySettings::instance()->proxyHost());
+            if (ProxySettings::instance()->isHttpProxy())
                 ui->rbHttpProxy->setChecked(true);
             else
                 ui->rbSocksProxy->setChecked(true);
 
         }
-        #ifdef Q_OS_WIN32
-            ui->rbUseIE->setEnabled(true);
-        #endif
+
+        ui->rbUseIE->setEnabled(true);
+
     }
     //
     event->accept();

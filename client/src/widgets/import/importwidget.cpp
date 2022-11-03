@@ -15,6 +15,7 @@
 #include <message.h>
 #include <Database/Database.h>
 #include <Database/Crypt.h>
+#include <debug/debug.h>
 
 extern bool g_bPortable;
 
@@ -101,11 +102,8 @@ QString keys[] = {
     "secret",
     "replay-persist",
     "dh",
-    "cert",
     "extra-certs",
-    "key",
-    "pkcs12",
-    "tls-auth",
+    "tls-crypt",
     "tls-auth",
     "askpass",
     "crl-verify"
@@ -182,8 +180,31 @@ void ImportWidget::on_cmdImport_clicked()
             .arg(newConfigFolderPath)
             .arg(configName));
 
-        QFile::copy(pathToConfig, newConfigPath);
-        //
+        // open imported config
+        QFile config(pathToConfig);
+        if (!config.open(QIODevice::ReadOnly)) {
+            // Crap
+            return;
+        }
+
+        // read the config and save to ByteArray
+        QByteArray ba = config.readAll();
+
+        // create new config
+        QFile file(newConfigPath);
+
+        // open new config
+        file.open(QIODevice::WriteOnly | QIODevice::Text);
+
+        // create stream to new config
+        QTextStream in(&file);
+
+        // write to new config
+        in << ba;
+
+        // close new config
+        file.close();
+
         QString sourceDirectory (pathToConfig.left(pathToConfig.lastIndexOf("/")));
         //
         // Override old path

@@ -20,6 +20,56 @@ float windowsDpiScale();
 static const int CloseButtonWidthWizard = 21;
 static const int DragAreaHeightWizard = 20;
 
+bool FramelessWizard::nativeEvent(const QByteArray &eventType, void *message, long *result)
+{
+/*
+    MSG *winMessage = (MSG*) message;
+    if (winMessage->message == static_cast<UINT>(WM_NCHITTEST)) {
+
+        LRESULT hit = DefWindowProc(winMessage->hwnd, winMessage->message, winMessage->wParam, winMessage->lParam);
+        if (hit == HTCLIENT)
+        {
+            POINT p;
+            if (GetCursorPos(&p))
+            {
+                if (ScreenToClient(winMessage->hwnd, &p))
+                {
+                    if (p.y < DragAreaHeightWizard * windowsDpiScale())
+                    {
+                        hit = HTCAPTION;
+                    }
+
+                    RECT rect;
+                    GetWindowRect(winMessage->hwnd, &rect);
+
+                    if(p.x > ((rect.right - rect.left) - CloseButtonWidthWizard*windowsDpiScale()))
+                    {
+                        for(auto keks : wndProcMapWizard)
+                        {
+                            if(keks.first == winMessage->hwnd)
+                            {
+
+                                return CallWindowProc(keks.second, winMessage->hwnd, winMessage->message, winMessage->wParam, winMessage->lParam);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+    }
+    else{
+        for(auto keks : wndProcMapWizard)
+        {
+            if(keks.first == winMessage->hwnd)
+                return CallWindowProc(keks.second, winMessage->hwnd, winMessage->message, winMessage->wParam, winMessage->lParam);
+        }
+    }
+    */
+    return 0;
+}
+
 LRESULT FramelessWizardProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     //

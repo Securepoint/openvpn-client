@@ -51,6 +51,7 @@ bool TapDriver::isTapDriverInstalled() {
 }
 
 void TapDriver::checkTapDriver() {
+    Debug::log(QString("TapDriver::checkTapDriver()"));
     //
     // Tapinstall.exe starten zum auslesen der verfügbaren TAP-Devices
     //
@@ -233,6 +234,7 @@ int TapDriver::deviceCount()
     QString binDir = QLatin1String("/bin") + (g_bPortable ? QString("/%1").arg(arch) : "");
 
     QString drvInstallApp (QCoreApplication::applicationDirPath() + binDir + QLatin1String("/tapinstall.exe"));
+    Debug::log(QString(QCoreApplication::applicationDirPath() + binDir + QLatin1String("/tapinstall.exe")));
 
     QStringList argIsDrvInstalled;
     argIsDrvInstalled << QLatin1String ("hwids");
@@ -246,9 +248,9 @@ int TapDriver::deviceCount()
 
     QDateTime startDate (QDateTime::currentDateTime());
     while (this->wait) {
-        if (qApp->hasPendingEvents()) {
-            qApp->processEvents();
-        }
+       // if (qApp->hasPendingEvents()) {
+       qApp->processEvents();
+       // }
 
         if (startDate.msecsTo(QDateTime::currentDateTime()) > Settings::instance()->tapDeviceTimeout()) {
             //

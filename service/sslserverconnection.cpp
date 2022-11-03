@@ -701,6 +701,7 @@ void SslServerConnection::slotStartRead()
     } else if(command == QLatin1String("TAPCOUNT")) {
          TapDriver tapDriver;
          _srvCLI->send(QString("%1").arg(tapDriver.deviceCount()), QLatin1String("TAPCOUNT"));
+         Debug::log(QLatin1String("_srvCLI->send tapcount"));
     } else if (command == QLatin1String("REMOVETAP")) {
         //
         // Installiert ein neues Tap Device

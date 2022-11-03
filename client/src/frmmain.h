@@ -6,7 +6,6 @@
 #include <QtCore/QEvent>
 #include <QtGui/QShowEvent>
 #include <QtGui/QMovie>
-#include "update/parsexml.h"
 
 namespace Ui {
 class FrmMain;
@@ -24,6 +23,7 @@ private:
     bool isReconnect;
     int tapCount;
     bool installingTap;
+
 
 public:
     static FrmMain *instance ();
@@ -44,7 +44,6 @@ public:
     void showTrayIcon();
     void setMenuToShowWindow ();
 
-
     void sendClose();
 
     void setIcon();
@@ -59,7 +58,7 @@ public:
 protected:
     void showEvent(QShowEvent *event);
     void paintEvent(QPaintEvent*);
-
+    bool nativeEvent(const QByteArray &eventType, void *message, long *result);
 public slots:
     void setDisconnected (int id);
     void setError (int id, QString message);
@@ -80,8 +79,7 @@ private slots:
 
     void trayActivated(QSystemTrayIcon::ActivationReason reason);
 
-
-    void updateCheckIsReady(bool success, QString errorText);
+    void updateAvailable(QString version);
 
     void on_cmdUpdateState_clicked();
 
@@ -104,15 +102,11 @@ private:
     QSystemTrayIcon *trayIcon;
     WidgetFactory *widgetFactory;
 
-    ParseXML update;
-    QMovie updateMovie;
-    int updateState;
-    int lastUpdateState;
-
     QTimer *updateUITimer;
 
     bool m_bTaskBarAutoHide;
     void checkTaskBarAutoHideProperty ();
+    QString updateVersion;
 };
 
 #endif // FRMMAIN_H

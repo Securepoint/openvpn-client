@@ -1639,17 +1639,17 @@ char zencode(unsigned long *keys, char c)
 
 
 bool HasZipSuffix(const TCHAR *fn)
-{ const TCHAR *ext = fn+_tcslen(fn);
+{ const TCHAR *ext = fn+strlen(fn);
   while (ext>fn && *ext!='.') ext--;
   if (ext==fn && *ext!='.') return false;
-  if (_tcsicmp(ext,_T(".Z"))==0) return true;
-  if (_tcsicmp(ext,_T(".zip"))==0) return true;
-  if (_tcsicmp(ext,_T(".zoo"))==0) return true;
-  if (_tcsicmp(ext,_T(".arc"))==0) return true;
-  if (_tcsicmp(ext,_T(".lzh"))==0) return true;
-  if (_tcsicmp(ext,_T(".arj"))==0) return true;
-  if (_tcsicmp(ext,_T(".gz"))==0) return true;
-  if (_tcsicmp(ext,_T(".tgz"))==0) return true;
+  if (_stricmp(ext,(".Z"))==0) return true;
+  if (_stricmp(ext,(".zip"))==0) return true;
+  if (_stricmp(ext,(".zoo"))==0) return true;
+  if (_stricmp(ext,(".arc"))==0) return true;
+  if (_stricmp(ext,(".lzh"))==0) return true;
+  if (_stricmp(ext,(".arj"))==0) return true;
+  if (_stricmp(ext,(".gz"))==0) return true;
+  if (_stricmp(ext,(".tgz"))==0) return true;
   return false;
 }
 
@@ -2103,11 +2103,11 @@ ZRESULT TZip::Add(const TCHAR *odstzn, void *src,unsigned int len, DWORD flags)
   int passex=0; if (password!=0 && flags!=ZIP_FOLDER) passex=12;
 
   // zip has its own notion of what its names should look like: i.e. dir/file.stuff
-  TCHAR dstzn[MAX_PATH]; _tcscpy(dstzn,odstzn);
+  TCHAR dstzn[MAX_PATH]; strcpy_s(dstzn,odstzn);
   if (*dstzn==0) return ZR_ARGS;
   TCHAR *d=dstzn; while (*d!=0) {if (*d=='\\') *d='/'; d++;}
   bool isdir = (flags==ZIP_FOLDER);
-  bool needs_trailing_slash = (isdir && dstzn[_tcslen(dstzn)-1]!='/');
+  bool needs_trailing_slash = (isdir && dstzn[strlen(dstzn)-1]!='/');
   int method=DEFLATE; if (isdir || HasZipSuffix(dstzn)) method=STORE;
 
   // now open whatever was our input source:

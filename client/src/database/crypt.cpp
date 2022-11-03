@@ -112,10 +112,8 @@ QStringList magicsKey()
 
 QString Crypt::encodePlaintext (const QString &plain)
 {
-    // Bridge the encode method to make sure we are
-    // passing a utf8 byte array to the encoding method
-    if (useDPAPI) {
-        return DPAPI::encodePlaintextUtf8(plain.toUtf8());
+    if (plain.isEmpty()) {
+        return plain;
     }
 
     // Default is no dpapi support
@@ -301,9 +299,8 @@ QString Crypt::encodePlaintextAscii (const QByteArray &plain)
     return encrypted.toHex();
 }
 QByteArray Crypt::decodeToPlaintext (const QString &crypt) {
-    //
-    if (useDPAPI) {
-        return DPAPI::decodeToPlaintext(crypt.toLocal8Bit());
+    if (crypt.isEmpty()) {
+        return QByteArray();
     }
 
     // Default is no dpapi

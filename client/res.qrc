@@ -55,5 +55,6 @@
         <file>data/images/state/lock_red.png</file>
         <file>data/images/state/lock_white.png</file>
         <file>data/images/state/lock_yellow.png</file>
+        <file>data/images/minimize.png</file>
     </qresource>
 </RCC>

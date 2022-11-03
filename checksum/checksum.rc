@@ -1,0 +1,26 @@
+1 VERSIONINFO
+FILEVERSION 0,0,0,1
+PRODUCTVERSION 0,0,0,1
+FILEOS 0x4
+FILETYPE 0x0
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "040904B0"
+    BEGIN
+      VALUE "CompanyName", "Securepoint GmbH"
+      VALUE "FileDescription", "Configuration checksum updater"
+      VALUE "FileVersion", "0,0,0,1"
+      VALUE "InternalName", "checksum"
+      VALUE "LegalCopyright", "Copyright © 2021 Securepoint GmbH"
+      VALUE "OriginalFilename", "Checksum.exe"
+      VALUE "ProductName", "SSLVPN Client"
+      VALUE "ProductVersion", "0,0,0,1"
+    END
+  END
+
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x0409, 0x04B0
+  END
+END

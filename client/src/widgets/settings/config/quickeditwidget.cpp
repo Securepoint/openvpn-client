@@ -6,6 +6,7 @@
 #include <QtWidgets/QDesktopWidget>
 
 #include <checksum.h>
+#include <debug/debug.h>
 
 float windowsDpiScale();
 
@@ -17,19 +18,19 @@ QuickEditWidget::QuickEditWidget(const QString &path, const int id, QWidget * pa
     path (path),
     id(id)
 {
-     
     this->setWindowFlags(Qt::WindowCloseButtonHint);
 
-    m_ui->setupUi((QDialog*)this->getWrapperWidget());  
+    m_ui->setupUi((QDialog*)this->getWrapperWidget());
 
     auto geom = this->getWrapperWidget()->geometry();
     auto size = geom.size() * windowsDpiScale();
-    geom = geometry();
+    //geom = geometry();
     geom.setSize(size);
+
     this->getWrapperWidget()->setGeometry(geom);
 
-
     size = QSize(0, m_ui->memConfigContent->maximumSize().height() * windowsDpiScale());
+
     m_ui->memConfigContent->setMinimumSize(size);
     size.setWidth(16666667);
     m_ui->memConfigContent->setMaximumSize(size);
@@ -40,6 +41,7 @@ QuickEditWidget::QuickEditWidget(const QString &path, const int id, QWidget * pa
     m_ui->memConfigPath->setMaximumSize(size);
 
     updateGeometry();
+
     m_ui->memConfigContent->updateGeometry();
 
     geom = m_ui->memConfigContent->geometry();
@@ -49,6 +51,7 @@ QuickEditWidget::QuickEditWidget(const QString &path, const int id, QWidget * pa
     geom = m_ui->groupBox->geometry();
     geom.setHeight(size.height());
     m_ui->groupBox->setGeometry(geom);
+
 
     QMetaObject::connectSlotsByName(this);
 

@@ -375,7 +375,7 @@ QString QtServiceSysPrivate::getCommand(const QTcpSocket *socket)
     return "";
 }
 
-#include "qtservice_unix.moc"
+#include "release/qtservice_unix.moc"
 
 bool QtServiceBasePrivate::sysInit()
 {

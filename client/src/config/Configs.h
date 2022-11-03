@@ -38,6 +38,7 @@ public:
     void findConfigsInDir(const QString &sDir);
     bool isConfigInList(int id);
     ConnectionData* configWithId(int id);
+    bool isConnectionAvailable();
 
     // This will remove all configs, marked as remove on start from the database
     void cleanupConfigs();

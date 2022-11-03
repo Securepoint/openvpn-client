@@ -3796,8 +3796,8 @@ ZRESULT TUnzip::Open(void *z,unsigned int len,DWORD flags)
 #else
   _tcscpy(rootdir,_T("\\"));
 #endif
-  TCHAR lastchar = rootdir[_tcslen(rootdir)-1];
-  if (lastchar!='\\' && lastchar!='/') _tcscat(rootdir,_T("\\"));
+  TCHAR lastchar = rootdir[strlen(rootdir)-1];
+  if (lastchar!='\\' && lastchar!='/') strcat_s(rootdir,("\\"));
   //
   if (flags==ZIP_HANDLE)
   { // test if we can seek on it. We can't use GetFileType(h)==FILE_TYPE_DISK since it's not on CE.
@@ -3813,9 +3813,9 @@ ZRESULT TUnzip::Open(void *z,unsigned int len,DWORD flags)
 }
 
 ZRESULT TUnzip::SetUnzipBaseDir(const TCHAR *dir)
-{ _tcscpy(rootdir,dir);
-  TCHAR lastchar = rootdir[_tcslen(rootdir)-1];
-  if (lastchar!='\\' && lastchar!='/') _tcscat(rootdir,_T("\\"));
+{ strcpy_s(rootdir,dir);
+  TCHAR lastchar = rootdir[strlen(rootdir)-1];
+  if (lastchar!='\\' && lastchar!='/') strcat_s(rootdir,("\\"));
   return ZR_OK;
 }
 
@@ -3866,13 +3866,13 @@ ZRESULT TUnzip::Get(int index,ZIPENTRY *ze)
     if (sfn[0]=='\\') {sfn++; continue;}
     if (sfn[0]=='/') {sfn++; continue;}
     const TCHAR *c;
-    c=_tcsstr(sfn,_T("\\..\\")); if (c!=0) {sfn=c+4; continue;}
-    c=_tcsstr(sfn,_T("\\../")); if (c!=0) {sfn=c+4; continue;}
-    c=_tcsstr(sfn,_T("/../")); if (c!=0) {sfn=c+4; continue;}
-    c=_tcsstr(sfn,_T("/..\\")); if (c!=0) {sfn=c+4; continue;}
+    c=strstr(sfn,("\\..\\")); if (c!=0) {sfn=c+4; continue;}
+    c=strstr(sfn,("\\../")); if (c!=0) {sfn=c+4; continue;}
+    c=strstr(sfn,("/../")); if (c!=0) {sfn=c+4; continue;}
+    c=strstr(sfn,("/..\\")); if (c!=0) {sfn=c+4; continue;}
     break;
   }
-  _tcscpy(ze->name, sfn);
+  strcpy_s(ze->name, sfn);
 
 
   // zip has an 'attribute' 32bit value. Its lower half is windows stuff
@@ -3979,7 +3979,7 @@ void EnsureDirectory(const TCHAR *rootdir, const TCHAR *dir)
   }
   //Check size first
   if (sizeof(rootdir) < MAX_PATH) {
-      TCHAR cd[MAX_PATH]; *cd=0; if (rootdir!=0) _tcscpy(cd,rootdir); _tcscat(cd,dir);
+      TCHAR cd[MAX_PATH]; *cd=0; if (rootdir!=0) strcpy_s(cd,rootdir); strcat_s(cd,dir);
       if (GetFileAttributes(cd)==0xFFFFFFFF) CreateDirectory(cd,NULL);
   }
 }
@@ -4031,11 +4031,11 @@ ZRESULT TUnzip::Unzip(int index,void *dst,unsigned int len,DWORD flags)
     // a malicious zip could unzip itself into c:\windows. Our solution is that GetZipItem (which
     // is how the user retrieve's the file's name within the zip) never returns absolute paths.
     const TCHAR *name=ufn; const TCHAR *c=name; while (*c!=0) {if (*c=='/' || *c=='\\') name=c+1; c++;}
-    TCHAR dir[MAX_PATH]; _tcscpy(dir,ufn); if (name==ufn) *dir=0; else dir[name-ufn]=0;
+    TCHAR dir[MAX_PATH]; strcpy_s(dir,ufn); if (name==ufn) *dir=0; else dir[name-ufn]=0;
     TCHAR fn[MAX_PATH];
     bool isabsolute = (dir[0]=='/' || dir[0]=='\\' || (dir[0]!=0 && dir[1]==':'));
-    if (isabsolute) {wsprintf(fn,_T("%s%s"),dir,name); EnsureDirectory(0,dir);}
-    else {wsprintf(fn,_T("%s%s%s"),rootdir,dir,name); EnsureDirectory(rootdir,dir);}
+    if (isabsolute) {wsprintf(fn,("%s%s"),dir,name); EnsureDirectory(0,dir);}
+    else {wsprintf(fn,("%s%s%s"),rootdir,dir,name); EnsureDirectory(rootdir,dir);}
     //
     h = CreateFile(fn,GENERIC_WRITE,0,NULL,CREATE_ALWAYS,ze.attr,NULL);
   }
@@ -4074,35 +4074,35 @@ ZRESULT lasterrorU=ZR_OK;
 
 unsigned int FormatZipMessageU(ZRESULT code, TCHAR *buf,unsigned int len)
 { if (code==ZR_RECENT) code=lasterrorU;
-  const TCHAR *msg=_T("unknown zip result code");
+  const TCHAR *msg=("unknown zip result code");
   switch (code)
-  { case ZR_OK: msg=_T("Success"); break;
-    case ZR_NODUPH: msg=_T("Culdn't duplicate handle"); break;
-    case ZR_NOFILE: msg=_T("Couldn't create/open file"); break;
-    case ZR_NOALLOC: msg=_T("Failed to allocate memory"); break;
-    case ZR_WRITE: msg=_T("Error writing to file"); break;
-    case ZR_NOTFOUND: msg=_T("File not found in the zipfile"); break;
-    case ZR_MORE: msg=_T("Still more data to unzip"); break;
-    case ZR_CORRUPT: msg=_T("Zipfile is corrupt or not a zipfile"); break;
-    case ZR_READ: msg=_T("Error reading file"); break;
-    case ZR_PASSWORD: msg=_T("Correct password required"); break;
-    case ZR_ARGS: msg=_T("Caller: faulty arguments"); break;
-    case ZR_PARTIALUNZ: msg=_T("Caller: the file had already been partially unzipped"); break;
-    case ZR_NOTMMAP: msg=_T("Caller: can only get memory of a memory zipfile"); break;
-    case ZR_MEMSIZE: msg=_T("Caller: not enough space allocated for memory zipfile"); break;
-    case ZR_FAILED: msg=_T("Caller: there was a previous error"); break;
-    case ZR_ENDED: msg=_T("Caller: additions to the zip have already been ended"); break;
-    case ZR_ZMODE: msg=_T("Caller: mixing creation and opening of zip"); break;
-    case ZR_NOTINITED: msg=_T("Zip-bug: internal initialisation not completed"); break;
-    case ZR_SEEK: msg=_T("Zip-bug: trying to seek the unseekable"); break;
-    case ZR_MISSIZE: msg=_T("Zip-bug: the anticipated size turned out wrong"); break;
-    case ZR_NOCHANGE: msg=_T("Zip-bug: tried to change mind, but not allowed"); break;
-    case ZR_FLATE: msg=_T("Zip-bug: an internal error during flation"); break;
+  { case ZR_OK: msg=("Success"); break;
+    case ZR_NODUPH: msg=("Culdn't duplicate handle"); break;
+    case ZR_NOFILE: msg=("Couldn't create/open file"); break;
+    case ZR_NOALLOC: msg=("Failed to allocate memory"); break;
+    case ZR_WRITE: msg=("Error writing to file"); break;
+    case ZR_NOTFOUND: msg=("File not found in the zipfile"); break;
+    case ZR_MORE: msg=("Still more data to unzip"); break;
+    case ZR_CORRUPT: msg=("Zipfile is corrupt or not a zipfile"); break;
+    case ZR_READ: msg=("Error reading file"); break;
+    case ZR_PASSWORD: msg=("Correct password required"); break;
+    case ZR_ARGS: msg=("Caller: faulty arguments"); break;
+    case ZR_PARTIALUNZ: msg=("Caller: the file had already been partially unzipped"); break;
+    case ZR_NOTMMAP: msg=("Caller: can only get memory of a memory zipfile"); break;
+    case ZR_MEMSIZE: msg=("Caller: not enough space allocated for memory zipfile"); break;
+    case ZR_FAILED: msg=("Caller: there was a previous error"); break;
+    case ZR_ENDED: msg=("Caller: additions to the zip have already been ended"); break;
+    case ZR_ZMODE: msg=("Caller: mixing creation and opening of zip"); break;
+    case ZR_NOTINITED: msg=("Zip-bug: internal initialisation not completed"); break;
+    case ZR_SEEK: msg=("Zip-bug: trying to seek the unseekable"); break;
+    case ZR_MISSIZE: msg=("Zip-bug: the anticipated size turned out wrong"); break;
+    case ZR_NOCHANGE: msg=("Zip-bug: tried to change mind, but not allowed"); break;
+    case ZR_FLATE: msg=("Zip-bug: an internal error during flation"); break;
   }
-  unsigned int mlen=(unsigned int)_tcslen(msg);
+  unsigned int mlen=(unsigned int)strlen(msg);
   if (buf==0 || len==0) return mlen;
   unsigned int n=mlen; if (n+1>len) n=len-1;
-  _tcsncpy(buf,msg,n); buf[n]=0;
+  strncpy(buf,msg,n); buf[n]=0;
   return mlen;
 }
 

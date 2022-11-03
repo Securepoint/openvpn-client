@@ -5,6 +5,7 @@
 #include <QLabel>
 #include <QPushbutton>
 #include <QHBoxLayout>
+#include <debug/debug.h>
 
 #include <map>
 //#include <WinSock2.h>
@@ -20,6 +21,58 @@ static const int CloseButtonWidth = 21;
 static const int DragAreaHeight = 20;
 
 float windowsDpiScale();
+
+bool FramelessDialog::nativeEvent(const QByteArray &eventType, void *message, long *result)
+{
+    MSG *winMessage = (MSG*) message;
+/*
+
+if (winMessage->message == static_cast<UINT>(WM_NCHITTEST)){
+        LRESULT hit = DefWindowProc(winMessage->hwnd, winMessage->message, winMessage->wParam, winMessage->lParam);
+        if (hit == HTCLIENT)
+        {
+            POINT p;
+            if (GetCursorPos(&p))
+            {
+                if (ScreenToClient(winMessage->hwnd, &p))
+                {
+                    if (p.y < DragAreaHeight * windowsDpiScale())
+                    {
+                        hit = HTCAPTION;
+                    }
+
+                    RECT rect;
+                    GetWindowRect(winMessage->hwnd, &rect);
+
+                    if(p.x > ((rect.right - rect.left) - CloseButtonWidth*windowsDpiScale()))
+                    {
+                        for(auto keks : wndProcMap)
+                        {
+                            if(keks.first == winMessage->hwnd)
+                            {
+
+                                return CallWindowProc(keks.second, winMessage->hwnd, winMessage->message, winMessage->wParam, winMessage->lParam);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return hit;
+                       }
+
+    else{
+        for(auto keks : wndProcMap)
+        {
+            if(keks.first == winMessage->hwnd)
+                return CallWindowProc(keks.second, winMessage->hwnd, winMessage->message, winMessage->wParam, winMessage->lParam);
+        }
+    }
+*/
+    return 0;
+}
+
 
 LRESULT FramelessDialogProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -105,12 +158,12 @@ void FramelessDialog::postSetupFrameless()
 void FramelessDialog::setupFrameless()
 {
     /* Make the line stuff border and line below title */
-
     if(!bIsFramelessSetup)
     {
         auto geo = wrapper->geometry();
         geo.adjust(0, DragAreaHeight*windowsDpiScale(), 0, DragAreaHeight*windowsDpiScale());
         wrapper->setGeometry(geo);
+
 
         this->setMaximumSize(wrapper->maximumSize().width(), wrapper->maximumSize().height() + DragAreaHeight*windowsDpiScale());
         this->setMinimumSize(wrapper->minimumSize().width(), wrapper->minimumSize().height() + DragAreaHeight*windowsDpiScale());

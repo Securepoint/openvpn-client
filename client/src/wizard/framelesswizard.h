@@ -24,6 +24,7 @@ private:
 protected:
     void setupFrameless();
     void resizeEvent(QResizeEvent * event);
+    bool nativeEvent(const QByteArray &eventType, void *message, long *result);
 
 private slots:
     void customCmdClose();

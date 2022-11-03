@@ -40,7 +40,7 @@ FrmGetUserData::FrmGetUserData(InputType::UserInputType type, const QString &nam
 
     auto geom = this->getWrapperWidget()->geometry();
     auto size = geom.size() * windowsDpiScale();
-    geom = geometry();
+    //geom = geometry();
     geom.setSize(size);
     this->getWrapperWidget()->setGeometry(geom);
 

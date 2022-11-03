@@ -17,6 +17,7 @@ private:
 protected:
     void setupFrameless();
     void postSetupFrameless();
+    bool nativeEvent(const QByteArray &eventType, void *message, long *result);
 
     QWidget * getWrapperWidget();
 

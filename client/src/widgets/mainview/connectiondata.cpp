@@ -11,6 +11,7 @@
 #include <service/servicelogdata.h>
 #include <userinfo.h>
 #include <checksum.h>
+#include <proxysettings.h>
 
 extern bool g_bPortable;
 
@@ -346,45 +347,6 @@ bool ConnectionData::Connect()
 
     this->runScript("BC");
 
-    auto makeProxyString = []() -> QStringList
-    {
-        QStringList retList;
-        QFile pINI (Utils::dataDirectory() + QLatin1String("/proxy.ini"));
-        if (pINI.exists()) {
-            QSettings proxIni (Utils::dataDirectory() + QLatin1String("/proxy.ini"), QSettings::IniFormat);
-            if (proxIni.value(QLatin1String("proxy-use"), QLatin1String("")).toString() == QLatin1String("CONFIG")) {
-                // Nothing
-            } else if (proxIni.value(QLatin1String("proxy-use"), QLatin1String("")).toString() == QLatin1String("IE")) {
-                // IE
-#ifdef Q_OS_WIN32
-                QSettings regIE (QLatin1String("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings"), QSettings::NativeFormat);
-                QString regVal = regIE.value(QLatin1String("ProxyServer"), QLatin1String("")).toString();
-                QStringList regData = regVal.split(":");
-                if (regData.size() == 2) {
-                    retList << QLatin1String ("--http-proxy")
-                        << regData[0]
-                    << regData[1];
-                }
-#endif
-            } else {
-                // MANUAL
-                if (proxIni.value(QLatin1String("proxy-port"), QLatin1String("")).toString() != "" && proxIni.value(QLatin1String("proxy-ip"), QLatin1String("")).toString() != "") {
-                    if (proxIni.value(QLatin1String("proxy-type"), QLatin1String("")).toString() == QLatin1String("HTTP")) {
-                        retList << QLatin1String ("--http-proxy")
-                            << proxIni.value(QLatin1String("proxy-ip"), QLatin1String("")).toString()
-                            << proxIni.value(QLatin1String("proxy-port"), QLatin1String("")).toString();
-                    } else {
-                        retList << QLatin1String ("--socks-proxy")
-                            << proxIni.value(QLatin1String("proxy-ip"), QLatin1String("")).toString()
-                            << proxIni.value(QLatin1String("proxy-port"), QLatin1String("")).toString();
-                    }
-                }
-            }
-        }
-
-        return retList;
-    };
-
     return SrvCLI::instance()->send(QLatin1String("Open"), QString::number(this->GetId())
                                                     + QLatin1String(";")
                                                     + UserInfo::instance()->currentLogonUser()
@@ -397,7 +359,7 @@ bool ConnectionData::Connect()
                                                     + QLatin1String (";")
                                                     + (Settings::instance()->useInteract() ? QLatin1String("0") : QLatin1String("1"))
                                                     + QLatin1String (";")
-                                                    + makeProxyString().join(" ")
+                                                    + ProxySettings::instance()->openVpnProxyString()
                                                     + QLatin1String (";")
                                                     + (g_bPortable ? "1" : "0"));
 }

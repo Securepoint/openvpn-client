@@ -23,6 +23,9 @@ bool Message::confirm(const QString &message, const QString &title, bool onTop)
     // Init box
     box.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
     box.setDefaultButton(QMessageBox::No);
+
+    box.setButtonText(QMessageBox::Yes, QObject::tr("Yes"));
+    box.setButtonText(QMessageBox::No, QObject::tr("No"));
     //
     if (onTop) {
         // MessageBox is on Top

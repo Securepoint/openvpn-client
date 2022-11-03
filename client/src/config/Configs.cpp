@@ -1,4 +1,4 @@
-#include "configs.h"
+#include "Configs.h"
 
 #include <database.h>
 #include <QtCore>
@@ -233,6 +233,13 @@ bool Configs::isConfigInList(int id)
     return false;
 }
 
+bool Configs::isConnectionAvailable()
+{
+    QScopedPointer<QSqlQuery> configQuery (Database::instance()->openQuery("SELECT \"vpn-id\", FROM vpn;"));
+
+return configQuery->last();
+}
+
 ConnectionData *Configs::configWithId(int id)
 {
     QListIterator<QPair<int, ConnectionData*> > i(this->myList);
@@ -332,3 +339,5 @@ void Configs::findConfigsInDir(const QString &sDir)
         }
     }
 }
+
+

@@ -326,7 +326,7 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext & context, const Q
 
  QString g_strClientName;
 
- static const char* g_szVersion = "2.0.33";
+ static const char* g_szVersion = "2.0.38";
 
  void PrintHelp()
  {
@@ -638,31 +638,7 @@ int CALLBACK WinMain (_In_  HINSTANCE hInstance,
 
     // Use different key so that the portable client does not prevent the installed client from starting
     QString key = "1x4z37";
-    if(g_bPortable) {
-        //
-        key = "1x4z37Portable";
-        //
-        // Check for the visual c++ 2013 x86 restributable
-        // This check must be adjusted for each new version
-        QString keyPath ("HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\Microsoft\\DevDiv\\vc\\Servicing\\12.0\\RuntimeMinimum");
-        if (!Utils::isX64Platform()) {
-            // We are running under a x86 system, we need to check an other path
-            keyPath = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\DevDiv\\vc\\Servicing\\12.0\\RuntimeMinimum";
-        }
 
-        QSettings windowsRegistry (keyPath, QSettings::NativeFormat);
-        // Check if its installed
-        QString installedValue (windowsRegistry.value(QLatin1String("Install")).toString());
-
-        //
-        if (installedValue != QLatin1String("1")) {
-            // No vcrest 2013 found
-            Message::warning(QObject::tr("No Visual C++ Redistributable Package for Visual Studio 2013 x86 found. Please download and install it. Application is now exiting."), QObject::tr("Visual C++ Redistributable Packages for Visual Studio 2013"));
-
-            // Exit
-            return 1;
-        }
-    }
 
 #ifndef MULTICLIENT
     a.setSharedKey(key);

@@ -5,6 +5,7 @@
 #include <srvcli.h>
 #include <servicelogdata.h>
 #include <cstring>
+#include <debug/debug.h>
 
 extern bool g_bPortable;
 
@@ -31,6 +32,7 @@ void Checksum::createNewChecksum(const QString &content, qint32 configId, const 
 
     QString configContent (QByteArray::fromBase64(content.toUtf8()));
     QString hashOfContent(QCryptographicHash::hash(configContent.toUtf8(), QCryptographicHash::Sha256).toHex());
+
 
     std::wstring params = QString(QString("-id %1 -user %2 -sid %3 -path %4 -sum %5%6")
                                   .arg(configId)
@@ -108,8 +110,8 @@ QByteArray Checksum::normalizeContent(QString content)
 
 QByteArray Checksum::base64OfFileContent(qint32 configId, const QString &path)
 {
-
     QFile config(path);
+
     //
     if (!config.open(QIODevice::ReadOnly)) {
         // Crap
@@ -120,6 +122,7 @@ QByteArray Checksum::base64OfFileContent(qint32 configId, const QString &path)
 
     // File is open read lines
     QTextStream in(&config);
+
     //
     QString content;
     //
