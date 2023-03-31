@@ -381,7 +381,7 @@ void SslServerConnection::slotStartRead()
                         QStringList keyValue = line.split(" ");
                         // If its not 2 its not a valid value, reject it
                         bool isScriptSecurityError (false);
-                        if (keyValue.size() == 2) {
+                        if (keyValue.size() != 2) {
                             isScriptSecurityError = true;
                         } else {
                             // Its a valid value check the value for level 0 and 1
