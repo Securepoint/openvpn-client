@@ -4,8 +4,9 @@ TARGET = SSLVpnClient
 QT += core sql network xml widgets gui
 
 CONFIG += release
+
 # Enable Debug
-#DEFINES += _ENABLE_DEBUG
+# DEFINES += _ENABLE_DEBUG
 
 # Enable multiclient for development
 # DEFINES += MULTICLIENT
@@ -14,7 +15,7 @@ CONFIG += release
 DEFINES += _WINDOWS _WINDOWS QT_WIDGETS_LIB QT_XML_LIB QT_NETWORK_LIB QT_SQL_LIB QT_OPENGL_ES_2_ANGLE NOMINMAX QT_WIDGETS_LIB QT_XML_LIB QT_NETWORK_LIB QT_SQL_LIB QT_OPENGL_ES_2 QT_OPENGL_ES_2_ANGLE QT_DLL
 
 # _PORTABLE
-DEFINES += _PORTABLE PORTABLE _WINDOWS _WINDOWS QT_WIDGETS_LIB QT_XML_LIB QT_NETWORK_LIB QT_SQL_LIB QT_OPENGL_ES_2_ANGLE NOMINMAX QT_WIDGETS_LIB QT_XML_LIB QT_NETWORK_LIB QT_SQL_LIB QT_OPENGL_ES_2 QT_OPENGL_ES_2_ANGLE _PORTABLE QT_DLL
+# DEFINES += _PORTABLE PORTABLE _WINDOWS _WINDOWS QT_WIDGETS_LIB QT_XML_LIB QT_NETWORK_LIB QT_SQL_LIB QT_OPENGL_ES_2_ANGLE NOMINMAX QT_WIDGETS_LIB QT_XML_LIB QT_NETWORK_LIB QT_SQL_LIB QT_OPENGL_ES_2 QT_OPENGL_ES_2_ANGLE _PORTABLE QT_DLL
 
 HEADERS += ./src/frmmain.h \
     ./src/listviewbuttondelegate.h \
@@ -65,6 +66,7 @@ HEADERS += ./src/frmmain.h \
     ./src/zip/unzip.h \
     ./src/zip/zip.h \
     src/debug/debug.h \
+    src/dialogs/inlineWindow.h \
     src/zip/zipdefines.h \
     src/userinfo.h \
     src/checksum.h \
@@ -121,6 +123,7 @@ SOURCES += ./src/frmmain.cpp \
     ./src/zip/unzip.cpp \
     ./src/zip/zip.cpp \
     src/debug/debug.cpp \
+    src/dialogs/inlineWindow.cpp \
     src/userinfo.cpp \
     src/checksum.cpp \
     src/update/updatecheck.cpp \
@@ -143,6 +146,7 @@ FORMS += ./src/frmmain.ui \
     ./src/wizard/wiz_remotepage.ui \
     ./src/wizard/wiz_startpage.ui \
     ./src/wizard/wizard.ui \
+    src/dialogs/inlineWindow.ui \
     src/update/authenticationdialog.ui \    
     src/dialogs/sslcertsdialog.ui
 

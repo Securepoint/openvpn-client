@@ -6,6 +6,7 @@
 #include <Shlobj.h>
 #include <string>
 #include <cstdio>
+#include <debug/debug.h>
 
 
 #include <ShellScalingApi.h>
@@ -326,7 +327,7 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext & context, const Q
 
  QString g_strClientName;
 
- static const char* g_szVersion = "2.0.38";
+ static const char* g_szVersion = "2.0.39";
 
  void PrintHelp()
  {
@@ -364,6 +365,8 @@ int CALLBACK WinMain (_In_  HINSTANCE hInstance,
     Q_UNUSED(hPrevInstance)
     Q_UNUSED(lpCmdLine)
     Q_UNUSED(nCmdShow)
+
+    Debug::log("command line test");
 
     // Enable high dpi support, this settings needed
     // at least Qt 5.6!
@@ -414,12 +417,14 @@ int CALLBACK WinMain (_In_  HINSTANCE hInstance,
 
     int startDaemonDelay (0);    
 
-    bool  loadGermanTranslation(false);
+    bool loadGermanTranslation(false);
+    bool noSave(false);
     // Handle CLI
     for (int x = 1; x < argc; x++) {
         if(!strcmp(argv[x], "-german")) {
             loadGermanTranslation = true;
-        } else if(!strcmp(argv[x], "-silent")) {
+        }
+        else if(!strcmp(argv[x], "-silent")) {
             g_bSilent = true;
         } else if(!strcmp(argv[x], "-debug")) {
             g_bDebug = true;
@@ -501,6 +506,7 @@ int CALLBACK WinMain (_In_  HINSTANCE hInstance,
         } else if(!strcmp(argv[x], "-noSave")) {
             // Denial storage of the user crendentials etc.
             globalSaveUserData = false;
+                        noSave = true;
         } else if(!strcmp(argv[x], "-status")) {
 
             // Can I make that with  the , well, Service?!
@@ -764,6 +770,9 @@ int CALLBACK WinMain (_In_  HINSTANCE hInstance,
     if (loadGermanTranslation) {
         // Client should use german language
         Settings::instance()->setUseGerman();
+    }
+    if(noSave){
+        Settings::instance()->setNoSave();
     }
 
     startConfig.replace("\\", "/");

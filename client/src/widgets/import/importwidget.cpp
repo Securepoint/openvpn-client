@@ -1,5 +1,6 @@
 #include "importwidget.h"
 #include "ui_importwidget.h"
+#include <debug/debug.h>
 
 #include <frmmain.h>
 #include <widgetfactory.h>
@@ -124,15 +125,19 @@ void ImportWidget::on_cmdImport_clicked()
         configName = configName.right(configName.size() - configName.lastIndexOf("/") - 1);
 
         // Anderer name als Dateiname
-        if (ui->rbCustomName->isChecked()) {
-            if (!ui->txtCustomName->text().isEmpty()) {
+        if (ui->rbCustomName->isChecked())
+        {
+            if (!ui->txtCustomName->text().isEmpty())
+            {
                 configName = ui->txtCustomName->text();
             }
         }
 
         QString newConnectionName (configName.trimmed());
 
-        if (!Utils::isLegalFileName(newConnectionName)) {
+        // check file name
+        if (!Utils::isLegalFileName(newConnectionName))
+        {
             Message::error(QObject::tr("Invalid config name. At least one letter of [a-zA-Z0-9-_ ]."), QObject::tr("User Information"), FrmMain::instance());
 
             //
@@ -140,12 +145,12 @@ void ImportWidget::on_cmdImport_clicked()
         }
 
         // Check if it already exists
-        QString sqlCheckExists (QString("SELECT * FROM vpn WHERE \"vpn-name\" = '%1';")
-                    .arg(Crypt::encodePlaintext(Database::instance()->makeCleanValue(newConnectionName))));
+        QString sqlCheckExists (QString("SELECT * FROM vpn WHERE \"vpn-name\" = '%1';").arg(Crypt::encodePlaintext(Database::instance()->makeCleanValue(newConnectionName))));
 
         QScopedPointer<QSqlQuery> checkExistsQuery (Database::instance()->openQuery(sqlCheckExists));
 
-        if(checkExistsQuery->first()) {
+        if(checkExistsQuery->first())
+        {
             // A connection with this name already exits
             Message::error(QObject::tr("A connection with this name already exits."), QObject::tr("User Information"), FrmMain::instance());
 
@@ -160,11 +165,11 @@ void ImportWidget::on_cmdImport_clicked()
 
         // If file is available copy it
         // First create folder
-        QString newConfigFolderPath (QString("%1/config/%2")
-            .arg(Utils::userApplicationDataDirectory())
-            .arg(configName));
+        QString newConfigFolderPath (QString("%1/config/%2").arg(Utils::userApplicationDataDirectory()).arg(configName));
         QDir newConfigFolderPathDirectory (newConfigFolderPath);
-        if (newConfigFolderPathDirectory.exists(newConfigFolderPath)){
+
+        if (newConfigFolderPathDirectory.exists(newConfigFolderPath))
+        {
             // A config with this name is already existing
             qDebug() << "A configuration with this name is already existing!";
             Message::error(QObject::tr("A configuration with this name is already existing!"), QObject::tr("An error occurred"), this);
@@ -238,6 +243,15 @@ void ImportWidget::on_cmdImport_clicked()
                     .arg(newConfigFolderPath)
                     .arg(destName));
             }
+
+            /*
+            auto inlineValue = (ConfigValues::instance()->valueFromConfigKeyInline(pathToConfig, key));
+            if(!inlineValue.isEmpty())
+            {
+                // set value
+            }
+            */
+
         };
 
         for(const auto &key : keys)

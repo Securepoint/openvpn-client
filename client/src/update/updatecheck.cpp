@@ -19,7 +19,7 @@
 UpdateCheck::UpdateCheck()
     : currentMajor(2),
       currentMinor(0),
-      currentPatch(38)
+      currentPatch(39)
 {
     // Create a new manager for this action
     manager = new QNetworkAccessManager();

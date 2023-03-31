@@ -34,10 +34,20 @@ private:
     void fillFieldFromConfig ();
     QStringList getAllFieldWhichNotIntoTheInterface ();
 
+    int pathClicked;
+
     QString caValue;
     QString certValue;
     QString keyValue;
     QString pkcs12Value;
+
+    QString caValueInline;
+    QString* p_caValueInline = &caValueInline;
+    QString certValueInline;
+    QString* p_certValueInline = &certValueInline;
+    QString keyValueInline;
+    QString* p_keyValueInline = &keyValueInline;
+
 
 private slots:
     void on_cmdErrorConnect_clicked();
@@ -46,8 +56,11 @@ private slots:
     void on_cmdAfterConnect_clicked();
     void on_cmdBeforeConnect_clicked();
     void on_cmdGetKeyPath_clicked();
+    void on_cmdSetKeyInline_clicked();
     void on_cmdGetCertPath_clicked();
+    void on_cmdSetCertInline_clicked();
     void on_cmdGetCAPath_clicked();
+    void on_cmdSetCaInline_clicked();
     void on_cmdSave_clicked();
     void on_cmdClose_clicked();
     void on_rbPkcs_toggled(bool checked);
@@ -55,6 +68,7 @@ private slots:
     void on_rbNormal_toggled(bool checked);
     void on_cmdAdd_clicked();
     void on_cmdRemove_clicked();
+    void setPathInline();
 };
 
 #endif // AdvConfigSettingsWidget_H

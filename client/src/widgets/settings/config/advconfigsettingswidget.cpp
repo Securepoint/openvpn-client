@@ -1,6 +1,7 @@
 #include "AdvConfigSettingsWidget.h"
 #include "ui_AdvConfigSettingsWidget.h"
-
+#include <debug/debug.h>
+#include <dialogs/inlineWindow.h>
 
 #include <message.h>
 #include <config/configvalues.h>
@@ -43,6 +44,9 @@ AdvConfigSettingsWidget::AdvConfigSettingsWidget(ConnectionData *obj, QWidget * 
     this->ui->lvRemote->model()->setHeaderData( 1, Qt::Horizontal, "Port");
 
     this->ui->lvRemote->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
+
+
+
 }
 
 void AdvConfigSettingsWidget::changeEvent(QEvent *e)
@@ -369,8 +373,10 @@ void AdvConfigSettingsWidget::fillFieldFromConfig() {
                 }
         }
 
-        if (!isCAChecked) {
-            if (line.left(2).toUpper().trimmed() == "CA") {
+        if (!isCAChecked)
+        {
+            if (line.left(2).toUpper().trimmed() == "CA")
+            {
                 isCAChecked = true;
                 QString tmpLine (line.trimmed());
                 // Key value
@@ -383,6 +389,29 @@ void AdvConfigSettingsWidget::fillFieldFromConfig() {
                 ui->txtCA->setText(tmpLine);
                 //
                 this->caValue = tmpLine;
+            }
+            if (line.startsWith("<ca>", Qt::CaseInsensitive))
+            {
+                ui->txtCA->setText("inline");
+
+                this->caValue = "inline";
+
+                while (!line.startsWith("</ca>", Qt::CaseInsensitive))
+                {
+                    line = in.readLine();
+
+                    if(!line.startsWith("</ca>", Qt::CaseInsensitive) && !line.isEmpty())
+                    {
+                        if (line.startsWith("-----END CERTIFICATE-----", Qt::CaseInsensitive))
+                        {
+                              caValueInline += line;
+                        }
+                        else
+                        {
+                            caValueInline += line + QLatin1String("\n");
+                        }
+                    }
+                }
             }
         }
 
@@ -550,8 +579,10 @@ void AdvConfigSettingsWidget::fillFieldFromConfig() {
                     ui->cbPersistTun->setChecked(false);
                 }
             }
-        if (!isCertChecked){
-                if (line.left(4).toUpper().trimmed() == "CERT") {
+        if (!isCertChecked)
+        {
+            if (line.left(4).toUpper().trimmed() == "CERT")
+            {
                     isCertChecked = true;
                     QString tmpLine (line.trimmed());
                     // Key value
@@ -564,24 +595,72 @@ void AdvConfigSettingsWidget::fillFieldFromConfig() {
                     ui->txtCert->setText(tmpLine);
                     //
                     this->certValue = tmpLine;
-                }
             }
-        if (!isKeyChecked){
-                if (line.left(3).toUpper().trimmed() == "KEY") {
-                    isKeyChecked = true;
-                    QString tmpLine (line.trimmed());
-                    // Key value
-                    tmpLine = tmpLine.right(line.size() - 3);
-                    // Remove " with nothing
-                    tmpLine = tmpLine.replace("\"", "");
-                    // Trim the line
-                    tmpLine = tmpLine.trimmed();
-                    //
-                    ui->txtKey->setText(tmpLine);
-                    //
-                    this->keyValue = tmpLine;
+            if (line.startsWith("<cert>", Qt::CaseInsensitive))
+            {
+                ui->txtCert->setText("inline");
+
+                this->certValue = "inline";
+
+                while (!line.startsWith("</cert>", Qt::CaseInsensitive))
+                {
+                    line = in.readLine();
+
+                    if(!line.startsWith("</cert>", Qt::CaseInsensitive) && !line.isEmpty())
+                    {
+                        if (line.startsWith("-----END CERTIFICATE-----", Qt::CaseInsensitive))
+                        {
+                              certValueInline += line;
+                        }
+                        else
+                        {
+                            certValueInline += line + QLatin1String("\n");
+                        }
+                    }
                 }
+             }
+         }
+        if (!isKeyChecked)
+        {
+            if (line.left(3).toUpper().trimmed() == "KEY")
+            {
+                isKeyChecked = true;
+                QString tmpLine (line.trimmed());
+                // Key value
+                tmpLine = tmpLine.right(line.size() - 3);
+                // Remove " with nothing
+                tmpLine = tmpLine.replace("\"", "");
+                // Trim the line
+                tmpLine = tmpLine.trimmed();
+                //
+                ui->txtKey->setText(tmpLine);
+                //
+                this->keyValue = tmpLine;
+             }
+            if (line.startsWith("<key>", Qt::CaseInsensitive))
+            {
+               ui->txtKey->setText("inline");
+
+               this->keyValue = "inline";
+
+               while (!line.startsWith("</key>", Qt::CaseInsensitive))
+               {
+                   line = in.readLine();
+
+                   if(!line.startsWith("</key>", Qt::CaseInsensitive) && !line.isEmpty())
+                   {
+                       if (line.startsWith("-----END PRIVATE KEY-----", Qt::CaseInsensitive))
+                       {
+                             keyValueInline += line;
+                       }
+                       else
+                       {
+                           keyValueInline += line + QLatin1String("\n");
+                       }
+                   }
+               }
             }
+        }
         if (!isCompLzoChecked){
                 if (line.toUpper().trimmed() == "COMP-LZO") {
                     isCompLzoChecked = true;
@@ -806,7 +885,7 @@ void AdvConfigSettingsWidget::fillFieldFromConfig() {
 
 void AdvConfigSettingsWidget::on_cmdSave_clicked()
 {
-    QStringList oldFields = this->getAllFieldWhichNotIntoTheInterface();
+
 
     QStringList out;
     // Datei offen, fertig zum schreiben
@@ -881,10 +960,12 @@ void AdvConfigSettingsWidget::on_cmdSave_clicked()
     }
 
     /*if(!Settings::getInstance()->getIsPortableClient())*/ {
-        if (ui->rbNormal->isChecked() && !ui->txtCA->text().isEmpty()) {
+        if (ui->rbNormal->isChecked() && !ui->txtCA->text().isEmpty())
+        {
             // If temp value and dialog value are not equals, copy the new certificate to the ovpn dir
             // Otherwise write the plain data from dialog t the config
-            if (this->caValue != ui->txtCA->text()) {
+            if (this->caValue != ui->txtCA->text() && ui->txtCA->text() != "inline")
+            {
                 // Copy file to config dir and set new path
                 QString newPath (ConfigValues::instance()->pathOfFile(this->configObj->GetConfigPath()));
                 QString nameOfFile (ConfigValues::instance()->fileNameOfAbsolutePath(ui->txtCA->text()));
@@ -893,7 +974,8 @@ void AdvConfigSettingsWidget::on_cmdSave_clicked()
                                                 .arg(nameOfFile));
                 // Set new certificate location
                 out << QLatin1String("ca \"") << nameOfFile << QLatin1String("\"\n");
-            } else {
+            } else if(ui->txtCA->text() != "inline")
+            {
                 // Set the origin data
                 out << QLatin1String("ca \"") << ui->txtCA->text().replace("/", "\\\\") << QLatin1String("\"\n");
             }
@@ -903,7 +985,7 @@ void AdvConfigSettingsWidget::on_cmdSave_clicked()
         if (ui->rbNormal->isChecked() && !ui->txtCert->text().isEmpty()) {
             // If temp value and dialog value are not equals, copy the new certificate to the ovpn dir
             // Otherwise write the plain data from dialog t the config
-            if (this->certValue != ui->txtCert->text()) {
+            if (this->certValue != ui->txtCert->text() && ui->txtCert->text() != "inline") {
                 // Copy file to config dir and set new path
                 QString newPath (ConfigValues::instance()->pathOfFile(this->configObj->GetConfigPath()));
                 QString nameOfFile (ConfigValues::instance()->fileNameOfAbsolutePath(ui->txtCert->text()));
@@ -912,17 +994,20 @@ void AdvConfigSettingsWidget::on_cmdSave_clicked()
                                                 .arg(nameOfFile));
                 // Set new certificate location
                 out << QLatin1String("cert \"") << nameOfFile << QLatin1String("\"\n");
-            } else {
+            } else if(ui->txtCert->text() != "inline")
+            {
                 // Set the origin data
                 out << QLatin1String("cert \"") << ui->txtCert->text().replace("/", "\\\\") << QLatin1String("\"\n");
             }
         }
 
 
-        if (ui->rbNormal->isChecked() && !ui->txtKey->text().isEmpty()) {
+        if (ui->rbNormal->isChecked() && !ui->txtKey->text().isEmpty())
+        {
             // If temp value and dialog value are not equals, copy the new certificate to the ovpn dir
-            // Otherwise write the plain data from dialog t the config
-            if (this->keyValue != ui->txtKey->text()) {
+            // Otherwise write the plain data from dialog to the config
+            if (this->keyValue != ui->txtKey->text() && ui->txtKey->text() != "inline")
+            {
                 // Copy file to config dir and set new path
                 QString newPath (ConfigValues::instance()->pathOfFile(this->configObj->GetConfigPath()));
                 QString nameOfFile (ConfigValues::instance()->fileNameOfAbsolutePath(ui->txtKey->text()));
@@ -931,7 +1016,8 @@ void AdvConfigSettingsWidget::on_cmdSave_clicked()
                                                 .arg(nameOfFile));
                 // Set new certificate location
                 out << QLatin1String("key \"") << nameOfFile << QLatin1String("\"\n");
-            } else {
+            } else if(ui->txtKey->text() != "inline")
+            {
                 // Set the origin data
                 out << QLatin1String("key \"") << ui->txtKey->text().replace("/", "\\\\") << QLatin1String("\"\n");
             }
@@ -1037,6 +1123,69 @@ void AdvConfigSettingsWidget::on_cmdSave_clicked()
     if (ui->cbRedirectGateway->isChecked())
         out << QLatin1String("redirect-gateway\n");
 
+    if (ui->txtCA->text() == "inline")
+    {
+        // check for <tag>
+        QString target("<ca>");
+        if(!caValueInline.contains(target,Qt::CaseInsensitive))
+        {
+            caValueInline = target + "\n" + caValueInline;
+        }
+
+        out << caValueInline;
+
+        // check for </tag>
+        target = ("</ca>");
+        if(!caValueInline.contains(target,Qt::CaseInsensitive))
+        {
+            out << "\n" + target;
+        }
+
+        out << "\n";
+    }
+    if (ui->txtCert->text() == "inline")
+    {
+        // check for <tag>
+        QString target("<cert>");
+        if(!certValueInline.contains(target,Qt::CaseInsensitive))
+        {
+            certValueInline = target + "\n" + certValueInline;
+        }
+
+        out << certValueInline;
+
+        // check for </tag>
+        target = ("</cert>");
+        if(!certValueInline.contains(target,Qt::CaseInsensitive))
+        {
+            out << "\n" + target;
+        }
+
+        out << "\n";
+    }
+    if (ui->txtKey->text() == "inline")
+    {
+        // check for <tag>
+        QString target("<key>");
+        if(!keyValueInline.contains(target,Qt::CaseInsensitive))
+        {
+            keyValueInline = target + "\n" + keyValueInline;
+        }
+
+        out << keyValueInline;
+
+        // check for </tag>
+        target = ("</key>");
+        if(!keyValueInline.contains(target,Qt::CaseInsensitive))
+        {
+            out << "\n" + target;
+        }
+
+        out <<  "\n";
+    }
+
+    QStringList oldFields = this->getAllFieldWhichNotIntoTheInterface();
+
     if (oldFields.size() > 0) {
        // Alte Felder die nicht in der GUI sind vorhanden
         out << QLatin1String("\n#Fields which could be not manage wih GUI \n\n");
@@ -1128,6 +1277,7 @@ void AdvConfigSettingsWidget::on_cmdSave_clicked()
 
 void AdvConfigSettingsWidget::on_cmdGetCAPath_clicked()
 {
+    // todo inline
     QFileDialog caFileDialog;
     QString filename = caFileDialog.getOpenFileName(this, QObject::tr("Find root ca"), this->lastDir, QObject::tr("Certificates (*.crt *.cert *.pem);;All files (*.*)"));
     if (!filename.isEmpty()) {
@@ -1141,8 +1291,36 @@ void AdvConfigSettingsWidget::on_cmdGetCAPath_clicked()
     }
 }
 
+void AdvConfigSettingsWidget::setPathInline()
+{
+    switch(pathClicked){
+    case 1:
+        ui->txtCA->setText("inline");
+        break;
+    case 2:
+        ui->txtCert->setText("inline");
+        break;
+    case 3:
+        ui->txtKey->setText("inline");
+        break;
+    }
+}
+
+void AdvConfigSettingsWidget::on_cmdSetCaInline_clicked()
+{
+    pathClicked = 1;
+
+    QString cPath (this->configObj->GetConfigPath());
+    InlineWindow widget("ca", caValueInline, p_caValueInline, this);
+    //widget.setParent(this);
+
+    widget.exec();
+
+}
+
 void AdvConfigSettingsWidget::on_cmdGetCertPath_clicked()
 {
+    // todo inline
     QFileDialog certFileDialog;
     QString filename = certFileDialog.getOpenFileName(this, QObject::tr("Find certificates"), this->lastDir, QObject::tr("Certificates (*.cert *.pem);;All files (*.*)"));
     if (!filename.isEmpty()) {
@@ -1156,8 +1334,19 @@ void AdvConfigSettingsWidget::on_cmdGetCertPath_clicked()
     }
 }
 
+void AdvConfigSettingsWidget::on_cmdSetCertInline_clicked()
+{
+    pathClicked = 2;
+
+    QString cPath (this->configObj->GetConfigPath());
+    InlineWindow widget("cert", certValueInline, p_certValueInline, this);
+
+    widget.exec();
+}
+
 void AdvConfigSettingsWidget::on_cmdGetKeyPath_clicked()
 {
+    // todo inline
     QFileDialog keyFileDialog;
     QString filename = keyFileDialog.getOpenFileName(this, QObject::tr("Find key files"), this->lastDir, QObject::tr("Key files (*.key *.pem);;All files (*.*)"));
     if (!filename.isEmpty()) {
@@ -1169,6 +1358,16 @@ void AdvConfigSettingsWidget::on_cmdGetKeyPath_clicked()
         else
             ui->txtKey->setText(filename);
     }
+}
+
+void AdvConfigSettingsWidget::on_cmdSetKeyInline_clicked()
+{
+    pathClicked = 3;
+
+    QString cPath (this->configObj->GetConfigPath());
+    InlineWindow widget("key", keyValueInline,  p_keyValueInline, this);
+
+    widget.exec();
 }
 
 void AdvConfigSettingsWidget::on_cmdBeforeConnect_clicked()
@@ -1216,7 +1415,8 @@ void AdvConfigSettingsWidget::on_cmdErrorConnect_clicked()
     }
 }
 
-QStringList AdvConfigSettingsWidget::getAllFieldWhichNotIntoTheInterface() {
+QStringList AdvConfigSettingsWidget::getAllFieldWhichNotIntoTheInterface()
+{
     // Load Config Data
     QStringList fieldsNotIncluded;
     QString cFile;
@@ -1224,7 +1424,8 @@ QStringList AdvConfigSettingsWidget::getAllFieldWhichNotIntoTheInterface() {
     cFile = this->configObj->GetConfigPath();
     QFile cf (cFile);
 
-    if (!cf.open(QIODevice::ReadOnly | QIODevice::Text)) {
+    if (!cf.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
         Message::error(QObject::tr("Unable to read file!"), QObject::tr("Load Configuration"), this);
         return fieldsNotIncluded;
     }
@@ -1232,7 +1433,8 @@ QStringList AdvConfigSettingsWidget::getAllFieldWhichNotIntoTheInterface() {
 
     QTextStream in(&cf);
 
-    while (!in.atEnd()) {
+    while (!in.atEnd())
+    {
         QString line = in.readLine();
         if (line.trimmed().left(3).toUpper() != "###"
                     && line.trimmed().replace("\n", "") != ""
@@ -1269,10 +1471,70 @@ QStringList AdvConfigSettingsWidget::getAllFieldWhichNotIntoTheInterface() {
                     && !line.trimmed().left(11).contains("HTTP-PROXY ", Qt::CaseInsensitive)
                     && line.toUpper().trimmed() != "MUTE-REPLAY-WARNINGS"
                     && line.trimmed().left(6).toUpper() != "CIPHER"
-                    && line.toUpper().trimmed() != "NS-CERT-TYPE SERVER") {
-                   fieldsNotIncluded.append(line);
+                    && line.toUpper().trimmed() != "NS-CERT-TYPE SERVER")
+        {
+
+            /*
+            if(line.startsWith("<ca>", Qt::CaseInsensitive) && ui->txtCA->text() != "inline")
+            {
+                caValueInline = "";
+                while (!line.startsWith("</ca>", Qt::CaseInsensitive))
+                {
+                    line = (in.readLine());
+                    caValueInline += line;
                 }
+            }
+            else if(line.startsWith("<cert>", Qt::CaseInsensitive) && ui->txtCert->text() != "inline")
+            {
+                certValueInline = "";
+                while (!line.startsWith("</cert>", Qt::CaseInsensitive))
+                {
+                    line = (in.readLine());
+                    certValueInline += line;
+
+                }
+            }
+            else if(line.startsWith("<key>", Qt::CaseInsensitive) && ui->txtKey->text() != "inline")
+            {
+                keyValueInline = "";
+                while (!line.startsWith("</key>", Qt::CaseInsensitive))
+                {
+                    line = (in.readLine());
+                    keyValueInline += line;
+
+                }
+            }
+            */
+
+            if(line.startsWith("<ca>", Qt::CaseInsensitive))
+            {
+                while (!line.startsWith("</ca>", Qt::CaseInsensitive))
+                {
+                    line = (in.readLine());
+                }
+            }
+            else if(line.startsWith("<cert>", Qt::CaseInsensitive))
+            {
+                while (!line.startsWith("</cert>", Qt::CaseInsensitive))
+                {
+                    line = (in.readLine());
+                }
+            }
+            else if(line.startsWith("<key>", Qt::CaseInsensitive))
+            {
+                while (!line.startsWith("</key>", Qt::CaseInsensitive))
+                {
+                    line = (in.readLine());
+                }
+            }
+
+            else
+            {
+                    fieldsNotIncluded.append(line);
+            }
+        }
     }
+
     cf.close();
     return fieldsNotIncluded;
 }

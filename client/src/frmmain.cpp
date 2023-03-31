@@ -448,11 +448,9 @@ LRESULT wndproc1(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             }
 
             if (hit == HTCLIENT) {
-                Debug::log("debug1");
                 // Cehck if the hit was in the title bar
                 POINT p;
                 if (GetCursorPos(&p)) {
-                    Debug::log("debug2");
                     // Get the client coordinate from the cursor position
                     if (ScreenToClient(hwnd, &p)) {
                                         Debug::log("debug3");
@@ -489,7 +487,7 @@ LRESULT wndproc1(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 FrmMain::FrmMain()
     : ui(new Ui::FrmMain),
       widgetFactory(new WidgetFactory),
-      version("2.0.38"),
+      version("2.0.39"),
       isReconnect(false),
       tapCount(0),
       installingTap(false),

@@ -84,6 +84,10 @@ public:
         this->useGermanValue = true;
     }
 
+    void setNoSave(){
+        this->noSave = true;
+    }
+
     void setVpnLog(bool);
     bool VpnLog();
 
@@ -123,6 +127,7 @@ private:
     bool _bShowLog;
 
     bool useGermanValue;
+    bool noSave;
 
     void save (const QString &name, const QString &value);
 };

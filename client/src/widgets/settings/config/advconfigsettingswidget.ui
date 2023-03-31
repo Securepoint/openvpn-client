@@ -57,98 +57,6 @@
    <property name="bottomMargin">
     <number>5</number>
    </property>
-   <item row="1" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_4">
-       <item>
-        <spacer name="horizontalSpacer_2">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
-        <widget class="QPushButton" name="cmdSave">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="cursor">
-          <cursorShape>PointingHandCursor</cursorShape>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">:hover {background-color: rgb(195, 195, 195);}
-QPushButton {;text-align:center;
-	padding-left: 3px;
-	padding-top: 3px;
-   padding-right: 3px;
-	padding-bottom: 3px;}</string>
-         </property>
-         <property name="text">
-          <string>&amp;OK</string>
-         </property>
-         <property name="icon">
-          <iconset>
-           <normaloff>:/images/save.png</normaloff>:/images/save.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>22</width>
-           <height>22</height>
-          </size>
-         </property>
-         <property name="flat">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="cmdClose">
-         <property name="cursor">
-          <cursorShape>PointingHandCursor</cursorShape>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">:hover {background-color: rgb(195, 195, 195);}
-QPushButton {;text-align:center;
-	padding-left: 3px;
-	padding-top: 3px;
-   padding-right: 3px;
-	padding-bottom: 3px;}</string>
-         </property>
-         <property name="text">
-          <string>&amp;Cancel</string>
-         </property>
-         <property name="icon">
-          <iconset>
-           <normaloff>:/images/close_dialog.png</normaloff>:/images/close_dialog.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>22</width>
-           <height>22</height>
-          </size>
-         </property>
-         <property name="default">
-          <bool>true</bool>
-         </property>
-         <property name="flat">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-    </layout>
-   </item>
    <item row="0" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="cursor">
@@ -171,7 +79,7 @@ QPushButton {;text-align:center;
           <item row="0" column="0">
            <layout class="QGridLayout" name="gridLayoutGeneral">
             <property name="leftMargin">
-             <number>5</number>
+             <number>10</number>
             </property>
             <property name="topMargin">
              <number>3</number>
@@ -415,14 +323,93 @@ QPushButton {;text-align:center;
        </item>
        <item row="2" column="0">
         <widget class="QGroupBox" name="groupBox_4">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="title">
           <string>Certifikate - Key:</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_11">
-          <item row="0" column="0">
-           <widget class="QRadioButton" name="rbPkcs">
+          <item row="5" column="0">
+           <widget class="QLabel" name="label_33">
             <property name="text">
-             <string>PKCS12</string>
+             <string>Server certificate:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QLineEdit" name="txtKey">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>250</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">:enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}
+:disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}
+:hover {border: 1px solid red; }</string>
+            </property>
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QLineEdit" name="txtCert">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>250</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">:enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}
+:disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}
+:hover {border: 1px solid red; }</string>
+            </property>
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QRadioButton" name="rbNormal">
+            <property name="text">
+             <string>Normal</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -435,37 +422,17 @@ QPushButton {;text-align:center;
             </property>
            </widget>
           </item>
-          <item row="0" column="2">
-           <widget class="QPushButton" name="cmdGetPkcs12Path">
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="cursor">
-             <cursorShape>PointingHandCursor</cursorShape>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">:hover {background-color: rgb(195, 195, 195);}
-QPushButton {;text-align:center;
-	padding-left: 3px;
-	padding-top: 3px;
-   padding-right: 3px;
-	padding-bottom: 3px;}</string>
-            </property>
+          <item row="4" column="0">
+           <widget class="QLabel" name="label_15">
             <property name="text">
-             <string>...</string>
+             <string>Key path:</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="0">
-           <widget class="QRadioButton" name="rbNormal">
+          <item row="0" column="0">
+           <widget class="QRadioButton" name="rbPkcs">
             <property name="text">
-             <string>Normal</string>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
+             <string>PKCS12</string>
             </property>
            </widget>
           </item>
@@ -481,6 +448,24 @@ QPushButton {;text-align:center;
             <property name="enabled">
              <bool>true</bool>
             </property>
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>16777215</height>
+             </size>
+            </property>
             <property name="styleSheet">
              <string notr="true">:enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}
 :disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}
@@ -491,10 +476,13 @@ QPushButton {;text-align:center;
             </property>
            </widget>
           </item>
-          <item row="2" column="2">
-           <widget class="QPushButton" name="cmdGetCAPath">
-            <property name="enabled">
-             <bool>true</bool>
+          <item row="0" column="4">
+           <widget class="QPushButton" name="cmdGetPkcs12Path">
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>16777215</height>
+             </size>
             </property>
             <property name="cursor">
              <cursorShape>PointingHandCursor</cursorShape>
@@ -519,92 +507,6 @@ QPushButton {;text-align:center;
             </property>
            </widget>
           </item>
-          <item row="3" column="1">
-           <widget class="QLineEdit" name="txtCert">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">:enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}
-:disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}
-:hover {border: 1px solid red; }</string>
-            </property>
-            <property name="readOnly">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="2">
-           <widget class="QPushButton" name="cmdGetCertPath">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="cursor">
-             <cursorShape>PointingHandCursor</cursorShape>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">:hover {background-color: rgb(195, 195, 195);}
-QPushButton {;text-align:center;
-	padding-left: 3px;
-	padding-top: 3px;
-   padding-right: 3px;
-	padding-bottom: 3px;}</string>
-            </property>
-            <property name="text">
-             <string>...</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0">
-           <widget class="QLabel" name="label_15">
-            <property name="text">
-             <string>Key path:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="1">
-           <widget class="QLineEdit" name="txtKey">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">:enabled {border: 1px solid black; background-color: rgb(255, 255, 255);}
-:disabled {border: 1px solid black; background-color: rgb(195, 195, 195);}
-:hover {border: 1px solid red; }</string>
-            </property>
-            <property name="readOnly">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="2">
-           <widget class="QPushButton" name="cmdGetKeyPath">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="cursor">
-             <cursorShape>PointingHandCursor</cursorShape>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">:hover {background-color: rgb(195, 195, 195);}
-QPushButton {;text-align:center;
-	padding-left: 3px;
-	padding-top: 3px;
-   padding-right: 3px;
-	padding-bottom: 3px;}</string>
-            </property>
-            <property name="text">
-             <string>...</string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="0">
-           <widget class="QLabel" name="label_33">
-            <property name="text">
-             <string>Server certificate:</string>
-            </property>
-           </widget>
-          </item>
           <item row="5" column="1">
            <widget class="QCheckBox" name="cbCertIsServer">
             <property name="enabled">
@@ -615,6 +517,192 @@ QPushButton {;text-align:center;
             </property>
             <property name="text">
              <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="4">
+           <widget class="QPushButton" name="cmdSetCaInline">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>15</width>
+              <height>19</height>
+             </size>
+            </property>
+            <property name="cursor">
+             <cursorShape>PointingHandCursor</cursorShape>
+            </property>
+            <property name="mouseTracking">
+             <bool>true</bool>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">:hover {background-color: rgb(195, 195, 195);}
+QPushButton {;text-align:center;
+	padding-left: 3px;
+	padding-top: 3px;
+   padding-right: 3px;
+	padding-bottom: 3px;}</string>
+            </property>
+            <property name="text">
+             <string>Inline</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="3">
+           <widget class="QPushButton" name="cmdGetCAPath">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>15</width>
+              <height>19</height>
+             </size>
+            </property>
+            <property name="cursor">
+             <cursorShape>PointingHandCursor</cursorShape>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">:hover {background-color: rgb(195, 195, 195);}
+QPushButton {;text-align:center;
+	padding-left: 3px;
+	padding-top: 3px;
+   padding-right: 3px;
+	padding-bottom: 3px;}</string>
+            </property>
+            <property name="text">
+             <string>...</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="4">
+           <widget class="QPushButton" name="cmdSetCertInline">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>15</width>
+              <height>19</height>
+             </size>
+            </property>
+            <property name="cursor">
+             <cursorShape>PointingHandCursor</cursorShape>
+            </property>
+            <property name="mouseTracking">
+             <bool>true</bool>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">:hover {background-color: rgb(195, 195, 195);}
+QPushButton {;text-align:center;
+	padding-left: 3px;
+	padding-top: 3px;
+   padding-right: 3px;
+	padding-bottom: 3px;}</string>
+            </property>
+            <property name="text">
+             <string>Inline</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="3">
+           <widget class="QPushButton" name="cmdGetCertPath">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="cursor">
+             <cursorShape>PointingHandCursor</cursorShape>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">:hover {background-color: rgb(195, 195, 195);}
+QPushButton {;text-align:center;
+	padding-left: 3px;
+	padding-top: 3px;
+   padding-right: 3px;
+	padding-bottom: 3px;}</string>
+            </property>
+            <property name="text">
+             <string>...</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="4">
+           <widget class="QPushButton" name="cmdSetKeyInline">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>15</width>
+              <height>19</height>
+             </size>
+            </property>
+            <property name="cursor">
+             <cursorShape>PointingHandCursor</cursorShape>
+            </property>
+            <property name="mouseTracking">
+             <bool>true</bool>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">:hover {background-color: rgb(195, 195, 195);}
+QPushButton {;text-align:center;
+	padding-left: 3px;
+	padding-top: 3px;
+   padding-right: 3px;
+	padding-bottom: 3px;}</string>
+            </property>
+            <property name="text">
+             <string>Inline</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="3">
+           <widget class="QPushButton" name="cmdGetKeyPath">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="cursor">
+             <cursorShape>PointingHandCursor</cursorShape>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">:hover {background-color: rgb(195, 195, 195);}
+QPushButton {;text-align:center;
+	padding-left: 3px;
+	padding-top: 3px;
+   padding-right: 3px;
+	padding-bottom: 3px;}</string>
+            </property>
+            <property name="text">
+             <string>...</string>
             </property>
            </widget>
           </item>
@@ -1678,6 +1766,98 @@ QPushButton {;text-align:center;
       </layout>
      </widget>
     </widget>
+   </item>
+   <item row="1" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <item>
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="cmdSave">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="cursor">
+          <cursorShape>PointingHandCursor</cursorShape>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">:hover {background-color: rgb(195, 195, 195);}
+QPushButton {;text-align:center;
+	padding-left: 3px;
+	padding-top: 3px;
+   padding-right: 3px;
+	padding-bottom: 3px;}</string>
+         </property>
+         <property name="text">
+          <string>&amp;OK</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>:/images/save.png</normaloff>:/images/save.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>22</width>
+           <height>22</height>
+          </size>
+         </property>
+         <property name="flat">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="cmdClose">
+         <property name="cursor">
+          <cursorShape>PointingHandCursor</cursorShape>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">:hover {background-color: rgb(195, 195, 195);}
+QPushButton {;text-align:center;
+	padding-left: 3px;
+	padding-top: 3px;
+   padding-right: 3px;
+	padding-bottom: 3px;}</string>
+         </property>
+         <property name="text">
+          <string>&amp;Cancel</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>:/images/close_dialog.png</normaloff>:/images/close_dialog.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>22</width>
+           <height>22</height>
+          </size>
+         </property>
+         <property name="default">
+          <bool>true</bool>
+         </property>
+         <property name="flat">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>

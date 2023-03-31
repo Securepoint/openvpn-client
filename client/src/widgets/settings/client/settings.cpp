@@ -1,6 +1,7 @@
 #include "settings.h"
 #include <database/database.h>
 #include <database/crypt.h>
+#include <debug/debug.h>
 
 Settings *Settings::mInst = 0;
 
@@ -31,7 +32,8 @@ Settings::Settings()
       _startPassword(""),
       isShowSmallDhKeyHint(true),
       useGermanValue(false),
-      isSendToTrayAfterConnect(false)
+      isSendToTrayAfterConnect(false),
+      noSave(false)
 {
 }
 
@@ -122,6 +124,10 @@ void Settings::setRegEntryStartOnWindows (bool flag) {
 
        if (this->useGermanValue) {
            path += QLatin1String(" -german");
+       }
+
+       if (this->noSave) {
+           path += QLatin1String(" -noSave");
        }
 
        path = path.replace("/", "\\");
