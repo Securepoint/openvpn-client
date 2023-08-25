@@ -19,7 +19,7 @@
 UpdateCheck::UpdateCheck()
     : currentMajor(2),
       currentMinor(0),
-      currentPatch(39)
+      currentPatch(40)
 {
     // Create a new manager for this action
     manager = new QNetworkAccessManager();
@@ -378,7 +378,8 @@ void UpdateCheck::run()
 
     QNetworkRequest request;
     // Follow the redirects, needed min Qt 5.6
-    request.setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
+    //request.setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
+    request.setAttribute(QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::ManualRedirectPolicy);
     // We force only allow TLS 1.3
     request.setSslConfiguration(sslConfiguration);
 

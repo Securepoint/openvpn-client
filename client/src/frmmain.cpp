@@ -1,6 +1,7 @@
 #include "frmmain.h"
 #include "ui_frmmain.h"
 #include <debug/debug.h>
+#include <QGuiApplication>
 
 #define _UNICODE
 // Fix error in QDateTime
@@ -23,7 +24,6 @@ extern QString g_strClientName;
 #include <tchar.h>
 #include <QtCore/QDebug>
 #include <QtWidgets/QMenu>
-#include <QtWidgets/QDesktopWidget>
 #include <QtGui/QPainter>
 #include <utils.h>
 #include <future>
@@ -264,6 +264,7 @@ WNDPROC pfOriginalProc;
 
 bool bAllowMove = false;
 
+//bool FrmMain::nativeEvent(const QByteArray &eventType, void *message, int *result)
 bool FrmMain::nativeEvent(const QByteArray &eventType, void *message, long *result)
 {
     MSG *winMessage = (MSG*) message;
@@ -414,7 +415,7 @@ LRESULT wndproc1(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         case ON_SEND_DUMMY:
             {
              SrvCLI::instance()->send(QLatin1String("Dummy"), g_strClientName);
-             if(qApp->hasPendingEvents())
+             //(qApp->hasPendingEvents()) obsolet
                  qApp->processEvents();
             }
             break;
@@ -485,13 +486,13 @@ LRESULT wndproc1(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 
 FrmMain::FrmMain()
-    : ui(new Ui::FrmMain),
-      widgetFactory(new WidgetFactory),
-      version("2.0.39"),
-      isReconnect(false),
+    : isReconnect(false),
       tapCount(0),
       installingTap(false),
+      version("2.0.40"),
+      ui(new Ui::FrmMain),
       qCurrentArrow(nullptr),
+      widgetFactory(new WidgetFactory),
       updateUITimer(nullptr)
 {
     ui->setupUi(this);
@@ -623,12 +624,12 @@ FrmMain::FrmMain()
     this->widgetFactory->widget(MainView);
     // Display into systray
 
-
     qApp->installEventFilter(this);
 
     // Seems Qt fails :)
-    SetWindowPos((HWND)this->winId(), HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 
+    //SetWindowPos((HWND)(reinterpret_cast<QWindow>(this))->winId(), HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+    //SetWindowPos((HWND)this->winId(), HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
     ui->frameMainWindow->setLayout(ui->mainGrid);
     geom = ui->frameMainWindow->geometry();
     auto size = geom.size() * windowsDpiScale();
@@ -698,9 +699,9 @@ void FrmMain::refreshUI()
 
         ui->cmdSettingMenu->setIcon(QPixmap::fromImage(img));
         ui->cmdSettingMenu->setIconSize(img.size());
-        ui->cmdSettingMenu->setMaximumSize(16*windowsDpiScale(), 20*windowsDpiScale());
-        ui->cmdSettingMenu->setMinimumSize(16*windowsDpiScale(), 20*windowsDpiScale());
-        ui->cmdSettingMenu->setFixedSize(16*windowsDpiScale(), 20*windowsDpiScale());
+        ui->cmdSettingMenu->setMaximumSize(28*windowsDpiScale(), 20*windowsDpiScale());
+        ui->cmdSettingMenu->setMinimumSize(28*windowsDpiScale(), 20*windowsDpiScale());
+        ui->cmdSettingMenu->setFixedSize(28*windowsDpiScale(), 20*windowsDpiScale());
         auto g = ui->cmdSettingMenu->geometry();
         g.setSize(QSize(16*windowsDpiScale(), 20*windowsDpiScale()));
         ui->cmdSettingMenu->setGeometry(g);
@@ -887,17 +888,21 @@ void FrmMain::showEvent(QShowEvent *event)
     // Get the taskbar auto hide value
     this->checkTaskBarAutoHideProperty();
 
-    QDesktopWidget *desktop = qApp->desktop();
+    QScreen  *desktop = qApp->primaryScreen();
 
     // First we try only single screens
-    int desktopWidth (desktop->screenGeometry(desktop->screenNumber(QCursor::pos())).width());
+    //int desktopWidth (desktop->screenGeometry(desktop->screenNumber(QCursor::pos())).width());
+      int desktopWidth (desktop->geometry().width());
 
-    auto screenGeometry = desktop->screenGeometry(desktop->screenNumber(QCursor::pos()));
+    //auto screenGeometry = desktop->screenGeometry(desktop->screenNumber(QCursor::pos()));
+      auto screenGeometry = desktop->geometry();
 
     // Get the icon postion
     QPoint trayIconRightTopCorner (this->trayIcon->geometry().topLeft());
     // Determine the space between the systray icon and the right screen border
-    int freeHorizontalSpace (desktopWidth - (trayIconRightTopCorner.x() - desktop->screenGeometry(desktop->screenNumber(QCursor::pos())).left()));
+    //int freeHorizontalSpace (desktopWidth - (trayIconRightTopCorner.x() - desktop->screenGeometry(desktop->screenNumber(QCursor::pos())).left()));
+      int freeHorizontalSpace (desktopWidth - (trayIconRightTopCorner.x() - desktop->geometry().left()));
+
 
     int positionIconHorizontalSpace (28);
     int positionIconVerticalSpace (0);
@@ -920,7 +925,8 @@ void FrmMain::showEvent(QShowEvent *event)
         QPoint tbPoint(tbRect.left + ((tbRect.right - tbRect.left) / 2), tbRect.top + ((tbRect.bottom - tbRect.top) / 2));
 
         // Check if the point is in the screen
-        if(desktop->screenGeometry(desktop->screenNumber(QCursor::pos())).contains(tbPoint))
+        //if(desktop->screenGeometry(desktop->screenNumber(QCursor::pos())).contains(tbPoint))
+          if(desktop->geometry().contains(tbPoint))
             break;
     }
 
@@ -935,7 +941,8 @@ void FrmMain::showEvent(QShowEvent *event)
 
             // center of taskbar
             QPoint tbPoint(tbRect.left + ((tbRect.right - tbRect.left) / 2), tbRect.top + ((tbRect.bottom - tbRect.top) / 2));
-            if(!desktop->screenGeometry(desktop->screenNumber(QCursor::pos())).contains(tbPoint))
+            //if(!desktop->screenGeometry(desktop->screenNumber(QCursor::pos())).contains(tbPoint))
+            if(!desktop->geometry().contains(tbPoint))
             {
                 hTaskBar = NULL;
             }
@@ -957,7 +964,8 @@ void FrmMain::showEvent(QShowEvent *event)
                 QPoint tbPoint(tbRect.left + ((tbRect.right - tbRect.left) / 2), tbRect.top + ((tbRect.bottom - tbRect.top) / 2));
 
                 // Check if the point is in the screen
-                if(desktop->screenGeometry(desktop->screenNumber(QCursor::pos())).contains(tbPoint))
+                //if(desktop->screenGeometry(desktop->screenNumber(QCursor::pos())).contains(tbPoint))
+                  if(desktop->geometry().contains(tbPoint))
                     break;
             }
             while(hTaskBar = FindWindowEx(NULL, hTaskBar, _TEXT("Shell_SecondaryTrayWnd"), NULL));
@@ -968,7 +976,8 @@ void FrmMain::showEvent(QShowEvent *event)
                 QPoint tbPoint(tbRect.left + ((tbRect.right - tbRect.left) / 2), tbRect.top + ((tbRect.bottom - tbRect.top) / 2));
 
                 /// In case we still have no TrayWnd try to use SecondayTrayWnd
-                if(!desktop->screenGeometry(desktop->screenNumber(QCursor::pos())).contains(tbPoint))
+                //if(!desktop->screenGeometry(desktop->screenNumber(QCursor::pos())).contains(tbPoint))
+                  if(!desktop->geometry().contains(tbPoint))
                 {
                     hTaskBar = 0;
                 }
@@ -1258,9 +1267,9 @@ bool FrmMain::startDaemon()
         }
 
         // Check for events which needed to process
-        if (qApp->hasPendingEvents()) {
+        //if (qApp->hasPendingEvents()) {
             qApp->processEvents();
-        }
+        //}
 
         //
         qDebug() << QString(QString("Connect try: No.: %1 failed")
@@ -1473,7 +1482,7 @@ void FrmMain::receivedIP(int id, QString ip)
     if(pConnection) {
         pConnection->SetState(ConnectionState::Connected);
         pConnection->SetIP(ip);
-        pConnection->SetLastConnected(QDateTime::currentDateTime().toTime_t());
+        pConnection->SetLastConnected(QDateTime::currentDateTime().toSecsSinceEpoch());
     }
 #if 0
     // Alle TreeItem durchsuchen bis die ID gefunden wurde
@@ -1869,5 +1878,5 @@ float windowsDpiScale()
     float dpiX = static_cast<float>(GetDeviceCaps(screen, LOGPIXELSX));
     ReleaseDC(0, screen);
     //
-    return dpiX / DEFAULT_DPI;
+    return (dpiX/DEFAULT_DPI);
 }

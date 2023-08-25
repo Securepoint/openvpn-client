@@ -117,7 +117,7 @@ QByteArray Checksum::base64OfFileContent(qint32 configId, const QString &path)
         // Crap
         ServiceLogData::instance()->append(configId, QString("Process configuration file not found\n"));
         //
-        return false;
+        return nullptr;
     }
 
     // File is open read lines

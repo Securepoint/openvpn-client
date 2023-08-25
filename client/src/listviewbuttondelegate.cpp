@@ -165,7 +165,7 @@ int ListViewButtonDelegate::textWidth(const QString &text, const QFont &font) co
     QFontMetrics metrics (font);
 
     //
-    return metrics.width(text);
+    return metrics.horizontalAdvance(text);
 
 }
 

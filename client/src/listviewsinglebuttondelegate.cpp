@@ -248,7 +248,7 @@ void ListViewSingleButtonDelegate::paint(QPainter *painter, const QStyleOptionVi
     //textOption.rect.adjust(0, 9, 0, 0);
 
     typedef std::chrono::duration<int, std::ratio_multiply<std::chrono::hours::period, std::ratio<24>>::type> days;
-    std::chrono::seconds sec((QDateTime::currentDateTime().toTime_t() - lastConnected));
+    std::chrono::seconds sec((QDateTime::currentDateTime().toSecsSinceEpoch() - lastConnected));
 
     auto d = std::chrono::duration_cast<days>(sec);
     auto h = std::chrono::duration_cast<std::chrono::hours>(sec - d);
@@ -274,10 +274,10 @@ void ListViewSingleButtonDelegate::paint(QPainter *painter, const QStyleOptionVi
         painter->drawText(textOption.rect, QObject::tr("Connected: ") + (day) + (hour) + (d.count() > 0 ? "" : minute));
         break;
     case ConnectionState::Disconnected:
-        painter->drawText(textOption.rect, QObject::tr("Last used: ") + (lastUsed == 0 ? QObject::tr("Never") : QDateTime::fromTime_t(lastUsed).toString("dd.MM.yy hh:mm")));
+        painter->drawText(textOption.rect, QObject::tr("Last used: ") + (lastUsed == 0 ? QObject::tr("Never") : QDateTime::fromSecsSinceEpoch(lastUsed).toString("dd.MM.yy hh:mm")));
         break;
     default:
-        painter->drawText(textOption.rect, QObject::tr("Last used: ") + (lastUsed == 0 ? QObject::tr("Never") : QDateTime::fromTime_t(lastUsed).toString("dd.MM.yy hh:mm")));
+        painter->drawText(textOption.rect, QObject::tr("Last used: ") + (lastUsed == 0 ? QObject::tr("Never") : QDateTime::fromSecsSinceEpoch(lastUsed).toString("dd.MM.yy hh:mm")));
         break;
     };
 

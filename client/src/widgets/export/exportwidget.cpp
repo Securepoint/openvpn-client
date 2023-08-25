@@ -95,7 +95,7 @@ void ExportWidget::on_cmdExport_clicked()
 
             // Alle Daten da, packen
             bool error (false);
-			if (!CZip::archive(zipFile, this->configPath.left(this->configPath.lastIndexOf("/")), false)) {
+            if (!CZip::archive(zipFile, this->configPath.left(this->configPath.lastIndexOf("/")), nullptr)) {
                 error = true;
             }
 

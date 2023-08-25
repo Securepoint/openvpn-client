@@ -8,7 +8,7 @@
 #include <Utils.h>
 #include <QtGui>
 #include <QtGui/qguiapplication.h>
-#include <QtWidgets/QDesktopWidget>
+#include <QScreen>
 #include <QtWidgets/QFileDialog>
 
 #include <checksum.h>
@@ -99,23 +99,28 @@ void AdvConfigSettingsWidget::showEvent(QShowEvent *e) {
 
     int left (0);
     int top (0);
+    QRect geom (0,0,0,0);
    {
         // Desktop auswerten
-        top = qApp->desktop()->height();
-        left = qApp->desktop()->width();
+        geom = qApp->primaryScreen()->geometry();
+        top = geom.height();
+        left = geom.width();
+
+        // wenn ich das richtig verstanden habe muss man die virtuellen desktops nicht umrechnen
+
         // Die Breite bei virtuellen Desktops vierteln
-        if (left > 2000 && qApp->desktop()->isVirtualDesktop()) {
-            left /= 4;
-        } else {
+        //if (left > 2000 && qApp->desktop()->isVirtualDesktop()) {
+        //    left /= 4;
+        //} else {
             // Normaler Desktop
             left = (left - winH) / 2;
-        }
+        //}
         // Height
-        if (top > 2000 && qApp->desktop()->isVirtualDesktop()) {
-            top /= 4;
-        } else {
+       // if (top > 2000 && qApp->desktop()->isVirtualDesktop()) {
+       //     top /= 4;
+       // } else {
             top = (top - winH) / 2;
-        }
+       // }
     }
     // Nun die neuen setzen
     this->setGeometry(left, top, winW, winH);

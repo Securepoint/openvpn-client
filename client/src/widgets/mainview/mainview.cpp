@@ -86,7 +86,7 @@ void MainListView::connectionButtonClicked(const QModelIndex& index)
         case ConnectionState::Connected:
             currentConnection->Disconnect();
             currentConnection->SetState(ConnectionState::Disconnecting);
-            currentConnection->SetLastUsed(QDateTime::currentDateTime().toTime_t());
+            currentConnection->SetLastUsed(QDateTime::currentDateTime().toSecsSinceEpoch());
             //
             break;
         default:

@@ -108,7 +108,7 @@ void ClientSettingsWidget::showEvent(QShowEvent *event)
 
     ui->cbSendToTrayAfterConnect->setChecked(Settings::instance()->sendToTrayAfterConnect());
     // Connection
-    //ui->cbInteract->setChecked(Settings::instance()->useInteract());
+    ui->cbInteract->setChecked(Settings::instance()->useInteract());
     //ui->cbAutoRestart->setChecked(Settings::instance()->autoRestart());
 
     //ui->cbAutoRestart->setVisible(false);

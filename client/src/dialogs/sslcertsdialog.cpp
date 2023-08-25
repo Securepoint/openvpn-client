@@ -2,7 +2,6 @@
 #include "ui_sslcertsdialog.h"
 #include <QtGui>
 #include <QtGui/qguiapplication.h>
-#include <QtWidgets/QDesktopWidget>
 
 float windowsDpiScale();
 
@@ -74,24 +73,17 @@ void SSLDialog::showEvent(QShowEvent *e) {
 
     int left (0);
     int top (0);
+    QRect geom (0,0,0,0);
 
     {
         // Desktop auswerten
-        top = qApp->desktop()->height();
-        left = qApp->desktop()->width();
-        // Die Breite bei virtuellen Desktops vierteln
-        if (left > 2000 && qApp->desktop()->isVirtualDesktop()) {
-            left /= 4;
-        } else {
-            // Normaler Desktop
-            left = (left - winH) / 2;
-        }
+        geom = qApp->primaryScreen()->geometry();
+        top = geom.height();
+        left = geom.width();
+        // Breite
+        left = (left - winH) / 2;
         // Height
-        if (top > 2000 && qApp->desktop()->isVirtualDesktop()) {
-            top /= 4;
-        } else {
-            top = (top - winH) / 2;
-        }
+        top = (top - winH) / 2;
     }
     // Nun die neuen setzen
     this->setGeometry(left, top, winW, winH);

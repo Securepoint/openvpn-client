@@ -3,7 +3,6 @@
 
 #include <QtGui>
 #include <QtGui/qguiapplication.h>
-#include <QtWidgets/QDesktopWidget>
 
 #include <checksum.h>
 #include <debug/debug.h>
@@ -48,6 +47,7 @@ QuickEditWidget::QuickEditWidget(const QString &path, const int id, QWidget * pa
     geom.setHeight(size.height());
     m_ui->memConfigContent->setGeometry(geom);
 
+
     geom = m_ui->groupBox->geometry();
     geom.setHeight(size.height());
     m_ui->groupBox->setGeometry(geom);
@@ -79,28 +79,38 @@ void QuickEditWidget::showEvent(QShowEvent *e) {
     int winW = this->width();
     int winH = this->height();
 
+
     int left (0);
     int top (0);
+    QRect geom (0,0,0,0);
 
     // Desktop auswerten
-    top = qApp->desktop()->height();
-    left = qApp->desktop()->width();
+    geom = qApp->primaryScreen()->geometry();
+    top = geom.height();
+    left = geom.width();
+
+    // wenn ich das richtig verstanden habe muss man die virtuellen desktops nicht umrechnen
+
     // Die Breite bei virtuellen Desktops vierteln
-    if (left > 2000 && qApp->desktop()->isVirtualDesktop()) {
-        left /= 4;
-    } else {
+    //if (left > 2000 && qApp->desktop()->isVirtualDesktop()) {
+    //    left /= 4;
+    //} else {
         // Normaler Desktop
-        left = (left - winH) / 2;
-    }
+        left = (left - winH)/2;
+    //}
     // Height
-    if (top > 2000 && qApp->desktop()->isVirtualDesktop()) {
-        top /= 4;
-    } else {
-        top = (top - winH) / 2;
-    }
+   // if (top > 2000 && qApp->desktop()->isVirtualDesktop()) {
+   //     top /= 4;
+   // } else {
+        top = (top - winH)/2;
+   // }
 
     // Nun die neuen setzen
     this->setGeometry(left, top, winW, winH);
+        qDebug()<<left;
+        qDebug()<<top;
+        qDebug()<<winW;
+        qDebug()<<winH;
 
     // Öffnen
     e->accept();

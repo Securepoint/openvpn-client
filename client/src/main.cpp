@@ -51,7 +51,7 @@ class PreventShutdownEventFilter : public QAbstractNativeEventFilter
 {
 public:
     PreventShutdownEventFilter(){}
-    virtual bool nativeEventFilter(const QByteArray &eventType, void *message, long *result)
+virtual bool nativeEventFilter(const QByteArray &eventType, void *message, long *result)
     {
         Q_UNUSED(eventType)
         // Cast it to the struct we needed here
@@ -327,7 +327,7 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext & context, const Q
 
  QString g_strClientName;
 
- static const char* g_szVersion = "2.0.39";
+ static const char* g_szVersion = "2.0.40";
 
  void PrintHelp()
  {
@@ -371,6 +371,8 @@ int CALLBACK WinMain (_In_  HINSTANCE hInstance,
     // Enable high dpi support, this settings needed
     // at least Qt 5.6!
     //qputenv("QT_AUTO_SCREEN_SCALE_FACTOR", "1");
+    qputenv("QT_ENABLE_HIGHDPI_SCALING", "0");
+    //QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
 
 
@@ -387,15 +389,19 @@ int CALLBACK WinMain (_In_  HINSTANCE hInstance,
     argv = (LPCSTR*)CommandLineToArgvA(GetCommandLineA(), &argc);
 
     // TODO: Remove qt 5.6 high dpi support until all custom crap is removed
-    // QApplication::setDesktopSettingsAware(false);
+    //QApplication::setDesktopSettingsAware(false);
 #ifdef MULTICLIENT
     QApplication a(argc, (char**)argv);
 #else   
     SingleApplication a(argc, (char**)argv);
 #endif
 
+
+
+
     PreventShutdownEventFilter preventShutdownEventFilter;
     a.installNativeEventFilter(&preventShutdownEventFilter);
+
 
     // Set fusion style on high dpi displays
     if(a.devicePixelRatio() > 1) {
@@ -693,6 +699,15 @@ int CALLBACK WinMain (_In_  HINSTANCE hInstance,
             QString _t2 (QString::number((qrand() % 2500) + 1));
             QString key (QLatin1String("S3m!BHF") + _t1 + QLatin1String("83$%kd") + _t2 + QString::number(QDateTime::currentDateTime().toTime_t()) + _t1);
 
+            /*
+            QRandomGenerator num = QRandomGenerator::global()->generate();
+
+            //qsrand(QDateTime::currentDateTime().toSecsSinceEpoch());
+            QString _t1 (QString::number((num.bounded(QDateTime::currentDateTime().toSecsSinceEpoch()) % 1500) + 1));
+            QString _t2 (QString::number((num.bounded(QDateTime::currentDateTime().toSecsSinceEpoch()) % 2500) + 1));
+
+            QString key (QLatin1String("S3m!BHF") + _t1 + QLatin1String("83$%kd") + _t2 + QString::number(QDateTime::currentDateTime().toSecsSinceEpoch()) + _t1);
+*/
             key = QString(Crypt::encodePlaintext(key));
             sett.setValue(QLatin1String("self/key"), key);
             cryptKey = key;

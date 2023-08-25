@@ -169,7 +169,7 @@ void FramelessDialog::setupFrameless()
         this->setMinimumSize(wrapper->minimumSize().width(), wrapper->minimumSize().height() + DragAreaHeight*windowsDpiScale());
 
         auto geom = geometry();
-        geom.setSize(QSize(geo.width(), geo.height() + DragAreaHeight*windowsDpiScale()));
+        geom.setSize(QSize((geo.width()), (geo.height()) + DragAreaHeight*windowsDpiScale()));
         setGeometry(geom);
 
         wrapper->setMaximumSize(wrapper->maximumSize().width(), wrapper->maximumSize().height() + DragAreaHeight*windowsDpiScale());
