@@ -626,7 +626,9 @@ void OpenVpn::setUsername(const QString &username)
             this->challangeUserName = username;
         }
         QByteArray ba;
-        ba.append(username + "\n");
+        //ba.append(username + "\n");
+        ba.append(username.toStdString().c_str());
+        ba.append("\n");
         this->proc.write(ba);
         this->lastAction = -1;
     } else {
@@ -640,7 +642,9 @@ void OpenVpn::setPassword(const QString &pwd)
     Debug::log(QLatin1String("Set password"));
     if (this->proc.isWritable()) {
         QByteArray ba;
-        ba.append(pwd + "\n");
+        //ba.append(pwd + "\n");
+        ba.append(pwd.toStdString().c_str());
+        ba.append("\n");
         this->proc.write(ba);
         this->lastAction = -1;
     } else {
@@ -653,7 +657,9 @@ void OpenVpn::setPrivateKey(const QString &key)
     Debug::log(QLatin1String("Set private key"));
     if (this->proc.isWritable()) {
         QByteArray ba;
-        ba.append(key + "\n");
+        //ba.append(key + "\n");
+        ba.append(key.toStdString().c_str());
+        ba.append("\n");
         this->proc.write(ba);
         this->lastAction = -1;
     } else {
@@ -666,7 +672,9 @@ void OpenVpn::setChallengeKey(const QString &key)
     Debug::log(QLatin1String("Set challenge key"));
     if (this->proc.isWritable()) {
         QByteArray ba;
-        ba.append(key + "\n");
+        //ba.append(key + "\n");
+        ba.append(key.toStdString().c_str());
+        ba.append("\n");
         this->proc.write(ba);
         this->lastAction = -1;
     } else {

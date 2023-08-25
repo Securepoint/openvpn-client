@@ -135,7 +135,6 @@ bool TapDriver::installTapDriver() {
     argDrvInstall << drvPath;
     argDrvInstall << QLatin1String ("tap0901");
 
-
     // Die Signale binden
     QObject::connect (&this->drvInstallProc, SIGNAL(readyReadStandardOutput()), this, SLOT(readDriverData()));
     QObject::connect (&this->drvInstallProc, SIGNAL(readyReadStandardError()), this, SLOT(readDriverData()));
