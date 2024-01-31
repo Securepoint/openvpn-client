@@ -44,7 +44,6 @@ QString ConfigValues::valueFromConfigKeyInline(const QString &ovpnPath, const QS
         QString line (in.readLine());
 
         line = line.trimmed();
-        Debug::log("line1: " + line);
 
         // Check if the line starts with key
         if (line.startsWith(QLatin1String("<") + key + QLatin1String(">"), Qt::CaseInsensitive)) {
@@ -95,23 +94,19 @@ QString ConfigValues::valueFromConfigKey(const QString &ovpnPath, const QString 
         QString line (in.readLine());
 
         line = line.trimmed();
-        Debug::log("line1: " + line);
 
         // Check if the line starts with key
         if (line.startsWith(key + QLatin1String(" "), Qt::CaseInsensitive)) {
             // Key value
             line = line.right(line.size() - key.size());
-            Debug::log("line2: " + line);
             // Remove " with nothing
 
             line = line.replace("\"", "");
-            Debug::log("line3: " + line);
             // Trim the line
             line = line.trimmed();
-            Debug::log("line4: " + line);
+
 
             line = line.left(line.lastIndexOf(" "));
-            Debug::log("line5: " + line);
 
             // Close file
             config.close();

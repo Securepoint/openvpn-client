@@ -15,383 +15,429 @@
 #include <message.h>
 #include <proxysettings.h>
 #include <sslcertsdialog.h>
+#include <debug/debug.h>
+#include <iostream>
+
+#include <tchar.h>
+#include <wininet.h>
+#pragma comment (lib, "Wininet.lib")
 
 UpdateCheck::UpdateCheck()
     : currentMajor(2),
       currentMinor(0),
-      currentPatch(40)
+      currentPatch(41)
 {
-    // Create a new manager for this action
-    manager = new QNetworkAccessManager();
-    //
-    QObject::connect(manager, SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)), this, SLOT(sslErrors(QNetworkReply*,QList<QSslError>)));
-    QObject::connect(manager, SIGNAL(proxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*)), this, SLOT(proxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*)));
-    QObject::connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(finished(QNetworkReply*)));
 
-    // Init proxy stuff, if needed
-    this->loadProxySettings();
+
 }
 
 UpdateCheck::~UpdateCheck()
 {
-    delete this->manager;
+
 }
 
 
-void UpdateCheck::finished(QNetworkReply *reply)
+void UpdateCheck::finished(QString response)
 {
-    //
-    reply->deleteLater();
+        Debug::log(QLatin1String("UpdateCheck::finished aufgerufen"));
 
-    // no error in request
-    if (reply->error() != QNetworkReply::NoError){
-        qDebug() << "reply error" << reply->errorString();
-        return;
-    }
+        response.remove("\n");
+        response = response.trimmed();
+        // String needs 3 dot delimitered values major.minor.patch
+        if (response.isEmpty()) {
+            //
+            qDebug() << "invalid respone(empty)";
+            Debug::log(QLatin1String("invalid respone(empty)"));
+            //
+            return;
+        }
 
-    // get HTTP status code
-    qint32 httpStatusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+        QStringList valueList (response.split("."));
+        // Check if its the right format
+        if (valueList.size() != 3) {
+            //
+            qDebug() << "invalid value list size";
+            Debug::log(QLatin1String("invalid value list size"));
+            //
+            return;
+        }
 
-    //
-    if (httpStatusCode < 200 || httpStatusCode > 300) {
-        qDebug() << "status code " << httpStatusCode;
-        return;
-    }
-
-    // All fine
-    QString response (reply->readAll());
-    //
-    response.remove("\n");
-    response = response.trimmed();
-    // String needs 3 dot delimitered values major.minor.patch
-    if (response.isEmpty()) {
+        bool majorOkay;
+        int major (valueList.value(0).toInt(&majorOkay));
         //
-        qDebug() << "invalid respone(empty)";
-        //
-        return;
-    }
+        if (!majorOkay) {
+            //
+            qDebug() << "invalid major";
+                    Debug::log(QLatin1String("invalid major"));
+            //
+            return;
+        }
 
-    QStringList valueList (response.split("."));
-    // Check if its the right format
-    if (valueList.size() != 3) {
+        bool minorOkay;
+        int minor (valueList.value(1).toInt(&minorOkay));
         //
-        qDebug() << "invalid value list size";
-        //
-        return;
-    }
+        if (!minorOkay) {
+            //
+            qDebug() << "invalid minor";
+            Debug::log(QLatin1String("invalid minor"));
+            //
+            return;
+        }
 
-    bool majorOkay;
-    int major (valueList.value(0).toInt(&majorOkay));
-    //
-    if (!majorOkay) {
+        bool patchOkay;
+        int patch (valueList.value(2).toInt(&patchOkay));
         //
-        qDebug() << "invalid major";
-        //
-        return;
-    }
+        if (!patchOkay) {
+            //
+            qDebug() << "invalid patch";
+            Debug::log(QLatin1String("invalid patch"));
+            //
+            return;
+        }
 
-    bool minorOkay;
-    int minor (valueList.value(1).toInt(&minorOkay));
-    //
-    if (!minorOkay) {
+        // Is a newer version available?
+        Debug::log(QLatin1String("Is a newer version available?"));
+        bool newerVersionAvailable(false);
         //
-        qDebug() << "invalid minor";
+        if (major > this->currentMajor) {
+            newerVersionAvailable = true;
+        }
+
         //
-        return;
-    }
+        if (minor > this->currentMinor) {
+            newerVersionAvailable = true;
+        }
 
-    bool patchOkay;
-    int patch (valueList.value(2).toInt(&patchOkay));
-    //
-    if (!patchOkay) {
         //
-        qDebug() << "invalid patch";
+        if (patch > this->currentPatch) {
+            newerVersionAvailable = true;
+        }
+
         //
-        return;
-    }
+        if (newerVersionAvailable) {
+            //
+            Debug::log(QLatin1String("newerVersionAvailable"));
+            emit updateAvailable((QString::number(major) + "." + QString::number(minor) + "." + QString::number(patch)));
 
-    // Is a newer version available?
-    bool newerVersionAvailable(false);
-    //
-    if (major > this->currentMajor) {
-        newerVersionAvailable = true;
-    }
-
-    //
-    if (minor > this->currentMinor) {
-        newerVersionAvailable = true;
-    }
-
-    //
-    if (patch > this->currentPatch) {
-        newerVersionAvailable = true;
-    }
-
-    //
-    if (newerVersionAvailable) {
-        //
-        emit updateAvailable((QString::number(major) + "." + QString::number(minor) + "." + QString::number(patch)));
-    }
+        }
 }
 
-QString UpdateCheck::formatCertificate(QSslCertificate sslCertificate)
-{
-    QStringList certificateInformations;
-
-    certificateInformations << QObject::tr("<b>Common name:</b> %1").arg(sslCertificate.subjectInfo(QSslCertificate::CommonName).join(""));
-    certificateInformations << QObject::tr("<br /><b>Certificate issuer:</b> %1").arg(sslCertificate.issuerInfo(QSslCertificate::CommonName).join(""));
-    certificateInformations << QObject::tr("<br /><b>Effective date:</b> %1").arg(sslCertificate.effectiveDate().toString());
-    certificateInformations << QObject::tr("<br /><b>Expire date:</b> %1").arg(sslCertificate.expiryDate().toString());
-
-    QMultiMap<QSsl::AlternativeNameEntryType, QString> subjectAlternativeNames = sslCertificate.subjectAlternativeNames();
-
-    if (subjectAlternativeNames.count() > 0) {
-        //
-        QStringList alternativeNamesData;
-        //
-        alternativeNamesData << QLatin1String("<br /><br />");
-        alternativeNamesData << QObject::tr("Alternate Names:");
-        alternativeNamesData << QLatin1String("<ul><li>");
-        alternativeNamesData << QStringList(subjectAlternativeNames.values(QSsl::DnsEntry)).join(QLatin1String("</li><li>"));
-        alternativeNamesData << QLatin1String("</li></ul>");
-        //
-        certificateInformations << alternativeNamesData.join("");
-    }
-
-    certificateInformations << QLatin1String ("<br />================<br />");
-
-    return QString("<p>%1</p>").arg(certificateInformations.join(QLatin1String("<br />")));
-}
 void UpdateCheck::onError(QNetworkReply::NetworkError code)
 {
     qDebug() << "onError: " << code;
 }
 
-QByteArray UpdateCheck::acceptedCertificates()
+QString* UpdateCheck::proxyAuthenticationRequired()
 {
-    //
-    QSettings settings (Utils::userApplicationDataDirectory() + QLatin1String ("/certificates.ini"), QSettings::IniFormat);
-    QString availableCertificates (settings.value(QLatin1String("certs")).toString());
-    // Decode
-    availableCertificates = Crypt::decodeToPlaintext(availableCertificates);
-    //
-    return availableCertificates.toLatin1();
+    Debug::log(QLatin1String("UpdateCheck::proxyAuthenticationRequired aufgerufen"));
+
+    QString* loginData = new QString[2];
+
+    // Ask the user for the proxy credentials
+    QDialog credentialsDialog;
+    Ui::Dialog credentialsUi;
+    // Assign the ui to the raw dialog
+    credentialsUi.setupUi(&credentialsDialog);
+    // Resize the dialog
+    credentialsDialog.adjustSize();
+    // Init dialog
+    Debug::log(QLatin1String("init dialog"));
+    credentialsUi.passwordEdit->setEchoMode(QLineEdit::Password);
+    credentialsUi.siteDescription->setText(QObject::tr("<qt>Connect to proxy \"%1\":</qt>").arg(QString(proxy.hostName()).toHtmlEscaped()));
+
+    // Set the style
+    Debug::log(QLatin1String("set Style"));
+    credentialsUi.buttonBox->setStyleSheet(QLatin1String("color: #ffffff;"));
+    credentialsUi.siteDescription->setStyleSheet(QLatin1String("color: #ffffff;"));
+    credentialsUi.label->setStyleSheet(QLatin1String("color: #ffffff;"));
+    credentialsUi.label_2->setStyleSheet(QLatin1String("color: #ffffff;"));
+    credentialsUi.label_3->setStyleSheet(QLatin1String("color: #ffffff;"));
+    credentialsUi.label_4->setStyleSheet(QLatin1String("color: #ffffff;"));
+
+    // Do the user clicked okay
+    Debug::log(QLatin1String("did user click ok?"));
+    if (credentialsDialog.exec() != QDialog::Accepted) {
+        // No
+        Debug::log(QLatin1String("no"));
+        return loginData;
+    }
+
+    loginData[0] = credentialsUi.userEdit->text();
+    loginData[1] = credentialsUi.passwordEdit->text();
+
+    return loginData;
 }
-
-void UpdateCheck::setAcceptedCertificates(const QByteArray &data)
-{
-    //
-    QSettings settings (Utils::userApplicationDataDirectory() + QLatin1String ("/certificates.ini"), QSettings::IniFormat);
-    settings.setValue(QLatin1String("certs"), Crypt::encodePlaintextAscii(data));
-}
-
-void UpdateCheck::loadProxySettings()
-{
-    if (!ProxySettings::instance()->settingsAvailable() || ProxySettings::instance()->proxyTypeInUse() == "CONFIG") {
-        return;
-    }
-
-    // IE OR MANUAL
-    if (ProxySettings::instance()->proxyTypeInUse() == "IE") {
-        this->proxy.setType(QNetworkProxy::HttpProxy);
-        this->proxy.setHostName(ProxySettings::instance()->systemProxyHost());
-        this->proxy.setPort(ProxySettings::instance()->systemProxyPort().toInt());
-    } else {
-        // Manual
-        this->proxy.setType((ProxySettings::instance()->isHttpProxy() ? QNetworkProxy::HttpProxy : QNetworkProxy::Socks5Proxy));
-        this->proxy.setHostName(ProxySettings::instance()->proxyHost());
-        this->proxy.setPort(ProxySettings::instance()->proxyPort().toInt());
-    }
-
-    this->manager->setProxy(this->proxy);
-}
-
-void UpdateCheck::sslErrors(QNetworkReply *reply, const QList<QSslError> &sslErrors)
-{
-    // Load the accepted CAs
-    QList<QSslCertificate> acceptedCAs = QSslCertificate::fromData(this->acceptedCertificates());
-    // Now handle the error
-    QStringList sslErrorStrings;
-    QList<QSslCertificate> possibleNewCAs;
-    // Loop through all errors and build a single string
-    for (int sslErrorIndex = 0; sslErrorIndex < sslErrors.count(); ++sslErrorIndex) {
-        // Get the current error
-        const QSslError sslError (sslErrors.value(sslErrorIndex));
-        // Check if we already handled the certificate which caused the error
-        // and if the user accepted it
-        if (acceptedCAs.contains(sslError.certificate())) {
-            // Yes, nothing more to do
-            continue;
-        }
-
-        // The self signed etc. certificate is not in our trusted ca list
-        // so we need to handle this error
-        sslErrorStrings << sslError.errorString();
-
-        // Add the certificate which caused this error to the possible new ca list
-        if (!sslError.certificate().isNull()) {
-            possibleNewCAs.append(sslError.certificate());
-        }
-    }
-
-    // Seems no error needed to be handled
-    if (sslErrorStrings.isEmpty()) {
-        //
-        reply->ignoreSslErrors(sslErrors);
-        //
-        return;
-    }
-
-    // We need to handle the ssl error
-    bool ignoreError(Message::confirm(QObject::tr("While loading <br /><br /> <b>%1 </b> <br /> <br /> an error occurred. <br /><br /><b> %2 </b><br /><br />Do you wish to ignore this error?")
-                                   .arg(reply->url().toString())
-                                   .arg(sslErrorStrings.join("")), QObject::tr("SSL Error")));
-    if(ignoreError) {
-        // Okay, now we can check for a certificate error
-        // Ask the user if he want to connect anyway. If yes,
-        // we'll save the ca in a restricted area.
-        if (possibleNewCAs.count() > 0) {
-            QStringList certificatesInformations;
-            for (int newPossibleCAIndex = 0; newPossibleCAIndex < possibleNewCAs.count(); ++newPossibleCAIndex) {
-                certificatesInformations << this->formatCertificate (possibleNewCAs.value(newPossibleCAIndex));
-            }
-
-            SSLDialog dialog(certificatesInformations.join(QString()));
-            qDebug() << "before exec";
-            dialog.exec();
-            qDebug() << "after exec";
-            // Do the user accepted the certificate?
-            // If yes write it to our accepted list
-            if (dialog.isCertificateAccepted()) {
-                // Add the new certificates to our accepted list
-                acceptedCAs.append(possibleNewCAs);
-
-                // Get the current configuration
-                QSslConfiguration currentSslConfiguration = QSslConfiguration::defaultConfiguration();
-                QList<QSslCertificate> currentlyAllowedCAs = currentSslConfiguration.caCertificates();
-                // Append the new CAs
-                currentlyAllowedCAs.append(possibleNewCAs);
-                // Set the new list
-                currentSslConfiguration.setCaCertificates(currentlyAllowedCAs);
-                // Assign it to our default configuration
-                QSslConfiguration::setDefaultConfiguration(currentSslConfiguration);
-                // Force that we needed this configuration with this reply
-                reply->setSslConfiguration(currentSslConfiguration);
-
-                // Save the new CAs to disk in pem format
-                QByteArray certificatesAsPem;
-                for (int acceptedCAIndex = 0; acceptedCAIndex < acceptedCAs.count(); ++acceptedCAIndex) {
-                    certificatesAsPem += acceptedCAs.value(acceptedCAIndex).toPem() + '\n';
-                }
-
-                // Save it
-                this->setAcceptedCertificates(certificatesAsPem);
-
-                // Proceed loading the data
-                reply->ignoreSslErrors(sslErrors);
-            }
-        }
-    }
-}
-
-void UpdateCheck::proxyAuthenticationRequired(const QNetworkProxy &proxy, QAuthenticator *authenticator)
-{
-    // We store the user credeantials due to a better user experience
-    static QString cacheUserName ("");
-    static QString cacheUserPassword ("");
-
-    // Saving the password isn't a good idea, because if its wrong the client use it anyway.
-    // This sometimes result in an account suspension within microsoft active directory.
-    // Most ADs have a failure count for the login of 5, afterwards the account is suspended.
-
-    // To prevent this, we ask the user again if the time difference of the password request is
-    // lower than 2 seconds. Then it seems, the stored credentials are wrong and we ask again.
-    // If the time difference is greater than 2 seconds it seems, that the crendials are correct
-    // and we can use them for the sake of convienance.
-    static QDateTime lastAuthenticationRequest = QDateTime::currentDateTime();
-
-    // Check time diff
-    if (lastAuthenticationRequest.msecsTo(QDateTime::currentDateTime()) < 2000) {
-        // Okay, seems we got invalid credentials, ask again
-        cacheUserName = "";
-        cacheUserPassword = "";
-    }
-
-    // Check if we autofill the credentials or if we should ask
-    if (cacheUserName.isEmpty() || cacheUserPassword.isEmpty()) {
-        // Ask the user for the proxy credentials
-        QDialog credentialsDialog;
-        Ui::Dialog credentialsUi;
-        // Assign the ui to the raw dialog
-        credentialsUi.setupUi(&credentialsDialog);
-        // Resize the dialog
-        credentialsDialog.adjustSize();
-        // Init dialog
-        credentialsUi.passwordEdit->setEchoMode(QLineEdit::Password);
-        credentialsUi.siteDescription->setText(QObject::tr("<qt>Connect to proxy \"%1\":</qt>").arg(QString(proxy.hostName()).toHtmlEscaped()));
-
-        // Set the style
-        credentialsUi.buttonBox->setStyleSheet(QLatin1String("color: #ffffff;"));
-        credentialsUi.siteDescription->setStyleSheet(QLatin1String("color: #ffffff;"));
-        credentialsUi.label->setStyleSheet(QLatin1String("color: #ffffff;"));
-        credentialsUi.label_2->setStyleSheet(QLatin1String("color: #ffffff;"));
-        credentialsUi.label_3->setStyleSheet(QLatin1String("color: #ffffff;"));
-        credentialsUi.label_4->setStyleSheet(QLatin1String("color: #ffffff;"));
-
-        // Do the user clicked okay
-        if (credentialsDialog.exec() != QDialog::Accepted) {
-            // No
-            return;
-        }
-
-        // Yes, update the cache, we set the authenticator values later
-        cacheUserName = credentialsUi.userEdit->text();
-        cacheUserPassword = credentialsUi.passwordEdit->text();
-
-        // Update the global values for the external browser, this prevents that the external browser will also ask for the proxy credentials
-        //GlobalValues::proxyUsername = cacheUserName;
-        //GlobalValues::proxyPassword = cacheUserPassword;
-    }
-
-    // Set new last authentication request
-    lastAuthenticationRequest = QDateTime::currentDateTime();
-
-    // Set the authenticator values
-    authenticator->setUser(cacheUserName);
-    authenticator->setPassword(cacheUserPassword);
-}
-
 
 void UpdateCheck::run()
 {
-    // Check if disable run file is available
-    QFile disableRunFile (qApp->applicationDirPath() + QLatin1String("/update.disable.run.override"));
-    if (disableRunFile.exists()) {
-        qDebug() << "update check is disabled";
-        //
-        return;
+    HINTERNET hIntSession = NULL;
+    DWORD dwErr = (static_cast<long long>(1234));
+    QString* loginData = NULL;
+    bool https = false;
+
+    if (!ProxySettings::instance()->settingsAvailable() || ProxySettings::instance()->proxyTypeInUse() == "CONFIG") {     // No Proxy
+
+        //INTERNET_OPEN_TYPE_DIRECT Resolves all host names locally.
+        hIntSession = ::InternetOpen(_T("MyApp"), INTERNET_OPEN_TYPE_DIRECT, NULL, NULL, 0);
+
     }
+    else if (ProxySettings::instance()->proxyTypeInUse() == "IE") {     // IE OR MANUAL
 
-    QSslConfiguration sslConfiguration(QSslConfiguration::defaultConfiguration());
-    // Later we use QSsl::TlsV1_3OrLater, needed min Qt 5.12
-    sslConfiguration.setProtocol(QSsl::TlsV1_2OrLater);
+        // IE Settings
+        // INTERNET_OPEN_TYPE_PRECONFIG Retrieves the proxy or direct configuration from the registry
+        hIntSession = ::InternetOpen(_T("MyApp"), INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0);
 
-    QNetworkRequest request;
-    // Follow the redirects, needed min Qt 5.6
-    //request.setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
-    request.setAttribute(QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::ManualRedirectPolicy);
-    // We force only allow TLS 1.3
-    request.setSslConfiguration(sslConfiguration);
+    }
+    else {     // Manual
 
-    // Set some header info
-    request.setRawHeader(QByteArray("de.securepoint.product"), QByteArray("sslvpnv2"));
-    request.setRawHeader(QByteArray("de.securepoint.product.version"), FrmMain::instance()->version.toLatin1());
-    request.setRawHeader(QByteArray("de.securepoint.product.os"), Utils::windowsVersion().toLatin1());
-    request.setRawHeader(QByteArray("de.securepoint.product.arch"), (Utils::isX64Platform() ? QByteArray("x64") : QByteArray("x86")));
+        // Proxy
+        // INTERNET_OPEN_TYPE_PROXY 	Passes requests to the proxy
 
-    // Set the URL    
-    request.setUrl(QUrl("https://updatevpn.securepoint.de/sslvpn-client/LATEST"));
-    this->manager->get(request);
+        QString proxyString = "";
+        if( ProxySettings::instance()->isHttpProxy() )
+        {
+                proxyString = "http=" + ProxySettings::instance()->proxyHost() + ":" + ProxySettings::instance()->proxyPort();
+                Debug::log(QLatin1String("proxy: ") + proxyString);
+        }
+        else
+        {
+                proxyString = "SOCKS=" + ProxySettings::instance()->proxyHost() + ":" + ProxySettings::instance()->proxyPort();
+                Debug::log(QLatin1String("proxy: ") + proxyString);
+        }
+
+
+        std::wstring proxy = proxyString.toStdWString();
+        const wchar_t* szProxy= proxy.c_str();
+        hIntSession = ::InternetOpen(_T("MyApp"), INTERNET_OPEN_TYPE_PROXY, szProxy, NULL, 0);
+
+    }
+    int retry = 3;
+
+    HINTERNET hHttpSession =
+      InternetConnect(hIntSession, _T("updatevpn.securepoint.de"), 80, 0, 0, INTERNET_SERVICE_HTTP , 0, NULL);
+
+        // header vorbereiten
+        QString version = QString(FrmMain::instance()->version.toLatin1());//.toStdWString();
+        QString windows = QString(Utils::windowsVersion().toLatin1());
+        QString bitness = QString(Utils::isX64Platform() ? QByteArray("x64") : QByteArray("x86"));
+
+        // umwandeln in wchar
+        QString qStr = "Content-Type: text/html\r\nde.securepoint.product: sslvpnv2\r\nde.securepoint.product.version: " + version + "\r\nde.securepoint.product.os: " + windows + "\r\nde.securepoint.product.arch: " + bitness + "\r\n\r\n";
+        std::wstring headers = qStr.toStdWString();
+        const wchar_t* szHeaders = headers.c_str();
+
+        CHAR szReq[1024] = "";
+        HINTERNET hResourceHandle;
+        DWORD dwStatus;
+        DWORD dwStatusSize = sizeof(dwStatus);
+
+        // HttpOpenRequest
+        hResourceHandle = HttpOpenRequestW(
+          hHttpSession,
+          _T("GET"),
+          _T("/sslvpn-client/LATEST"),
+          0, 0, 0,INTERNET_FLAG_IGNORE_REDIRECT_TO_HTTPS , 0);
+
+        // HttpSendRequest
+        if( !HttpSendRequest(hResourceHandle, szHeaders, _tcslen(szHeaders), szReq, strlen(szReq))) {
+
+            // abort if cert error
+            dwErr = GetLastError();
+            // stop if cert error
+            if (dwErr == ERROR_INTERNET_SEC_CERT_DATE_INVALID || //12037
+                dwErr == ERROR_INTERNET_SEC_CERT_ERRORS || // 12055
+                dwErr == ERROR_INTERNET_INVALID_CA){ // 12045
+
+                ::InternetCloseHandle(hResourceHandle);
+                ::InternetCloseHandle(hHttpSession);
+                ::InternetCloseHandle(hIntSession);
+
+                emit updateAvailable("error");
+                return;
+                }
+            } // end if
+
+        dwErr = GetLastError();
+        Debug::log(QLatin1String("ssl error2: ") + QString::number(dwErr));
+
+        // HttpQueryInfo
+        HttpQueryInfo(hResourceHandle, HTTP_QUERY_FLAG_NUMBER |
+                      HTTP_QUERY_STATUS_CODE, &dwStatus, &dwStatusSize, NULL);
+
+        // Switch to SSL
+        if (dwStatus == HTTP_STATUS_BAD_REQUEST ) { // 400
+
+            // close all handles so we can start fresh with INTERNET_FLAG_SECURE
+            ::InternetCloseHandle(hResourceHandle);
+            ::InternetCloseHandle(hHttpSession);
+            ::InternetCloseHandle(hIntSession);
+
+            if (!ProxySettings::instance()->settingsAvailable() || ProxySettings::instance()->proxyTypeInUse() == "CONFIG") {     // No Proxy
+
+                //INTERNET_OPEN_TYPE_DIRECT Resolves all host names locally.
+                hIntSession = ::InternetOpen(_T("MyApp"), INTERNET_OPEN_TYPE_DIRECT, NULL, NULL, 0);
+
+            }
+            else if (ProxySettings::instance()->proxyTypeInUse() == "IE") {     // IE OR MANUAL
+
+                // IE Settings
+                // INTERNET_OPEN_TYPE_PRECONFIG Retrieves the proxy or direct configuration from the registry
+                hIntSession = ::InternetOpen(_T("MyApp"), INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0);
+
+            }
+            else {     // Manual
+
+                // Proxy
+                // INTERNET_OPEN_TYPE_PROXY 	Passes requests to the proxy
+
+                QString proxyString = "";
+                if( ProxySettings::instance()->isHttpProxy() )
+                {
+                        proxyString = "http=" + ProxySettings::instance()->proxyHost() + ":" + ProxySettings::instance()->proxyPort();
+                        Debug::log(QLatin1String("proxy: ") + proxyString);
+                }
+                else
+                {
+                        proxyString = "SOCKS=" + ProxySettings::instance()->proxyHost() + ":" + ProxySettings::instance()->proxyPort();
+                        Debug::log(QLatin1String("proxy: ") + proxyString);
+                }
+
+
+                std::wstring proxy = proxyString.toStdWString();
+                const wchar_t* szProxy= proxy.c_str();
+                hIntSession = ::InternetOpen(_T("MyApp"), INTERNET_OPEN_TYPE_PROXY, szProxy, NULL, 0);
+
+            }
+
+            HINTERNET hHttpSession =
+              InternetConnect(hIntSession, _T("updatevpn.securepoint.de"), 80, 0, 0, INTERNET_SERVICE_HTTP , 0, NULL);
+
+            // HttpOpenRequest
+            hResourceHandle = HttpOpenRequestW(
+              hHttpSession,
+              _T("GET"),
+              _T("/sslvpn-client/LATEST"),
+              0, 0, 0,INTERNET_FLAG_SECURE , 0);
+
+            HttpSendRequest(hResourceHandle, szHeaders, _tcslen(szHeaders), szReq, strlen(szReq));
+            dwStatus = NULL;
+
+            HttpQueryInfo(hResourceHandle, HTTP_QUERY_FLAG_NUMBER |
+                          HTTP_QUERY_STATUS_CODE, &dwStatus, &dwStatusSize, NULL);
+
+                        // abort if cert error
+                        dwErr = GetLastError();
+                        if (dwErr == ERROR_INTERNET_SEC_CERT_DATE_INVALID || //12037
+                            dwErr == ERROR_INTERNET_SEC_CERT_ERRORS || // 12055
+                            dwErr == ERROR_INTERNET_INVALID_CA){ // 12045
+
+                            ::InternetCloseHandle(hResourceHandle);
+                            ::InternetCloseHandle(hHttpSession);
+                            ::InternetCloseHandle(hIntSession);
+
+                            emit updateAvailable("error");
+                            return;
+                        }
+                        https = true;
+        }
+
+
+                do{
+
+                        if (dwStatus == HTTP_STATUS_PROXY_AUTH_REQ || dwStatus == HTTP_STATUS_DENIED ) // 407 or 401
+                        {
+
+                            // close all handles so we can start fresh with the new login data
+                            ::InternetCloseHandle(hResourceHandle);
+                            ::InternetCloseHandle(hHttpSession);
+                            ::InternetCloseHandle(hIntSession);
+
+                            //get name and pw
+                            loginData = proxyAuthenticationRequired();
+
+                            // change to LPCTSTR
+                            std::wstring proxyUserName = loginData[0].toStdWString();
+                            const wchar_t* szProxyUserName = proxyUserName.c_str();
+
+                            std::wstring proxyUserPassword = loginData[1].toStdWString();
+                            const wchar_t* szProxyUserPassword = proxyUserPassword.c_str();
+
+                            // InternetOpen
+                            QString proxyString = "http=" + ProxySettings::instance()->proxyHost() + ":" + ProxySettings::instance()->proxyPort();
+                            std::wstring proxy = proxyString.toStdWString();
+                            const wchar_t* szProxy= proxy.c_str();
+                            hIntSession = ::InternetOpen(_T("MyApp"), INTERNET_OPEN_TYPE_PROXY, szProxy, NULL, 0);
+
+                            // InternetConnect
+                            hHttpSession =
+                              InternetConnect(hIntSession, _T("updatevpn.securepoint.de"), 80, szProxyUserName, szProxyUserPassword, INTERNET_SERVICE_HTTP, 0, NULL);
+
+                            if(https){ // if we had HTTP_STATUS_BAD_REQUEST before
+                                // HttpOpenRequest
+                                hResourceHandle = HttpOpenRequestW(
+                                  hHttpSession,
+                                  _T("GET"),
+                                  _T("/sslvpn-client/LATEST"),
+                                  0, 0, 0, INTERNET_FLAG_SECURE, 0);
+
+                            }
+                            else{
+                                // HttpOpenRequest
+                                hResourceHandle = HttpOpenRequestW(
+                                  hHttpSession,
+                                  _T("GET"),
+                                  _T("/sslvpn-client/LATEST"),
+                                  0, 0, 0, INTERNET_FLAG_IGNORE_REDIRECT_TO_HTTPS, 0);
+                            }
+
+
+                            // HttpSendRequest
+                            if( !HttpSendRequest(hResourceHandle, szHeaders, _tcslen(szHeaders), szReq, strlen(szReq))) {
+                              dwErr = GetLastError();
+
+                            }
+
+                            // HttpQueryInfo
+                            HttpQueryInfo(hResourceHandle, HTTP_QUERY_FLAG_NUMBER |
+                                          HTTP_QUERY_STATUS_CODE, &dwStatus, &dwStatusSize, NULL);
+
+
+
+                            retry --;
+
+                        }// if end
+                        else{
+                            break;
+                        }
+
+                        }
+                        while(retry != 0);
+
+
+
+
+        // read http request
+        CHAR szBuffer[1025] = {};
+        DWORD dwRead=0;
+        Debug::log(QLatin1String("read"));
+
+        while(::InternetReadFile(hResourceHandle, szBuffer, sizeof(szBuffer)-1, &dwRead) && dwRead) {
+
+            Debug::log(QLatin1String("Version: "));
+            Debug::log(QLatin1String(szBuffer));
+
+
+          szBuffer[dwRead] = 0;
+          OutputDebugStringA(szBuffer);
+          dwRead=0;
+        }
+
+
+         // close all handles
+         ::InternetCloseHandle(hResourceHandle);
+         ::InternetCloseHandle(hHttpSession);
+         ::InternetCloseHandle(hIntSession);
+
+        // finish
+        finished(szBuffer);
 }
-
-

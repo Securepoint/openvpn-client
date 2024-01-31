@@ -7,6 +7,7 @@
 #include <QNetworkReply>
 #include <QNetworkProxyFactory>
 
+
 class UpdateCheck : public QObject
 {
     Q_OBJECT
@@ -14,20 +15,17 @@ public:
     UpdateCheck();
     ~UpdateCheck();
     void run();
-
-private slots:
     void onError(QNetworkReply::NetworkError code);
     void sslErrors(QNetworkReply *reply, const QList<QSslError> &error);
-    void proxyAuthenticationRequired(const QNetworkProxy &proxy, QAuthenticator *authenticator);
-    void finished (QNetworkReply *reply);
+    QString* proxyAuthenticationRequired();
+    void finished (QString reply);
+
 
 private:
-    QNetworkAccessManager *manager;
     QNetworkProxy proxy;
     QString formatCertificate(QSslCertificate sslCertificate);    
     QByteArray acceptedCertificates ();
     void setAcceptedCertificates (const QByteArray &data);
-    void loadProxySettings ();
     //
     int currentMajor;
     int currentMinor;

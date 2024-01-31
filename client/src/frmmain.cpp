@@ -180,16 +180,23 @@ FrmMain *FrmMain::instance()
         // Create a new instance
         mInst = new FrmMain;
 
+        //activate debug
+/*
+        // Check if disable run file is available
+        QFile disableDebugFile (qApp->applicationDirPath() + QLatin1String("/debug.disable.run.override"));
+        if (!disableDebugFile.exists()) {
+            qDebug() << "debug output check is enabled";
 
+            // enable Debug
+            Debug::enableDebugging(true);
+            // set debug path to debug-vpn-client.txt
+            Debug::setDebugPath(QStandardPaths::writableLocation(QStandardPaths::DesktopLocation));
+            //anable date and time stamp
+            Debug::enableMSecs(true);
 
-#if _ENABLE_DEBUG
-        // enable Debug
-        Debug::enableDebugging(true);
-        // set debug path to debug-vpn-client.txt
-        Debug::setDebugPath(QCoreApplication::applicationDirPath());
-        //anable date and time stamp
-        Debug::enableMSecs(true);
-#endif
+        }
+*/
+
         // load settings from client.ini
         QSettings clientSettings (QCoreApplication::applicationDirPath() + QLatin1String("/client.ini"), QSettings::IniFormat);
 
@@ -264,7 +271,6 @@ WNDPROC pfOriginalProc;
 
 bool bAllowMove = false;
 
-//bool FrmMain::nativeEvent(const QByteArray &eventType, void *message, int *result)
 bool FrmMain::nativeEvent(const QByteArray &eventType, void *message, long *result)
 {
     MSG *winMessage = (MSG*) message;
@@ -309,28 +315,24 @@ bool FrmMain::nativeEvent(const QByteArray &eventType, void *message, long *resu
         case static_cast<UINT>(FAILED_TO_CONNECT):
         {
            // HWND senderHandle = (HWND) winMessage->hwnd;
-            Debug::log(QLatin1String("number: ") + QString::number(winMessage->message) + " FAILED_TO_CONNECT");
             Message::error(QObject::tr("Failed to connect to service! Please make sure the service is running and restart the application!"));
         break;
         }
         case static_cast<UINT>(INSTALL_TAP_DEVICE):
         {
             //HWND senderHandle = (HWND) winMessage->hwnd;
-            Debug::log(QLatin1String("number: ") + QString::number(winMessage->message) + " INSTALL_TAP_DEVICE");
             SrvCLI::instance()->send(QLatin1String("ADDTAP"), QLatin1String(""));
             break;
         }
         case static_cast<UINT>(RECEIVE_TAP_COUNT):
         {
            // HWND senderHandle = (HWND) winMessage->hwnd;
-            Debug::log(QLatin1String("number: ") + QString::number(winMessage->message) + " RECEIVE_TAP_COUNT");
             SrvCLI::instance()->send(QLatin1String("TAPCOUNT"), QLatin1String(""));
             break;
         }
         case static_cast<UINT>(CONNECT_TO_SERVICE):
         {
             //HWND senderHandle = (HWND) winMessage->hwnd;
-            Debug::log(QLatin1String("number: ") + QString::number(winMessage->message) + " CONNECT_TO_SERVICE");
             FrmMain::instance()->connectToService();
             break;
         }
@@ -454,10 +456,8 @@ LRESULT wndproc1(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
                 if (GetCursorPos(&p)) {
                     // Get the client coordinate from the cursor position
                     if (ScreenToClient(hwnd, &p)) {
-                                        Debug::log("debug3");
                         if (p.y < 20) {
                             // Hit was in the title bar
-                                            Debug::log("debug4");
                             hit = HTCAPTION;
                         }
 
@@ -489,7 +489,7 @@ FrmMain::FrmMain()
     : isReconnect(false),
       tapCount(0),
       installingTap(false),
-      version("2.0.40"),
+      version("2.0.41"),
       ui(new Ui::FrmMain),
       qCurrentArrow(nullptr),
       widgetFactory(new WidgetFactory),
@@ -1295,13 +1295,13 @@ bool FrmMain::startDaemon()
             ++autoStartCount;
         }
     };
-    Debug::log(QLatin1String("number of tap devices we have to install: ") + QString::number(autoStartCount));
+
     // Wait for the tap count to be received
     {
         std::unique_lock<std::mutex> lk(mutex_first_tap_count);
         cv_first_tap_count.wait(lk, []{ return received_first_tap_count; } /* this is not necessary, but allows use with special condition */);
     }
-    Debug::log(QLatin1String("tapcount:  ") + QString::number(tapCount));
+
     while(this->tapCount < autoStartCount) {
         // Set the bool for first tap count to false so the below code blocks and waits for the tap count to be received
         received_first_tap_count = false;
@@ -1352,8 +1352,17 @@ void FrmMain::trayActivated(QSystemTrayIcon::ActivationReason reason)
 void FrmMain::updateAvailable(QString version)
 {
     this->updateVersion = version;
-    //
-    ui->cmdUpdateState->setText(QObject::tr("%1 is available").arg(version));
+
+
+    if(version == "error"){
+            ui->cmdUpdateState->setEnabled(false);
+            ui->cmdUpdateState->setText(QObject::tr("Cannot check for Updates"));
+
+    }
+    else{
+            ui->cmdUpdateState->setText(QObject::tr("%1 is available").arg(version));
+    }
+
     ui->cmdUpdateState->setVisible(true);
 }
 
@@ -1371,13 +1380,11 @@ void FrmMain::on_cmdCloseWindow_clicked()
 
 void FrmMain::on_cmdSettingMenu_clicked()
 {
-    Debug::log(QLatin1String("on_cmdSettingMenu_clicked()"));
     this->close();
 }
 
 void FrmMain::showHideTrayMenu()
 {
-    Debug::log(QLatin1String("showHideTrayMenu"));
     if(this->isVisible()) {
         this->trayIcon->contextMenu()->actions().at(2)->setText(QObject::tr("Show window"));
         this->close();

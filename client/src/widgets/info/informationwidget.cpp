@@ -12,18 +12,6 @@ InformationWidget::InformationWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    QObject::connect(ui->cmdYT, &QPushButton::clicked, []() {
-       QDesktopServices::openUrl(QUrl("http://youtube.com/Securepoint10/"));
-    });
-
-    QObject::connect(ui->cmdFB, &QPushButton::clicked, []() {
-        QDesktopServices::openUrl(QUrl("https://www.facebook.com/pages/Securepoint-GmbH/132451210137395"));
-    });
-
-    QObject::connect(ui->cmdTwitter, &QPushButton::clicked, []() {
-        QDesktopServices::openUrl(QUrl("https://twitter.com/SecurepointStat"));
-    });
-
     QObject::connect(ui->cmdForum, &QPushButton::clicked, []() {
         QDesktopServices::openUrl(QUrl("http://support.securepoint.de/"));
     });

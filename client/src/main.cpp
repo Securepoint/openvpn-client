@@ -327,7 +327,7 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext & context, const Q
 
  QString g_strClientName;
 
- static const char* g_szVersion = "2.0.40";
+ static const char* g_szVersion = "2.0.41";
 
  void PrintHelp()
  {
@@ -342,7 +342,7 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext & context, const Q
      printf("\t-noSave prevent storage of the user credentials\n");
      printf("\t-pwd password used for all connections \n");
      printf("\t-vpnlog: Print the VPN Log in the command line\n");
-     printf("\t-status: shows the status of the connections in the currently running VPN Client instance of the current folder [ ID NAME STATUS ]\n");     
+     printf("\t-status: shows the status of the connections in the currently running VPN Client instance of the current folder [ ID NAME STATUS ]\n");
      printf("\t-stop: Close the VPN Client\n");
      printf("\t-log clientid configid: Prints the VPN Log for the given configuration\n");
      printf("\t-error id: Prints the last error for the given configuration\n");
@@ -365,8 +365,6 @@ int CALLBACK WinMain (_In_  HINSTANCE hInstance,
     Q_UNUSED(hPrevInstance)
     Q_UNUSED(lpCmdLine)
     Q_UNUSED(nCmdShow)
-
-    Debug::log("command line test");
 
     // Enable high dpi support, this settings needed
     // at least Qt 5.6!
@@ -392,7 +390,7 @@ int CALLBACK WinMain (_In_  HINSTANCE hInstance,
     //QApplication::setDesktopSettingsAware(false);
 #ifdef MULTICLIENT
     QApplication a(argc, (char**)argv);
-#else   
+#else
     SingleApplication a(argc, (char**)argv);
 #endif
 
@@ -421,7 +419,7 @@ int CALLBACK WinMain (_In_  HINSTANCE hInstance,
         Settings::instance()->setManaged(true);
     }
 
-    int startDaemonDelay (0);    
+    int startDaemonDelay (0);
 
     bool loadGermanTranslation(false);
     bool noSave(false);
@@ -699,15 +697,6 @@ int CALLBACK WinMain (_In_  HINSTANCE hInstance,
             QString _t2 (QString::number((qrand() % 2500) + 1));
             QString key (QLatin1String("S3m!BHF") + _t1 + QLatin1String("83$%kd") + _t2 + QString::number(QDateTime::currentDateTime().toTime_t()) + _t1);
 
-            /*
-            QRandomGenerator num = QRandomGenerator::global()->generate();
-
-            //qsrand(QDateTime::currentDateTime().toSecsSinceEpoch());
-            QString _t1 (QString::number((num.bounded(QDateTime::currentDateTime().toSecsSinceEpoch()) % 1500) + 1));
-            QString _t2 (QString::number((num.bounded(QDateTime::currentDateTime().toSecsSinceEpoch()) % 2500) + 1));
-
-            QString key (QLatin1String("S3m!BHF") + _t1 + QLatin1String("83$%kd") + _t2 + QString::number(QDateTime::currentDateTime().toSecsSinceEpoch()) + _t1);
-*/
             key = QString(Crypt::encodePlaintext(key));
             sett.setValue(QLatin1String("self/key"), key);
             cryptKey = key;
