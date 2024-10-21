@@ -84,7 +84,6 @@ void SingleApplication::setSharedKey(const QString &uniqueKey)
 // public slots.
 bool SingleApplication::winEventFilter(MSG* msg, long* result) {
    if(msg->message == WM_QUERYENDSESSION) {
-       qDebug() << "Query";
          // When a connection is online and the user activated the check
 
    }

@@ -22,6 +22,8 @@ public:
     static std::string GetProcessNameFromPID(DWORD processID);
     static bool IsVPNServiceRunning();
     static bool StartNetman();
+    static QString GetRandomString(int len);
+    static bool Utils::DeleteClipboard(HWND hwnd);
 private:
     Utils();
 };

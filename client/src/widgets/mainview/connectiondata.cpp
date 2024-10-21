@@ -184,7 +184,7 @@ QString ConnectionData::getScriptContent() {
     QFile scrtiptFile (this->GetDir() + QLatin1String("/scripts.conf"));
 
     if (scrtiptFile.exists()) {
-        // Öffnen und auslesen
+        // ?ffnen und auslesen
         if (!scrtiptFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
             Message::error(QObject::tr("Can't read scriptconfig file!"), QObject::tr("An error occured"), FrmMain::instance());
             return QLatin1String ("");
@@ -206,7 +206,7 @@ QString ConnectionData::getScript(const QString &type)
         QFile scrtiptFile (this->GetDir() + QLatin1String("/scripts.conf"));
 
         if (scrtiptFile.exists()) {
-            // Öffnen und auslesen
+            // ?ffnen und auslesen
             if (!scrtiptFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
                 Message::error(QObject::tr("Can't read scriptconfig file!"), QObject::tr("An error occured"), FrmMain::instance());
                 return QLatin1String ("");
@@ -368,18 +368,18 @@ void ConnectionData::saveUserData(int id, int type, QString value, bool save)
 {
     Q_UNUSED(id)
 
-    // Wenn save false ist den Wert überschreiben
+    // Wenn save false ist den Wert ?berschreiben
     if (!save) {
         return;
     }
 
     bool needUserDataStateUpdate (false);
-    // Welcher type wurde übergeben
+    // Welcher type wurde ?bergeben
     // 0 - Username
     // 1 - Pwd
     // 2 - OTP
     // 3 - PKCS12
-    // 4 - Private Key für Crypted User Data
+    // 4 - Private Key f?r Crypted User Data
     QString field;
     if (type == 0) {
         field = QLatin1String("\"vpn-user\"");
@@ -411,12 +411,14 @@ void ConnectionData::saveUserData(int id, int type, QString value, bool save)
 
     Database::instance()->execute(sql);
 
+
     // Check for userdata update
     if (needUserDataStateUpdate) {
         QScopedPointer<QSqlQuery> query (Database::instance()->openQuery(QString ("SELECT coalesce(\"vpn-user\",\"vpn-password\", 0) AS CREDENTIAL_STATE FROM vpn WHERE \"vpn-id\" = %1;")
                                                                          .arg(this->GetId())));
         // Data must be available
         if (query->first()) {
+
             // Now check the value
             this->SetUserConfig(query->value(0).toString() == "0" ? false : true);
         }
@@ -441,12 +443,12 @@ bool ConnectionData::HasCrediantials(int type)
         }
     }
 
-    // Es wurde ein Typ übergeben
+    // Es wurde ein Typ ?bergeben
     // 0 - Username
     // 1 - Pwd
     // 2 - OTP
     // 3 - PKCS12
-    // 4 - Private Key für Crypted User Data
+    // 4 - Private Key f?r Crypted User Data
     QString field;
     if (type == 0) {
         field = QLatin1String("\"vpn-user\"");
@@ -461,7 +463,7 @@ bool ConnectionData::HasCrediantials(int type)
     }
 
     if (field.isEmpty()) {
-        // Für den typ kann man keine Daten speichern
+        // F?r den typ kann man keine Daten speichern
         return false;
     }
 
@@ -470,7 +472,7 @@ bool ConnectionData::HasCrediantials(int type)
 
 
 
-    // Sind daten für die Verbindung hinterlegt
+    // Sind daten f?r die Verbindung hinterlegt
     QScopedPointer<QSqlQuery> query (Database::instance()->openQuery(sql));
     if (query->first() && !query->value(0).toString().isEmpty()) {
         return true;
@@ -496,7 +498,7 @@ QString ConnectionData::getSavedUserData(int type)
     // 1 - Pwd
     // 2 - OTP
     // 3 - PKCS12
-    // 4 - Private Key für Crypted User Data
+    // 4 - Private Key f?r Crypted User Data
     QString field;
     if (type == 0) {
         field = QLatin1String("\"vpn-user\"");

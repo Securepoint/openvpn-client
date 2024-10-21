@@ -19,6 +19,7 @@ public:
     static void enableDPAPI ();
     static bool isDPAPIEnabled ();
     static void setSecretKey (const QString &key);
+    static void clearEncryptedArray();
 
     // Bridge dpapi or old one
     static QString encodePlaintext (const QString &plain);
@@ -33,6 +34,7 @@ public:
 
     static QString secretKey;
     static bool exceptionEnabled;
+    static QByteArray encrypted;
 
 private:
     Crypt();

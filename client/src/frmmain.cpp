@@ -489,7 +489,7 @@ FrmMain::FrmMain()
     : isReconnect(false),
       tapCount(0),
       installingTap(false),
-      version("2.0.42"),
+      version("2.0.43"),
       ui(new Ui::FrmMain),
       qCurrentArrow(nullptr),
       widgetFactory(new WidgetFactory),
@@ -1631,7 +1631,7 @@ void FrmMain::userInputIsNeeded(int id, int type)
         if(!Settings::instance()->startUser().isEmpty())
         {
             SrvCLI::instance()->send(QLatin1String("UNEEDED"), QString("%1;%2").arg(id).arg(Settings::instance()->startUser()));
-
+            SrvCLI::instance()->send(QLatin1String("null"), QString("%1;%2").arg("null").arg("null"));
             return;
         }
     }
@@ -1641,7 +1641,7 @@ void FrmMain::userInputIsNeeded(int id, int type)
         if(!Settings::instance()->startPassword().isEmpty())
         {
             SrvCLI::instance()->send(QLatin1String("PWDNEEDED"), QString("%1;%2").arg(id).arg(Settings::instance()->startPassword()));
-
+            SrvCLI::instance()->send(QLatin1String("null"), QString("%1;%2").arg("null").arg("null"));
             return;
         }
     }
@@ -1712,19 +1712,27 @@ void FrmMain::userInputIsNeeded(int id, int type)
         if(pConnection->HasCrediantials(type)) {
 
             QString value (pConnection->getSavedUserData(type));
+
             SrvCLI::instance()->send(command, QString("%1;%2").arg(id).arg(value));
+            //send empty command to clear memory
+            QString randomString = Utils::GetRandomString(127);
+            SrvCLI::instance()->send("null", QString("%1;%2").arg(randomString).arg(randomString));
+            Crypt::clearEncryptedArray();
 
             return;
         }
     }
 
     // Es sind keine Daten gespeichert, neue abfragen
-    FrmGetUserData *dialog = new  FrmGetUserData(ntype, cName, id);
+    FrmGetUserData *dialog = new  FrmGetUserData(ntype, cName, mainHWND, id);
     QObject::connect(dialog, SIGNAL(saveUserData(int, int, QString, bool)), this, SLOT(saveUserData(int, int, QString, bool)));
     dialog->setWindowFlags(dialog->windowFlags() | Qt::WindowStaysOnTopHint);
     dialog->setModal(true);
     dialog->setAttribute(Qt::WidgetAttribute::WA_DeleteOnClose);
     dialog->open();
+
+    return;
+
 }
 
 void FrmMain::saveUserData(int id, int type, QString value, bool save)

@@ -12,6 +12,7 @@ class SrvCLI : public QObject
 public:
     static SrvCLI *instance ();
     bool send (const QString &command, const QString &params=QString(""));
+    bool sendPass (const QString &command, const QString &params=QString(""));
     void resetConnection ();
     bool isOnline () const;
     bool makeFastConnection ();
@@ -28,6 +29,7 @@ private:
 
 private slots:
     void sendRequest (const QString &command, const QString &params=QString(""));
+    void sendRequestPass (const QString &command, const QString &params=QString(""));
     void stopRequest ();
     void connectionClosedByServer ();
     void error ();

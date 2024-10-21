@@ -327,7 +327,7 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext & context, const Q
 
  QString g_strClientName;
 
- static const char* g_szVersion = "2.0.42";
+ static const char* g_szVersion = "2.0.43";
 
  void PrintHelp()
  {
@@ -754,7 +754,6 @@ int CALLBACK WinMain (_In_  HINSTANCE hInstance,
     // check if we have to load the german translation
     if(loadGermanTranslation) {
         // Load the german translation
-
         QString trans_file = QLatin1String("sslvpnclient_de.qm");
         QString trans_dialog_file = QLatin1String("qt_de.qm");
 

@@ -8,6 +8,44 @@
 
 extern bool g_bPortable;
 
+
+bool Utils::DeleteClipboard(HWND hwnd){
+    if (hwnd != NULL)
+    {
+        if( !OpenClipboard(hwnd)){
+            qDebug() << QString("cannot open clipboard");
+            return false;
+        }
+
+        // Remove the current Clipboard contents
+        if( !EmptyClipboard() ){
+            qDebug() << QString("cannot empty clipboard");
+            return false;
+        }
+
+        CloseClipboard();
+        return true;
+    }
+    qDebug() << QString("cannot empty clipboard, WindowHandle NULL");
+    return false;
+}
+
+
+QString Utils::GetRandomString(int len)
+{
+   const QString possibleCharacters("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
+   const int randomStringLength = len;
+
+   QString randomString;
+   for(int i=0; i<randomStringLength; ++i)
+   {
+       int index = std::rand() % possibleCharacters.length();
+       QChar nextChar = possibleCharacters.at(index);
+       randomString.append(nextChar);
+   }
+   return randomString;
+}
+
 QString Utils::dataDirectory()
 {
     //

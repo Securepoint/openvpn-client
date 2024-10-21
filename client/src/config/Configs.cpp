@@ -34,7 +34,6 @@ void Configs::refreshConfigs()
     while (configQuery->next()) {
         // OpenVpn Objekt bauen und an die Liste anfügen
         int vpnId (configQuery->value(0).toInt());
-
         auto n = (Crypt::decodeToPlaintext(configQuery->value(1).toString()));
         vpnName = QString::fromUtf8(n.data(), n.size());
 
@@ -153,7 +152,6 @@ void Configs::addConfigToDatabase(const ConfigData &data)
          .arg(data.httpUser.isEmpty() ? "" : Crypt::encodePlaintext(data.httpUser))
          .arg(data.httpPassword.isEmpty() ? "" : Crypt::encodePlaintext(data.httpPassword))
          .arg(data.removeOnStart));
-
      Database::instance()->execute(sql);
 }
 

@@ -9,6 +9,7 @@
 
 #include <map>
 
+#include <utils.h>
 
 float windowsDpiScale();
 // Definded in main.c, default value is true
@@ -17,23 +18,24 @@ float windowsDpiScale();
 // it prevents that the user can save his user data.
 extern bool globalSaveUserData;
 
-FrmGetUserData::FrmGetUserData(InputType::UserInputType type, const QString &name, int id, QWidget * parent)
+FrmGetUserData::FrmGetUserData(InputType::UserInputType type, const QString &name, HWND hwnd, int id, QWidget * parent)
     : FramelessDialog(parent),
     ui(new Ui::FrmGetUserData),
     dataAvail(false),
     frmType (type),
+    hwnd (hwnd),
     vpnId (id),
     force (false),
     dialogClosedByUser(false)
 {
-   
+
     // 0 - Username
     // 1 - Pwd
     // 2 - OTP
     // 3 - PKCS12
-    // 4 - Private Key für Crypted User Data
+    // 4 - Private Key f?r Crypted User Data
 
-    ui->setupUi((QDialog*)this->getWrapperWidget());  
+    ui->setupUi((QDialog*)this->getWrapperWidget());
 
     QMetaObject::connectSlotsByName(this);
 
@@ -177,7 +179,7 @@ void FrmGetUserData::showEvent(QShowEvent *e) {
     // Nun die neuen setzen
     this->setGeometry(left, top, winW, winH);
 
-    // Öffnen
+    // ?ffnen
     e->accept();
     this->setWindowState(Qt::WindowActive);
     ui->txtDataField->setFocus(Qt::PopupFocusReason);
@@ -210,31 +212,54 @@ void FrmGetUserData::on_cmdOK_clicked()
     // 1 - Pwd
     // 2 - OTP
     // 3 - PKCS12
-    // 4 - Private Key für Crypted User Data
+    // 4 - Private Key f?r Crypted User Data
     this->dataAvail = true;
+
+    QString randomString = Utils::GetRandomString(127);
     if (frmType == InputType::Username) {
         SrvCLI::instance()->send(QLatin1String("UNEEDED"), QString("%1;%2").arg(this->vpnId).arg(ui->txtDataField->text()));
         emit saveUserData(this->vpnId, 0, ui->txtDataField->text(), ui->cbSaveData->isChecked());
+        SrvCLI::instance()->send("null", QString("%1;%2").arg(randomString).arg(randomString));
+        ui->txtDataField->setText("");
         this->close();
     } else if (frmType == InputType::Password) {
-        SrvCLI::instance()->send(QLatin1String("PWDNEEDED"), QString("%1;%2").arg(this->vpnId).arg(ui->txtDataField->text()));
+        QString value = QString("%1;%2").arg(this->vpnId).arg(ui->txtDataField->text());
+        SrvCLI::instance()->sendPass(QLatin1String("PWDNEEDED"), value);
         emit saveUserData(this->vpnId, 1, ui->txtDataField->text(), ui->cbSaveData->isChecked());
+        SrvCLI::instance()->send("null", QString("%1;%2").arg(randomString).arg(randomString));
+        ui->txtDataField->setText(randomString);
+        ui->txtDataField->clear();
+
+        QString::iterator itr = value.begin();
+        QString::iterator nd = value.end();
+
+        while (itr != nd)
+        {
+            *itr = '0';
+            ++itr;
+        } // password zeroed
+
+        Utils::DeleteClipboard(hwnd);
+
         this->close();
     } else if (frmType == InputType::Pkcs12) {
         SrvCLI::instance()->send(QLatin1String("PKNEEDED"), QString("%1;%2").arg(this->vpnId).arg(ui->txtDataField->text()));
         emit saveUserData(this->vpnId, 3, ui->txtDataField->text(), ui->cbSaveData->isChecked());
+        SrvCLI::instance()->send("null", QString("%1;%2").arg(randomString).arg(randomString));
         this->close();
     } else if (frmType == InputType::HttpUsername) {
         SrvCLI::instance()->send(QLatin1String("HTTPUSERNEEDED"), QString("%1;%2").arg(this->vpnId).arg(ui->txtDataField->text()));
         emit saveUserData(this->vpnId, 5, ui->txtDataField->text(), ui->cbSaveData->isChecked());
+        SrvCLI::instance()->send("null", QString("%1;%2").arg(randomString).arg(randomString));
         this->close();
     } else if (frmType == InputType::HttpPassword) {
         SrvCLI::instance()->send(QLatin1String("HTTPPASSNEEDED"), QString("%1;%2").arg(this->vpnId).arg(ui->txtDataField->text()));
         emit saveUserData(this->vpnId, 6, ui->txtDataField->text(), ui->cbSaveData->isChecked());
+        SrvCLI::instance()->send("null", QString("%1;%2").arg(randomString).arg(randomString));
         this->close();
     } else if (frmType == InputType::Otp) {
         SrvCLI::instance()->send(QLatin1String("CKNEEDED"), QString("%1;%2").arg(this->vpnId).arg(ui->txtDataField->text()));
-        //
+        SrvCLI::instance()->send("null", QString("%1;%2").arg(randomString).arg(randomString));
         this->close();
     } else if (frmType == InputType::PrivateKey) {
         emit cryptKey(ui->txtDataField->text());

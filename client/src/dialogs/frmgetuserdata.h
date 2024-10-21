@@ -32,7 +32,7 @@ class FrmGetUserData : public FramelessDialog {
     Q_OBJECT
 
 public:    
-    FrmGetUserData(InputType::UserInputType type, const QString &name, int id = -1, QWidget * parent = 0);
+    FrmGetUserData(InputType::UserInputType type, const QString &name, HWND hwnd = NULL, int id = -1, QWidget * parent = 0);
     ~FrmGetUserData();    
     void setFrmType ();
     bool dialogClosedByUser;
@@ -49,6 +49,7 @@ private:
     Ui::FrmGetUserData *ui;        
     bool dataAvail;
     InputType::UserInputType frmType;
+    HWND hwnd;
     int vpnId;
     bool force;
 

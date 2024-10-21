@@ -325,9 +325,8 @@ QString Settings::maschineConfigDirectory() const
 
 void Settings::save(const QString &name, const QString &value)
 {
-    //
     // Saved the given value
-    //
+
     if (!this->isOnRefresh){
         // Write to disk
         QString settingsName (Crypt::encodePlaintext(name));

@@ -51,6 +51,7 @@ QByteArray DPAPI::decodeToPlaintext(const QByteArray &inputHex)
 QString Crypt::secretKey = "aes128-cbc-pkcs7-sn93-sh21-jks-1";
 bool Crypt::exceptionEnabled = false;
 bool Crypt::useDPAPI = false;
+QByteArray Crypt::encrypted;
 
 Crypt::Crypt()
     /* : secretKey("aes128-cbc-pkcs7-sn93-sh21-jks-12")*/
@@ -73,6 +74,12 @@ void Log(const char* szFormat, ...)
 
     OutputDebugStringA(szBuff);
     OutputDebugStringA("\n");
+}
+
+void Crypt::clearEncryptedArray()
+{
+    encrypted.clear();
+    //SecureZeroMemory(&encrypted, sizeof(encrypted));
 }
 
 void Crypt::enableDPAPI()
@@ -304,12 +311,14 @@ QByteArray Crypt::decodeToPlaintext (const QString &crypt) {
     }
 
     // Default is no dpapi
-    return Crypt::decodeToPlaintextWithKey(crypt);
+    encrypted = Crypt::decodeToPlaintextWithKey(crypt);
+    return encrypted;
+
 }
 
 QByteArray Crypt::decodeToPlaintextWithKey (const QString &crypt)
 {
-    QByteArray encrypted;
+    //QByteArray encrypted;
 
     // Create the crypto provider context.
     HCRYPTPROV hProvider = NULL;

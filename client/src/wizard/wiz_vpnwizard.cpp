@@ -174,7 +174,7 @@ void VpnWizard::accept()
     out << QLatin1String("key \"") << keyPath.right(keyPath.size() - keyPath.lastIndexOf("/") - 1) << QLatin1String("\"\n");
 
     if (field(QLatin1String("txtServerCert")).toBool()) {
-        out << QLatin1String("ns-cert-type server\n");
+        out << QLatin1String("remote-cert-tls server\n");
     }
 
     if (field(QLatin1String("txtRouteMethod")).toInt() != 0) {

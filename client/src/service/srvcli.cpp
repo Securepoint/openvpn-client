@@ -38,8 +38,49 @@ bool SrvCLI::send(const QString &command, const QString &params)
     }
 
     this->sendRequest(command, params);
-    //
+
     return true;
+}
+
+bool SrvCLI::sendPass(const QString &command, const QString &params)
+{
+    if (!this->connectionIsOnline){
+        if (!this->makeFastConnection()) {
+            // Keine Verbindung
+            return false;
+        }
+    }
+
+    this->sendRequestPass(command, params);
+
+    return true;
+}
+
+void SrvCLI::sendRequestPass (const QString &command, const QString &params)
+{
+    // Neuen Block zum Senden erstellen
+    QByteArray block;
+    // Datasteam an den Block binden
+    QDataStream out (&block, QIODevice::WriteOnly);
+    // DataStream version setzen, hier aktuelle 4.6 = DataStream version 10
+    out.setVersion(QDataStream::Qt_4_6);
+    // Größe des Blockes erstmal mit 0 initieren und Aktion angeben
+    out << quint64(0);
+    out << command;
+    out << params;
+
+    // Wieder an die erste Stelle des Blockes springen und die Größe neu setzen
+    out.device()->seek(0);
+    out << quint64(block.size() - sizeof(quint64));
+    this->sslSocket.write(block);
+    this->sslSocket.flush();
+
+    // Reset Stream and ByteArray
+    out << quint64(0);
+    out.device()->seek(0);
+    out.device()->close();
+    block.clear();
+
 }
 
 void SrvCLI::sendRequest (const QString &command, const QString &params)
@@ -53,11 +94,13 @@ void SrvCLI::sendRequest (const QString &command, const QString &params)
     // Größe des Blockes erstmal mit 0 initieren und Aktion angeben
     out << quint64(0);
     out << command;
-    out << params;
+    out << params ;
+
     // Wieder an die erste Stelle des Blockes springen und die Größe neu setzen
     out.device()->seek(0);
     out << quint64(block.size() - sizeof(quint64));
     // Block an das Socket schicken und senden
+
     this->sslSocket.write(block);
     this->sslSocket.flush();
 }

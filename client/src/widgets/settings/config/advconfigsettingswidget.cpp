@@ -860,7 +860,7 @@ void AdvConfigSettingsWidget::fillFieldFromConfig() {
                 }
             }
         if (!isCertTyoeServerChecked){
-                if (line.toUpper().trimmed() == "NS-CERT-TYPE SERVER") {
+                if (line.toUpper().trimmed() == "REMOTE-CERT-TLS SERVER") {
                     isCertTyoeServerChecked = true;
                     ui->cbCertIsServer->setChecked(true);
                 } else {
@@ -1050,7 +1050,7 @@ void AdvConfigSettingsWidget::on_cmdSave_clicked()
     }
 
     if (ui->rbNormal->isChecked() && ui->cbCertIsServer->isChecked())
-        out << QLatin1String("ns-cert-type server\n");
+        out << QLatin1String("remote-cert-tls server\n");
 
     if (!ui->txtLinuxUser->text().isEmpty())
         out << QLatin1String("user ") << ui->txtLinuxUser->text() << QLatin1String("\n");
@@ -1476,7 +1476,7 @@ QStringList AdvConfigSettingsWidget::getAllFieldWhichNotIntoTheInterface()
                     && !line.trimmed().left(11).contains("HTTP-PROXY ", Qt::CaseInsensitive)
                     && line.toUpper().trimmed() != "MUTE-REPLAY-WARNINGS"
                     && line.trimmed().left(6).toUpper() != "CIPHER"
-                    && line.toUpper().trimmed() != "NS-CERT-TYPE SERVER")
+                    && line.toUpper().trimmed() != "REMOTE-CERT-TLS SERVER")
         {
 
             /*
