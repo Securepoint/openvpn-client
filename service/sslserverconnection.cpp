@@ -357,10 +357,6 @@ void SslServerConnection::slotStartRead()
                     QString line = lines.value(lineIndex);
                     // Cleanup spaces and other crap, replace all multi whitespaces with a single one
                     line = line.simplified();
-                    // Skip empty lines
-                    if (line.isEmpty()) {
-                        continue;
-                    }
 
                     // Check for comments
                     if (line.startsWith("#")) {

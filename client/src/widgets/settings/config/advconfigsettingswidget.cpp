@@ -88,7 +88,7 @@ void AdvConfigSettingsWidget::showEvent(QShowEvent *e) {
 
     this->resetFields();
 
-    // Fenster füllen
+    // Fenster f?llen
     ui->tabWidget->setCurrentIndex(0);
     this->fillFieldFromConfig();
 
@@ -124,7 +124,7 @@ void AdvConfigSettingsWidget::showEvent(QShowEvent *e) {
     }
     // Nun die neuen setzen
     this->setGeometry(left, top, winW, winH);
-    // Öffnen
+    // ?ffnen
     e->accept();
     this->setWindowState(Qt::WindowActive);
 }
@@ -652,9 +652,15 @@ void AdvConfigSettingsWidget::fillFieldFromConfig() {
                {
                    line = in.readLine();
 
-                   if(!line.startsWith("</key>", Qt::CaseInsensitive) && !line.isEmpty())
+
+
+                   if(!line.startsWith("</key>", Qt::CaseInsensitive))
                    {
                        if (line.startsWith("-----END PRIVATE KEY-----", Qt::CaseInsensitive))
+                       {
+                             keyValueInline += line;
+                       }
+                       else if (line.startsWith("-----END RSA PRIVATE KEY-----", Qt::CaseInsensitive))
                        {
                              keyValueInline += line;
                        }
