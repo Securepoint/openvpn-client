@@ -327,7 +327,7 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext & context, const Q
 
  QString g_strClientName;
 
- static const char* g_szVersion = "2.0.44";
+ static const char* g_szVersion = "2.0.45";
 
  void PrintHelp()
  {
