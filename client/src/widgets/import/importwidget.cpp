@@ -77,18 +77,38 @@ void ImportWidget::on_cmdSelectImportFile_clicked()
     //
     // Open a select file dialog
     //
-    QString homeDir;
-   homeDir = QStandardPaths::locate(QStandardPaths::HomeLocation, homeDir, QStandardPaths::LocateOption::LocateDirectory);
-    static QString lastDirectory (homeDir);
 
-    QString importFile (QFileDialog::getOpenFileName(this, QObject::tr("Select import file"), lastDirectory , QObject::tr("Configurations (*.ovpn);;Backups (*.crypt)")));
-    //
-    if (importFile.isEmpty()) {
-        return;
-    }
+    const QString homeDir = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+    const QString desktopDir = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+
+    // ALT
+    //QString homeDir;
+    //homeDir = QStandardPaths::locate(QStandardPaths::HomeLocation, homeDir, QStandardPaths::LocateOption::LocateDirectory);
+    //static QString lastDirectory (homeDir);
+
+    // NEU
+    // Beim ersten Mal: Desktop (Fallback auf Home)
+    static QString lastDirectory =
+        !desktopDir.isEmpty() ? desktopDir :
+        !homeDir.isEmpty()    ? homeDir :
+                                QDir::homePath();
+
+    //static bool firstRun = true;
+
+    //const QFileDialog::Options options = firstRun ? QFileDialog::DontUseNativeDialog : QFileDialog::Options{};
+
+    QString importFile = QFileDialog::getOpenFileName(
+        this,
+        tr("Select import file"),
+        lastDirectory,
+        tr("Configurations (*.ovpn);;Backups (*.crypt)"));
+
+    //firstRun = false;
+
+    if (importFile.isEmpty()) { return; }
 
     // Set new last dir
-    lastDirectory = importFile.left(importFile.lastIndexOf("/"));
+    lastDirectory = QFileInfo(importFile).absolutePath();
 
     // Fill ui
     ui->txtSourceFile->setText(importFile);

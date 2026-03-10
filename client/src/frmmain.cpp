@@ -489,7 +489,7 @@ FrmMain::FrmMain()
     : isReconnect(false),
       tapCount(0),
       installingTap(false),
-      version("2.0.45"),
+      version("2.0.46"),
       ui(new Ui::FrmMain),
       qCurrentArrow(nullptr),
       widgetFactory(new WidgetFactory),

@@ -25,7 +25,7 @@
 UpdateCheck::UpdateCheck()
     : currentMajor(2),
       currentMinor(0),
-      currentPatch(45)
+      currentPatch(46)
 {
 
 
