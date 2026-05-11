@@ -87,6 +87,10 @@ void OpenVpn::connectToVpn()
     arguments << QString ("--config");
     arguments << this->fullConfigPathValue;
 
+    // mute immer 0, damit openvpn den connect status nicht verschluckt.
+    arguments << QString ("--mute");
+    arguments << QString ("0");
+
     // Wurde ein Proxy ?bergeben
     if (!this->proxyString.trimmed().isEmpty()) {
         // Proxy wurde ?bergeben
