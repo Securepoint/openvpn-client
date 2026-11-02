@@ -5,7 +5,12 @@ QT += core sql network
 
 CONFIG += release console
 
-#DEFINES += _ENABLE_DEBUG
+# DEFINES += _ENABLE_DEBUG
+
+# Disable client signature verification for development builds
+CONFIG(debug, debug|release) {
+    # DEFINES += DISABLE_CLIENT_SIGNATURE_CHECK
+}
 
 DEFINES += _CONSOLE QT_DLL QT_HAVE_MMX QT_HAVE_3DNOW QT_HAVE_SSE QT_HAVE_MMXEXT QT_HAVE_SSE2 QT_XML_LIB QT_NETWORK_LIB QT_SQL_LIB
 

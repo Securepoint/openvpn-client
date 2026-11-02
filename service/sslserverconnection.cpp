@@ -241,10 +241,10 @@ void SslServerConnection::slotStartRead()
     command = command.trimmed().toUpper();
     if (command == QLatin1String("OPEN")) {
         //
-        // Öffnet eine Verbindung
+        // ï¿½ffnet eine Verbindung
         //
 
-        // Hat die Parameterliste die richtige Länge
+        // Hat die Parameterliste die richtige Lï¿½nge
         QStringList fields (params.split(";"));
         if (fields.size() == 8) {
             // 0: ID, 1: Username, 2: SID, 3: Path, 4: Content as Base64, 5: Interact, 6: Proxy-String, 7: isPortable
@@ -266,7 +266,7 @@ void SslServerConnection::slotStartRead()
             } else {
                 // Objekt ist schon in der Liste, nicht gut = Fehler
                 Debug::error(QLatin1String("Open: Object is already in list. Id: ") + fields.at(0));
-                // Wenn es nicht connected oder connting status hat, löschen und ein neues anlegen
+                // Wenn es nicht connected oder connting status hat, lï¿½schen und ein neues anlegen
                 if (item->isConnectionStable() || item->isConnecting()) {
                     Debug::log(QLatin1String("Connecting or Connection is stable"));
                     // Nur den Status an den Client senden
@@ -275,7 +275,7 @@ void SslServerConnection::slotStartRead()
                 }
 
                 // Item ist nicht verbunden oder verbindet sich gerade auch nicht
-                // Deswegen wird das Objekt geklöscht und ein neues angelegt
+                // Deswegen wird das Objekt geklï¿½scht und ein neues angelegt
                 this->removeItemFromList(item->id());
             }
 
@@ -306,7 +306,10 @@ void SslServerConnection::slotStartRead()
                 QString registryHash = registry.value(QString("Users/%1/Security/%2/Checksum").arg(userSID).arg(configId)).toString();
                 // Do we got an hash?
                 if(registryHash.simplified().isEmpty()) {
-                    // No, set the current as new hash
+                // Checksum is no longer written by the service.
+                // It is set directly by Checksum.exe.
+
+                /*
                     registry.setValue(QString("Users/%1/Security/%2/Checksum").arg(userSID).arg(configId), hashOfContent);
                     // Write a log message to notify the user
                     _srvCLI->send(QString("%1;Set new checksum %2 of %3 for user %4[%5]\n")
@@ -315,6 +318,7 @@ void SslServerConnection::slotStartRead()
                                             .arg(configFullPath)
                                             .arg(username)
                                             .arg(userSID), QLatin1String("LOG"));
+                */
 
                 } else {
                     // We got a checksum, both must be equal!
@@ -391,7 +395,7 @@ void SslServerConnection::slotStartRead()
                         // Do we have an script security error?
                         if (isScriptSecurityError) {
                             // Yes, reject the connection! We'll never execute scripts with a script security higher than 1
-                            // see: https://openvpn.net/community-resources/reference-manual-for-openvpn-2-4 @ –script-security level
+                            // see: https://openvpn.net/community-resources/reference-manual-for-openvpn-2-4 @ ï¿½script-security level
                             _srvCLI->send(QString("%1;%2")
                                              .arg(configId)
                                              .arg("Unsafe configuration found: use of script-security greater than 1. This connection is rejected! For further informations see: https://openvpn.net/community-resources/reference-manual-for-openvpn-2-4, section: script-security level"), QLatin1String("ERROR"));
@@ -473,21 +477,21 @@ void SslServerConnection::slotStartRead()
 
             // Noch ein paar Signale binden
             //
-            // Das Objekt hat sich zum löschen markiert
+            // Das Objekt hat sich zum lï¿½schen markiert
             QObject::connect(sslVpn, SIGNAL(removeItemFromList(int)), this, SLOT(removeItemFromList(int)));
             //
             // Nachrichten aus dem Objekt senden
             QObject::connect(sslVpn, SIGNAL(sendMessage(QString,QString)), _srvCLI, SLOT(send(QString,QString)));
 
             Debug::log(QLatin1String("Add item to list"));
-            // Nun das Objekt an die Liste anfügen
+            // Nun das Objekt an die Liste anfï¿½gen
             vpnList.append(qMakePair(configId, sslVpn));
             //
             // Nun das OpenVpn verbinden
             Debug::log(QLatin1String("Start connection"));
 
             _srvCLI->send(QString("%2;Try to start OpenVPN connection %1 %3\n").arg(configName).arg(configId).arg(configPath), QLatin1String("LOG"));
-            // Ohne Verzögerung den connect aufrufen
+            // Ohne Verzï¿½gerung den connect aufrufen
             sslVpn->connectToVpn();
             //
         }
@@ -715,7 +719,7 @@ void SslServerConnection::slotStartRead()
     } else if (command == QLatin1String("DUMMY")) {
         this->setName(params);
         //
-        // Test, für ist der service vorhanden
+        // Test, fï¿½r ist der service vorhanden
         Debug::log(QLatin1String("Test command is triggered."));
         _srvCLI->send(QString("Ok;%1").arg(getId()), QLatin1String("DUMMY"));
         //_srvCLI->send(QLatin1String("OK"), QLatin1String("DUMMY"));
@@ -823,9 +827,11 @@ void SslServerConnection::slotStartRead()
         return;
     } else if (command == QLatin1String("WRITE_CHECKSUM")) {
         //
-        // Create a checksum of the configuration and store it into the registry
+        // Checksum writing moved to Checksum.exe.
+        // The service must no longer write checksums.
         //
 
+        /*
         // ID, Path, Content as Base64
         QStringList fields (params.split(";"));
         if (fields.size() == 6) {
@@ -855,14 +861,17 @@ void SslServerConnection::slotStartRead()
                                     .arg(configContent)
                                     .arg(configPath)
                                     .arg(username)
-                                    .arg(userSID), QLatin1String("LOG"));
-            //
+                                    .arg(userSID), QLatin1String("LOG")); 
         }
+        */
     } else if (command == QLatin1String("CHECKSUM")) {
         //
         // Create a checksum of the configuration and store it into the registry
+        // Checksum creation/writing moved to Checksum.exe.
+        // The service must no longer write checksums.
         //
 
+        /*
         // ID, Path, Content as Base64
         QStringList fields (params.split(";"));
         if (fields.size() == 6) {
@@ -896,11 +905,12 @@ void SslServerConnection::slotStartRead()
                                     .arg(configPath)
                                     .arg(username)
                                     .arg(userSID), QLatin1String("LOG"));
-            //
+            
         }
+        */
     } else if (command == QLatin1String("REMOVE_CHECKSUM")) {
         //
-        // Create a checksum of the configuration and store it into the registry
+        // Remove the checksum of the configuration from the registry
         //
 
         // ID, Path, Content as Base64
@@ -962,12 +972,12 @@ OpenVpn *SslServerConnection::foundItemInList(const int &id)
     // Liste durchlaufen
     QListIterator<QPair<int, OpenVpn*> > i(vpnList);
     while (i.hasNext()) {
-        // Wenn die Id stimmt, das Objekt zurückgeben
+        // Wenn die Id stimmt, das Objekt zurï¿½ckgeben
         QPair <int, OpenVpn*> item = i.next();
         //
         Debug::log(QString ("List item -> Id: %1").arg(item.first));
         if (item.first == id) {
-            // Item gefunden, das OpenVpn-Objekt zurückgeben
+            // Item gefunden, das OpenVpn-Objekt zurï¿½ckgeben
             ret = item.second;
             // Raus hier
             break;
@@ -989,7 +999,7 @@ void SslServerConnection::removeItemFromList(int id)
     // Liste durchlaufen
     QMutableListIterator<QPair<int, OpenVpn*> > i(vpnList);
     while (i.hasNext()) {
-        // Wenn die Id stimmt, das Objekt zurückgeben
+        // Wenn die Id stimmt, das Objekt zurï¿½ckgeben
         QPair <int, OpenVpn*> item = i.next();
         //
         Debug::log(QString ("Rm list item -> Id: %1 - %2").arg(item.first).arg(id));
@@ -1000,7 +1010,7 @@ void SslServerConnection::removeItemFromList(int id)
             QObject::disconnect(ssl, 0, 0, 0);
             // Aus der Liste entfernen
             i.remove();
-            // Löschen
+            // Lï¿½schen
             QTimer::singleShot(250, ssl, SLOT(deleteLater()));
             // Raus hier
             break;
