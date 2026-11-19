@@ -1,8 +1,8 @@
-# Securepoint VPN Client 3
+# Securepoint VPN Client 3 Available
 
-A newer version of the Securepoint VPN Client is available.
+Please note: Support for the Securepoint SSL VPN Client will end on **March 31, 2027**. After this date, no further updates or security fixes will be provided.
 
-> <mark><strong>We recommend using Securepoint VPN Client 3</strong></mark> to benefit from the latest features, improvements, and security updates.
+We strongly recommend switching to Securepoint VPN Client 3 as soon as possible to benefit from continued support, security updates, and the latest improvements.
 
-**Download the latest version here:**
+Download the latest version here:
 https://github.com/Securepoint/vpn-client-releases/releases/latest
